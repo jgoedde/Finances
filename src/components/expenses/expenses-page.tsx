@@ -11,12 +11,13 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { type Expense, useExpenses } from "@/components/use-expenses.ts";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
+import { useFileDialog } from "@mantine/hooks";
 
 export const ExpensesPage = () => {
-    const { expenses, encryptedLs } = useExpenses();
+    const { expenses, encryptedLs, setLs } = useExpenses();
 
     const groupedExpenses = useMemo(
         () =>
@@ -77,6 +78,22 @@ export const ExpensesPage = () => {
 
         void seedShit();
     }, [])*/
+
+    const { open, files } = useFileDialog({ accept: ".txt", multiple: false });
+
+    useEffect(() => {
+        const file = files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        async function readTxt() {
+            setLs(await file!.text());
+        }
+
+        void readTxt();
+    }, [files, setLs]);
 
     return (
         <div className={"relative container mx-auto"}>
@@ -142,21 +159,23 @@ export const ExpensesPage = () => {
                     >
                         My expenses
                     </h1>
-                    <button
-                        onClick={() => {
-                            const blob = new Blob([encryptedLs ?? ""], {
-                                type: "application/text",
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `${Date.now()}-expenses.txt`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        }}
-                    >
-                        <Download className={"text-secondary size-5"} />
-                    </button>
+                    {Object.keys(groupedExpenses).length > 0 && (
+                        <button
+                            onClick={() => {
+                                const blob = new Blob([encryptedLs ?? ""], {
+                                    type: "application/text",
+                                });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `${Date.now()}-expenses.txt`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                            }}
+                        >
+                            <Download className={"text-secondary size-5"} />
+                        </button>
+                    )}
                 </div>
 
                 {expenses.length === 0 && (
@@ -168,6 +187,7 @@ export const ExpensesPage = () => {
                         <Drama className={"size-24"} />
                         <div className={"mt-2"}>No expenses tracked yet</div>
                         <button
+                            onClick={() => open()}
                             className={"text-primary mt-1 flex gap-x-2 text-sm"}
                         >
                             <Upload className={"size-4"} />

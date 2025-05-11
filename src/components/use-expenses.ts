@@ -91,5 +91,10 @@ export function useExpenses() {
         getExpense,
         encryptedLs,
         clearLs: () => setEncryptedLs(null),
+        setLs: (data: string) => {
+            if (!key) throw new Error("No encryption key set");
+
+            setEncryptedLs(data);
+        },
     };
 }
