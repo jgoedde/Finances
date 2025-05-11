@@ -1,19 +1,33 @@
 import { Calendar1, Menu, Scroll, Sunrise } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
-import { TransactionsGroup } from "@/components/TransactionsGroup.tsx";
-import { NewExpenseFAB } from "@/components/new-expense-fab.tsx";
+import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
+import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
+import { type Expense, useExpenses } from "@/components/use-expenses.ts";
+import { useMemo } from "react";
 
-const transactions: {
-    date: string;
-    transactions: {
-        name: string;
-        description?: string;
-        category: string;
-        amount: string;
-    }[];
-}[] = [];
+export const ExpensesPage = () => {
+    const { expenses } = useExpenses();
 
-export const HomePage = () => {
+    const groupedExpenses = useMemo(
+        () =>
+            expenses.reduce((acc: { [key: string]: Expense[] }, expense) => {
+                const date = new Date(expense.date).toLocaleDateString(
+                    "de-DE",
+                    {
+                        year: "numeric",
+                        month: "long",
+                        day: "2-digit",
+                    },
+                );
+                if (!acc[date]) {
+                    acc[date] = [];
+                }
+                acc[date].push(expense);
+                return acc;
+            }, {}),
+        [expenses],
+    );
+
     return (
         <div className={"relative container mx-auto h-dvh"}>
             <div
@@ -72,13 +86,16 @@ export const HomePage = () => {
                     My expenses
                 </h1>
                 <div className={"flex flex-col gap-y-4"}>
-                    {transactions.map((transaction) => (
-                        <TransactionsGroup
-                            key={transaction.date}
-                            date={transaction.date}
-                            transactions={transaction.transactions}
-                        />
-                    ))}
+                    {Object.keys(groupedExpenses).map((date, i) => {
+                        const expenses = groupedExpenses[date];
+                        return (
+                            <ExpensesGroup
+                                key={`${date}-${i}`}
+                                date={date}
+                                expenses={expenses}
+                            />
+                        );
+                    })}
                 </div>
             </main>
 

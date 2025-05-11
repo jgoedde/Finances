@@ -1,18 +1,6 @@
-import {
-    ArrowLeft,
-    CalendarFold,
-    Gift,
-    Heart,
-    Joystick,
-    Plane,
-    Plus,
-    Shirt,
-    ShoppingBasket,
-    Sofa,
-    Utensils,
-} from "lucide-react";
+import { ArrowLeft, CalendarFold, Plus } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
     type CurrencyInputProps,
 } from "react-currency-input-field";
@@ -20,77 +8,104 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+} from "@/components/ui/popover.tsx";
+import { cn } from "@/lib/utils.ts";
+import { Calendar } from "@/components/ui/calendar.tsx";
 import { useLocation } from "wouter";
+import { useExpenses } from "@/components/use-expenses.ts";
+import { formatEuro } from "@/lib/currency-utils.ts";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
-const categories = [
+const categories: {
+    name: string;
+    icon: IconName;
+    color: string;
+}[] = [
     {
         name: "Auswärts essen",
-        icon: <Utensils className={"size-14"} />,
+        icon: "utensils",
         color: "#32CD32",
     },
     {
         name: "Einkäufe",
-        icon: <ShoppingBasket className={"size-14"} />,
+        icon: "shopping-basket",
         color: "#FFA500",
     },
     {
         name: "Geschenke",
-        icon: <Gift className={"size-14"} />,
+        icon: "gift",
         color: "#FF6347",
     },
     {
         name: "Gesundheit",
-        icon: <Heart className={"size-14"} />,
+        icon: "heart",
         color: "#32CD32",
     },
     {
         name: "Wohnung",
-        icon: <Sofa className={"size-14"} />,
+        icon: "sofa",
         color: "#9370DB",
     },
     {
         name: "Kleidung",
-        icon: <Shirt className={"size-14"} />,
+        icon: "shirt",
         color: "#00FA9A",
     },
     {
         name: "Freizeit",
-        icon: <Joystick className={"size-14"} />,
+        icon: "joystick",
         color: "#800080",
     },
     {
         name: "Urlaub",
-        icon: <Plane className={"size-14"} />,
+        icon: "plane",
         color: "#87CEEB",
     },
 ];
 
 export default function NewExpense() {
     const [, router] = useLocation();
-    const [selected, setSelected] = useState<string>();
+    const { addExpense } = useExpenses();
 
     const amountRef = useRef<HTMLInputElement>(null);
 
+    const [selected, setSelected] = useState<string>();
+    const [description, setDescription] = useState<string>("");
+    const [date, setDate] = useState<Date>(new Date());
     const [expense, setExpense] = useState("");
-    const [amount, setAmount] = useState<string | undefined>("");
 
+    const [amountStr, setAmountStr] = useState<string | undefined>("");
     const handleOnValueChange: CurrencyInputProps["onValueChange"] = (
         value: string | undefined,
     ) => {
-        setAmount(value);
+        setAmountStr(value);
     };
 
-    const [date, setDate] = useState<Date>(new Date());
-
     const onSubmit = useCallback(() => {
-        alert(`${amount} ${expense} ${selected} ${format(date, "dd.MM.yyyy")}`);
+        const amount = parseFloat((amountStr as string).replace(",", "."));
+
+        const cat = categories.find((x) => x.name === (selected as string));
+
+        if (!cat) {
+            alert("Please select a category");
+            return;
+        }
+
+        addExpense({
+            date: date.getTime(),
+            category: {
+                name: selected as string,
+                iconName: cat.icon,
+                color: cat.color,
+            },
+            amount,
+            amountFormatted: formatEuro(amount),
+            name: expense,
+            description,
+        });
 
         router("/");
-    }, [amount, date, expense, router, selected]);
+    }, [addExpense, amountStr, date, description, expense, router, selected]);
 
     return (
         <Popover>
@@ -151,7 +166,7 @@ export default function NewExpense() {
                                 setSelected(undefined);
                             } else {
                                 setSelected(category.name);
-                                if (amount?.trim() === "") {
+                                if (amountStr?.trim() === "") {
                                     amountRef?.current?.focus();
                                 }
                             }
@@ -175,7 +190,10 @@ export default function NewExpense() {
                                     : "text-inverse-primary",
                             )}
                         >
-                            {category.icon}
+                            <DynamicIcon
+                                name={category.icon}
+                                className={"size-14"}
+                            />
                         </div>
                     </button>
                 ))}
@@ -205,7 +223,7 @@ export default function NewExpense() {
                             className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
                             onValueChange={handleOnValueChange}
                             decimalsLimit={2}
-                            value={amount}
+                            value={amountStr}
                             step={1}
                         />
                     </div>
@@ -223,13 +241,25 @@ export default function NewExpense() {
                                 setExpense(e.target.value);
                             }}
                             type={"text"}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault();
-
-                                    onSubmit();
-                                }
+                            className={
+                                "rounded-none border-none shadow-none focus-visible:ring-0"
+                            }
+                        />
+                    </div>
+                    <div className={"flex items-center gap-x-2"}>
+                        <label
+                            htmlFor="description"
+                            className={"text-on-surface-variant"}
+                        >
+                            Description
+                        </label>
+                        <Input
+                            name={"description"}
+                            value={description}
+                            onChange={(e) => {
+                                setDescription(e.target.value);
                             }}
+                            type={"text"}
                             className={
                                 "rounded-none border-none shadow-none focus-visible:ring-0"
                             }
