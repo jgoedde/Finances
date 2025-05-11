@@ -1,6 +1,5 @@
 import {
     ArrowLeft,
-    Calendar1,
     CalendarFold,
     Gift,
     Heart,
@@ -12,10 +11,11 @@ import {
     Sofa,
     Utensils,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
-import CurrencyInput, { CurrencyInputProps } from "react-currency-input-field";
+import CurrencyInput, {
+    type CurrencyInputProps,
+} from "react-currency-input-field";
 import {
     Popover,
     PopoverContent,
@@ -24,6 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { useLocation } from "wouter";
 
 const categories = [
     {
@@ -69,7 +70,7 @@ const categories = [
 ];
 
 export default function NewExpense() {
-    const router = useRouter();
+    const [, router] = useLocation();
     const [selected, setSelected] = useState<string>();
 
     const amountRef = useRef<HTMLInputElement>(null);
@@ -88,7 +89,7 @@ export default function NewExpense() {
     const onSubmit = useCallback(() => {
         alert(`${amount} ${expense} ${selected} ${format(date, "dd.MM.yyyy")}`);
 
-        router.push("/");
+        router("/");
     }, [amount, date, expense, router, selected]);
 
     return (
@@ -100,7 +101,7 @@ export default function NewExpense() {
             >
                 <button
                     onClick={() => {
-                        router.back();
+                        router("/");
                     }}
                     className={"text-on-surface cursor-pointer"}
                 >
