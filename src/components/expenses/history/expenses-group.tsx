@@ -1,4 +1,4 @@
-import { ExpenseListItem } from "@/components/expenses/history/expense.tsx";
+import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import type { Expense } from "@/components/use-expenses.ts";
 
 export const ExpensesGroup = ({

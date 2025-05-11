@@ -155,7 +155,7 @@ export default function NewExpense() {
                         key={category.name}
                         style={{
                             ...(selected !== category.name &&
-                                selected !== undefined && { opacity: 0.7 }),
+                                selected !== undefined && { opacity: 0.5 }),
                             backgroundColor: category.color,
                         }}
                         className={
@@ -235,6 +235,7 @@ export default function NewExpense() {
                             Ausgabe
                         </label>
                         <Input
+                            list={"frequent-expenses"}
                             name={"expense"}
                             value={expense}
                             onChange={(e) => {
@@ -258,6 +259,13 @@ export default function NewExpense() {
                             value={description}
                             onChange={(e) => {
                                 setDescription(e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+
+                                    onSubmit();
+                                }
                             }}
                             type={"text"}
                             className={

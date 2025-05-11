@@ -2,6 +2,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
 import { useEncryption } from "@/components/use-encryption.ts";
+import { nanoid } from "nanoid";
 
 export type Expense = {
     id: string;
@@ -41,6 +42,7 @@ export function useExpenses() {
                 CryptoJS.enc.Utf8,
             );
             const parsed = JSON.parse(decrypted) as Expense[];
+            parsed.sort((a, b) => b.date - a.date);
             setExpenses(parsed);
         } catch (e) {
             console.error("Failed to decrypt expenses", e);
@@ -58,10 +60,7 @@ export function useExpenses() {
     };
 
     const addExpense = (expense: Omit<Expense, "id">) => {
-        const updatedExpenses = [
-            ...expenses,
-            { ...expense, id: crypto.randomUUID() },
-        ];
+        const updatedExpenses = [...expenses, { ...expense, id: nanoid(8) }];
         setExpenses(updatedExpenses);
         saveToLocalStorage(updatedExpenses);
     };
@@ -83,8 +82,6 @@ export function useExpenses() {
     const getExpense = (id: string) => {
         return expenses.find((expense) => expense.id === id);
     };
-
-    console.log(expenses, "expenses");
 
     return {
         expenses,

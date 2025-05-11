@@ -4,6 +4,8 @@ import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx"
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { type Expense, useExpenses } from "@/components/use-expenses.ts";
 import { useMemo } from "react";
+import { isSameMonth, isToday, isYesterday } from "date-fns";
+import { formatEuro } from "@/lib/currency-utils.ts";
 
 export const ExpensesPage = () => {
     const { expenses } = useExpenses();
@@ -28,6 +30,36 @@ export const ExpensesPage = () => {
         [expenses],
     );
 
+    const stats = useMemo(() => {
+        const amountsToday = expenses
+            .filter((e) => isToday(e.date))
+            .map((e) => e.amount);
+        const sumToday = amountsToday.reduce((acc, amount) => acc + amount, 0);
+
+        const amountsYesterday = expenses
+            .filter((e) => isYesterday(e.date))
+            .map((e) => e.amount);
+        const sumYesterday = amountsYesterday.reduce(
+            (acc, amount) => acc + amount,
+            0,
+        );
+
+        const amountsThisMonth = expenses
+            .filter((e) => isSameMonth(new Date(), e.date))
+            .map((e) => e.amount);
+
+        const sumThisMonth = amountsThisMonth.reduce(
+            (acc, amount) => acc + amount,
+            0,
+        );
+
+        return {
+            today: sumToday,
+            yesterday: sumYesterday,
+            month: sumThisMonth,
+        };
+    }, [expenses]);
+
     return (
         <div className={"relative container mx-auto h-dvh"}>
             <div
@@ -50,7 +82,9 @@ export const ExpensesPage = () => {
                         <div>{"Today's"} Transactions</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>17,12€</div>
+                        <div className={"text-tertiary"}>
+                            {formatEuro(stats.today)}
+                        </div>
                     </CardContent>
                 </Card>
                 <Card className={"w-[150px] shrink-0 border-none shadow-none"}>
@@ -61,7 +95,9 @@ export const ExpensesPage = () => {
                         <div>Spent yesterday</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>17,12€</div>
+                        <div className={"text-tertiary"}>
+                            {formatEuro(stats.yesterday)}
+                        </div>
                     </CardContent>
                 </Card>
                 <Card className={"w-[150px] shrink-0 border-none shadow-none"}>
@@ -72,7 +108,9 @@ export const ExpensesPage = () => {
                         <div>This month</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>17,12€</div>
+                        <div className={"text-tertiary"}>
+                            {formatEuro(stats.month)}
+                        </div>
                     </CardContent>
                 </Card>
             </div>
