@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar1, Menu, Scroll, Sunrise } from "lucide-react";
-import { TransactionsGroup } from "@/components/TransactionsGroup";
-import { NewExpenseFAB } from "@/components/new-expense-fab";
+import { Card, CardContent, CardHeader } from "./components/ui/card.tsx";
+import { TransactionsGroup } from "./components/TransactionsGroup.tsx";
+import { NewExpenseFAB } from "./components/new-expense-fab.tsx";
 
 const transactions: {
     date: string;
@@ -13,7 +13,7 @@ const transactions: {
     }[];
 }[] = [];
 
-export default function Home() {
+export default function App() {
     return (
         <div className={"relative container mx-auto h-dvh"}>
             <div

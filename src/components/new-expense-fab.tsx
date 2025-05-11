@@ -1,10 +1,7 @@
-"use client";
-
 import { Banknote } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export function NewExpenseFAB() {
-    const router = useRouter();
+    const router = {};
 
     return (
         <button
