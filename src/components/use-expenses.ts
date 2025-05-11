@@ -89,5 +89,7 @@ export function useExpenses() {
         updateExpense,
         deleteExpense,
         getExpense,
+        encryptedLs,
+        clearLs: () => setEncryptedLs(null),
     };
 }
