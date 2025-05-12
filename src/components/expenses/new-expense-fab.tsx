@@ -7,7 +7,7 @@ export function NewExpenseFAB() {
     return (
         <div
             className={
-                "bg-primary-container text-on-primary-container sticky right-1 bottom-1 size-16 rounded-2xl shadow-lg"
+                "bg-primary-container text-on-primary-container mb-3 mr-3 sticky left-full bottom-0 size-16 rounded-2xl shadow-lg"
             }
             onClick={() => {
                 route("/new");
