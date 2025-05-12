@@ -1,5 +1,5 @@
-import { ArrowLeft, CalendarFold, Plus } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { ArrowLeft, CalendarFold, Plus, Save } from "lucide-react";
+import { type FC, useCallback, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
     type CurrencyInputProps,
@@ -12,69 +12,51 @@ import {
 import { cn } from "@/lib/utils.ts";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import { useLocation } from "wouter";
-import { useExpenses } from "@/components/use-expenses.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { useAppDispatch } from "@/hooks.ts";
+import { upsertExpense } from "@/components/expenses/slice.ts";
+import { nanoid } from "nanoid";
+import { saveToLocalStorage } from "@/components/expenses/actions.ts";
+import { useEncryption } from "@/components/use-encryption.ts";
+import { categories } from "@/components/new-expense/categories.ts";
+import type { Expense } from "@/components/use-expenses.ts";
 
-const categories: {
-    name: string;
-    icon: IconName;
-    color: string;
-}[] = [
-    {
-        name: "Auswärts essen",
-        icon: "utensils",
-        color: "#32CD32",
-    },
-    {
-        name: "Einkäufe",
-        icon: "shopping-basket",
-        color: "#FFA500",
-    },
-    {
-        name: "Geschenke",
-        icon: "gift",
-        color: "#FF6347",
-    },
-    {
-        name: "Gesundheit",
-        icon: "heart",
-        color: "#32CD32",
-    },
-    {
-        name: "Wohnung",
-        icon: "sofa",
-        color: "#9370DB",
-    },
-    {
-        name: "Kleidung",
-        icon: "shirt",
-        color: "#00FA9A",
-    },
-    {
-        name: "Freizeit",
-        icon: "joystick",
-        color: "#800080",
-    },
-    {
-        name: "Urlaub",
-        icon: "plane",
-        color: "#87CEEB",
-    },
-];
+type Props = {
+    description?: string;
+    id?: string;
+    date?: Date;
+    amount?: number;
+    category?: Expense["category"];
+    name?: string;
+};
 
-export default function NewExpense() {
+export const NewExpense: FC<Props> = ({
+    date,
+    description,
+    category,
+    amount,
+    id,
+    name,
+}) => {
+    const dispatch = useAppDispatch();
+    const { key } = useEncryption();
+
     const [, router] = useLocation();
-    const { addExpense } = useExpenses();
 
-    const amountRef = useRef<HTMLInputElement>(null);
+    const amountInputRef = useRef<HTMLInputElement>(null);
 
-    const [selected, setSelected] = useState<string>();
-    const [description, setDescription] = useState<string>("");
-    const [date, setDate] = useState<Date>(new Date());
-    const [expense, setExpense] = useState("");
+    const [selectedCategoryIconNameLocal, setSelectedCategoryIconNameLocal] =
+        useState<string | undefined>(category?.iconName);
+    const [descriptionLocal, setDescriptionLocal] = useState<string>(
+        description ?? "",
+    );
+    const [dateLocal, setDateLocal] = useState<Date>(date ?? new Date());
+    const [expenseLocal, setExpenseLocal] = useState(name ?? "");
+    const [amountStr, setAmountStr] = useState<string | undefined>(
+        amount?.toFixed(2) ?? "",
+    );
 
-    const [amountStr, setAmountStr] = useState<string | undefined>("");
     const handleOnValueChange: CurrencyInputProps["onValueChange"] = (
         value: string | undefined,
     ) => {
@@ -82,30 +64,51 @@ export default function NewExpense() {
     };
 
     const onSubmit = useCallback(() => {
+        if (!key) {
+            return;
+        }
+
         const amount = parseFloat((amountStr as string).replace(",", "."));
 
-        const cat = categories.find((x) => x.name === (selected as string));
+        const cat = categories.find(
+            (x) => x.icon === (selectedCategoryIconNameLocal as string),
+        );
 
         if (!cat) {
             alert("Please select a category");
             return;
         }
 
-        addExpense({
-            date: date.getTime(),
-            category: {
-                name: selected as string,
-                iconName: cat.icon,
-                color: cat.color,
-            },
-            amount,
-            amountFormatted: formatEuro(amount),
-            name: expense,
-            description,
-        });
+        dispatch(
+            upsertExpense({
+                id: id ?? nanoid(8),
+                date: dateLocal.getTime(),
+                category: {
+                    name: cat.name,
+                    iconName: selectedCategoryIconNameLocal as IconName,
+                    color: cat.color,
+                },
+                amount,
+                amountFormatted: formatEuro(amount),
+                name: expenseLocal,
+                description: descriptionLocal,
+            }),
+        );
+
+        void dispatch(saveToLocalStorage({ encryptionKey: key }));
 
         router("/");
-    }, [addExpense, amountStr, date, description, expense, router, selected]);
+    }, [
+        amountStr,
+        dateLocal,
+        descriptionLocal,
+        dispatch,
+        expenseLocal,
+        id,
+        key,
+        router,
+        selectedCategoryIconNameLocal,
+    ]);
 
     return (
         <Popover>
@@ -122,7 +125,9 @@ export default function NewExpense() {
                 >
                     <ArrowLeft className={"size-6"} />
                 </button>
-                <div className={"text-lg"}>New expense</div>
+                <div className={"text-lg"}>
+                    {id === undefined ? "New expense" : "Update expense"}
+                </div>
                 <div className={"ml-auto flex items-center gap-x-3"}>
                     <PopoverTrigger asChild>
                         <button className={"cursor-pointer"}>
@@ -133,8 +138,8 @@ export default function NewExpense() {
                         <Calendar
                             weekStartsOn={1}
                             mode="single"
-                            selected={date}
-                            onSelect={(a) => setDate(a ?? new Date())}
+                            selected={dateLocal}
+                            onSelect={(a) => setDateLocal(a ?? new Date())}
                             initialFocus
                         />
                     </PopoverContent>
@@ -145,7 +150,7 @@ export default function NewExpense() {
                             onSubmit();
                         }}
                     >
-                        <Plus />
+                        {id === undefined ? <Plus /> : <Save />}
                     </button>
                 </div>
             </div>
@@ -154,20 +159,25 @@ export default function NewExpense() {
                     <button
                         key={category.name}
                         style={{
-                            ...(selected !== category.name &&
-                                selected !== undefined && { opacity: 0.5 }),
+                            ...(selectedCategoryIconNameLocal !==
+                                category.icon &&
+                                selectedCategoryIconNameLocal !== undefined && {
+                                    opacity: 0.5,
+                                }),
                             backgroundColor: category.color,
                         }}
                         className={
                             "flex aspect-square size-1/3 flex-col text-left transition-opacity duration-150"
                         }
                         onClick={() => {
-                            if (selected === category.name) {
-                                setSelected(undefined);
+                            if (
+                                selectedCategoryIconNameLocal === category.icon
+                            ) {
+                                setSelectedCategoryIconNameLocal(undefined);
                             } else {
-                                setSelected(category.name);
+                                setSelectedCategoryIconNameLocal(category.icon);
                                 if (amountStr?.trim() === "") {
-                                    amountRef?.current?.focus();
+                                    amountInputRef?.current?.focus();
                                 }
                             }
                         }}
@@ -175,7 +185,7 @@ export default function NewExpense() {
                         <div
                             className={cn(
                                 "font-poppins line-clamp-2 px-2 text-2xl font-bold break-all",
-                                selected === category.name
+                                selectedCategoryIconNameLocal === category.icon
                                     ? "text-white"
                                     : "text-gray-100",
                             )}
@@ -185,7 +195,7 @@ export default function NewExpense() {
                         <div
                             className={cn(
                                 "mt-auto self-end justify-self-end p-2 transition-colors duration-75",
-                                selected === category.name
+                                selectedCategoryIconNameLocal === category.icon
                                     ? "text-white"
                                     : "text-inverse-primary",
                             )}
@@ -216,7 +226,7 @@ export default function NewExpense() {
                             Amount
                         </label>
                         <CurrencyInput
-                            ref={amountRef}
+                            ref={amountInputRef}
                             id="amount"
                             name="amount"
                             intlConfig={{ locale: "de-DE", currency: "EUR" }}
@@ -237,9 +247,9 @@ export default function NewExpense() {
                         <Input
                             list={"frequent-expenses"}
                             name={"expense"}
-                            value={expense}
+                            value={expenseLocal}
                             onChange={(e) => {
-                                setExpense(e.target.value);
+                                setExpenseLocal(e.target.value);
                             }}
                             type={"text"}
                             className={
@@ -256,9 +266,9 @@ export default function NewExpense() {
                         </label>
                         <Input
                             name={"description"}
-                            value={description}
+                            value={descriptionLocal}
                             onChange={(e) => {
-                                setDescription(e.target.value);
+                                setDescriptionLocal(e.target.value);
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
@@ -277,4 +287,4 @@ export default function NewExpense() {
             </div>
         </Popover>
     );
-}
+};

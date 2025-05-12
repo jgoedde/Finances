@@ -4,8 +4,12 @@ import { useEncryption } from "@/components/use-encryption.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { useLocation } from "wouter";
 import { Lock } from "lucide-react";
+import { useAppDispatch } from "@/hooks.ts";
+import { loadExpenses } from "@/components/expenses/actions.ts";
 
 export function UnlockPage() {
+    const dispatch = useAppDispatch();
+
     const [keyLocal, setKeyLocal] = useState("");
 
     const { setKey } = useEncryption();
@@ -16,8 +20,12 @@ export function UnlockPage() {
 
         setKey(keyLocal);
 
+        dispatch(loadExpenses({ key: keyLocal }));
+        // TODO: allow specifying the name of the file and store it in the local storage
+        // similar to BTC wallets
+
         route("/");
-    }, [keyLocal, setKey, route]);
+    }, [keyLocal, setKey, dispatch, route]);
 
     return (
         <div

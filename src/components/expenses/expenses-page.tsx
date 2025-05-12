@@ -10,14 +10,32 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { type Expense, useExpenses } from "@/components/use-expenses.ts";
+import { type Expense } from "@/components/use-expenses.ts";
 import { useEffect, useMemo } from "react";
 import { isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useFileDialog } from "@mantine/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks.ts";
+import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { loadExpenses } from "@/components/expenses/actions.ts";
+import { useEncryption } from "@/components/use-encryption.ts";
+import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 
 export const ExpensesPage = () => {
-    const { expenses, encryptedLs, setLs } = useExpenses();
+    const dispatch = useAppDispatch();
+
+    const { key } = useEncryption();
+
+    const isDecrypting = useAppSelector((state) => state.expenses.isDecrypting);
+    const expenses = useAppSelector(expensesSelectors.selectAll);
+
+    useEffect(() => {
+        if (!key || expenses.length > 0) {
+            return;
+        }
+
+        void dispatch(loadExpenses({ key }));
+    }, [dispatch, expenses.length, key]);
 
     const groupedExpenses = useMemo(
         () =>
@@ -41,44 +59,6 @@ export const ExpensesPage = () => {
 
     const stats = useExpensesStats(expenses);
 
-    /*useEffect(() => {
-        async function seedShit() {
-            const response = await fetch("/seed.json");
-
-            const data = (await response.json()) as {
-                data: {
-                    expenses: {
-                        title: string;
-                        amount: number;
-                        description: string;
-                        category: { name: string; icon: string; color: string };
-                        date: string;
-                    }[];
-                };
-            };
-
-            setExpenses(
-                data.data.expenses.map((e) => ({
-                    name: e.title,
-                    amount: e.amount,
-                    description: e.description,
-                    category: {
-                        name: e.category.name,
-                        iconName: zer0IconToLucideIcon(e.category.icon),
-                        color: e.category.color,
-                    },
-                    amountFormatted: formatEuro(e.amount),
-                    date: new Date(e.date).getTime(),
-                    id: nanoid(6),
-                })),
-            );
-
-            console.log(data.data.expenses, "data");
-        }
-
-        void seedShit();
-    }, [])*/
-
     const { open, files } = useFileDialog({ accept: ".txt", multiple: false });
 
     useEffect(() => {
@@ -89,11 +69,15 @@ export const ExpensesPage = () => {
         }
 
         async function readTxt() {
-            setLs(await file!.text());
+            if (!key) {
+                throw new Error("No encryption key found");
+            }
+            localStorage.setItem("expenses", await file!.text());
+            void dispatch(loadExpenses({ key }));
         }
 
         void readTxt();
-    }, [files, setLs]);
+    }, [dispatch, files, key]);
 
     return (
         <div className={"relative container mx-auto"}>
@@ -150,8 +134,8 @@ export const ExpensesPage = () => {
                 </Card>
             </div>
 
-            <main className={"my-6 px-4"}>
-                <div className={"flex items-center justify-between"}>
+            <main className={"my-6"}>
+                <div className={"flex items-center justify-between px-4"}>
                     <h1
                         className={
                             "text-primary font-poppins mb-2 text-2xl font-bold"
@@ -162,9 +146,12 @@ export const ExpensesPage = () => {
                     {Object.keys(groupedExpenses).length > 0 && (
                         <button
                             onClick={() => {
-                                const blob = new Blob([encryptedLs ?? ""], {
-                                    type: "application/text",
-                                });
+                                const blob = new Blob(
+                                    [localStorage.getItem("expenses") ?? ""],
+                                    {
+                                        type: "application/text",
+                                    },
+                                );
                                 const url = URL.createObjectURL(blob);
                                 const a = document.createElement("a");
                                 a.href = url;
@@ -178,10 +165,10 @@ export const ExpensesPage = () => {
                     )}
                 </div>
 
-                {expenses.length === 0 && (
+                {expenses.length === 0 && !isDecrypting && (
                     <div
                         className={
-                            "text-on-surface-variant my-6 flex w-full flex-col items-center"
+                            "text-on-surface-variant my-6 flex w-full flex-col items-center px-4"
                         }
                     >
                         <Drama className={"size-24"} />
@@ -193,6 +180,17 @@ export const ExpensesPage = () => {
                             <Upload className={"size-4"} />
                             Import database
                         </button>
+                    </div>
+                )}
+
+                {isDecrypting && (
+                    <div
+                        className={
+                            "text-secondary my-5 flex w-full flex-col items-center px-4"
+                        }
+                    >
+                        <div>Loading expenses...</div>
+                        <LoadingSpinner />
                     </div>
                 )}
 

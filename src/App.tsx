@@ -1,9 +1,10 @@
 import { Route, Switch, useLocation } from "wouter";
 import { ExpensesPage } from "@/components/expenses/expenses-page.tsx";
-import NewExpense from "@/components/new-expense/new-expense.tsx";
 import { UnlockPage } from "@/components/unlock/unlock-page.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useEffect } from "react";
+import { EditExpense } from "@/components/expenses/editor/EditExpense.tsx";
+import { NewExpense } from "@/components/new-expense/new-expense.tsx";
 
 export default function App() {
     const { key } = useEncryption();
@@ -18,8 +19,11 @@ export default function App() {
     return (
         <Switch>
             <Route path="/" component={ExpensesPage} />
-            <Route path="/new" component={NewExpense} />
+            <Route path="/new">{() => <NewExpense />}</Route>
             <Route path={"/unlock"} component={UnlockPage} />
+            <Route path="/edit/:id">
+                {(params) => <EditExpense id={params.id} />}
+            </Route>
 
             {/* Default route in a switch */}
             <Route>404: No such page!</Route>
