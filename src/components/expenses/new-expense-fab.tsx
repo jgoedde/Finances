@@ -7,7 +7,7 @@ export function NewExpenseFAB() {
     return (
         <button
             className={
-                "bg-primary-container text-on-primary-container sticky right-1 bottom-1 size-16 rounded-2xl shadow-lg"
+                "bg-primary-container text-on-primary-container sticky left-full bottom-1 size-16 rounded-2xl shadow-lg"
             }
             onClick={() => {
                 route("/new");
