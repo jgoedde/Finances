@@ -2,8 +2,8 @@ import {
     Calendar1,
     Download,
     Drama,
-    Menu,
     Scroll,
+    Search,
     Sunrise,
     Upload,
 } from "lucide-react";
@@ -20,6 +20,7 @@ import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
+import { useLocation } from "wouter";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ export const ExpensesPage = () => {
 
     const isDecrypting = useAppSelector((state) => state.expenses.isDecrypting);
     const expenses = useAppSelector(expensesSelectors.selectAll);
+    const [, route] = useLocation();
 
     useEffect(() => {
         if (!key || expenses.length > 0) {
@@ -80,61 +82,80 @@ export const ExpensesPage = () => {
     }, [dispatch, files, key]);
 
     return (
-        <div className={"relative container mx-auto"}>
+        <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <div
                 className={
-                    "bg-surface-container-high text-on-surface-variant mx-auto mt-1 flex h-[50px] w-7/8 content-center items-center gap-x-3 rounded-full px-2"
+                    "bg-surface-container-high text-on-surface-variant mx-auto mt-1 flex h-[50px] w-7/8 shrink-0 content-center items-center gap-x-3 rounded-full px-2"
                 }
             >
                 <div className={"pl-3"}>
-                    <Menu className={"text-on-surface"} />
+                    <Search className={"text-on-surface"} />
                 </div>
                 <div className={""}>Search for expense</div>
             </div>
 
-            <div className={"mt-6 flex w-full gap-x-3 overflow-x-auto px-2"}>
-                <Card className={"w-[150px] shrink-0 border-none shadow-none"}>
-                    <CardHeader className={"flex flex-col font-semibold"}>
-                        <div className={"text-tertiary"}>
+            <div
+                className={
+                    "mt-6 flex w-full shrink-0 gap-x-3 overflow-x-auto px-2"
+                }
+            >
+                <Card
+                    className={
+                        "bg-primary-container text-on-primary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                    }
+                >
+                    <CardHeader className={"flex flex-col font-medium"}>
+                        <div className={""}>
                             <Sunrise />
                         </div>
-                        <div>{"Today's"} Transactions</div>
+                        <div className={""}>Spent today</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>
+                        <div className={"font-bold"}>
                             {formatEuro(stats.today)}
                         </div>
                     </CardContent>
                 </Card>
-                <Card className={"w-[150px] shrink-0 border-none shadow-none"}>
-                    <CardHeader className={"flex flex-col font-semibold"}>
-                        <div className={"text-tertiary"}>
-                            <Calendar1 />
+                <Card
+                    className={
+                        "bg-tertiary-container text-on-tertiary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                    }
+                    onClick={() => {
+                        route("/reporting");
+                    }}
+                >
+                    <CardHeader className={"flex flex-col font-medium"}>
+                        <div className={""}>
+                            <Scroll />
                         </div>
-                        <div>Spent yesterday</div>
+                        <div>Spent this month</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>
-                            {formatEuro(stats.yesterday)}
+                        <div className={"font-bold"}>
+                            {formatEuro(stats.month)}
                         </div>
                     </CardContent>
                 </Card>
-                <Card className={"w-[150px] shrink-0 border-none shadow-none"}>
-                    <CardHeader className={"flex flex-col font-semibold"}>
-                        <div className={"text-tertiary"}>
-                            <Scroll />
+                <Card
+                    className={
+                        "font-poppins w-[150px] shrink-0 border-none shadow-none"
+                    }
+                >
+                    <CardHeader className={"flex flex-col"}>
+                        <div className={"text-on-surface"}>
+                            <Calendar1 />
                         </div>
-                        <div>This month</div>
+                        <div className={"font-medium"}>Spent yesterday</div>
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
-                        <div className={"text-tertiary"}>
-                            {formatEuro(stats.month)}
+                        <div className={"font-bold"}>
+                            {formatEuro(stats.yesterday)}
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            <main className={"my-6"}>
+            <main className={"my-6 grow"}>
                 <div className={"flex items-center justify-between px-4"}>
                     <h1
                         className={

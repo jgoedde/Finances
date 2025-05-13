@@ -12,8 +12,8 @@ import { removeExpense } from "@/components/expenses/slice.ts";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useLocation } from "wouter";
-import { cn } from "@/lib/utils.ts";
 import { ChevronRight } from "lucide-react";
+import { useRipple } from "@/hooks/use-ripple.ts";
 
 export const ExpenseListItem = ({
     transaction: { id, name, description, category, amountFormatted },
@@ -24,6 +24,7 @@ export const ExpenseListItem = ({
 
     const { key } = useEncryption();
     const [, route] = useLocation();
+    const rippleHandlers = useRipple();
 
     const supportingText = useMemo(() => {
         if (description?.trim() !== "") {
@@ -49,9 +50,11 @@ export const ExpenseListItem = ({
     return (
         <DropdownMenu>
             <div
-                className={cn(
-                    "flex w-full flex-row items-center gap-x-3 py-1.5 pl-4",
-                )}
+                className={
+                    "ripple-container flex w-full flex-row items-center gap-x-3 py-1.5 pl-4"
+                }
+                data-ripple-color={"bg-on-surface/10"}
+                {...rippleHandlers}
             >
                 <DynamicIcon
                     name={category.iconName as IconName}
