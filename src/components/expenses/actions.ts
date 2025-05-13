@@ -17,13 +17,21 @@ export const loadExpenses = createAsyncThunk(
             return [];
         }
 
-        const decrypted = CryptoJS.AES.decrypt(encryptedLs, key).toString(
-            CryptoJS.enc.Utf8,
-        );
-        const parsed = JSON.parse(decrypted) as Expense[];
-        parsed.sort((a, b) => b.date - a.date);
+        const decrypted = await new Promise<string>((resolve) => {
+            const worker = new Worker(
+                new URL("@/workers/decrypt-worker.js", import.meta.url),
+            );
+            worker.postMessage({ ciphertext: encryptedLs, key });
 
-        return parsed;
+            worker.onmessage = (e) => {
+                const { decrypted, error: errorMessage } = e.data;
+                if (errorMessage) throw new Error(errorMessage);
+                else resolve(decrypted);
+                worker.terminate();
+            };
+        });
+
+        return JSON.parse(decrypted) as Expense[];
     },
 );
 

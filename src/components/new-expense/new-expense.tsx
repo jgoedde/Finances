@@ -114,21 +114,21 @@ export const NewExpense: FC<Props> = ({
         <Popover>
             <div
                 className={
-                    "bg-surface flex h-[48px] w-dvw items-center gap-x-4 px-4 py-2"
+                    "bg-surface-container flex h-16 w-dvw items-center py-2"
                 }
             >
                 <button
                     onClick={() => {
                         router("/");
                     }}
-                    className={"text-on-surface cursor-pointer"}
+                    className={"text-on-surface cursor-pointer px-4"}
                 >
                     <ArrowLeft className={"size-6"} />
                 </button>
                 <div className={"text-lg"}>
                     {id === undefined ? "New expense" : "Update expense"}
                 </div>
-                <div className={"ml-auto flex items-center gap-x-3"}>
+                <div className={"ml-auto flex items-center gap-x-3 pr-4"}>
                     <PopoverTrigger asChild>
                         <button className={"cursor-pointer"}>
                             <CalendarFold className={"size-5"} />

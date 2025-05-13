@@ -9,11 +9,13 @@ import type { RootState } from "@/store.ts";
 export interface ExpensesState {
     isDecrypting: boolean;
     isEncrypting: boolean;
+    isInitial: boolean;
 }
 
 const initialState: ExpensesState = {
     isDecrypting: false,
     isEncrypting: false,
+    isInitial: true,
 };
 
 export const expensesAdapter = createEntityAdapter({
@@ -33,6 +35,7 @@ export const expensesSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(loadExpenses.pending, (state) => {
             state.isDecrypting = true;
+            state.isInitial = false;
         });
         builder.addCase(loadExpenses.fulfilled, (state, action) => {
             expensesAdapter.setAll(state, action.payload);

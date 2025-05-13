@@ -30,6 +30,7 @@ export const ExpensesPage = () => {
     const ripple = useRipple();
 
     const isDecrypting = useAppSelector((state) => state.expenses.isDecrypting);
+    const isInitial = useAppSelector((state) => state.expenses.isInitial);
     const expenses = useAppSelector(expensesSelectors.selectAll);
     const [, route] = useLocation();
 
@@ -87,18 +88,20 @@ export const ExpensesPage = () => {
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <div
                 className={
-                    "bg-surface-container-high text-on-surface-variant mx-auto mt-1 flex h-[50px] w-7/8 shrink-0 content-center items-center gap-x-3 rounded-full px-2"
+                    "bg-surface-container-high mx-auto mt-3 flex h-14 w-7/8 shrink-0 content-center items-center rounded-full"
                 }
             >
-                <div className={"pl-3"}>
-                    <Search className={"text-on-surface"} />
+                <div className={"px-4"}>
+                    <Search className={"text-on-surface size-6"} />
                 </div>
-                <div className={""}>Search for expense</div>
+                <div className={"text-on-surface-variant"}>
+                    Search for expense
+                </div>
             </div>
 
             <div
                 className={
-                    "mt-6 flex w-full shrink-0 gap-x-3 overflow-x-auto px-2"
+                    "mt-6 flex w-full shrink-0 gap-x-3 overflow-x-auto px-3"
                 }
             >
                 <Card
@@ -238,7 +241,7 @@ export const ExpensesPage = () => {
                 </div>
             </main>
 
-            <NewExpenseFAB />
+            {!isDecrypting && !isInitial && <NewExpenseFAB />}
         </div>
     );
 };

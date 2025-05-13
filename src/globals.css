@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
+@plugin "tailwindcss-motion";
 
 :root {
     --color-primary: #465d91;
@@ -42,18 +41,28 @@
     --color-surface-container-high: #e8e7ef;
     --color-surface-container-highest: #e2e2e9;
 
+    --color-custom-1: #37693d;
+    --color-on-custom-1: #ffffff;
+    --color-custom-1-container: #b8f0b8;
+    --color-on-custom-1-container: #1f5027;
+
+    --color-custom-2: #855318;
+    --color-on-custom-2: #ffffff;
+    --color-custom-2-container: #ffdcbd;
+    --color-on-custom-2-container: #693c00;
+
+    --color-custom-3: #006a62;
+    --color-on-custom-3: #ffffff;
+    --color-custom-3-container: #9df2e6;
+    --color-on-custom-3-container: #005049;
+
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --radius: 0.625rem;
 
@@ -64,6 +73,12 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: transparent;
     --sidebar-ring: oklch(0.708 0 0);
+
+    --chart-1: #ebbf5e;
+    --chart-2: #54d3de;
+    --chart-3: #2440a7;
+    --chart-4: #d9efb8;
+    --chart-5: #dfec9c;
 }
 
 .dark {
@@ -96,6 +111,21 @@
     --color-inverse-on-surface: #2f3036;
     --color-inverse-primary: #465d91;
 
+    --color-custom-1: #9dd49e;
+    --color-on-custom-1: #023912;
+    --color-custom-1-container: #1f5027;
+    --color-on-custom-1-container: #b8f0b8;
+
+    --color-custom-2: #fcb975;
+    --color-on-custom-2: #4a2900;
+    --color-custom-2-container: #693c00;
+    --color-on-custom-2-container: #ffdcbd;
+
+    --color-custom-3: #81d5ca;
+    --color-on-custom-3: #003732;
+    --color-custom-3-container: #005049;
+    --color-on-custom-3-container: #9df2e6;
+
     --color-surface-dim: #121318;
     --color-surface-bright: #38393e;
     --color-surface-container-lowest: #0c0e13;
@@ -106,16 +136,11 @@
 
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl:
-        0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
+    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 
     --sidebar: oklch(0.205 0 0);
@@ -126,6 +151,12 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: transparent;
     --sidebar-ring: oklch(0.556 0 0);
+
+    --chart-1: #2662d9;
+    --chart-2: #2eb88a;
+    --chart-3: #e88c30;
+    --chart-4: #af57db;
+    --chart-5: #e23670;
 }
 
 @theme inline {
@@ -179,12 +210,24 @@
     --color-surface-container-high: var(--color-surface-container-high);
     --color-surface-container-highest: var(--color-surface-container-highest);
 
+    --color-custom-1: var(--color-custom-1);
+    --color-on-custom-1: var(--color-on-custom-1);
+    --color-custom-1-container: var(--color-custom-1-container);
+    --color-on-custom-1-container: var(--color-on-custom-1-container);
+    --color-custom-2: var(--color-custom-2);
+    --color-on-custom-2: var(--color-on-custom-2);
+    --color-custom-2-container: var(--color-custom-2-container);
+    --color-on-custom-2-container: var(--color-on-custom-2-container);
+    --color-custom-3: var(--color-custom-3);
+    --color-on-custom-3: var(--color-on-custom-3);
+    --color-custom-3-container: var(--color-custom-3-container);
+    --color-on-custom-3-container: var(--color-on-custom-3-container);
+
     --font-sans: "Roboto", sans-serif;
     --font-poppins: "Poppins", sans-serif;
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-mono:
-        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-        "Liberation Mono", "Courier New", monospace;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
     --radius: 1.825rem;
 
     --radius-sm: calc(var(--radius) - 4px);
@@ -201,13 +244,19 @@
     --shadow-xl: var(--shadow-xl);
     --shadow-2xl: var(--shadow-2xl);
     --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: rgb(0,0,0,0);
+    --color-sidebar-border: rgb(0, 0, 0, 0);
     --color-sidebar-accent-foreground: var(--color-on-secondary-container);
     --color-sidebar-accent: var(--color-secondary-container);
     --color-sidebar-primary-foreground: blue;
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar: var(--sidebar);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
 }
 
 /* ripple effect styles */

@@ -1,6 +1,7 @@
 import { Banknote } from "lucide-react";
 import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { cn } from "@/lib/utils.ts";
 
 export function NewExpenseFAB() {
     const [, route] = useLocation();
@@ -8,9 +9,14 @@ export function NewExpenseFAB() {
 
     return (
         <button
-            className={
-                "ripple-container bg-primary-container text-on-primary-container sticky bottom-6 left-[87vw] size-16 shrink-0 -translate-x-1/2 rounded-2xl shadow-lg"
-            }
+            className={cn(
+                "ripple-container bg-primary-container text-on-primary-container size-16 shrink-0 -translate-x-1/5 rounded-2xl shadow-lg",
+            )}
+            style={{
+                position: "sticky",
+                left: "100%",
+                bottom: "calc(var(--spacing) * 4)",
+            }}
             data-ripple-color="bg-on-surface/10"
             {...ripple}
             onClick={(e) => {
