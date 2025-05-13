@@ -21,11 +21,13 @@ import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 import { useLocation } from "wouter";
+import { useRipple } from "@/hooks/use-ripple.ts";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
 
     const { key } = useEncryption();
+    const ripple = useRipple();
 
     const isDecrypting = useAppSelector((state) => state.expenses.isDecrypting);
     const expenses = useAppSelector(expensesSelectors.selectAll);
@@ -101,8 +103,10 @@ export const ExpensesPage = () => {
             >
                 <Card
                     className={
-                        "bg-primary-container text-on-primary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container bg-primary-container text-on-primary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
                     }
+                    data-ripple-color="bg-on-surface/10"
+                    {...ripple}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
                         <div className={""}>
@@ -118,9 +122,12 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "bg-tertiary-container text-on-tertiary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container bg-tertiary-container text-on-tertiary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
                     }
-                    onClick={() => {
+                    data-ripple-color="bg-on-surface/10"
+                    {...ripple}
+                    onClick={(e) => {
+                        ripple.onClick(e);
                         route("/reporting");
                     }}
                 >
@@ -138,8 +145,10 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container font-poppins w-[150px] shrink-0 border-none shadow-none"
                     }
+                    data-ripple-color="bg-on-surface/10"
+                    {...ripple}
                 >
                     <CardHeader className={"flex flex-col"}>
                         <div className={"text-on-surface"}>

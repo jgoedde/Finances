@@ -1,31 +1,26 @@
+import * as React from "react";
 import { useCallback, useRef } from "react";
 
 export const useRipple = () => {
     const holdTimeout = useRef<number | null>(null);
 
     const triggerRipple = useCallback((e: React.MouseEvent | TouchEvent) => {
-        const target = (e.target as HTMLElement)?.closest(
+        const target: HTMLElement | null = (e.target as HTMLElement)?.closest(
             ".ripple-container",
-        ) as HTMLElement | null;
+        );
         if (!target) return;
 
         const rect = target.getBoundingClientRect();
         const ripple = document.createElement("span");
 
-        const colorClass = target.dataset.rippleColor || "bg-white";
+        const colorClass = target.dataset.rippleColor ?? "bg-white";
         ripple.className = `ripple ${colorClass}`;
 
         const size = Math.max(rect.width, rect.height);
         ripple.style.width = ripple.style.height = `${size}px`;
 
-        const clientX =
-            "touches" in e
-                ? e.touches[0].clientX
-                : (e as React.MouseEvent).clientX;
-        const clientY =
-            "touches" in e
-                ? e.touches[0].clientY
-                : (e as React.MouseEvent).clientY;
+        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+        const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
         ripple.style.left = `${clientX - rect.left - size / 2}px`;
         ripple.style.top = `${clientY - rect.top - size / 2}px`;
@@ -45,7 +40,7 @@ export const useRipple = () => {
         (e: React.TouchEvent<HTMLElement>) => {
             holdTimeout.current = window.setTimeout(() => {
                 triggerRipple(e.nativeEvent);
-            }, 150); // short hold threshold
+            }, 150);
         },
         [triggerRipple],
     );
