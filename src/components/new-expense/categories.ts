@@ -8,41 +8,51 @@ export const categories: {
     {
         name: "Auswärts essen",
         icon: "utensils",
-        color: "#32CD32",
+        color: "#00202e",
     },
     {
         name: "Einkäufe",
         icon: "shopping-basket",
-        color: "#FFA500",
+        color: "#2c4875",
     },
     {
         name: "Geschenke",
         icon: "gift",
-        color: "#FF6347",
+        color: "#8a508f",
     },
     {
         name: "Gesundheit",
         icon: "heart",
-        color: "#32CD32",
+        color: "#bc5090",
     },
     {
         name: "Wohnung",
         icon: "sofa",
-        color: "#9370DB",
+        color: "#ff6361",
     },
     {
         name: "Kleidung",
         icon: "shirt",
-        color: "#00FA9A",
+        color: "#ff8531",
     },
     {
         name: "Freizeit",
         icon: "joystick",
-        color: "#800080",
+        color: "#ffa600",
     },
     {
         name: "Urlaub",
         icon: "plane",
-        color: "#87CEEB",
+        color: "#80d353",
+    },
+    {
+        name: "Büro/Arbeit",
+        icon: "lamp-desk",
+        color: "#609f3f",
+    },
+    {
+        name: "Snacks",
+        icon: "popcorn",
+        color: "#32CD32",
     },
 ];
