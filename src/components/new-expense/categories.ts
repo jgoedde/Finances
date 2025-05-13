@@ -53,6 +53,6 @@ export const categories: {
     {
         name: "Snacks",
         icon: "popcorn",
-        color: "#32CD32",
+        color: "#D8DC6A",
     },
 ];
