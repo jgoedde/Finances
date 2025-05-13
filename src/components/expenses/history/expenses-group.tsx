@@ -9,7 +9,7 @@ export const ExpensesGroup = ({
     expenses: Expense[];
 }) => {
     return (
-        <div className={"flex flex-col"}>
+        <div className={"flex flex-col bg-surface-container-low"}>
             <div className={"text-on-surface-variant mb-1 px-4"}>{date}</div>
             <div className={"flex flex-col gap-y-1.5"}>
                 {expenses.map((expense) => (
