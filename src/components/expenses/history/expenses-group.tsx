@@ -10,7 +10,7 @@ export const ExpensesGroup = ({
 }) => {
     return (
         <div className={"flex flex-col bg-surface-container-low py-3 rounded"}>
-            <div className={"text-on-surface-variant mb-1 px-4"}>{date}</div>
+            <div className={"text-on-surface-variant text-sm mb-1 px-4"}>{date}</div>
             <div className={"flex flex-col gap-y-1.5"}>
                 {expenses.map((expense) => (
                     <ExpenseListItem key={expense.id} transaction={expense} />
