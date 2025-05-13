@@ -198,7 +198,7 @@ export const ExpensesPage = () => {
                     )}
                 </div>
 
-                {expenses.length === 0 && !isDecrypting && (
+                {expenses.length === 0 && !isDecrypting && !isInitial && (
                     <div
                         className={
                             "text-on-surface-variant my-6 flex w-full flex-col items-center px-4"

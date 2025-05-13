@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { format, isSameMonth } from "date-fns";
 import { Button } from "@/components/ui/button.tsx";
+import { useRipple } from "@/hooks/use-ripple.ts";
 
 const chartConfig = {
     spent: {
@@ -27,6 +28,7 @@ export const Reporting = () => {
         year: new Date().getFullYear(),
         monthIndex: new Date().getMonth(),
     });
+    const ripple = useRipple();
 
     const expenses = useAppSelector(expensesSelectors.selectAll);
 
@@ -185,8 +187,10 @@ export const Reporting = () => {
                 <div className={"mt-5 flex flex-col gap-y-5"}>
                     <div
                         className={
-                            "bg-custom-1-container text-on-custom-1-container font-poppins motion-preset-slide-left motion-delay-200 motion-duration-300 flex w-4/5 min-w-4/5 flex-col rounded px-5 py-8"
+                            "ripple-container bg-custom-1-container text-on-custom-1-container font-poppins motion-preset-slide-left motion-delay-200 motion-duration-300 flex w-4/5 min-w-4/5 flex-col rounded px-5 py-8"
                         }
+                        data-ripple-color="bg-on-surface/10"
+                        {...ripple}
                     >
                         <div className={"text-[58px]/12 font-bold"}>
                             {formatEuro(totalSpent)}
@@ -201,8 +205,10 @@ export const Reporting = () => {
                     </div>
                     <div
                         className={
-                            "bg-custom-2-container text-on-custom-2-container font-poppins motion-preset-slide-right motion-delay-500 motion-duration-300 flex w-3/5 min-w-3/5 flex-col self-end rounded px-5 py-4"
+                            "ripple-container bg-custom-2-container text-on-custom-2-container font-poppins motion-preset-slide-right motion-delay-500 motion-duration-300 flex w-3/5 min-w-3/5 flex-col self-end rounded px-5 py-4"
                         }
+                        data-ripple-color="bg-on-surface/10"
+                        {...ripple}
                     >
                         <div className={"self-end text-[58px]/12 font-bold"}>
                             {expensesCount}
@@ -211,8 +217,10 @@ export const Reporting = () => {
                     </div>
                     <div
                         className={
-                            "bg-custom-3-container text-on-custom-3-container font-poppins motion-preset-slide-left motion-delay-800 motion-duration-300 flex w-4/5 min-w-4/5 flex-col rounded px-5 py-8"
+                            "ripple-container bg-custom-3-container text-on-custom-3-container font-poppins motion-preset-slide-left motion-delay-800 motion-duration-300 flex w-4/5 min-w-4/5 flex-col rounded px-5 py-8"
                         }
+                        data-ripple-color="bg-on-surface/10"
+                        {...ripple}
                     >
                         <div className={"text-[58px]/12 font-bold"}>
                             {formatEuro(12.4)}
