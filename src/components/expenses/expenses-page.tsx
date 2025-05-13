@@ -138,7 +138,7 @@ export const ExpensesPage = () => {
                 <div className={"flex items-center justify-between px-4"}>
                     <h1
                         className={
-                            "text-primary font-poppins mb-2 text-2xl font-bold"
+                            "text-primary font-poppins mb-4 text-2xl font-bold"
                         }
                     >
                         My expenses
