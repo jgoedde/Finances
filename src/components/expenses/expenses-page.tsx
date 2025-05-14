@@ -110,6 +110,10 @@ export const ExpensesPage = () => {
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
+                    onClick={(e) => {
+                        ripple.onClick(e);
+                        route("/reporting");
+                    }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
                         <div className={"text-on-surface-variant"}>
@@ -152,6 +156,10 @@ export const ExpensesPage = () => {
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
+                    onClick={(e) => {
+                        ripple.onClick(e);
+                        route("/reporting");
+                    }}
                 >
                     <CardHeader className={"flex flex-col"}>
                         <div className={"text-on-surface-variant"}>
