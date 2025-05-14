@@ -112,7 +112,7 @@ export const ExpensesPage = () => {
                     {...ripple}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
-                        <div className={""}>
+                        <div className={"text-on-surface-variant"}>
                             <Sunrise />
                         </div>
                         <div className={""}>Spent today</div>
@@ -135,7 +135,7 @@ export const ExpensesPage = () => {
                     }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
-                        <div className={""}>
+                        <div className={"text-on-surface-variant"}>
                             <Scroll />
                         </div>
                         <div>Spent this month</div>
@@ -154,7 +154,7 @@ export const ExpensesPage = () => {
                     {...ripple}
                 >
                     <CardHeader className={"flex flex-col"}>
-                        <div className={"text-on-surface"}>
+                        <div className={"text-on-surface-variant"}>
                             <Calendar1 />
                         </div>
                         <div className={"font-medium"}>Spent yesterday</div>
