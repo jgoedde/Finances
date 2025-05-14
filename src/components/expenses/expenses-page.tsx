@@ -5,7 +5,6 @@ import {
     Scroll,
     Search,
     Sunrise,
-    Upload,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
@@ -14,7 +13,6 @@ import { type Expense } from "@/components/use-expenses.ts";
 import { useEffect, useMemo } from "react";
 import { isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { useFileDialog } from "@mantine/hooks";
 import { useAppDispatch, useAppSelector } from "@/hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
@@ -22,6 +20,7 @@ import { useEncryption } from "@/components/use-encryption.ts";
 import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { readLocalStorageValue } from "@mantine/hooks";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
@@ -63,26 +62,6 @@ export const ExpensesPage = () => {
     );
 
     const stats = useExpensesStats(expenses);
-
-    const { open, files } = useFileDialog({ accept: ".txt", multiple: false });
-
-    useEffect(() => {
-        const file = files?.[0];
-
-        if (!file) {
-            return;
-        }
-
-        async function readTxt() {
-            if (!key) {
-                throw new Error("No encryption key found");
-            }
-            localStorage.setItem("expenses", await file!.text());
-            void dispatch(loadExpenses({ key }));
-        }
-
-        void readTxt();
-    }, [dispatch, files, key]);
 
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
@@ -189,7 +168,12 @@ export const ExpensesPage = () => {
                         <button
                             onClick={() => {
                                 const blob = new Blob(
-                                    [localStorage.getItem("expenses") ?? ""],
+                                    [
+                                        readLocalStorageValue({
+                                            key: "expenses",
+                                            defaultValue: "",
+                                        }),
+                                    ],
                                     {
                                         type: "application/text",
                                     },
@@ -215,13 +199,6 @@ export const ExpensesPage = () => {
                     >
                         <Drama className={"size-24"} />
                         <div className={"mt-2"}>No expenses tracked yet</div>
-                        <button
-                            onClick={() => open()}
-                            className={"text-primary mt-1 flex gap-x-2 text-sm"}
-                        >
-                            <Upload className={"size-4"} />
-                            Import database
-                        </button>
                     </div>
                 )}
 

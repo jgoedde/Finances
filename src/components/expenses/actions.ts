@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { Expense } from "@/components/use-expenses.ts";
 import type { RootState } from "@/store.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { readLocalStorageValue } from "@mantine/hooks";
 
 /**
  * Loads encrypted expenses from local storage, decrypts them using the provided key,
@@ -10,7 +11,10 @@ import { expensesSelectors } from "@/components/expenses/slice.ts";
 export const loadExpenses = createAsyncThunk(
     "expenses/load",
     async ({ key }: { key: string }) => {
-        const encryptedLs = localStorage.getItem("expenses");
+        const encryptedLs = readLocalStorageValue({
+            key: "expenses",
+            defaultValue: "",
+        });
 
         if (!encryptedLs) {
             return [];
