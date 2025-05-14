@@ -113,7 +113,7 @@ export const ExpensesPage = () => {
                     onClick={(e) => {
                         ripple.onClick(e);
 
-                        setTimeout(()=>route("/reporting"),200)
+                        setTimeout(()=>route("/reporting"),150)
                     }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
@@ -136,7 +136,7 @@ export const ExpensesPage = () => {
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
-                        setTimeout(()=>route("/reporting"),200)
+                        setTimeout(()=>route("/reporting"),150)
                     }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
@@ -159,7 +159,7 @@ export const ExpensesPage = () => {
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
-                        setTimeout(()=>route("/reporting"),200)
+                        setTimeout(()=>route("/reporting"),150)
                     }}
                 >
                     <CardHeader className={"flex flex-col"}>
