@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarFold, Plus, Save } from "lucide-react";
+import { ArrowLeft, Check, ClockFading, Trash } from "lucide-react";
 import { type FC, useCallback, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
@@ -11,16 +11,27 @@ import {
 } from "@/components/ui/popover.tsx";
 import { cn } from "@/lib/utils.ts";
 import { Calendar } from "@/components/ui/calendar.tsx";
-import { useLocation } from "wouter";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { useAppDispatch } from "@/hooks.ts";
-import { upsertExpense } from "@/components/expenses/slice.ts";
+import { removeExpense, upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { categories } from "@/components/new-expense/categories.ts";
 import type { Expense } from "@/components/use-expenses.ts";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog.tsx";
+import { useRipple } from "@/hooks/use-ripple.ts";
 
 type Props = {
     description?: string;
@@ -31,7 +42,7 @@ type Props = {
     name?: string;
 };
 
-export const NewExpense: FC<Props> = ({
+export const ExpenseDetail: FC<Props> = ({
     date,
     description,
     category,
@@ -41,8 +52,7 @@ export const NewExpense: FC<Props> = ({
 }) => {
     const dispatch = useAppDispatch();
     const { key } = useEncryption();
-
-    const [, router] = useLocation();
+    const ripple = useRipple();
 
     const amountInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,7 +67,7 @@ export const NewExpense: FC<Props> = ({
         amount?.toFixed(2) ?? "",
     );
 
-    const handleOnValueChange: CurrencyInputProps["onValueChange"] = (
+    const onAmountInputChange: CurrencyInputProps["onValueChange"] = (
         value: string | undefined,
     ) => {
         setAmountStr(value);
@@ -97,7 +107,7 @@ export const NewExpense: FC<Props> = ({
 
         void dispatch(saveToLocalStorage({ encryptionKey: key }));
 
-        router("/");
+        history.back();
     }, [
         amountStr,
         dateLocal,
@@ -106,12 +116,24 @@ export const NewExpense: FC<Props> = ({
         expenseLocal,
         id,
         key,
-        router,
         selectedCategoryIconNameLocal,
     ]);
 
+    const onDeleteConfirmButtonClick = useCallback(() => {
+        if (!key || !id) {
+            return;
+        }
+
+        dispatch(removeExpense(id));
+        void dispatch(
+            saveToLocalStorage({
+                encryptionKey: key,
+            }),
+        );
+    }, [key, dispatch, id]);
+
     return (
-        <Popover>
+        <>
             <div
                 className={
                     "bg-surface-container flex h-16 w-dvw items-center py-2"
@@ -119,7 +141,7 @@ export const NewExpense: FC<Props> = ({
             >
                 <button
                     onClick={() => {
-                        router("/");
+                        history.back();
                     }}
                     className={"text-on-surface cursor-pointer px-4"}
                 >
@@ -128,29 +150,71 @@ export const NewExpense: FC<Props> = ({
                 <div className={"text-lg"}>
                     {id === undefined ? "New expense" : "Update expense"}
                 </div>
-                <div className={"ml-auto flex items-center gap-x-3 pr-4"}>
-                    <PopoverTrigger asChild>
-                        <button className={"cursor-pointer"}>
-                            <CalendarFold className={"size-5"} />
-                        </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto border-none p-0 shadow-lg">
-                        <Calendar
-                            weekStartsOn={1}
-                            mode="single"
-                            selected={dateLocal}
-                            onSelect={(a) => setDateLocal(a ?? new Date())}
-                            initialFocus
-                        />
-                    </PopoverContent>
+                <div className={"ml-auto flex items-center gap-x-4 pr-4"}>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <button className={"cursor-pointer"}>
+                                <ClockFading className={"size-5"} />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto border-none p-0 shadow-lg">
+                            <Calendar
+                                weekStartsOn={1}
+                                mode="single"
+                                selected={dateLocal}
+                                onSelect={(a) => setDateLocal(a ?? new Date())}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
+
+                    {id !== undefined && (
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <button className={"cursor-pointer"}>
+                                    <Trash className={"size-5"} />
+                                </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will
+                                        remove this expense from your history.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel
+                                        className={"text-primary"}
+                                    >
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={onDeleteConfirmButtonClick}
+                                        className={"text-primary"}
+                                    >
+                                        Yes
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
 
                     <button
-                        className={"cursor-pointer"}
-                        onClick={() => {
-                            onSubmit();
+                        className={
+                            "ripple-container bg-primary text-on-primary cursor-pointer rounded-full px-3 py-1"
+                        }
+                        data-ripple-color={"bg-on-primary/20"}
+                        {...ripple}
+                        onClick={(e) => {
+                            ripple.onClick(e);
+
+                            setTimeout(() => onSubmit(), 150);
                         }}
                     >
-                        {id === undefined ? <Plus /> : <Save />}
+                        <Check className={"size"} />
                     </button>
                 </div>
             </div>
@@ -167,7 +231,7 @@ export const NewExpense: FC<Props> = ({
                             backgroundColor: category.color,
                         }}
                         className={
-                            "flex aspect-square size-1/3 flex-col text-left transition-opacity duration-150"
+                            "flex aspect-square size-1/4 flex-col text-left transition-opacity duration-150"
                         }
                         onClick={() => {
                             if (
@@ -184,7 +248,7 @@ export const NewExpense: FC<Props> = ({
                     >
                         <div
                             className={cn(
-                                "font-poppins line-clamp-2 px-2 text-2xl font-bold break-all",
+                                "font-poppins line-clamp-2 px-2 text-xl font-bold break-all",
                                 selectedCategoryIconNameLocal === category.icon
                                     ? "text-white"
                                     : "text-gray-100",
@@ -194,7 +258,7 @@ export const NewExpense: FC<Props> = ({
                         </div>
                         <div
                             className={cn(
-                                "mt-auto self-end justify-self-end p-2 transition-colors duration-75",
+                                "mt-auto self-end justify-self-end p-2 pt-0 transition-colors duration-75",
                                 selectedCategoryIconNameLocal === category.icon
                                     ? "text-white"
                                     : "text-inverse-primary",
@@ -202,7 +266,7 @@ export const NewExpense: FC<Props> = ({
                         >
                             <DynamicIcon
                                 name={category.icon}
-                                className={"size-14"}
+                                className={"size-10"}
                             />
                         </div>
                     </button>
@@ -231,7 +295,7 @@ export const NewExpense: FC<Props> = ({
                             name="amount"
                             intlConfig={{ locale: "de-DE", currency: "EUR" }}
                             className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
-                            onValueChange={handleOnValueChange}
+                            onValueChange={onAmountInputChange}
                             decimalsLimit={2}
                             value={amountStr}
                             step={1}
@@ -285,6 +349,6 @@ export const NewExpense: FC<Props> = ({
                     </div>
                 </form>
             </div>
-        </Popover>
+        </>
     );
 };

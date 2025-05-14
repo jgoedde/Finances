@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { useAppSelector } from "@/hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { Redirect } from "wouter";
-import { NewExpense } from "@/components/new-expense/new-expense.tsx";
+import { ExpenseDetail } from "@/components/new-expense/expense-detail.tsx";
 
 export const EditExpense: FC<{ id: string }> = ({ id }) => {
     const expense = useAppSelector((state) =>
@@ -14,7 +14,7 @@ export const EditExpense: FC<{ id: string }> = ({ id }) => {
     }
 
     return (
-        <NewExpense
+        <ExpenseDetail
             id={id}
             name={expense.name}
             amount={expense.amount}

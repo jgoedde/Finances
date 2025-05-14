@@ -106,14 +106,14 @@ export const ExpensesPage = () => {
             >
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
 
-                        setTimeout(()=>route("/reporting"),150)
+                        setTimeout(() => route("/reporting"), 150);
                     }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
@@ -130,13 +130,13 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
-                        setTimeout(()=>route("/reporting"),150)
+                        setTimeout(() => route("/reporting"), 150);
                     }}
                 >
                     <CardHeader className={"flex flex-col font-medium"}>
@@ -153,13 +153,13 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
-                        setTimeout(()=>route("/reporting"),150)
+                        setTimeout(() => route("/reporting"), 150);
                     }}
                 >
                     <CardHeader className={"flex flex-col"}>

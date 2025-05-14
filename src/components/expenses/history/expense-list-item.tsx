@@ -1,16 +1,6 @@
 import type { Expense } from "@/components/use-expenses.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { useCallback, useMemo } from "react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
-import { useAppDispatch } from "@/hooks.ts";
-import { removeExpense } from "@/components/expenses/slice.ts";
-import { saveToLocalStorage } from "@/components/expenses/actions.ts";
-import { useEncryption } from "@/components/use-encryption.ts";
 import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
@@ -20,9 +10,6 @@ export const ExpenseListItem = ({
 }: {
     transaction: Expense;
 }) => {
-    const dispatch = useAppDispatch();
-
-    const { key } = useEncryption();
     const [, route] = useLocation();
     const rippleHandlers = useRipple();
 
@@ -34,72 +21,49 @@ export const ExpenseListItem = ({
         }
     }, [category.name, description]);
 
-    const onDeleteDropdownMenuItemClick = useCallback(() => {
-        if (!key) {
-            return;
-        }
-
-        dispatch(removeExpense(id));
-        void dispatch(saveToLocalStorage({ encryptionKey: key }));
-    }, [dispatch, id, key]);
-
-    const onEditDropdownMenuItemClick = useCallback(() => {
-        route(`/edit/${id}`);
+    const onEditButtonClick = useCallback(() => {
+        setTimeout(() => {
+            route(`/edit/${id}`);
+        }, 150);
     }, [route, id]);
 
     return (
-        <DropdownMenu>
-            <div
-                className={
-                    "ripple-container flex w-full flex-row items-center gap-x-3 py-1.5 pl-4"
-                }
-                data-ripple-color={"bg-on-surface/10"}
-                {...rippleHandlers}
-            >
+        <div
+            className={
+                "ripple-container flex w-full flex-row items-center gap-x-3 py-1.5 pl-4"
+            }
+            data-ripple-color={"bg-on-surface/10"}
+            {...rippleHandlers}
+        >
+            <div className={"text-on-surface-variant min-w-8 shrink-0"}>
                 <DynamicIcon
                     name={category.iconName as IconName}
-                    className={"text-on-surface-variant size-8 shrink-0"}
+                    className={"size-8"}
                 />
-                <div className={"flex flex-1 flex-col"}>
-                    <div className={"text-on-surface font-medium"}>
-                        <DropdownMenuTrigger asChild>
-                            <span
-                                className={"inline-flex items-center gap-x-1"}
-                            >
-                                {name}{" "}
-                                <ChevronRight
-                                    className={"text-outline size-4"}
-                                />
-                            </span>
-                        </DropdownMenuTrigger>
-                    </div>
-                    <div
-                        className={
-                            "text-on-surface-variant line-clamp-2 text-sm/5"
-                        }
+            </div>
+            <div className={"flex flex-1 flex-col"}>
+                <div className={"text-on-surface font-medium"}>
+                    <button
+                        onClick={() => onEditButtonClick()}
+                        className={"inline-flex items-center gap-x-1"}
                     >
-                        {supportingText}
-                    </div>
+                        {name}{" "}
+                        <ChevronRight className={"text-outline size-4"} />
+                    </button>
                 </div>
                 <div
-                    className={
-                        "text-on-surface-variant flex items-center gap-x-2 justify-self-end pr-4"
-                    }
+                    className={"text-on-surface-variant line-clamp-2 text-sm/5"}
                 >
-                    <div>{amountFormatted}</div>
+                    {supportingText}
                 </div>
             </div>
-            <DropdownMenuContent>
-                <DropdownMenuItem onClick={onEditDropdownMenuItemClick}>
-                    Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    variant={"destructive"}
-                    onClick={onDeleteDropdownMenuItemClick}
-                >
-                    Delete
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+            <div
+                className={
+                    "text-on-surface-variant flex items-center gap-x-2 justify-self-end pr-4"
+                }
+            >
+                <div>{amountFormatted}</div>
+            </div>
+        </div>
     );
 };

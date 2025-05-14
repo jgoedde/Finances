@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import CryptoJS from "crypto-js";
 import type { Expense } from "@/components/use-expenses.ts";
 import type { RootState } from "@/store.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
@@ -40,15 +39,27 @@ export const loadExpenses = createAsyncThunk(
  */
 export const saveToLocalStorage = createAsyncThunk(
     "expenses/save",
-    ({ encryptionKey }: { encryptionKey: string }, thunkAPI) => {
+    async ({ encryptionKey }: { encryptionKey: string }, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
 
         const expenses = expensesSelectors.selectAll(state);
 
-        const encrypted = CryptoJS.AES.encrypt(
-            JSON.stringify(expenses),
-            encryptionKey,
-        ).toString();
+        const encrypted = await new Promise<string>((resolve) => {
+            const worker = new Worker(
+                new URL("@/workers/encrypt-worker.js", import.meta.url),
+            );
+            worker.postMessage({
+                plaintext: JSON.stringify(expenses),
+                key: encryptionKey,
+            });
+
+            worker.onmessage = (e) => {
+                const { encrypted, error: errorMessage } = e.data;
+                if (errorMessage) throw new Error(errorMessage);
+                else resolve(encrypted);
+                worker.terminate();
+            };
+        });
 
         localStorage.setItem("expenses", encrypted);
     },
