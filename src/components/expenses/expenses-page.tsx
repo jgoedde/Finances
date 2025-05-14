@@ -106,7 +106,7 @@ export const ExpensesPage = () => {
             >
                 <Card
                     className={
-                        "ripple-container bg-primary-container text-on-primary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
@@ -125,7 +125,7 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "ripple-container bg-tertiary-container text-on-tertiary-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
@@ -148,7 +148,7 @@ export const ExpensesPage = () => {
                 </Card>
                 <Card
                     className={
-                        "ripple-container font-poppins w-[150px] shrink-0 border-none shadow-none"
+                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 border-none shadow-none rounded-md"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
