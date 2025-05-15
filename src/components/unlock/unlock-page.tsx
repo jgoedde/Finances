@@ -21,7 +21,9 @@ export function UnlockPage() {
     };
 
     return (
-        <div>
+        <div className={"relative h-dvh overflow-x-scroll"}>
+            <div className="absolute inset-0 scale-110 bg-[url(/unlock-bg.jpg)] bg-cover bg-center blur-xs"></div>
+
             {comp()}
         </div>
     );
