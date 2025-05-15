@@ -12,7 +12,7 @@ export function convertHexToTonal(inputColorHex: string) {
     const containerLight = hexFromArgb(tonalPalette.tone(90));
     const onContainerLight = hexFromArgb(tonalPalette.tone(40));
 
-    const containerDark = hexFromArgb(tonalPalette.tone(30));
+    const containerDark = hexFromArgb(tonalPalette.tone(20));
     const onContainerDark = hexFromArgb(tonalPalette.tone(90));
 
     return {
