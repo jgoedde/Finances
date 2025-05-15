@@ -1,4 +1,3 @@
-import type { Expense } from "@/components/use-expenses.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { useCallback, useMemo } from "react";
 import { useLocation } from "wouter";
@@ -6,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useTheme } from "@/components/theme-provider.tsx";
+import type { Expense } from "@/components/expense.ts";
 
 export const ExpenseListItem = ({
     transaction: { id, name, description, category, amountFormatted },

@@ -1,10 +1,10 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import type { Expense } from "@/components/use-expenses.ts";
 import {
     loadExpenses,
     saveToLocalStorage,
 } from "@/components/expenses/actions.ts";
 import type { RootState } from "@/store.ts";
+import type { Expense } from "@/components/expense.ts";
 
 export interface ExpensesState {
     isDecrypting: boolean;

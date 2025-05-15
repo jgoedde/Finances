@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { Expense } from "@/components/use-expenses.ts";
 import type { RootState } from "@/store.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { readLocalStorageValue } from "@mantine/hooks";
+import type { Expense } from "@/components/expense.ts";
 
 /**
  * Loads encrypted expenses from local storage, decrypts them using the provided key,

@@ -21,7 +21,6 @@ import {
     categories,
     type Category,
 } from "@/components/new-expense/categories.ts";
-import type { Expense } from "@/components/use-expenses.ts";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,6 +34,7 @@ import {
 } from "@/components/ui/alert-dialog.tsx";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { CategoryTile } from "@/components/new-expense/category-tile.tsx";
+import type { Expense } from "@/components/expense.ts";
 
 type Props = {
     description?: string;

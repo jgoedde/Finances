@@ -1,26 +1,12 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
-import {
-    type ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart.tsx";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
-import { useAppSelector } from "@/hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { useMemo, useState } from "react";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { format, isSameMonth } from "date-fns";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button.tsx";
 import { useRipple } from "@/hooks/use-ripple.ts";
-
-const chartConfig = {
-    spent: {
-        label: "Spent",
-        color: "var(--color-primary)",
-    },
-} satisfies ChartConfig;
+import { ExpenseRadarChart } from "@/components/reporting/expense-radar-chart.tsx";
+import { useExpenseData } from "@/components/reporting/use-expense-data.ts";
 
 export const Reporting = () => {
     const [, router] = useLocation();
@@ -28,9 +14,8 @@ export const Reporting = () => {
         year: new Date().getFullYear(),
         monthIndex: new Date().getMonth(),
     });
-    const ripple = useRipple();
 
-    const expenses = useAppSelector(expensesSelectors.selectAll);
+    const ripple = useRipple();
 
     const past12Months = useMemo(
         () =>
@@ -46,59 +31,7 @@ export const Reporting = () => {
         [],
     );
 
-    const categories = useMemo(() => {
-        const categories = new Set<string>();
-
-        expenses
-            .filter((expense) =>
-                isSameMonth(
-                    new Date(month.year, month.monthIndex, 1),
-                    new Date(expense.date),
-                ),
-            )
-            .forEach((expense) => {
-                if (expense.category) {
-                    categories.add(expense.category.name);
-                }
-            });
-        return Array.from(categories);
-    }, [expenses, month.monthIndex, month.year]);
-
-    const chartData = useMemo(
-        () =>
-            categories.map((category) => {
-                const total = expenses
-                    .filter((expense) => expense.category?.name === category)
-                    .filter((expense) =>
-                        isSameMonth(
-                            new Date(month.year, month.monthIndex, 1),
-                            new Date(expense.date),
-                        ),
-                    )
-                    .reduce((acc, expense) => acc + expense.amount, 0);
-
-                return {
-                    category: category,
-                    spent: total,
-                };
-            }),
-        [categories, expenses, month.monthIndex, month.year],
-    );
-
-    const totalSpent = useMemo(() => {
-        return chartData.reduce((acc, chart) => {
-            return acc + chart.spent;
-        }, 0);
-    }, [chartData]);
-
-    const expensesCount = useMemo(() => {
-        return expenses.filter((expense) =>
-            isSameMonth(
-                new Date(month.year, month.monthIndex, 1),
-                new Date(expense.date),
-            ),
-        ).length;
-    }, [expenses, month.monthIndex, month.year]);
+    const { chartData, expensesCount, totalSpent } = useExpenseData({ month });
 
     return (
         <>
@@ -139,51 +72,7 @@ export const Reporting = () => {
                         </Button>
                     ))}
                 </div>
-                <ChartContainer
-                    config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px] w-full"
-                >
-                    <RadarChart data={chartData}>
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent />}
-                        />
-                        <PolarAngleAxis
-                            dataKey="category"
-                            tick={({ x, y, textAnchor, index, ...props }) => {
-                                const data = chartData[index];
-                                return (
-                                    <text
-                                        x={x}
-                                        y={index === 0 ? y - 10 : y}
-                                        textAnchor={textAnchor}
-                                        fontSize={13}
-                                        fontWeight={500}
-                                        {...props}
-                                    >
-                                        <tspan className={"fill-primary"}>
-                                            {formatEuro(data.spent)}
-                                        </tspan>
-                                        <tspan
-                                            x={x}
-                                            dy={"1rem"}
-                                            fontSize={12}
-                                            className={"fill-outline"}
-                                        >
-                                            {data.category}
-                                        </tspan>
-                                    </text>
-                                );
-                            }}
-                        />
-                        <PolarGrid />
-                        <Radar
-                            dataKey="spent"
-                            fill="var(--color-primary)"
-                            fillOpacity={0.6}
-                        />
-                    </RadarChart>
-                </ChartContainer>
+                <ExpenseRadarChart chartData={chartData} />
                 <div className={"mt-5 flex flex-col gap-y-5"}>
                     <div
                         className={

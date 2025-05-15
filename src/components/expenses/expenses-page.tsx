@@ -9,7 +9,6 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { type Expense } from "@/components/use-expenses.ts";
 import { useEffect, useMemo } from "react";
 import { differenceInYears, isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
@@ -21,6 +20,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { readLocalStorageValue } from "@mantine/hooks";
+import type { Expense } from "@/components/expense.ts";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();

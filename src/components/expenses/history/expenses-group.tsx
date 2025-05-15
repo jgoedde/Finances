@@ -1,5 +1,6 @@
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
-import type { Expense } from "@/components/use-expenses.ts";
+
+import type { Expense } from "@/components/expense.ts";
 
 export const ExpensesGroup = ({
     date,
