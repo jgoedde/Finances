@@ -1,10 +1,12 @@
 import type { IconName } from "lucide-react/dynamic";
 
-export const categories: {
+export type Category = {
     name: string;
     icon: IconName;
     color: string;
-}[] = [
+};
+
+export const categories: Category[] = [
     {
         name: "Auswärts essen",
         icon: "utensils",

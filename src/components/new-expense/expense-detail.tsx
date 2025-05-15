@@ -9,16 +9,18 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover.tsx";
-import { cn } from "@/lib/utils.ts";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { type IconName } from "lucide-react/dynamic";
 import { useAppDispatch } from "@/hooks.ts";
 import { removeExpense, upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { categories } from "@/components/new-expense/categories.ts";
+import {
+    categories,
+    type Category,
+} from "@/components/new-expense/categories.ts";
 import type { Expense } from "@/components/use-expenses.ts";
 import {
     AlertDialog,
@@ -32,6 +34,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog.tsx";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { CategoryTile } from "@/components/new-expense/category-tile.tsx";
 
 type Props = {
     description?: string;
@@ -51,6 +54,7 @@ export const ExpenseDetail: FC<Props> = ({
     name,
 }) => {
     const dispatch = useAppDispatch();
+
     const { key } = useEncryption();
     const ripple = useRipple();
 
@@ -131,6 +135,20 @@ export const ExpenseDetail: FC<Props> = ({
             }),
         );
     }, [key, dispatch, id]);
+
+    const onCategoryTileClick = useCallback(
+        (c: Category) => {
+            if (selectedCategoryIconNameLocal === c.icon) {
+                setSelectedCategoryIconNameLocal(undefined);
+            } else {
+                setSelectedCategoryIconNameLocal(c.icon);
+                if (amountStr?.trim() === "") {
+                    amountInputRef?.current?.focus();
+                }
+            }
+        },
+        [amountStr, selectedCategoryIconNameLocal],
+    );
 
     return (
         <>
@@ -218,59 +236,19 @@ export const ExpenseDetail: FC<Props> = ({
                     </button>
                 </div>
             </div>
-            <div className={"container flex max-w-md flex-wrap"}>
-                {categories.map((category) => (
-                    <button
-                        key={category.name}
-                        style={{
-                            ...(selectedCategoryIconNameLocal !==
-                                category.icon &&
-                                selectedCategoryIconNameLocal !== undefined && {
-                                    opacity: 0.5,
-                                }),
-                            backgroundColor: category.color,
-                        }}
-                        className={
-                            "flex aspect-square size-1/4 flex-col text-left transition-opacity duration-150"
-                        }
-                        onClick={() => {
-                            if (
-                                selectedCategoryIconNameLocal === category.icon
-                            ) {
-                                setSelectedCategoryIconNameLocal(undefined);
-                            } else {
-                                setSelectedCategoryIconNameLocal(category.icon);
-                                if (amountStr?.trim() === "") {
-                                    amountInputRef?.current?.focus();
-                                }
+            <div className={"container flex max-w-md flex-col"}>
+                <div className={"flex flex-wrap"}>
+                    {categories.map((c) => (
+                        <CategoryTile
+                            key={c.name}
+                            selectedCategoryIconNameLocal={
+                                selectedCategoryIconNameLocal
                             }
-                        }}
-                    >
-                        <div
-                            className={cn(
-                                "font-poppins line-clamp-2 px-2 text-xl font-bold break-all",
-                                selectedCategoryIconNameLocal === category.icon
-                                    ? "text-white"
-                                    : "text-gray-100",
-                            )}
-                        >
-                            {category.name}
-                        </div>
-                        <div
-                            className={cn(
-                                "mt-auto self-end justify-self-end p-2 pt-0 transition-colors duration-75",
-                                selectedCategoryIconNameLocal === category.icon
-                                    ? "text-white"
-                                    : "text-inverse-primary",
-                            )}
-                        >
-                            <DynamicIcon
-                                name={category.icon}
-                                className={"size-10"}
-                            />
-                        </div>
-                    </button>
-                ))}
+                            category={c}
+                            onClick={() => onCategoryTileClick(c)}
+                        />
+                    ))}
+                </div>
 
                 <form
                     className={
