@@ -72,7 +72,7 @@ export const SetupWizard = () => {
     const onContinueButtonClick = useCallback(async () => {
         if (step === "home") {
             setStep("empty");
-        } else if (step === "import" && isValidDatabase) {
+        } else if ((step === "import" && isValidDatabase) || step === "empty") {
             setKey(keyLocal);
             localStorage.setItem("expenses", encryptedDatabase as string);
 
@@ -84,7 +84,6 @@ export const SetupWizard = () => {
             route("/");
         } else if (step === "import" && !isValidDatabase) {
             await testDatabase();
-        } else if (step === "empty") {
         }
     }, [
         dispatch,
