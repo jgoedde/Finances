@@ -9,8 +9,12 @@ export const ExpensesGroup = ({
     expenses: Expense[];
 }) => {
     return (
-        <div className={"bg-surface-container-low flex flex-col rounded py-3"}>
-            <div className={"text-on-surface-variant mb-1 px-4 text-sm"}>
+        <div className={"flex flex-col py-1"}>
+            <div
+                className={
+                    "text-on-surface-variant/80 mb-1 px-4 text-sm font-medium"
+                }
+            >
                 {date}
             </div>
             <div className={"flex flex-col gap-y-1.5"}>

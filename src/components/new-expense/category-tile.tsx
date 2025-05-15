@@ -46,7 +46,7 @@ export const CategoryTile: FC<Props> = ({
             className={
                 "ripple-container flex aspect-square size-1/4 flex-col border-none text-left transition-opacity duration-150"
             }
-            data-ripple-color={"bg-on-surface/40"}
+            data-ripple-color={"bg-on-surface/20"}
             {...ripple}
             onClick={(e) => {
                 ripple.onClick(e);

@@ -4,6 +4,8 @@ import { useCallback, useMemo } from "react";
 import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { convertHexToTonal } from "@/lib/color-utils.ts";
+import { useTheme } from "@/components/theme-provider.tsx";
 
 export const ExpenseListItem = ({
     transaction: { id, name, description, category, amountFormatted },
@@ -12,6 +14,7 @@ export const ExpenseListItem = ({
 }) => {
     const [, route] = useLocation();
     const rippleHandlers = useRipple();
+    const { theme } = useTheme();
 
     const supportingText = useMemo(() => {
         if (description?.trim() !== "") {
@@ -27,18 +30,45 @@ export const ExpenseListItem = ({
         }, 150);
     }, [route, id]);
 
+    const tonal = useMemo(() => {
+        return convertHexToTonal(category.color);
+    }, [category.color]);
+
+    const backgroundColor = useMemo(() => {
+        return theme === "dark" ? tonal.dark.container : tonal.light.container;
+    }, [theme, tonal.dark.container, tonal.light.container]);
+
+    const textColor = useMemo(() => {
+        return theme === "dark"
+            ? tonal.dark.onContainer
+            : tonal.light.onContainer;
+    }, [theme, tonal.dark.onContainer, tonal.light.onContainer]);
+
     return (
         <div
             className={
-                "ripple-container flex w-full flex-row items-center gap-x-3 py-1.5 pl-4"
+                "ripple-container mx-auto flex w-full flex-row items-center gap-x-3 rounded-md px-2 py-1.5"
             }
+            style={{
+                width: "calc(100% - calc(var(--spacing) * 4))",
+            }}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
         >
-            <div className={"text-on-surface-variant min-w-8 shrink-0"}>
+            <div
+                className={
+                    "text-on-surface-variant flex size-10 min-w-8 shrink-0 items-center justify-center rounded-full"
+                }
+                style={{
+                    backgroundColor,
+                }}
+            >
                 <DynamicIcon
                     name={category.iconName as IconName}
-                    className={"size-8"}
+                    className={"size-7"}
+                    style={{
+                        color: textColor,
+                    }}
                 />
             </div>
             <div className={"flex flex-1 flex-col"}>
@@ -59,7 +89,7 @@ export const ExpenseListItem = ({
             </div>
             <div
                 className={
-                    "text-on-surface-variant flex items-center gap-x-2 justify-self-end pr-4"
+                    "flex items-center gap-x-2 justify-self-end font-medium"
                 }
             >
                 <div>{amountFormatted}</div>
