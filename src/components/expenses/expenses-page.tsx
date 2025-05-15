@@ -48,7 +48,7 @@ export const ExpensesPage = () => {
                 if (isToday(expense.date)) {
                     dateFormatted = "Heute";
                 } else if (isYesterday(expense.date)) {
-                    dateFormatted = "Yesterday";
+                    dateFormatted = "Gestern";
                 } else {
                     dateFormatted = new Date(expense.date).toLocaleDateString(
                         "de-DE",
