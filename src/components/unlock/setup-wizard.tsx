@@ -85,6 +85,15 @@ export const SetupWizard = () => {
         } else if (step === "import" && !isValidDatabase) {
             await testDatabase();
         } else if (step === "empty") {
+            setKey(keyLocal);
+            localStorage.setItem("expenses", JSON.stringify(""));
+
+            void dispatch(
+                loadExpenses({
+                    key: keyLocal,
+                }),
+            );
+            route("/");
         }
     }, [
         dispatch,
