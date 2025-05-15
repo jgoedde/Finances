@@ -11,7 +11,7 @@ import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx"
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { type Expense } from "@/components/use-expenses.ts";
 import { useEffect, useMemo } from "react";
-import { isSameMonth, isToday, isYesterday } from "date-fns";
+import { differenceInYears, isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useAppDispatch, useAppSelector } from "@/hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
@@ -44,18 +44,27 @@ export const ExpensesPage = () => {
     const groupedExpenses = useMemo(
         () =>
             expenses.reduce((acc: { [key: string]: Expense[] }, expense) => {
-                const date = new Date(expense.date).toLocaleDateString(
-                    "de-DE",
-                    {
-                        year: "numeric",
-                        month: "long",
-                        day: "2-digit",
-                    },
-                );
-                if (!acc[date]) {
-                    acc[date] = [];
+                let dateFormatted: string;
+                if (isToday(expense.date)) {
+                    dateFormatted = "Heute";
+                } else if (isYesterday(expense.date)) {
+                    dateFormatted = "Yesterday";
+                } else {
+                    dateFormatted = new Date(expense.date).toLocaleDateString(
+                        "de-DE",
+                        {
+                            ...(differenceInYears(new Date(), expense.date) >=
+                                1 && { year: "numeric" }),
+                            month: "long",
+                            day: "2-digit",
+                        },
+                    );
                 }
-                acc[date].push(expense);
+
+                if (!acc[dateFormatted]) {
+                    acc[dateFormatted] = [];
+                }
+                acc[dateFormatted].push(expense);
                 return acc;
             }, {}),
         [expenses],
