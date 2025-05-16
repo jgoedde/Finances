@@ -1,10 +1,7 @@
 import {
-    Calendar1,
     Download,
     Drama,
-    Scroll,
     Search,
-    Sunrise,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
