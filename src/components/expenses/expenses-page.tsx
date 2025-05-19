@@ -1,8 +1,4 @@
-import {
-    Download,
-    Drama,
-    Search,
-} from "lucide-react";
+import { Download, Drama, Search } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
