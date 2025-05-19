@@ -6,7 +6,7 @@ import CurrencyInput, {
 } from "react-currency-input-field";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { type IconName } from "lucide-react/dynamic";
-import { useAppDispatch } from "@/hooks.ts";
+import { useAppDispatch } from "@/redux-hooks.ts";
 import { upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";

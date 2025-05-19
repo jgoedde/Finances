@@ -13,7 +13,7 @@ import { Trash } from "lucide-react";
 import { type FC, useCallback } from "react";
 import { removeExpense } from "@/components/expenses/slice.ts";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
-import { useAppDispatch } from "@/hooks.ts";
+import { useAppDispatch } from "@/redux-hooks.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 
 type Props = {

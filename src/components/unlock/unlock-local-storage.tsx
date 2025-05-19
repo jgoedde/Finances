@@ -14,7 +14,7 @@ import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input.tsx";
 import { useDbValidation } from "@/components/unlock/use-db-validation.ts";
 import { useLocation } from "wouter";
-import { useAppDispatch } from "@/hooks.ts";
+import { useAppDispatch } from "@/redux-hooks.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 

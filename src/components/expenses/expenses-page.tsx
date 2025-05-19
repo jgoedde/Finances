@@ -5,7 +5,7 @@ import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useEffect, useMemo } from "react";
 import { differenceInYears, isSameMonth, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { useAppDispatch, useAppSelector } from "@/hooks.ts";
+import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";

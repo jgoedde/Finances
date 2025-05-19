@@ -1,4 +1,4 @@
-import { useAppDispatch } from "@/hooks.ts";
+import { useAppDispatch } from "@/redux-hooks.ts";
 import { useCallback, useEffect, useState } from "react";
 import { useFileDialog } from "@mantine/hooks";
 import { useEncryption } from "@/components/use-encryption.ts";

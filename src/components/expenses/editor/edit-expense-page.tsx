@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useAppSelector } from "@/hooks.ts";
+import { useAppSelector } from "@/redux-hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { Redirect } from "wouter";
 import { ExpenseDetail } from "@/components/expenses/editor/expense-detail.tsx";

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { isSameMonth } from "date-fns";
-import { useAppSelector } from "@/hooks.ts";
+import { useAppSelector } from "@/redux-hooks.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 
 type UseExpenseDataArgs = {
