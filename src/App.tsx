@@ -3,8 +3,8 @@ import { ExpensesPage } from "@/components/expenses/expenses-page.tsx";
 import { UnlockPage } from "@/components/unlock/unlock-page.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useEffect } from "react";
-import { EditExpense } from "@/components/expenses/editor/EditExpense.tsx";
-import { ExpenseDetail } from "@/components/new-expense/expense-detail.tsx";
+import { EditExpensePage } from "@/components/expenses/editor/edit-expense-page.tsx";
+import { ExpenseDetail } from "@/components/expenses/editor/expense-detail.tsx";
 import { Reporting } from "@/components/reporting/reporting.tsx";
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
             <Route path="/unlock" component={UnlockPage} />
             <Route path="/reporting" component={Reporting} />
             <Route path="/edit/:id">
-                {(params) => <EditExpense id={params.id} />}
+                {(params) => <EditExpensePage id={params.id} />}
             </Route>
 
             {/* Default route in a switch */}
