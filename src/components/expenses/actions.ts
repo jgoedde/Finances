@@ -5,8 +5,10 @@ import { readLocalStorageValue } from "@mantine/hooks";
 import type { Expense } from "@/components/expense.ts";
 
 /**
- * Loads encrypted expenses from local storage, decrypts them using the provided key,
- * and returns the parsed expenses sorted by date in descending order.
+ * A Redux Toolkit async thunk for loading expenses from localStorage.
+ * The expenses are stored in an encrypted format and are decrypted using a Web Worker.
+ *
+ * @returns {Promise<Expense[]>} A promise that resolves to an array of expenses.
  */
 export const loadExpenses = createAsyncThunk(
     "expenses/load",
@@ -39,7 +41,10 @@ export const loadExpenses = createAsyncThunk(
 );
 
 /**
- * Encrypts the provided expenses using the provided encryption key and saves them to local storage.
+ * A Redux Toolkit async thunk for saving expenses to localStorage.
+ * The expenses are encrypted using a Web Worker before being stored.
+ *
+ * @returns {Promise<void>} A promise that resolves when the expenses are successfully saved.
  */
 export const saveToLocalStorage = createAsyncThunk(
     "expenses/save",

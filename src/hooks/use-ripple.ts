@@ -1,6 +1,28 @@
 import * as React from "react";
 import { useCallback, useRef } from "react";
 
+/**
+ * Custom hook to add a material design like ripple effect to a button or any other element.
+ *
+ * @example
+ * ```tsx
+ * import { useRipple } from "./use-ripple";
+ *
+ * const MyButton = () => {
+ *   const ripple = useRipple();
+ *
+ *   return (
+ *     <button
+ *       className="ripple-container"
+ *       data-ripple-color="bg-blue-500" // Any CSS class for the ripple color
+ *       {...ripple}
+ *     >
+ *       Click me
+ *     </button>
+ *   );
+ * }
+ * ```
+ */
 export const useRipple = () => {
     const holdTimeout = useRef<number | null>(null);
 
