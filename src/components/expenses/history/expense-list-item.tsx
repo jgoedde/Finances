@@ -82,7 +82,9 @@ export const ExpenseListItem = ({
                     </button>
                 </div>
                 <div
-                    className={"text-on-surface-variant line-clamp-2 text-sm/5"}
+                    className={
+                        "text-on-surface-variant line-clamp-2 text-sm/5 break-all"
+                    }
                 >
                     {supportingText}
                 </div>
