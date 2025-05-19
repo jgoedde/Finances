@@ -1,40 +1,25 @@
-import { ArrowLeft, Check, ClockFading, Trash } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { type FC, useCallback, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
     type CurrencyInputProps,
 } from "react-currency-input-field";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover.tsx";
-import { Calendar } from "@/components/ui/calendar.tsx";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { type IconName } from "lucide-react/dynamic";
 import { useAppDispatch } from "@/hooks.ts";
-import { removeExpense, upsertExpense } from "@/components/expenses/slice.ts";
+import { upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import {
     categories,
     type Category,
-} from "@/components/new-expense/categories.ts";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.tsx";
+} from "@/components/expenses/editor/categories.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { CategoryTile } from "@/components/new-expense/category-tile.tsx";
+import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import type { Expense } from "@/components/expense.ts";
+import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
+import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
 
 type Props = {
     description?: string;
@@ -88,8 +73,8 @@ export const ExpenseDetail: FC<Props> = ({
             (x) => x.icon === (selectedCategoryIconNameLocal as string),
         );
 
-        if (!cat) {
-            alert("Please select a category");
+        if (!cat || isNaN(amount) || amount <= 0 || !expenseLocal) {
+            alert("Please select a category, specify an amount and a name.");
             return;
         }
 
@@ -122,19 +107,6 @@ export const ExpenseDetail: FC<Props> = ({
         key,
         selectedCategoryIconNameLocal,
     ]);
-
-    const onDeleteConfirmButtonClick = useCallback(() => {
-        if (!key || !id) {
-            return;
-        }
-
-        dispatch(removeExpense(id));
-        void dispatch(
-            saveToLocalStorage({
-                encryptionKey: key,
-            }),
-        );
-    }, [key, dispatch, id]);
 
     const onCategoryTileClick = useCallback(
         (c: Category) => {
@@ -169,55 +141,13 @@ export const ExpenseDetail: FC<Props> = ({
                     {id === undefined ? "New expense" : "Update expense"}
                 </div>
                 <div className={"ml-auto flex items-center gap-x-4 pr-4"}>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <button className={"cursor-pointer"}>
-                                <ClockFading className={"size-5"} />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto border-none p-0 shadow-lg">
-                            <Calendar
-                                weekStartsOn={1}
-                                mode="single"
-                                selected={dateLocal}
-                                onSelect={(a) => setDateLocal(a ?? new Date())}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
+                    <DateChooserPopover
+                        selected={dateLocal}
+                        onSelect={(a) => setDateLocal(a ?? new Date())}
+                    />
 
                     {id !== undefined && (
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <button className={"cursor-pointer"}>
-                                    <Trash className={"size-5"} />
-                                </button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        Are you sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will
-                                        remove this expense from your history.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel
-                                        className={"text-primary"}
-                                    >
-                                        Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={onDeleteConfirmButtonClick}
-                                        className={"text-primary"}
-                                    >
-                                        Yes
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                        <DeleteButtonWithConfirmDialog expenseId={id} />
                     )}
 
                     <button

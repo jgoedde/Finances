@@ -1,5 +1,5 @@
 import { DynamicIcon } from "lucide-react/dynamic";
-import type { Category } from "@/components/new-expense/categories.ts";
+import type { Category } from "@/components/expenses/editor/categories.ts";
 import { type FC, useMemo } from "react";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useTheme } from "@/components/theme-provider.tsx";
