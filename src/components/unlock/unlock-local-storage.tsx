@@ -17,6 +17,7 @@ import { useLocation } from "wouter";
 import { useAppDispatch } from "@/redux-hooks.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
+import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
 
 type Props = {
     encryptedDatabase: string;
@@ -37,9 +38,14 @@ export const UnlockLocalStorage: FC<Props> = ({ encryptedDatabase }) => {
 
     useEffect(() => {
         if (isValidDatabase) {
-            setKey(keyLocal);
-            void dispatch(loadExpenses({ key: keyLocal }));
-            route("/");
+            (async () => {
+                setKey(keyLocal);
+
+                await maybeMigrateLocalStorage({ key: keyLocal });
+
+                void dispatch(loadExpenses({ key: keyLocal }));
+                route("/");
+            })();
         }
     }, [dispatch, isValidDatabase, keyLocal, route, setKey]);
 

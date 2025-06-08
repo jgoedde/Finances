@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { decryptLocalStorageData, encrypt } from "@/lib/encryption-utils.ts";
+import { isV1Persistence, type V2Storage } from "@/lib/app-local-storage.ts";
 import type { RootState } from "@/store.ts";
+import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
-import { readLocalStorageValue } from "@mantine/hooks";
-import type { Expense } from "@/components/expense.ts";
 
 /**
  * A Redux Toolkit async thunk for loading expenses from localStorage.
@@ -13,30 +14,13 @@ import type { Expense } from "@/components/expense.ts";
 export const loadExpenses = createAsyncThunk(
     "expenses/load",
     async ({ key }: { key: string }) => {
-        const encryptedLs = readLocalStorageValue({
-            key: "expenses",
-            defaultValue: "",
-        });
+        const data = await decryptLocalStorageData(key);
 
-        if (!encryptedLs) {
-            return [];
+        if (isV1Persistence(data)) {
+            throw new Error("Detected v1 persistence format in localStorage.");
         }
 
-        const decrypted = await new Promise<string>((resolve) => {
-            const worker = new Worker(
-                new URL("@/workers/decrypt-worker.js", import.meta.url),
-            );
-            worker.postMessage({ ciphertext: encryptedLs, key });
-
-            worker.onmessage = (e) => {
-                const { decrypted, error: errorMessage } = e.data;
-                if (errorMessage) throw new Error(errorMessage);
-                else resolve(decrypted);
-                worker.terminate();
-            };
-        });
-
-        return JSON.parse(decrypted) as Expense[];
+        return data.expenses;
     },
 );
 
@@ -51,24 +35,14 @@ export const saveToLocalStorage = createAsyncThunk(
     async ({ encryptionKey }: { encryptionKey: string }, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
 
-        const expenses = expensesSelectors.selectAll(state);
-
-        const encrypted = await new Promise<string>((resolve) => {
-            const worker = new Worker(
-                new URL("@/workers/encrypt-worker.js", import.meta.url),
-            );
-            worker.postMessage({
-                plaintext: JSON.stringify(expenses),
-                key: encryptionKey,
-            });
-
-            worker.onmessage = (e) => {
-                const { encrypted, error: errorMessage } = e.data;
-                if (errorMessage) throw new Error(errorMessage);
-                else resolve(encrypted);
-                worker.terminate();
-            };
-        });
+        const encrypted = await encrypt(
+            JSON.stringify({
+                fixedCosts: fixedCostsSelectors.selectAll(state),
+                expenses: expensesSelectors.selectAll(state),
+                version: 2,
+            } as V2Storage),
+            encryptionKey,
+        );
 
         localStorage.setItem("expenses", encrypted);
     },

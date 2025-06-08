@@ -1,37 +1,54 @@
-import { Download, Drama, Search } from "lucide-react";
+import { Drama, Search } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useEffect, useMemo } from "react";
-import { differenceInYears, isSameMonth, isToday, isYesterday } from "date-fns";
+import { differenceInYears, isToday, isYesterday } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
-import { loadExpenses } from "@/components/expenses/actions.ts";
+import {
+    expensesSelectors,
+    selectSpentThisMonth,
+    selectSpentToday,
+    selectSpentYesterday,
+} from "@/components/expenses/slice.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { readLocalStorageValue } from "@mantine/hooks";
 import type { Expense } from "@/components/expense.ts";
+import { loadExpenses } from "@/components/expenses/actions.ts";
+import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
+import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
+import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
+import { ExportButton } from "@/components/expenses/export-button.tsx";
+import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
+import { Heatmap } from "@/components/expenses/Heatmap.tsx";
+import { selectIsShowingMore, showMore } from "@/app-slice.ts";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
 
+    const [, route] = useLocation();
     const { key } = useEncryption();
     const ripple = useRipple();
 
-    const isDecrypting = useAppSelector((state) => state.expenses.isDecrypting);
+    const isDecrypting = useAppSelector((state) => state.app.isDecrypting);
     const isInitial = useAppSelector((state) => state.expenses.isInitial);
     const expenses = useAppSelector(expensesSelectors.selectAll);
-    const [, route] = useLocation();
+    const fixedCosts = useAppSelector(fixedCostsSelectors.selectAll);
+    const isShowingMore = useAppSelector(selectIsShowingMore);
 
     useEffect(() => {
         if (!key || expenses.length > 0) {
             return;
         }
 
-        void dispatch(loadExpenses({ key }));
+        (async () => {
+            await maybeMigrateLocalStorage({ key });
+            dispatch(loadExpenses({ key }));
+            dispatch(loadFixedCosts({ key }));
+        })();
     }, [dispatch, expenses.length, key]);
 
     const groupedExpenses = useMemo(
@@ -63,7 +80,9 @@ export const ExpensesPage = () => {
         [expenses],
     );
 
-    const stats = useExpensesStats(expenses);
+    const spentThisMonth = useAppSelector(selectSpentThisMonth);
+    const spentToday = useAppSelector(selectSpentToday);
+    const spentYesterday = useAppSelector(selectSpentYesterday);
 
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
@@ -102,7 +121,7 @@ export const ExpensesPage = () => {
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
                         <div className={"font-bold"}>
-                            {formatEuro(stats.today)}
+                            {formatEuro(spentToday)}
                         </div>
                     </CardContent>
                 </Card>
@@ -122,7 +141,7 @@ export const ExpensesPage = () => {
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
                         <div className={"font-bold"}>
-                            {formatEuro(stats.month)}
+                            {formatEuro(spentThisMonth)}
                         </div>
                     </CardContent>
                 </Card>
@@ -142,13 +161,32 @@ export const ExpensesPage = () => {
                     </CardHeader>
                     <CardContent className={"mt-auto"}>
                         <div className={"font-bold"}>
-                            {formatEuro(stats.yesterday)}
+                            {formatEuro(spentYesterday)}
                         </div>
                     </CardContent>
                 </Card>
+                {fixedCosts.length === 0 && !isDecrypting && !isInitial && (
+                    <Card
+                        className={
+                            "ripple-container text-on-primary-container bg-primary-container border-outline-variant w-[150px] shrink-0 rounded-md border-2 border-dotted text-center shadow-none"
+                        }
+                        data-ripple-color="bg-on-surface/10"
+                        {...ripple}
+                        onClick={(e) => {
+                            ripple.onClick(e);
+                        }}
+                    >
+                        <CardHeader className={"my-auto flex flex-col"}>
+                            <div className={"font-medium"}>
+                                Set up <span className={""}>fixed costs</span>
+                            </div>
+                        </CardHeader>
+                    </Card>
+                )}
             </div>
 
-            <main className={"my-6 grow"}>
+            <main className={"grow"}>
+                <IncomeDistribution />
                 <div className={"flex items-center justify-between px-4"}>
                     <h1
                         className={
@@ -158,29 +196,7 @@ export const ExpensesPage = () => {
                         My expenses
                     </h1>
                     {Object.keys(groupedExpenses).length > 0 && (
-                        <button
-                            onClick={() => {
-                                const blob = new Blob(
-                                    [
-                                        readLocalStorageValue({
-                                            key: "expenses",
-                                            defaultValue: "",
-                                        }),
-                                    ],
-                                    {
-                                        type: "application/text",
-                                    },
-                                );
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `${Date.now()}-expenses.txt`;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                            }}
-                        >
-                            <Download className={"text-secondary size-5"} />
-                        </button>
+                        <ExportButton />
                     )}
                 </div>
 
@@ -209,12 +225,43 @@ export const ExpensesPage = () => {
                 <div className={"flex w-full flex-col gap-y-4"}>
                     {Object.keys(groupedExpenses).map((date, i) => {
                         const expenses = groupedExpenses[date];
+
+                        if (i > 0 && !isShowingMore) {
+                            return null;
+                        }
+
                         return (
-                            <ExpensesGroup
-                                key={`${date}-${i}`}
-                                date={date}
-                                expenses={expenses}
-                            />
+                            <div key={`${date}-${i}`}>
+                                <ExpensesGroup
+                                    date={date}
+                                    expenses={expenses}
+                                />
+                                {i === 0 && (
+                                    <>
+                                        <div className={"mt-6 mb-4"}>
+                                            <Heatmap />
+                                        </div>
+                                        {!isShowingMore && (
+                                            <div
+                                                className={
+                                                    "flex justify-center"
+                                                }
+                                            >
+                                                <button
+                                                    className={
+                                                        "text-primary mt-4"
+                                                    }
+                                                    onClick={() => {
+                                                        dispatch(showMore());
+                                                    }}
+                                                >
+                                                    Show more
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         );
                     })}
                 </div>
@@ -224,33 +271,3 @@ export const ExpensesPage = () => {
         </div>
     );
 };
-
-function useExpensesStats(expenses: Expense[]) {
-    const amountsToday = expenses
-        .filter((e) => isToday(e.date))
-        .map((e) => e.amount);
-    const sumToday = amountsToday.reduce((acc, amount) => acc + amount, 0);
-
-    const amountsYesterday = expenses
-        .filter((e) => isYesterday(e.date))
-        .map((e) => e.amount);
-    const sumYesterday = amountsYesterday.reduce(
-        (acc, amount) => acc + amount,
-        0,
-    );
-
-    const amountsThisMonth = expenses
-        .filter((e) => isSameMonth(new Date(), e.date))
-        .map((e) => e.amount);
-
-    const sumThisMonth = amountsThisMonth.reduce(
-        (acc, amount) => acc + amount,
-        0,
-    );
-
-    return {
-        today: sumToday,
-        yesterday: sumYesterday,
-        month: sumThisMonth,
-    };
-}

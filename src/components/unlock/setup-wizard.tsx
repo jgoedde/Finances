@@ -16,6 +16,11 @@ import { Check, Hand } from "lucide-react";
 import { Input } from "../ui/input";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useDbValidation } from "@/components/unlock/use-db-validation.ts";
+import { encrypt } from "@/lib/encryption-utils.ts";
+import {
+    maybeMigrateLocalStorage,
+    type V2Storage,
+} from "@/lib/app-local-storage.ts";
 
 export const SetupWizard = () => {
     const dispatch = useAppDispatch();
@@ -76,6 +81,8 @@ export const SetupWizard = () => {
             setKey(keyLocal);
             localStorage.setItem("expenses", encryptedDatabase as string);
 
+            await maybeMigrateLocalStorage({ key: keyLocal });
+
             void dispatch(
                 loadExpenses({
                     key: keyLocal,
@@ -86,7 +93,17 @@ export const SetupWizard = () => {
             await testDatabase();
         } else if (step === "empty") {
             setKey(keyLocal);
-            localStorage.setItem("expenses", JSON.stringify(""));
+
+            const encrypted = await encrypt(
+                JSON.stringify({
+                    expenses: [],
+                    fixedCosts: [],
+                    version: 2,
+                } as V2Storage),
+                keyLocal,
+            );
+
+            localStorage.setItem("expenses", encrypted);
 
             void dispatch(
                 loadExpenses({

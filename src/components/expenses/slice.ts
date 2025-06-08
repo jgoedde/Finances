@@ -1,20 +1,14 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
-import {
-    loadExpenses,
-    saveToLocalStorage,
-} from "@/components/expenses/actions.ts";
+import { loadExpenses } from "@/components/expenses/actions.ts";
 import type { RootState } from "@/store.ts";
 import type { Expense } from "@/components/expense.ts";
+import { isSameMonth, isToday, isYesterday } from "date-fns";
 
 export interface ExpensesState {
-    isDecrypting: boolean;
-    isEncrypting: boolean;
     isInitial: boolean;
 }
 
 const initialState: ExpensesState = {
-    isDecrypting: false,
-    isEncrypting: false,
     isInitial: true,
 };
 
@@ -34,25 +28,40 @@ export const expensesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(loadExpenses.pending, (state) => {
-            state.isDecrypting = true;
             state.isInitial = false;
         });
         builder.addCase(loadExpenses.fulfilled, (state, action) => {
             expensesAdapter.setAll(state, action.payload);
-            state.isDecrypting = false;
         });
-        builder.addCase(loadExpenses.rejected, (state) => {
-            state.isDecrypting = false;
-        });
-        builder.addCase(saveToLocalStorage.fulfilled, (state) => {
-            state.isEncrypting = false;
-        });
-        builder.addCase(saveToLocalStorage.pending, (state) => {
-            state.isEncrypting = true;
-        });
-        builder.addCase(saveToLocalStorage.rejected, (state) => {
-            state.isEncrypting = false;
-        });
+    },
+    selectors: {
+        selectSpentToday: (state) => {
+            const amountsToday = expensesAdapter
+                .getSelectors()
+                .selectAll(state)
+                .filter((e) => isToday(e.date))
+                .map((e) => e.amount);
+
+            return amountsToday.reduce((acc, amount) => acc + amount, 0);
+        },
+        selectSpentThisMonth: (state) => {
+            const amountsThisMonth = expensesAdapter
+                .getSelectors()
+                .selectAll(state)
+                .filter((e) => isSameMonth(new Date(), e.date))
+                .map((e) => e.amount);
+
+            return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
+        },
+        selectSpentYesterday: (state) => {
+            const amountsYesterday = expensesAdapter
+                .getSelectors()
+                .selectAll(state)
+                .filter((e) => isYesterday(e.date))
+                .map((e) => e.amount);
+
+            return amountsYesterday.reduce((acc, amount) => acc + amount, 0);
+        },
     },
 });
 
@@ -60,7 +69,9 @@ export const expensesSelectors = expensesAdapter.getSelectors<RootState>(
     (state) => state.expenses,
 );
 
-export const { addExpense, removeExpense, updateExpense, upsertExpense } =
-    expensesSlice.actions;
+export const { removeExpense, upsertExpense } = expensesSlice.actions;
+
+export const { selectSpentToday, selectSpentThisMonth, selectSpentYesterday } =
+    expensesSlice.selectors;
 
 export default expensesSlice.reducer;

@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "dev:host": "vite --host",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview"
@@ -32,6 +33,7 @@
         "@tailwindcss/vite": "^4.1.8",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "cron-schedule": "^5.0.4",
         "crypto-js": "^4.2.0",
         "date-fns": "^4.1.0",
         "lodash": "^4.17.21",
