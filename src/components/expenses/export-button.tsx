@@ -19,7 +19,7 @@ export function ExportButton() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `${Date.now()}-expenses.txt`;
+                a.download = `${new Date().toISOString()}-finance.txt`;
                 a.click();
                 URL.revokeObjectURL(url);
             }}
