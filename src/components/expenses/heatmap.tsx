@@ -12,7 +12,7 @@ import {
 
 const dayLabels = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
-const tonalPalette = TonalPalette.fromHct(Hct.from(329, 24, 40));
+const tonalPalette = TonalPalette.fromHct(Hct.from(268, 36, 40));
 
 export const Heatmap: FC = () => {
     const expenses = useAppSelector(expensesSelectors.selectAll);
