@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "@/store.ts";
 
 createRoot(document.getElementById("root")!).render(
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider>
         <Provider store={store}>
             <App />
         </Provider>

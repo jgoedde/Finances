@@ -1,11 +1,10 @@
-import React, { type FC, useMemo } from "react";
+import React, { type FC, type ReactNode, useMemo } from "react";
 import { useAppSelector } from "@/redux-hooks.ts";
 import {
     selectMonthlyFixCosts,
     selectMonthlyIncome,
 } from "@/components/fixed-costs/slice.ts";
 import { selectSpentThisMonth } from "@/components/expenses/slice.ts";
-import { useTheme } from "@/components/theme-provider.tsx";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import {
     Popover,
@@ -13,23 +12,29 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover.tsx";
 import { formatEuro } from "@/lib/currency-utils.ts";
+import { useColorScheme } from "@mantine/hooks";
+import _ from "lodash";
+import { isSaving } from "@/components/fixed-costs/fixed-cost.ts";
 
 export const IncomeDistribution: FC = () => {
     const monthlyFixCosts = useAppSelector(selectMonthlyFixCosts);
     const monthlyIncome = useAppSelector(selectMonthlyIncome);
     const spentThisMonth = useAppSelector(selectSpentThisMonth);
 
-    const { theme } = useTheme();
-
-    const themeKey = theme === "system" ? "light" : theme;
+    const theme = useColorScheme();
 
     const colors = useMemo(() => {
         return {
             income: convertHexToTonal("66dc6e", { light: 93, dark: 7 }),
-            expenses: convertHexToTonal("ff6f61", { light: 95, dark: 5 }),
+            expenses: convertHexToTonal("ff6f61", { light: 95, dark: 2 }),
             fixCosts: convertHexToTonal("ffb74d", { light: 95, dark: 5 }),
+            savings: convertHexToTonal("a0ff5d", { light: 97, dark: 3 }),
         };
     }, []);
+
+    const savingsThisMonth = monthlyFixCosts
+        .filter(isSaving)
+        .reduce((acc, fc) => acc + fc.amount, 0);
 
     return (
         <div className={"my-4"}>
@@ -37,26 +42,70 @@ export const IncomeDistribution: FC = () => {
                 <MonthlyFinanceBar
                     incomeSegment={{
                         income: monthlyIncome,
-                        backgroundColor: colors.income[themeKey].container,
-                        textColor: colors.income[themeKey].onContainer,
+                        backgroundColor: colors.income[theme].container,
+                        textColor: colors.income[theme].onContainer,
                     }}
                     segments={[
                         {
-                            label: "Ausgaben",
-                            amount: spentThisMonth,
-                            backgroundColor:
-                                colors.expenses[themeKey].container,
-                            textColor: colors.expenses[themeKey].onContainer,
+                            label: "Sparen",
+                            amount: savingsThisMonth,
+                            backgroundColor: colors.savings[theme].container,
+                            textColor: colors.savings[theme].onContainer,
+                            popoverLabel: `Sparen ${new Date().toLocaleDateString(
+                                "de-DE",
+                                {
+                                    month: "long",
+                                },
+                            )}: ${formatEuro(savingsThisMonth)}`,
                         },
                         {
                             label: "Fixkosten",
-                            amount: monthlyFixCosts.reduce(
-                                (acc, fc) => acc + fc.amount,
-                                0,
+                            amount:
+                                monthlyFixCosts.reduce(
+                                    (acc, fc) => acc + fc.amount,
+                                    0,
+                                ) - savingsThisMonth,
+                            backgroundColor: colors.fixCosts[theme].container,
+                            textColor: colors.fixCosts[theme].onContainer,
+                            popoverLabel: (
+                                <div className={"flex flex-col"}>
+                                    <span className={"font-bold"}>
+                                        Fixkosten{" "}
+                                        {new Date().toLocaleDateString(
+                                            "de-DE",
+                                            {
+                                                month: "long",
+                                            },
+                                        )}
+                                    </span>
+                                    <div className={"flex flex-col"}>
+                                        {_.orderBy(
+                                            monthlyFixCosts.filter(
+                                                (fc) => !isSaving(fc),
+                                            ),
+                                            "amount",
+                                            "desc",
+                                        ).map((fc, idx) => (
+                                            <span key={fc.expense}>
+                                                {idx + 1}. {fc.expense}:{" "}
+                                                {formatEuro(fc.amount)}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
                             ),
-                            backgroundColor:
-                                colors.fixCosts[themeKey].container,
-                            textColor: colors.fixCosts[themeKey].onContainer,
+                        },
+                        {
+                            label: "Ausgaben",
+                            amount: spentThisMonth,
+                            backgroundColor: colors.expenses[theme].container,
+                            textColor: colors.expenses[theme].onContainer,
+                            popoverLabel: `Ausgaben ${new Date().toLocaleDateString(
+                                "de-DE",
+                                {
+                                    month: "long",
+                                },
+                            )}: ${formatEuro(spentThisMonth)}`,
                         },
                     ]}
                 />
@@ -67,6 +116,7 @@ export const IncomeDistribution: FC = () => {
 
 type BudgetSegment = {
     label: string;
+    popoverLabel: ReactNode;
     amount: number;
     backgroundColor: string;
     textColor: string;
@@ -97,16 +147,17 @@ const MonthlyFinanceBar: React.FC<MonthlyFinanceBarProps> = ({
                       backgroundColor: incomeSegment.backgroundColor,
                       textColor: incomeSegment.textColor,
                       amount: leftover,
+                      popoverLabel: `Monatliches Einkommen: ${formatEuro(incomeSegment.income)}`,
                   },
               ]
             : segments;
 
     return (
-        <div className="motion-preset-expand mx-auto flex h-12 w-11/12 overflow-hidden rounded-sm">
+        <div className="mx-auto flex h-16 w-full overflow-hidden rounded-sm">
             {allSegments.map((seg, idx) => (
                 <div
                     key={`expenses-${seg.label}-${idx}`}
-                    className={`relative h-full`}
+                    className={`relative mx-0.5 h-full`}
                     style={{
                         width: `${(seg.amount / incomeSegment.income) * 100}%`,
                         backgroundColor: seg.backgroundColor,
@@ -133,7 +184,7 @@ const MonthlyFinanceBar: React.FC<MonthlyFinanceBarProps> = ({
                                 "bg-inverse-surface text-inverse-on-surface w-full rounded-[4px] border-none px-2 py-1 text-sm"
                             }
                         >
-                            {seg.label + " • " + formatEuro(seg.amount)}
+                            {seg.popoverLabel}
                         </PopoverContent>
                     </Popover>
                 </div>

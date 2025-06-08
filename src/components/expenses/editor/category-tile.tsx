@@ -2,8 +2,8 @@ import { DynamicIcon } from "lucide-react/dynamic";
 import type { Category } from "@/components/expenses/editor/categories.ts";
 import { type FC, useMemo } from "react";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
-import { useTheme } from "@/components/theme-provider.tsx";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { useColorScheme } from "@mantine/hooks";
 
 type Props = {
     selectedCategoryIconNameLocal: string | undefined;
@@ -16,7 +16,7 @@ export const CategoryTile: FC<Props> = ({
     onClick,
     selectedCategoryIconNameLocal,
 }) => {
-    const { theme } = useTheme();
+    const theme = useColorScheme();
 
     const ripple = useRipple();
 

@@ -1,15 +1,15 @@
-import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import {
+    createEntityAdapter,
+    createSelector,
+    createSlice,
+} from "@reduxjs/toolkit";
 import type { RootState } from "@/store.ts";
 import {
-    calculateMonthlyFixedCosts,
     type FixedCost,
     getCostsWithinMonth,
+    isIncome,
 } from "@/components/fixed-costs/fixed-cost.ts";
 import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
-
-export interface FixedCostsState {}
-
-const initialState: FixedCostsState = {};
 
 export const fixedCostsAdapter = createEntityAdapter({
     selectId: (a: FixedCost) => a.id,
@@ -17,7 +17,7 @@ export const fixedCostsAdapter = createEntityAdapter({
 
 export const fixedCostsSlice = createSlice({
     name: "fixedCosts",
-    initialState: fixedCostsAdapter.getInitialState({ ...initialState }),
+    initialState: fixedCostsAdapter.getInitialState(),
     reducers: {
         addFixedCost: fixedCostsAdapter.addOne,
         updateFixedCost: fixedCostsAdapter.updateOne,
@@ -31,22 +31,25 @@ export const fixedCostsSlice = createSlice({
         });
     },
     selectors: {
-        selectMonthlyFixCosts: (state) => {
-            const fixedCosts = fixedCostsAdapter
-                .getSelectors()
-                .selectAll(state)
-                .filter((fc) => fc.amount >= 0);
-
-            return getCostsWithinMonth(fixedCosts);
-        },
-        selectMonthlyIncome: (state) => {
-            const negativeFixCosts = fixedCostsAdapter
-                .getSelectors()
-                .selectAll(state)
-                .filter((fc) => fc.amount < 0);
-
-            return calculateMonthlyFixedCosts(negativeFixCosts) * -1;
-        },
+        selectMonthlyFixCosts: createSelector(
+            fixedCostsAdapter.getSelectors().selectAll,
+            (allFixedCosts) => {
+                const fixedCosts = allFixedCosts.filter((fc) => !isIncome(fc));
+                return getCostsWithinMonth(fixedCosts);
+            },
+        ),
+        selectMonthlyIncome: createSelector(
+            fixedCostsAdapter.getSelectors().selectAll,
+            (allFixedCosts) => {
+                const negativeFixCosts = allFixedCosts.filter(isIncome);
+                return (
+                    getCostsWithinMonth(negativeFixCosts).reduce(
+                        (acc, fc) => acc + fc.amount,
+                        0,
+                    ) * -1
+                );
+            },
+        ),
     },
 });
 

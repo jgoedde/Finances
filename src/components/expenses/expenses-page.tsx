@@ -26,7 +26,6 @@ import {
 } from "@/components/fixed-costs/slice.ts";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
-import { Heatmap } from "@/components/expenses/heatmap.tsx";
 import { selectIsShowingMore, showMore } from "@/app-slice.ts";
 import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 
@@ -246,9 +245,11 @@ export const ExpensesPage = () => {
 
                 <div className={"flex w-full flex-col gap-y-4"}>
                     {Object.keys(groupedExpenses).map((date, i) => {
+                        const initiallyShown = 3;
+
                         const expenses = groupedExpenses[date];
 
-                        if (i > 0 && !isShowingMore) {
+                        if (i > initiallyShown - 1 && !isShowingMore) {
                             return null;
                         }
 
@@ -258,30 +259,17 @@ export const ExpensesPage = () => {
                                     date={date}
                                     expenses={expenses}
                                 />
-                                {i === 0 && (
-                                    <>
-                                        <div className={"mt-6 mb-4"}>
-                                            <Heatmap />
-                                        </div>
-                                        {!isShowingMore && (
-                                            <div
-                                                className={
-                                                    "flex justify-center"
-                                                }
-                                            >
-                                                <button
-                                                    className={
-                                                        "text-primary mt-4"
-                                                    }
-                                                    onClick={() => {
-                                                        dispatch(showMore());
-                                                    }}
-                                                >
-                                                    Show more
-                                                </button>
-                                            </div>
-                                        )}
-                                    </>
+                                {i === initiallyShown - 1 && !isShowingMore && (
+                                    <div className={"flex justify-center"}>
+                                        <button
+                                            className={"text-primary mt-4"}
+                                            onClick={() => {
+                                                dispatch(showMore());
+                                            }}
+                                        >
+                                            Show more
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         );

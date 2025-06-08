@@ -4,8 +4,8 @@ import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
-import { useTheme } from "@/components/theme-provider.tsx";
 import type { Expense } from "@/components/expense.ts";
+import { useColorScheme } from "@mantine/hooks";
 
 export const ExpenseListItem = ({
     transaction: { id, name, description, category, amountFormatted },
@@ -14,7 +14,7 @@ export const ExpenseListItem = ({
 }) => {
     const [, route] = useLocation();
     const rippleHandlers = useRipple();
-    const { theme } = useTheme();
+    const theme = useColorScheme();
 
     const supportingText = useMemo(() => {
         if (description?.trim() !== "") {
