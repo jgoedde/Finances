@@ -92,7 +92,7 @@ export const SearchPage = () => {
                 </DrawerContent>
                 <div
                     className={
-                        "border-outline bg-surface-container-highest flex h-16 w-dvw shrink-0 items-center border-b py-2"
+                        "border-outline bg-surface-container-high flex h-16 w-dvw shrink-0 items-center border-b py-2"
                     }
                 >
                     <button
