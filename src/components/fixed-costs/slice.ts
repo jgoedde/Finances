@@ -56,4 +56,6 @@ export const fixedCostsSelectors = fixedCostsAdapter.getSelectors<RootState>(
 export const { selectMonthlyFixCosts, selectMonthlyIncome } =
     fixedCostsSlice.selectors;
 
+export const { setFixedCosts } = fixedCostsSlice.actions;
+
 export default fixedCostsSlice.reducer;

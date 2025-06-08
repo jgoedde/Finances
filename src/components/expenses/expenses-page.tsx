@@ -20,11 +20,15 @@ import type { Expense } from "@/components/expense.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
 import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
-import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
+import {
+    fixedCostsSelectors,
+    setFixedCosts,
+} from "@/components/fixed-costs/slice.ts";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
 import { Heatmap } from "@/components/expenses/Heatmap.tsx";
 import { selectIsShowingMore, showMore } from "@/app-slice.ts";
+import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
@@ -177,9 +181,27 @@ export const ExpensesPage = () => {
                         }}
                     >
                         <CardHeader className={"my-auto flex flex-col"}>
-                            <div className={"font-medium"}>
+                            <button
+                                className={"font-medium"}
+                                onClick={() => {
+                                    const fixedCostsJson = prompt(
+                                        "Enter stuff as JSON",
+                                    );
+                                    if (!fixedCostsJson) {
+                                        return;
+                                    }
+
+                                    dispatch(
+                                        setFixedCosts(
+                                            JSON.parse(
+                                                fixedCostsJson,
+                                            ) as FixedCost[],
+                                        ),
+                                    );
+                                }}
+                            >
                                 Set up <span className={""}>fixed costs</span>
-                            </div>
+                            </button>
                         </CardHeader>
                     </Card>
                 )}
