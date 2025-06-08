@@ -20,10 +20,7 @@ import type { Expense } from "@/components/expense.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
 import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
-import {
-    fixedCostsSelectors,
-    setFixedCosts,
-} from "@/components/fixed-costs/slice.ts";
+import { setFixedCosts } from "@/components/fixed-costs/slice.ts";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
 import { selectIsShowingMore, showMore } from "@/app-slice.ts";
@@ -39,7 +36,6 @@ export const ExpensesPage = () => {
     const isDecrypting = useAppSelector((state) => state.app.isDecrypting);
     const isInitial = useAppSelector((state) => state.expenses.isInitial);
     const expenses = useAppSelector(expensesSelectors.selectAll);
-    const fixedCosts = useAppSelector(fixedCostsSelectors.selectAll);
     const isShowingMore = useAppSelector(selectIsShowingMore);
 
     useEffect(() => {
@@ -168,7 +164,7 @@ export const ExpensesPage = () => {
                         </div>
                     </CardContent>
                 </Card>
-                {fixedCosts.length === 0 && !isDecrypting && !isInitial && (
+                {!isDecrypting && !isInitial && (
                     <Card
                         className={
                             "ripple-container text-on-primary-container bg-primary-container border-outline-variant w-[150px] shrink-0 rounded-md border-2 border-dotted text-center shadow-none"
