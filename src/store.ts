@@ -12,7 +12,9 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) => {
         const logger = createLogger();
-        return getDefaultMiddleware().concat(logger);
+        return getDefaultMiddleware().concat(
+            import.meta.env.PROD ? [] : [logger],
+        );
     },
 });
 
