@@ -26,7 +26,7 @@ import {
 } from "@/components/fixed-costs/slice.ts";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
-import { Heatmap } from "@/components/expenses/Heatmap.tsx";
+import { Heatmap } from "@/components/expenses/heatmap.tsx";
 import { selectIsShowingMore, showMore } from "@/app-slice.ts";
 import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 

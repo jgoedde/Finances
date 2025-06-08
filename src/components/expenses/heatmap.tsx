@@ -25,8 +25,6 @@ export const Heatmap: FC = () => {
         return { start: mondayThisWeek, end: sundayThisWeek };
     }, []);
 
-    console.log(week, "week");
-
     // Zähle Ausgaben pro Tag
     const expensesPerDay = useMemo(() => {
         const days = [];
@@ -39,8 +37,6 @@ export const Heatmap: FC = () => {
         }
         return days;
     }, [week, expenses]);
-
-    console.log(expensesPerDay, "expensesPerDay");
 
     // Finde die maximale Anzahl an Ausgaben an einem Tag (für die Farbskala)
     const maxCount = Math.max(...expensesPerDay.map((d) => d.count), 1);
