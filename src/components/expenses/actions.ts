@@ -6,7 +6,7 @@ import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
 import { expensesSelectors } from "@/components/expenses/slice.ts";
 
 /**
- * A Redux Toolkit async thunk for loading expenses from localStorage.
+ * A Redux Toolkit async thunk for loading expenses from ``localStorage``.
  * The expenses are stored in an encrypted format and are decrypted using a Web Worker.
  *
  * @returns {Promise<Expense[]>} A promise that resolves to an array of expenses.
