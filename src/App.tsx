@@ -4,8 +4,9 @@ import { UnlockPage } from "@/components/unlock/unlock-page.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useEffect } from "react";
 import { EditExpensePage } from "@/components/expenses/editor/edit-expense-page.tsx";
-import { ExpenseDetail } from "@/components/expenses/editor/expense-detail.tsx";
-import { Reporting } from "@/components/reporting/reporting.tsx";
+import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
+import { ReportingPage } from "@/components/reporting/reporting-page.tsx";
+import { SearchPage } from "@/components/search/search-page.tsx";
 
 export default function App() {
     const { key } = useEncryption();
@@ -20,9 +21,10 @@ export default function App() {
     return (
         <Switch>
             <Route path="/" component={ExpensesPage} />
-            <Route path="/new">{() => <ExpenseDetail />}</Route>
+            <Route path="/new">{() => <ExpenseDetailPage />}</Route>
             <Route path="/unlock" component={UnlockPage} />
-            <Route path="/reporting" component={Reporting} />
+            <Route path="/reporting" component={ReportingPage} />
+            <Route path="/expenses/search" component={SearchPage} />
             <Route path="/edit/:id">
                 {(params) => <EditExpensePage id={params.id} />}
             </Route>

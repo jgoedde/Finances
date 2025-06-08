@@ -93,7 +93,12 @@ export const ExpensesPage = () => {
                 <div className={"px-4"}>
                     <Search className={"text-on-surface size-6"} />
                 </div>
-                <div className={"text-on-surface-variant"}>
+                <div
+                    className={"text-on-surface-variant"}
+                    onClick={() => {
+                        route("/expenses/search");
+                    }}
+                >
                     Search for expense
                 </div>
             </div>

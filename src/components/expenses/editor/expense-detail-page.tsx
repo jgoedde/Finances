@@ -30,7 +30,7 @@ type Props = {
     name?: string;
 };
 
-export const ExpenseDetail: FC<Props> = ({
+export const ExpenseDetailPage: FC<Props> = ({
     date,
     description,
     category,

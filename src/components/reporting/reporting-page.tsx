@@ -8,7 +8,7 @@ import { useRipple } from "@/hooks/use-ripple.ts";
 import { ExpenseRadarChart } from "@/components/reporting/expense-radar-chart.tsx";
 import { useExpenseData } from "@/components/reporting/use-expense-data.ts";
 
-export const Reporting = () => {
+export const ReportingPage = () => {
     const [, router] = useLocation();
     const [month, setMonth] = useState<{ year: number; monthIndex: number }>({
         year: new Date().getFullYear(),
