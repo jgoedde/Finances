@@ -1,12 +1,22 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button.tsx";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { ExpenseRadarChart } from "@/components/reporting/expense-radar-chart.tsx";
 import { useExpenseData } from "@/components/reporting/use-expense-data.ts";
+
+const past12Months = Array.from({ length: 12 }, (_, i) => {
+    const now = new Date();
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    return {
+        year: date.getFullYear(),
+        monthIndex: date.getMonth(),
+        label: format(date, "MMMM yyyy"),
+    };
+});
 
 export const ReportingPage = () => {
     const [, router] = useLocation();
@@ -16,20 +26,6 @@ export const ReportingPage = () => {
     });
 
     const ripple = useRipple();
-
-    const past12Months = useMemo(
-        () =>
-            Array.from({ length: 12 }, (_, i) => {
-                const now = new Date();
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                return {
-                    year: date.getFullYear(),
-                    monthIndex: date.getMonth(),
-                    label: format(date, "MMMM yyyy"),
-                };
-            }),
-        [],
-    );
 
     const { chartData, expensesCount, totalSpent } = useExpenseData({ month });
 

@@ -1,5 +1,5 @@
 import { ArrowLeft, Check } from "lucide-react";
-import { type FC, useCallback, useRef, useState } from "react";
+import { type FC, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
     type CurrencyInputProps,
@@ -62,7 +62,7 @@ export const ExpenseDetailPage: FC<Props> = ({
         setAmountStr(value);
     };
 
-    const onSubmit = useCallback(() => {
+    function onSubmit() {
         if (!key) {
             return;
         }
@@ -97,30 +97,18 @@ export const ExpenseDetailPage: FC<Props> = ({
         void dispatch(saveToLocalStorage({ encryptionKey: key }));
 
         history.back();
-    }, [
-        amountStr,
-        dateLocal,
-        descriptionLocal,
-        dispatch,
-        expenseLocal,
-        id,
-        key,
-        selectedCategoryIconNameLocal,
-    ]);
+    }
 
-    const onCategoryTileClick = useCallback(
-        (c: Category) => {
-            if (selectedCategoryIconNameLocal === c.icon) {
-                setSelectedCategoryIconNameLocal(undefined);
-            } else {
-                setSelectedCategoryIconNameLocal(c.icon);
-                if (amountStr?.trim() === "") {
-                    amountInputRef?.current?.focus();
-                }
+    function onCategoryTileClick(c: Category) {
+        if (selectedCategoryIconNameLocal === c.icon) {
+            setSelectedCategoryIconNameLocal(undefined);
+        } else {
+            setSelectedCategoryIconNameLocal(c.icon);
+            if (amountStr?.trim() === "") {
+                amountInputRef?.current?.focus();
             }
-        },
-        [amountStr, selectedCategoryIconNameLocal],
-    );
+        }
+    }
 
     return (
         <>

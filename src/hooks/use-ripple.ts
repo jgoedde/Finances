@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 /**
  * Custom hook to add a material design like ripple effect to a button or any other element.
@@ -26,7 +26,7 @@ import { useCallback, useRef } from "react";
 export const useRipple = () => {
     const holdTimeout = useRef<number | null>(null);
 
-    const triggerRipple = useCallback((e: React.MouseEvent | TouchEvent) => {
+    function triggerRipple(e: React.MouseEvent | TouchEvent) {
         const target: HTMLElement | null = (e.target as HTMLElement)?.closest(
             ".ripple-container",
         );
@@ -49,30 +49,24 @@ export const useRipple = () => {
 
         target.appendChild(ripple);
         setTimeout(() => ripple.remove(), 600);
-    }, []);
+    }
 
-    const onClick = useCallback(
-        (e: React.MouseEvent<HTMLElement>) => {
-            triggerRipple(e);
-        },
-        [triggerRipple],
-    );
+    function onClick(e: React.MouseEvent<HTMLElement>) {
+        triggerRipple(e);
+    }
 
-    const onTouchStart = useCallback(
-        (e: React.TouchEvent<HTMLElement>) => {
-            holdTimeout.current = window.setTimeout(() => {
-                triggerRipple(e.nativeEvent);
-            }, 150);
-        },
-        [triggerRipple],
-    );
+    function onTouchStart(e: React.TouchEvent<HTMLElement>) {
+        holdTimeout.current = window.setTimeout(() => {
+            triggerRipple(e.nativeEvent);
+        }, 150);
+    }
 
-    const onTouchEnd = useCallback(() => {
+    function onTouchEnd() {
         if (holdTimeout.current) {
             clearTimeout(holdTimeout.current);
             holdTimeout.current = null;
         }
-    }, []);
+    }
 
     return {
         onClick,

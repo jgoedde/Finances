@@ -1,4 +1,4 @@
-import React, { type FC, type ReactNode, useMemo } from "react";
+import React, { type FC, type ReactNode } from "react";
 import { useAppSelector } from "@/redux-hooks.ts";
 import {
     selectMonthlyFixCosts,
@@ -16,21 +16,19 @@ import { useColorScheme } from "@mantine/hooks";
 import _ from "lodash";
 import { isSaving } from "@/components/fixed-costs/fixed-cost.ts";
 
+const colors = {
+    income: convertHexToTonal("66dc6e", { light: 93, dark: 7 }),
+    expenses: convertHexToTonal("ff6f61", { light: 95, dark: 2 }),
+    fixCosts: convertHexToTonal("ffb74d", { light: 95, dark: 5 }),
+    savings: convertHexToTonal("a0ff5d", { light: 97, dark: 3 }),
+};
+
 export const IncomeDistribution: FC = () => {
     const monthlyFixCosts = useAppSelector(selectMonthlyFixCosts);
     const monthlyIncome = useAppSelector(selectMonthlyIncome);
     const spentThisMonth = useAppSelector(selectSpentThisMonth);
 
     const theme = useColorScheme();
-
-    const colors = useMemo(() => {
-        return {
-            income: convertHexToTonal("66dc6e", { light: 93, dark: 7 }),
-            expenses: convertHexToTonal("ff6f61", { light: 95, dark: 2 }),
-            fixCosts: convertHexToTonal("ffb74d", { light: 95, dark: 5 }),
-            savings: convertHexToTonal("a0ff5d", { light: 97, dark: 3 }),
-        };
-    }, []);
 
     const savingsThisMonth = monthlyFixCosts
         .filter(isSaving)

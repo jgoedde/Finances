@@ -1,6 +1,6 @@
 import { DynamicIcon } from "lucide-react/dynamic";
 import type { Category } from "@/components/expenses/editor/categories.ts";
-import { type FC, useMemo } from "react";
+import { type FC } from "react";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useColorScheme } from "@mantine/hooks";
@@ -20,19 +20,12 @@ export const CategoryTile: FC<Props> = ({
 
     const ripple = useRipple();
 
-    const tonal = useMemo(() => {
-        return convertHexToTonal(category.color);
-    }, [category.color]);
+    const tonal = convertHexToTonal(category.color);
+    const backgroundColor =
+        theme === "dark" ? tonal.dark.container : tonal.light.container;
 
-    const backgroundColor = useMemo(() => {
-        return theme === "dark" ? tonal.dark.container : tonal.light.container;
-    }, [theme, tonal.dark.container, tonal.light.container]);
-
-    const textColor = useMemo(() => {
-        return theme === "dark"
-            ? tonal.dark.onContainer
-            : tonal.light.onContainer;
-    }, [theme, tonal.dark.onContainer, tonal.light.onContainer]);
+    const textColor =
+        theme === "dark" ? tonal.dark.onContainer : tonal.light.onContainer;
 
     return (
         <button

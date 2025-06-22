@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 export function useDbValidation({
     encryptedDatabase,
@@ -11,7 +11,7 @@ export function useDbValidation({
     const [validationTries, setValidationTries] = useState(0);
     const [isValidDatabase, setIsValidDatabase] = useState(false);
 
-    const testDatabase = useCallback(async () => {
+    async function testDatabase() {
         setIsDecrypting(true);
         setValidationTries((prev) => prev + 1);
 
@@ -43,7 +43,7 @@ export function useDbValidation({
         } finally {
             setIsDecrypting(false);
         }
-    }, [encryptedDatabase, keyLocal]);
+    }
 
     return {
         testDatabase,

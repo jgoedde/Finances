@@ -10,7 +10,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
-import { type FC, useCallback } from "react";
+import { type FC } from "react";
 import { removeExpense } from "@/components/expenses/slice.ts";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useAppDispatch } from "@/redux-hooks.ts";
@@ -25,7 +25,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
 
     const { key } = useEncryption();
 
-    const onDeleteConfirmButtonClick = useCallback(() => {
+    function onDeleteConfirmButtonClick() {
         if (!key || !expenseId) {
             return;
         }
@@ -36,7 +36,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
                 encryptionKey: key,
             }),
         );
-    }, [key, dispatch, expenseId]);
+    }
 
     return (
         <AlertDialog>

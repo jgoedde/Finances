@@ -1,5 +1,4 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import { useCallback, useMemo } from "react";
 import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
@@ -16,33 +15,21 @@ export const ExpenseListItem = ({
     const rippleHandlers = useRipple();
     const theme = useColorScheme();
 
-    const supportingText = useMemo(() => {
-        if (description?.trim() !== "") {
-            return description;
-        } else {
-            return category.name;
-        }
-    }, [category.name, description]);
+    const supportingText =
+        description?.trim() !== "" ? description : category.name;
 
-    const onEditButtonClick = useCallback(() => {
+    function onEditButtonClick() {
         setTimeout(() => {
             route(`/edit/${id}`);
         }, 150);
-    }, [route, id]);
+    }
 
-    const tonal = useMemo(() => {
-        return convertHexToTonal(category.color);
-    }, [category.color]);
+    const tonal = convertHexToTonal(category.color);
+    const backgroundColor =
+        theme === "dark" ? tonal.dark.container : tonal.light.container;
 
-    const backgroundColor = useMemo(() => {
-        return theme === "dark" ? tonal.dark.container : tonal.light.container;
-    }, [theme, tonal.dark.container, tonal.light.container]);
-
-    const textColor = useMemo(() => {
-        return theme === "dark"
-            ? tonal.dark.onContainer
-            : tonal.light.onContainer;
-    }, [theme, tonal.dark.onContainer, tonal.light.onContainer]);
+    const textColor =
+        theme === "dark" ? tonal.dark.onContainer : tonal.light.onContainer;
 
     return (
         <div

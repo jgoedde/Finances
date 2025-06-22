@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/redux-hooks.ts";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFileDialog } from "@mantine/hooks";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useLocation } from "wouter";
@@ -50,10 +50,6 @@ export const SetupWizard = () => {
         }
     }, [files]);
 
-    const onImportDatabaseButtonClick = useCallback(() => {
-        open();
-    }, [open]);
-
     const isContinueButtonDisabled = () => {
         if (isDecrypting) {
             return true;
@@ -74,7 +70,7 @@ export const SetupWizard = () => {
         return false;
     };
 
-    const onContinueButtonClick = useCallback(async () => {
+    async function onContinueButtonClick() {
         if (step === "home") {
             setStep("empty");
         } else if (step === "import" && isValidDatabase) {
@@ -112,16 +108,7 @@ export const SetupWizard = () => {
             );
             route("/");
         }
-    }, [
-        dispatch,
-        encryptedDatabase,
-        isValidDatabase,
-        keyLocal,
-        route,
-        setKey,
-        step,
-        testDatabase,
-    ]);
+    }
 
     function getRightButtonText() {
         if (step === "home") {
@@ -233,9 +220,7 @@ export const SetupWizard = () => {
                 </div>
                 <AlertDialogFooter>
                     {step === "home" && (
-                        <AlertDialogAction
-                            onClick={onImportDatabaseButtonClick}
-                        >
+                        <AlertDialogAction onClick={() => open()}>
                             Import database
                         </AlertDialogAction>
                     )}

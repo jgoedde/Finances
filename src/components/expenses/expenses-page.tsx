@@ -2,8 +2,14 @@ import { Drama, Search } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useEffect, useMemo } from "react";
-import { differenceInYears, isToday, isYesterday } from "date-fns";
+import { useEffect } from "react";
+import {
+    differenceInYears,
+    isFuture,
+    isPast,
+    isToday,
+    isYesterday,
+} from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
 import {
@@ -36,6 +42,8 @@ export const ExpensesPage = () => {
     const isDecrypting = useAppSelector((state) => state.app.isDecrypting);
     const isInitial = useAppSelector((state) => state.expenses.isInitial);
     const expenses = useAppSelector(expensesSelectors.selectAll);
+    const upcomingExpenses = expenses.filter((e) => isFuture(e.date));
+    const pastExpenses = expenses.filter((e) => isPast(e.date));
     const isShowingMore = useAppSelector(selectIsShowingMore);
 
     useEffect(() => {
@@ -50,9 +58,9 @@ export const ExpensesPage = () => {
         })();
     }, [dispatch, expenses.length, key]);
 
-    const groupedExpenses = useMemo(
-        () =>
-            expenses.reduce((acc: { [key: string]: Expense[] }, expense) => {
+    function getGroupedExpenses() {
+        return pastExpenses.reduce(
+            (acc: { [key: string]: Expense[] }, expense) => {
                 let dateFormatted: string;
                 if (isToday(expense.date)) {
                     dateFormatted = "Heute";
@@ -75,9 +83,12 @@ export const ExpensesPage = () => {
                 }
                 acc[dateFormatted].push(expense);
                 return acc;
-            }, {}),
-        [expenses],
-    );
+            },
+            {},
+        );
+    }
+
+    const groupedExpenses = getGroupedExpenses();
 
     const spentThisMonth = useAppSelector(selectSpentThisMonth);
     const spentToday = useAppSelector(selectSpentToday);
@@ -241,6 +252,16 @@ export const ExpensesPage = () => {
                     >
                         <div>Loading expenses...</div>
                         <LoadingSpinner />
+                    </div>
+                )}
+
+                {upcomingExpenses.length > 0 && (
+                    <div
+                        className={
+                            "text-outline-variant hover:text-on-surface mb-2 px-4 text-sm"
+                        }
+                    >
+                        {upcomingExpenses.length} upcoming expense(s) hidden
                     </div>
                 )}
 
