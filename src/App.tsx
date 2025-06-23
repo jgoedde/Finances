@@ -2,7 +2,6 @@ import { Route, Switch, useLocation } from "wouter";
 import { ExpensesPage } from "@/components/expenses/expenses-page.tsx";
 import { UnlockPage } from "@/components/unlock/unlock-page.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { useEffect } from "react";
 import { EditExpensePage } from "@/components/expenses/editor/edit-expense-page.tsx";
 import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
 import { ReportingPage } from "@/components/reporting/reporting-page.tsx";
@@ -12,11 +11,9 @@ export default function App() {
     const { key } = useEncryption();
     const [, route] = useLocation();
 
-    useEffect(() => {
-        if (key === undefined) {
-            route("/unlock");
-        }
-    }, [key, route]);
+    if (key === undefined) {
+        route("/unlock");
+    }
 
     return (
         <Switch>
