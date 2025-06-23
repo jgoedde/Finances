@@ -12,9 +12,13 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) => {
         const logger = createLogger();
-        return getDefaultMiddleware().concat(
-            import.meta.env.PROD ? [] : [logger],
-        );
+        const isProd = import.meta.env.PROD;
+
+        if (!isProd) {
+            console.info("Redux logger is enabled in development mode.");
+        }
+
+        return getDefaultMiddleware().concat(isProd ? [] : [logger]);
     },
 });
 
