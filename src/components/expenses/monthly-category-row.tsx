@@ -57,7 +57,7 @@ export function MonthlyCategoryRow({ category }: { category: Category }) {
                 <div className={"font-medium"}>{category.name}</div>
             </div>
             <div className={"flex items-center gap-x-3"}>
-                <div className={"flex"}>{blocks}</div>
+                <div className={"motion-preset-slide-right flex"}>{blocks}</div>
                 <div
                     className={
                         "text-on-surface-variant w-16 text-right text-sm"

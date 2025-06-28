@@ -1,5 +1,13 @@
 import { expensesAdapter } from "@/components/expenses/slice.ts";
-import { isSameMonth, isToday, isYesterday } from "date-fns";
+import {
+    getMonth,
+    getWeek,
+    getYear,
+    isSameMonth,
+    isToday,
+    isYesterday,
+    subMonths,
+} from "date-fns";
 import type { RootState } from "@/store.ts";
 
 export const selectSpentToday = (state: RootState) => {
@@ -57,4 +65,60 @@ export const selectSpentInMonth = (state: RootState, month: Date): number => {
         .map((e) => e.amount);
 
     return amountsInMonth.reduce((acc, amount) => acc + amount, 0);
+};
+
+export const selectPastMonthsExpenses = (
+    state: RootState,
+    months: number,
+): {
+    year: number;
+    month: number;
+    weeks: {
+        calendarWeek: number;
+        spent: number;
+    }[];
+}[] => {
+    const allExpenses = expensesAdapter
+        .getSelectors()
+        .selectAll(state.expenses);
+
+    const now = new Date();
+    const results: {
+        year: number;
+        month: number;
+        weeks: {
+            calendarWeek: number;
+            spent: number;
+        }[];
+    }[] = [];
+
+    for (let i = 0; i < months; i++) {
+        const monthDate = subMonths(now, i);
+        const year = getYear(monthDate);
+        const month = getMonth(monthDate);
+
+        // Filter expenses for this month
+        const expensesInMonth = allExpenses.filter((e) =>
+            isSameMonth(new Date(e.date), monthDate),
+        );
+
+        // Gruppiere nach Kalenderwoche
+        const weekMap = new Map<number, number>();
+        for (const e of expensesInMonth) {
+            const week = getWeek(new Date(e.date), { weekStartsOn: 1 });
+            weekMap.set(week, (weekMap.get(week) ?? 0) + e.amount);
+        }
+
+        const weeks = Array.from(weekMap.entries())
+            .map(([calendarWeek, spent]) => ({ calendarWeek, spent }))
+            .sort((a, b) => a.calendarWeek - b.calendarWeek);
+
+        results.push({
+            year,
+            month,
+            weeks,
+        });
+    }
+
+    return results;
 };

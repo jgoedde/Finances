@@ -73,10 +73,10 @@ export function MonthlyOverview() {
                     <div className={"flex grow flex-wrap"}>
                         <div>Du hast diesen Monat</div>
                         <div className={"text-error mx-1 flex items-center"}>
-                            <ArrowUp className={"size-4"} /> 12% mehr
+                            <ArrowUp className={"size-4"} /> 00% mehr
                         </div>
                         <div className={""}>
-                            für Einkäufe ausgegeben als im Mai.
+                            für Auswärts Essen ausgegeben als im Mai.
                         </div>
                     </div>
                     <div>
