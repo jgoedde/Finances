@@ -34,11 +34,8 @@ export const ExpenseListItem = ({
     return (
         <div
             className={
-                "ripple-container mx-auto flex w-full flex-row items-center gap-x-3 rounded-md px-2 py-1.5"
+                "ripple-container flex w-full flex-row items-center gap-x-3 rounded-md py-1.5"
             }
-            style={{
-                width: "calc(100% - calc(var(--spacing) * 4))",
-            }}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
         >

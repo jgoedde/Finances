@@ -48,3 +48,13 @@ export const selectSpentThisMonthInCategory = (
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
 };
+
+export const selectSpentInMonth = (state: RootState, month: Date): number => {
+    const amountsInMonth = expensesAdapter
+        .getSelectors()
+        .selectAll(state.expenses)
+        .filter((e) => isSameMonth(new Date(e.date), month))
+        .map((e) => e.amount);
+
+    return amountsInMonth.reduce((acc, amount) => acc + amount, 0);
+};

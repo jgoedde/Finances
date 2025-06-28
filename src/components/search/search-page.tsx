@@ -179,7 +179,7 @@ export const SearchPage = () => {
                         </h3>
                     </div>
                 )}
-                <div className={"flex w-full flex-col"}>
+                <div className={"mx-2 flex w-full flex-col px-2"}>
                     {filteredExpenses.length > 0 &&
                         filteredExpenses.map((e) => (
                             <ExpenseListItem key={e.id} transaction={e} />
