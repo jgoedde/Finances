@@ -2,7 +2,6 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import type { RootState } from "@/store.ts";
 import type { Expense } from "@/components/expense.ts";
-import { isSameMonth, isToday, isYesterday } from "date-fns";
 
 export interface ExpensesState {
     isInitial: boolean;
@@ -34,35 +33,7 @@ export const expensesSlice = createSlice({
             expensesAdapter.setAll(state, action.payload);
         });
     },
-    selectors: {
-        selectSpentToday: (state) => {
-            const amountsToday = expensesAdapter
-                .getSelectors()
-                .selectAll(state)
-                .filter((e) => isToday(e.date))
-                .map((e) => e.amount);
-
-            return amountsToday.reduce((acc, amount) => acc + amount, 0);
-        },
-        selectSpentThisMonth: (state) => {
-            const amountsThisMonth = expensesAdapter
-                .getSelectors()
-                .selectAll(state)
-                .filter((e) => isSameMonth(new Date(), e.date))
-                .map((e) => e.amount);
-
-            return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
-        },
-        selectSpentYesterday: (state) => {
-            const amountsYesterday = expensesAdapter
-                .getSelectors()
-                .selectAll(state)
-                .filter((e) => isYesterday(e.date))
-                .map((e) => e.amount);
-
-            return amountsYesterday.reduce((acc, amount) => acc + amount, 0);
-        },
-    },
+    selectors: {},
 });
 
 export const expensesSelectors = expensesAdapter.getSelectors<RootState>(
@@ -70,8 +41,5 @@ export const expensesSelectors = expensesAdapter.getSelectors<RootState>(
 );
 
 export const { removeExpense, upsertExpense } = expensesSlice.actions;
-
-export const { selectSpentToday, selectSpentThisMonth, selectSpentYesterday } =
-    expensesSlice.selectors;
 
 export default expensesSlice.reducer;

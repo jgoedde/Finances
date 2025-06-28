@@ -1,6 +1,5 @@
-import { Drama, Search } from "lucide-react";
+import { ArrowUp, Calendar, Clock, History, Search } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
-import { ExpensesGroup } from "@/components/expenses/history/expenses-group.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useEffect } from "react";
 import {
@@ -12,25 +11,24 @@ import {
 } from "date-fns";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import {
-    expensesSelectors,
-    selectSpentThisMonth,
-    selectSpentToday,
-    selectSpentYesterday,
-} from "@/components/expenses/slice.ts";
+import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { LoadingSpinner } from "@/components/ui/loading-spinner.tsx";
 import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import type { Expense } from "@/components/expense.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
 import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
+import { selectIsShowingMore } from "@/app-slice.ts";
 import { setFixedCosts } from "@/components/fixed-costs/slice.ts";
-import { ExportButton } from "@/components/expenses/export-button.tsx";
-import { IncomeDistribution } from "@/components/expenses/income-distribution.tsx";
-import { selectIsShowingMore, showMore } from "@/app-slice.ts";
 import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
+import { categories } from "@/components/expenses/editor/categories.ts";
+import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
+import {
+    selectSpentThisMonth,
+    selectSpentToday,
+    selectSpentYesterday,
+} from "@/components/expenses/selectors.ts";
 
 export const ExpensesPage = () => {
     const dispatch = useAppDispatch();
@@ -116,187 +114,138 @@ export const ExpensesPage = () => {
 
             <div
                 className={
-                    "mt-6 flex w-full shrink-0 gap-x-3 overflow-x-auto px-3"
+                    "mt-6 flex w-full shrink-0 gap-x-6 overflow-x-auto px-4 pb-4"
                 }
             >
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
+                        "ripple-container bg-surface-container-low w-[150px] shrink-0 rounded-md border-none drop-shadow-lg"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
-                    onClick={(e) => {
-                        ripple.onClick(e);
-
-                        setTimeout(() => route("/reporting"), 150);
-                    }}
                 >
-                    <CardHeader className={"flex flex-col font-medium"}>
-                        <div className={""}>Spent today</div>
+                    <CardHeader className={"flex flex-col items-center"}>
+                        <div className={"text-outline"}>
+                            <Clock className={"size-7"} />
+                        </div>
+                        <div className={"text-on-surface text-center"}>
+                            Heute ausgegeben
+                        </div>
                     </CardHeader>
-                    <CardContent className={"mt-auto"}>
-                        <div className={"font-bold"}>
+                    <CardContent className={"mt-auto flex justify-center"}>
+                        <div
+                            className={
+                                "font-poppins text-on-surface text-lg font-semibold"
+                            }
+                        >
                             {formatEuro(spentToday)}
                         </div>
                     </CardContent>
                 </Card>
+
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
+                        "ripple-container bg-surface-container-low w-[150px] shrink-0 rounded-md border-none drop-shadow-lg"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
                     onClick={(e) => {
                         ripple.onClick(e);
-                        setTimeout(() => route("/reporting"), 150);
+
+                        setTimeout(() => {
+                            const fixedCostsJson = prompt(
+                                "Enter stuff as JSON",
+                            );
+                            if (!fixedCostsJson) {
+                                return;
+                            }
+
+                            dispatch(
+                                setFixedCosts(
+                                    JSON.parse(fixedCostsJson) as FixedCost[],
+                                ),
+                            );
+                        }, 150);
                     }}
                 >
-                    <CardHeader className={"flex flex-col font-medium"}>
-                        <div>Spent this month</div>
+                    <CardHeader className={"flex flex-col items-center"}>
+                        <div className={"text-outline"}>
+                            <Calendar className={"size-7"} />
+                        </div>
+                        <div className={"text-on-surface text-center"}>
+                            Diesen Monat ausgegeben
+                        </div>
                     </CardHeader>
-                    <CardContent className={"mt-auto"}>
-                        <div className={"font-bold"}>
+                    <CardContent className={"mt-auto flex justify-center"}>
+                        <div
+                            className={
+                                "font-poppins text-on-surface text-lg font-semibold"
+                            }
+                        >
                             {formatEuro(spentThisMonth)}
                         </div>
                     </CardContent>
                 </Card>
+
                 <Card
                     className={
-                        "ripple-container bg-surface-container-highest font-poppins w-[150px] shrink-0 rounded-md border-none shadow-none"
+                        "ripple-container bg-surface-container-low w-[150px] shrink-0 rounded-md border-none drop-shadow-lg"
                     }
                     data-ripple-color="bg-on-surface/10"
                     {...ripple}
-                    onClick={(e) => {
-                        ripple.onClick(e);
-                        setTimeout(() => route("/reporting"), 150);
-                    }}
                 >
-                    <CardHeader className={"flex flex-col"}>
-                        <div className={"font-medium"}>Spent yesterday</div>
+                    <CardHeader className={"flex flex-col items-center"}>
+                        <div className={"text-outline"}>
+                            <History className={"size-7"} />
+                        </div>
+                        <div className={"text-on-surface text-center"}>
+                            Gestern ausgegeben
+                        </div>
                     </CardHeader>
-                    <CardContent className={"mt-auto"}>
-                        <div className={"font-bold"}>
+                    <CardContent className={"mt-auto flex justify-center"}>
+                        <div
+                            className={
+                                "font-poppins text-on-surface text-lg font-semibold"
+                            }
+                        >
                             {formatEuro(spentYesterday)}
                         </div>
                     </CardContent>
                 </Card>
-                {!isDecrypting && !isInitial && (
-                    <Card
-                        className={
-                            "ripple-container text-on-primary-container bg-primary-container border-outline-variant w-[150px] shrink-0 rounded-md border-2 border-dotted text-center shadow-none"
-                        }
-                        data-ripple-color="bg-on-surface/10"
-                        {...ripple}
-                        onClick={(e) => {
-                            ripple.onClick(e);
-                        }}
-                    >
-                        <CardHeader className={"my-auto flex flex-col"}>
-                            <button
-                                className={"font-medium"}
-                                onClick={() => {
-                                    const fixedCostsJson = prompt(
-                                        "Enter stuff as JSON",
-                                    );
-                                    if (!fixedCostsJson) {
-                                        return;
-                                    }
-
-                                    dispatch(
-                                        setFixedCosts(
-                                            JSON.parse(
-                                                fixedCostsJson,
-                                            ) as FixedCost[],
-                                        ),
-                                    );
-                                }}
-                            >
-                                Set up <span className={""}>fixed costs</span>
-                            </button>
-                        </CardHeader>
-                    </Card>
-                )}
             </div>
 
             <main className={"grow"}>
-                <IncomeDistribution />
-                <div className={"flex items-center justify-between px-4"}>
-                    <h1
-                        className={
-                            "text-primary font-poppins mb-4 text-2xl font-bold"
-                        }
-                    >
-                        My expenses
-                    </h1>
-                    {Object.keys(groupedExpenses).length > 0 && (
-                        <ExportButton />
-                    )}
-                </div>
-
-                {expenses.length === 0 && !isDecrypting && !isInitial && (
-                    <div
-                        className={
-                            "text-on-surface-variant my-6 flex w-full flex-col items-center px-4"
-                        }
-                    >
-                        <Drama className={"size-24"} />
-                        <div className={"mt-2"}>No expenses tracked yet</div>
-                    </div>
-                )}
-
-                {isDecrypting && (
-                    <div
-                        className={
-                            "text-secondary my-5 flex w-full flex-col items-center px-4"
-                        }
-                    >
-                        <div>Loading expenses...</div>
-                        <LoadingSpinner />
-                    </div>
-                )}
-
-                {upcomingExpenses.length > 0 && (
-                    <div
-                        className={
-                            "text-outline-variant hover:text-on-surface mb-2 px-4 text-sm"
-                        }
-                    >
-                        {upcomingExpenses.length} upcoming expense(s) hidden
-                    </div>
-                )}
-
-                <div className={"flex w-full flex-col gap-y-4"}>
-                    {Object.keys(groupedExpenses).map((date, i) => {
-                        const initiallyShown = 3;
-
-                        const expenses = groupedExpenses[date];
-
-                        if (i > initiallyShown - 1 && !isShowingMore) {
-                            return null;
-                        }
-
-                        return (
-                            <div key={`${date}-${i}`}>
-                                <ExpensesGroup
-                                    date={date}
-                                    expenses={expenses}
-                                />
-                                {i === initiallyShown - 1 && !isShowingMore && (
-                                    <div className={"flex justify-center"}>
-                                        <button
-                                            className={"text-primary mt-4"}
-                                            onClick={() => {
-                                                dispatch(showMore());
-                                            }}
-                                        >
-                                            Show more
-                                        </button>
-                                    </div>
-                                )}
+                <Card
+                    className={
+                        "bg-surface-container-highest text-on-surface m-2 flex rounded-md border-none px-4 py-6"
+                    }
+                >
+                    <div className={"text-md"}>
+                        <div
+                            className={
+                                "bg-surface-bright flex flex-wrap items-center rounded-sm p-2"
+                            }
+                        >
+                            <div>Du hast diesen Monat</div>
+                            <div
+                                className={"text-error mx-1 flex items-center"}
+                            >
+                                <ArrowUp className={"size-4"} /> 12% mehr
                             </div>
-                        );
-                    })}
-                </div>
+                            <div className={""}>
+                                für Einkäufe ausgegeben als im Mai.
+                            </div>
+                        </div>
+                    </div>
+                    <div className={"mt-2 flex flex-col gap-y-3"}>
+                        {categories.map((category) => (
+                            <MonthlyCategoryRow
+                                category={category}
+                                key={category.icon}
+                            />
+                        ))}
+                    </div>
+                </Card>
             </main>
 
             {!isDecrypting && !isInitial && <NewExpenseFAB />}
