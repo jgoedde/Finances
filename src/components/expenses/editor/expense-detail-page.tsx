@@ -73,7 +73,7 @@ export const ExpenseDetailPage: FC<Props> = ({
             (x) => x.icon === (selectedCategoryIconNameLocal as string),
         );
 
-        if (!cat || isNaN(amount) || amount <= 0 || !expenseLocal) {
+        if (!cat || isNaN(amount) || !expenseLocal) {
             alert("Please select a category, specify an amount and a name.");
             return;
         }
