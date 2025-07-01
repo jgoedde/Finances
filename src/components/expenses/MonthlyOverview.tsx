@@ -17,7 +17,7 @@ export function MonthlyOverview() {
 
     const amountDiffNowVsLastMonth = spentThisMonth - spentLastMonth;
     const trendPercentage = (amountDiffNowVsLastMonth / spentLastMonth) * 100;
-    const trendPercentageStr = trendPercentage.toFixed(0);
+    const trendPercentageStr = Math.abs(trendPercentage).toFixed(0);
 
     return (
         <div className={"bg-surface-container-lowest m-2 flex rounded-md p-4"}>
