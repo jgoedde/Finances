@@ -8,11 +8,18 @@ import { selectSpentInMonth } from "@/components/expenses/selectors.ts";
 import { addMonths } from "date-fns";
 
 export function MonthlyOverview() {
+    const lastMonth = addMonths(new Date(), -1);
     const spentThisMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, new Date()),
+        selectSpentInMonth(state, {
+            year: new Date().getFullYear(),
+            monthIndex: new Date().getMonth(),
+        }),
     );
     const spentLastMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, addMonths(new Date(), -1)),
+        selectSpentInMonth(state, {
+            year: lastMonth.getFullYear(),
+            monthIndex: lastMonth.getMonth(),
+        }),
     );
 
     const amountDiffNowVsLastMonth = spentThisMonth - spentLastMonth;

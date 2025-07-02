@@ -17,7 +17,10 @@ export function LazyRow() {
     const ripple = useRipple();
 
     const spentThisMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, new Date()),
+        selectSpentInMonth(state, {
+            year: new Date().getFullYear(),
+            monthIndex: new Date().getMonth(),
+        }),
     );
     const spentToday = useAppSelector(selectSpentToday);
     const spentYesterday = useAppSelector(selectSpentYesterday);

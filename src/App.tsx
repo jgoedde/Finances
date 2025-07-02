@@ -4,7 +4,6 @@ import { UnlockPage } from "@/components/unlock/unlock-page.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { EditExpensePage } from "@/components/expenses/editor/edit-expense-page.tsx";
 import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
-import { ReportingPage } from "@/components/reporting/reporting-page.tsx";
 import { SearchPage } from "@/components/search/search-page.tsx";
 
 export default function App() {
@@ -20,7 +19,6 @@ export default function App() {
             <Route path="/" component={ExpensesPage} />
             <Route path="/new">{() => <ExpenseDetailPage />}</Route>
             <Route path="/unlock" component={UnlockPage} />
-            <Route path="/reporting" component={ReportingPage} />
             <Route path="/expenses/search" component={SearchPage} />
             <Route path="/edit/:id">
                 {(params) => <EditExpensePage id={params.id} />}
