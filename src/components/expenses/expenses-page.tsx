@@ -11,6 +11,7 @@ import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { SearchBar } from "@/components/expenses/SearchBar.tsx";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
+import { Insights } from "@/components/expenses/Insights.tsx";
 import { MonthsComparison } from "@/components/expenses/MonthsComparison.tsx";
 
 export const ExpensesPage = () => {
@@ -76,6 +77,7 @@ export const ExpensesPage = () => {
                     </div>
                 </div>
                 <MonthlyOverview />
+                <Insights />
                 <MonthsComparison />
                 <ExpensesList />
             </main>
