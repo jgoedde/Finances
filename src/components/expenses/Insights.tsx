@@ -153,7 +153,7 @@ const mostSpentWeekdayFormatted: { day: string; amount: number } = Object.entrie
                     {new Date().toLocaleDateString("de-DE", { month: "long" })}
                 </div>
                 <div className={"font-poppins font-semibold"}>
-                    {mostSpentWeekdayFormatted.day}
+                    {mostSpentWeekdayFormatted.day}s
                 </div>
             </div>
             <div
