@@ -31,6 +31,7 @@ export function MonthHeatmap({ month }: { month: YearMonth }) {
         <div className="bg-surface-container-lowest w-full flex-shrink-0 snap-start">
             <div className={"divide-outline-variant flex h-full divide-x"}>
                 <Calendar
+                    className={"w-1/2"}
                     defaultMonth={new Date(month.year, month.monthIndex)}
                     disableNavigation
                     selected={expenses.map((e) => new Date(e.date))}

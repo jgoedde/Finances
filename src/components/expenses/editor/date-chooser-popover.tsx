@@ -25,7 +25,6 @@ export const DateChooserPopover: FC<Props> = ({ onSelect, selected }) => (
                 mode="single"
                 selected={selected}
                 onSelect={onSelect}
-                initialFocus
             />
         </PopoverContent>
     </Popover>
