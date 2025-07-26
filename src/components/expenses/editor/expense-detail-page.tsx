@@ -1,9 +1,7 @@
 import { ArrowLeft, Check } from "lucide-react";
 import { type FC, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import CurrencyInput, {
-    type CurrencyInputProps,
-} from "react-currency-input-field";
+import CurrencyInput, { type CurrencyInputProps } from "react-currency-input-field";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { type IconName } from "lucide-react/dynamic";
 import { useAppDispatch } from "@/redux-hooks.ts";
@@ -11,10 +9,7 @@ import { upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import {
-    categories,
-    type Category,
-} from "@/components/expenses/editor/categories.ts";
+import { categories, type Category } from "@/components/expenses/editor/categories.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import type { Expense } from "@/components/expense.ts";
@@ -178,24 +173,28 @@ export const ExpenseDetailPage: FC<Props> = ({
                         onSubmit();
                     }}
                 >
-                    <div className={"flex items-center gap-x-2"}>
-                        <label
+                    <div className={"flex items-center justify-between gap-x-2"}>
+                        <div className={"flex"}><label
                             htmlFor="amount"
                             className={"text-on-surface-variant"}
                         >
-                            Amount
+                            Preis
                         </label>
-                        <CurrencyInput
-                            ref={amountInputRef}
-                            id="amount"
-                            name="amount"
-                            intlConfig={{ locale: "de-DE", currency: "EUR" }}
-                            className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
-                            onValueChange={onAmountInputChange}
-                            decimalsLimit={2}
-                            value={amountStr}
-                            step={1}
-                        />
+                            <CurrencyInput
+                                ref={amountInputRef}
+                                id="amount"
+                                name="amount"
+                                intlConfig={{ locale: "de-DE", currency: "EUR" }}
+                                className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
+                                onValueChange={onAmountInputChange}
+                                decimalsLimit={2}
+                                value={amountStr}
+                                step={1}
+                            /></div>
+                        <div className="flex items-center space-x-2">
+                            <div>a</div>
+                            <div>b</div>
+                        </div>
                     </div>
                     <div className={"flex items-center gap-x-2"}>
                         <label
@@ -222,7 +221,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                             htmlFor="description"
                             className={"text-on-surface-variant"}
                         >
-                            Description
+                            Beschreibung
                         </label>
                         <Input
                             name={"description"}

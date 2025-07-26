@@ -54,31 +54,35 @@ export const Insights = () => {
         expensesEatingOut.reduce((acc, expense) => acc + expense.amount, 0) /
         expensesEatingOut.length;
 
-const mostSpentWeekdayFormatted: { day: string; amount: number } = Object.entries(
-        expensesInCurrentMonth.reduce<Record<number, number>>((acc, expense) => {
-            const date = new Date(expense.date);
-            const day = date.getDay();
-            acc[day] = (acc[day] || 0) + expense.amount;
-            return acc;
-        }, {}),
-    ).reduce<{ day: string; amount: number }>(
-        (acc, [day, amount]) => {
-            const dayName = [
-                "Sonntag",
-                "Montag",
-                "Dienstag",
-                "Mittwoch",
-                "Donnerstag",
-                "Freitag",
-                "Samstag",
-            ][parseInt(day)];
-            if (amount > acc.amount) {
-                return { day: dayName, amount };
-            }
-            return acc;
-        },
-        { day: "Kein Tag", amount: 0 },
-    );
+    const mostSpentWeekdayFormatted: { day: string; amount: number } =
+        Object.entries(
+            expensesInCurrentMonth.reduce<Record<number, number>>(
+                (acc, expense) => {
+                    const date = new Date(expense.date);
+                    const day = date.getDay();
+                    acc[day] = (acc[day] || 0) + expense.amount;
+                    return acc;
+                },
+                {},
+            ),
+        ).reduce<{ day: string; amount: number }>(
+            (acc, [day, amount]) => {
+                const dayName = [
+                    "Sonntag",
+                    "Montag",
+                    "Dienstag",
+                    "Mittwoch",
+                    "Donnerstag",
+                    "Freitag",
+                    "Samstag",
+                ][parseInt(day)];
+                if (amount > acc.amount) {
+                    return { day: dayName, amount };
+                }
+                return acc;
+            },
+            { day: "Kein Tag", amount: 0 },
+        );
     const mostExpensiveDayThisYear = expenses.reduce(
         (acc, expense) => {
             const date = new Date(expense.date);
