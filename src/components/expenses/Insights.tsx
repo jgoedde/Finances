@@ -4,6 +4,7 @@ import { expensesSelectors } from "@/components/expenses/slice.ts";
 import { isAfter, startOfWeek } from "date-fns";
 import { selectExpensesInMonth } from "@/components/expenses/selectors.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
+import type { Expense } from "@/components/expense.ts";
 
 export const Insights = () => {
     const expenses = useAppSelector(expensesSelectors.selectAll);
@@ -53,14 +54,14 @@ export const Insights = () => {
         expensesEatingOut.reduce((acc, expense) => acc + expense.amount, 0) /
         expensesEatingOut.length;
 
-    const mostSpentWeekdayFormatted = Object.entries(
-        expensesInCurrentMonth.reduce((acc, expense) => {
+const mostSpentWeekdayFormatted: { day: string; amount: number } = Object.entries(
+        expensesInCurrentMonth.reduce<Record<number, number>>((acc, expense) => {
             const date = new Date(expense.date);
             const day = date.getDay();
             acc[day] = (acc[day] || 0) + expense.amount;
             return acc;
         }, {}),
-    ).reduce(
+    ).reduce<{ day: string; amount: number }>(
         (acc, [day, amount]) => {
             const dayName = [
                 "Sonntag",
@@ -78,7 +79,6 @@ export const Insights = () => {
         },
         { day: "Kein Tag", amount: 0 },
     );
-
     const mostExpensiveDayThisYear = expenses.reduce(
         (acc, expense) => {
             const date = new Date(expense.date);
