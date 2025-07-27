@@ -1,20 +1,31 @@
 import { ArrowLeft, Check } from "lucide-react";
 import { type FC, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import CurrencyInput, { type CurrencyInputProps } from "react-currency-input-field";
+import CurrencyInput, {
+    type CurrencyInputProps,
+} from "react-currency-input-field";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { type IconName } from "lucide-react/dynamic";
-import { useAppDispatch } from "@/redux-hooks.ts";
-import { upsertExpense } from "@/components/expenses/slice.ts";
+import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
+import {
+    expensesSelectors,
+    upsertExpense,
+} from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { categories, type Category } from "@/components/expenses/editor/categories.ts";
+import {
+    categories,
+    type Category,
+} from "@/components/expenses/editor/categories.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import type { Expense } from "@/components/expense.ts";
 import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
+import { addMonths, isAfter } from "date-fns";
+import { groupBy } from "lodash";
+import { mergeSimilarKeys } from "@/lib/utils.ts";
 
 type Props = {
     description?: string;
@@ -105,6 +116,16 @@ export const ExpenseDetailPage: FC<Props> = ({
         }
     }
 
+    const expenses = useAppSelector(expensesSelectors.selectAll)
+        .filter((e) => e.category.iconName === selectedCategoryIconNameLocal)
+        .filter((e) => isAfter(e.date, addMonths(new Date(), -3)));
+
+    const sth = mergeSimilarKeys(groupBy(expenses, "name"));
+
+    const top = Object.keys(sth)
+        .sort((a, b) => sth[b].length - sth[a].length)
+        .slice(0, 4);
+
     return (
         <>
             <div
@@ -173,48 +194,82 @@ export const ExpenseDetailPage: FC<Props> = ({
                         onSubmit();
                     }}
                 >
-                    <div className={"flex items-center justify-between gap-x-2"}>
-                        <div className={"flex"}><label
-                            htmlFor="amount"
-                            className={"text-on-surface-variant"}
-                        >
-                            Preis
-                        </label>
+                    <div
+                        className={"flex items-center justify-between gap-x-2"}
+                    >
+                        <div className={"flex"}>
+                            <label
+                                htmlFor="amount"
+                                className={"text-on-surface-variant"}
+                            >
+                                Preis
+                            </label>
                             <CurrencyInput
                                 ref={amountInputRef}
                                 id="amount"
                                 name="amount"
-                                intlConfig={{ locale: "de-DE", currency: "EUR" }}
+                                intlConfig={{
+                                    locale: "de-DE",
+                                    currency: "EUR",
+                                }}
                                 className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
                                 onValueChange={onAmountInputChange}
                                 decimalsLimit={2}
                                 value={amountStr}
                                 step={1}
-                            /></div>
+                            />
+                        </div>
                         <div className="flex items-center space-x-2">
-                            <div>a</div>
-                            <div>b</div>
+                            <div></div>
+                            <div></div>
                         </div>
                     </div>
-                    <div className={"flex items-center gap-x-2"}>
-                        <label
-                            htmlFor="expense"
-                            className={"text-on-surface-variant"}
-                        >
-                            Ausgabe
-                        </label>
-                        <Input
-                            list={"frequent-expenses"}
-                            name={"expense"}
-                            value={expenseLocal}
-                            onChange={(e) => {
-                                setExpenseLocal(e.target.value);
-                            }}
-                            type={"text"}
-                            className={
-                                "rounded-none border-none shadow-none focus-visible:ring-0"
-                            }
-                        />
+                    <div className={"flex flex-col gap-x-2"}>
+                        {top.length > 0 && (
+                            <div className={"mt-2 flex gap-2"}>
+                                {top.map((e) => (
+                                    <div
+                                        className={
+                                            "border-outline-variant bg-surface-container-low text-on-surface-variant rounded-md border-1 px-2 py-1"
+                                        }
+                                        data-ripple-color={"bg-on-primary/20"}
+                                        {...ripple}
+                                        key={`suggestion-${e}`}
+                                    >
+                                        {e}
+                                    </div>
+                                ))}
+                                <div
+                                    className={
+                                        "border-outline-variant bg-surface-container-low text-on-surface-variant rounded-md border-1 px-2 py-1"
+                                    }
+                                    data-ripple-color={"bg-on-primary/20"}
+                                    {...ripple}
+                                >
+                                    Anderes
+                                </div>
+                            </div>
+                        )}
+                        <div className={"flex items-center"}>
+                            <label
+                                htmlFor="expense"
+                                className={"text-on-surface-variant"}
+                            >
+                                Ausgabe
+                            </label>
+                            <Input
+                                list={"frequent-expenses"}
+                                name={"expense"}
+                                value={expenseLocal}
+                                onChange={(e) => {
+                                    setExpenseLocal(e.target.value);
+                                }}
+                                type={"text"}
+                                className={
+                                    "rounded-none border-none shadow-none focus-visible:ring-0"
+                                }
+                            />
+                        </div>
                     </div>
                     <div className={"flex items-center gap-x-2"}>
                         <label
