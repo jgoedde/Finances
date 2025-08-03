@@ -89,3 +89,8 @@ export const selectExpensesInMonth = createSelector(
             ),
         ),
 );
+
+interface YearMonth {
+    year: number;
+    monthIndex: number; // 0 for January, 1 for February, etc.
+}
