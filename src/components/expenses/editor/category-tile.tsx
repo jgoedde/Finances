@@ -37,7 +37,7 @@ export const CategoryTile: FC<Props> = ({
                 backgroundColor,
             }}
             className={
-                "ripple-container flex aspect-square size-1/4 flex-col border-none text-left transition-opacity duration-150"
+                "ripple-container relative flex aspect-square size-1/4 flex-col border-none text-left transition-opacity duration-150"
             }
             data-ripple-color={"bg-on-surface/20"}
             {...ripple}
@@ -59,13 +59,13 @@ export const CategoryTile: FC<Props> = ({
             </div>
             <div
                 className={
-                    "mt-auto self-end justify-self-end p-2 pt-0 transition-colors duration-75"
+                    "absolute right-1 bottom-1 size-10 transition-colors duration-75"
                 }
                 style={{
                     color: textColor,
                 }}
             >
-                <DynamicIcon name={category.icon} className={"size-10"} />
+                <DynamicIcon name={category.icon} className={"size-full"} />
             </div>
         </button>
     );
