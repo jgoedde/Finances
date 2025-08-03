@@ -1,0 +1,123 @@
+import { Input } from "@/components/ui/input.tsx";
+import { useAppSelector } from "@/redux-hooks.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
+import { addMonths, isAfter } from "date-fns";
+import * as React from "react";
+import { useMemo } from "react";
+import { mergeSimilarKeys } from "@/lib/utils";
+import { groupBy } from "lodash";
+import { useRipple } from "@/hooks/use-ripple.ts";
+
+const now = new Date();
+
+export function ExpenseInput({
+    expenseLocal,
+    categoryIconName,
+    onInputChange,
+    onApplySuggestion,
+    shouldShowSuggestions,
+}: {
+    expenseLocal: string;
+    categoryIconName: string;
+    onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onApplySuggestion: (suggestion: string) => void;
+    shouldShowSuggestions: boolean;
+}) {
+    const expenses = useAppSelector(selectAllExpenses);
+
+    const filteredExpenses = useMemo(
+        () =>
+            expenses
+                .filter((e) => e.category.iconName === categoryIconName)
+                .filter((e) => isAfter(e.date, addMonths(now, -3))),
+        [categoryIconName, expenses],
+    );
+
+    // Shuffle top 8 for randomness
+    const top = useMemo(() => {
+        function getTimeOfDayBucket(date: Date) {
+            const hour = date.getHours();
+            if (hour >= 5 && hour < 11) return "Morgen";
+            if (hour >= 11 && hour < 17) return "Mittag";
+            if (hour >= 17 && hour < 22) return "Abend";
+            return "Nacht";
+        }
+
+        const currentTimeBucket = getTimeOfDayBucket(now);
+        const currentWeekday = now.getDay();
+
+        // Group by name using mergeSimilarKeys
+        const grouped = mergeSimilarKeys(groupBy(filteredExpenses, "name"));
+
+        // Score suggestions by frequency, time of day, and weekday
+        const scored = Object.entries(grouped).map(([name, arr]) => {
+            // arr: Expense[]
+            const freq = arr.length;
+            // How many match current time bucket?
+            const timeMatches = arr.filter((e) => {
+                const d = new Date(e.date);
+                return getTimeOfDayBucket(d) === currentTimeBucket;
+            }).length;
+            // How many match current weekday?
+            const weekdayMatches = arr.filter((e) => {
+                const d = new Date(e.date);
+                return d.getDay() === currentWeekday;
+            }).length;
+            // Score: freq + timeMatches*2 + weekdayMatches*2
+            const score = freq + timeMatches * 2 + weekdayMatches * 2;
+            return { name, freq, score };
+        });
+        // Sort by score, then freq
+        scored.sort((a, b) => b.score - a.score || b.freq - a.freq);
+
+        return scored
+            .slice(0, 8)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4)
+            .map((s) => s.name);
+    }, [filteredExpenses]);
+
+    const ripple = useRipple();
+
+    return (
+        <div className={"flex flex-col gap-x-2"}>
+            {top.length > 0 && shouldShowSuggestions && (
+                <div className={"my-2 flex flex-wrap gap-2"}>
+                    {top.map((e) => (
+                        <button
+                            className={
+                                "border-outline-variant bg-surface-container-low text-on-surface-variant ripple-container cursor-pointer rounded-md border-1 px-2 py-1"
+                            }
+                            data-ripple-color={"bg-on-surface/50"}
+                            {...ripple}
+                            key={`suggestion-${e}`}
+                            type={"button"}
+                            onClick={(event) => {
+                                ripple.onClick(event);
+
+                                onApplySuggestion(e);
+                            }}
+                        >
+                            {e}
+                        </button>
+                    ))}
+                </div>
+            )}
+            <div className={"flex items-center"}>
+                <label htmlFor="expense" className={"text-on-surface-variant"}>
+                    Ausgabe
+                </label>
+                <Input
+                    list={"frequent-expenses"}
+                    name={"expense"}
+                    value={expenseLocal}
+                    onChange={onInputChange}
+                    type={"text"}
+                    className={
+                        "rounded-none border-none shadow-none focus-visible:ring-0"
+                    }
+                />
+            </div>
+        </div>
+    );
+}

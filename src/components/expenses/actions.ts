@@ -3,7 +3,7 @@ import { decryptLocalStorageData, encrypt } from "@/lib/encryption-utils.ts";
 import { isV1Persistence, type V2Storage } from "@/lib/app-local-storage.ts";
 import type { RootState } from "@/store.ts";
 import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
 
 /**
  * A Redux Toolkit async thunk for loading expenses from ``localStorage``.
@@ -38,7 +38,7 @@ export const saveToLocalStorage = createAsyncThunk(
         const encrypted = await encrypt(
             JSON.stringify({
                 fixedCosts: fixedCostsSelectors.selectAll(state),
-                expenses: expensesSelectors.selectAll(state),
+                expenses: selectAllExpenses(state),
                 version: 2,
             } as V2Storage),
             encryptionKey,

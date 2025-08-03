@@ -1,13 +1,11 @@
 import type { FC } from "react";
 import { useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectExpenseById } from "@/components/expenses/slice.ts";
 import { Redirect } from "wouter";
 import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
 
 export const EditExpensePage: FC<{ id: string }> = ({ id }) => {
-    const expense = useAppSelector((state) =>
-        expensesSelectors.selectById(state, id),
-    );
+    const expense = useAppSelector((state) => selectExpenseById(state, id));
 
     if (!expense) {
         return <Redirect to={"/"} />;

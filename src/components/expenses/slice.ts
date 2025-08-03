@@ -36,9 +36,12 @@ export const expensesSlice = createSlice({
     selectors: {},
 });
 
-export const expensesSelectors = expensesAdapter.getSelectors<RootState>(
+const expensesSelectors = expensesAdapter.getSelectors<RootState>(
     (state) => state.expenses,
 );
+
+export const { selectAll: selectAllExpenses, selectById: selectExpenseById } =
+    expensesSelectors;
 
 export const { removeExpense, upsertExpense } = expensesSlice.actions;
 

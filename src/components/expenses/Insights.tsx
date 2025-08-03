@@ -1,13 +1,13 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { isAfter, startOfWeek } from "date-fns";
 import { selectExpensesInMonth } from "@/components/expenses/selectors.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
 import type { Expense } from "@/components/expense.ts";
 
 export const Insights = () => {
-    const expenses = useAppSelector(expensesSelectors.selectAll);
+    const expenses = useAppSelector(selectAllExpenses);
 
     const topExpenseThisWeek: Expense | { amount: number; name: string } =
         expenses

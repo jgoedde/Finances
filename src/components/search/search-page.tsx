@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import type { Expense } from "@/components/expense.ts";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { Badge } from "../ui/badge";
@@ -27,7 +27,7 @@ export const SearchPage = () => {
         isOpen: boolean;
     }>({ isOpen: false });
 
-    const expenses = useAppSelector(expensesSelectors.selectAll);
+    const expenses = useAppSelector(selectAllExpenses);
 
     useEffect(() => {
         inputRef.current?.focus();

@@ -5,9 +5,10 @@ import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import type { Expense } from "@/components/expense.ts";
 import { useColorScheme } from "@mantine/hooks";
+import { cn } from "@/lib/utils.ts";
 
 export const ExpenseListItem = ({
-    transaction: { id, name, description, category, amountFormatted },
+    transaction: { id, name, description, category, amountFormatted, amount },
 }: {
     transaction: Expense;
 }) => {
@@ -74,11 +75,16 @@ export const ExpenseListItem = ({
                 </div>
             </div>
             <div
-                className={
-                    "flex items-center gap-x-2 justify-self-end font-medium"
-                }
+                className={cn(
+                    "flex items-center gap-x-2 justify-self-end font-medium",
+                    amount < 0 && "text-[#3FFF68]",
+                )}
             >
-                <div>{amountFormatted}</div>
+                {amount < 0 ? (
+                    <div>+{amountFormatted.split("-")[1]}</div>
+                ) : (
+                    <div>{amountFormatted}</div>
+                )}
             </div>
         </div>
     );

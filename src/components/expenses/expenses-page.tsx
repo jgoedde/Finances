@@ -1,7 +1,7 @@
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
@@ -20,7 +20,7 @@ export const ExpensesPage = () => {
 
     const isDecrypting = useAppSelector((state) => state.app.isDecrypting);
     const isInitial = useAppSelector((state) => state.expenses.isInitial);
-    const expenses = useAppSelector(expensesSelectors.selectAll);
+    const expenses = useAppSelector(selectAllExpenses);
 
     useEffect(() => {
         if (!key || expenses.length > 0) {

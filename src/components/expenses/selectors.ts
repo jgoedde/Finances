@@ -1,6 +1,6 @@
 import {
     expensesAdapter,
-    expensesSelectors,
+    selectAllExpenses,
 } from "@/components/expenses/slice.ts";
 import { isSameMonth, isToday, isYesterday } from "date-fns";
 import type { RootState } from "@/store.ts";
@@ -80,7 +80,7 @@ export const selectSpentInMonth = (
 };
 export const selectExpensesInMonth = createSelector(
     (_: RootState, month: YearMonth) => month,
-    expensesSelectors.selectAll,
+    selectAllExpenses,
     (month, expenses) =>
         expenses.filter((e) =>
             isSameMonth(
@@ -89,7 +89,3 @@ export const selectExpensesInMonth = createSelector(
             ),
         ),
 );
-export type YearMonth = {
-    year: number;
-    monthIndex: number;
-};

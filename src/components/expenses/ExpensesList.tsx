@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { addDays, addWeeks, isAfter, isSameDay, isToday } from "date-fns";
 import { useAppSelector } from "@/redux-hooks.ts";
-import { expensesSelectors } from "@/components/expenses/slice.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
@@ -14,7 +14,7 @@ import { useQueryState } from "nuqs";
 type DateFilter = "today" | "yesterday" | "last-week";
 
 export function ExpensesList() {
-    const expenses = useAppSelector(expensesSelectors.selectAll);
+    const expenses = useAppSelector(selectAllExpenses);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
