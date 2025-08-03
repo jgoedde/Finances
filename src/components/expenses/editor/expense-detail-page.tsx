@@ -51,7 +51,8 @@ export const ExpenseDetailPage: FC<Props> = ({
     const isAdding = !isEditing;
 
     const amountInputRef = useRef<HTMLInputElement>(null);
-
+    const descriptionInputRef = useRef<HTMLInputElement>(null);
+    
     const [selectedCategoryIconNameLocal, setSelectedCategoryIconNameLocal] =
         useState<string | undefined>(category?.iconName);
     const [descriptionLocal, setDescriptionLocal] = useState<string>(
@@ -255,6 +256,9 @@ export const ExpenseDetailPage: FC<Props> = ({
                             onApplySuggestion={(e) => {
                                 setExpenseLocal(e);
                                 setShouldShowSuggestions(false);
+                                if(descriptionInputRef.current){
+                                    descriptionInputRef.current.focus();
+                                }
                             }}
                             categoryIconName={selectedCategoryIconNameLocal}
                         />
@@ -267,6 +271,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                             Beschreibung
                         </label>
                         <Input
+                            ref={descriptionInputRef}
                             name={"description"}
                             value={descriptionLocal}
                             onChange={(e) => {
