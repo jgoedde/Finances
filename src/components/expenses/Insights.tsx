@@ -31,14 +31,6 @@ export const Insights = () => {
                 { amount: 0, name: "Kein Ausgaben diese Woche" },
             );
 
-    const avgWeekendSpent =
-        expenses
-            .filter((e) => {
-                const date = new Date(e.date);
-                return date.getDay() === 0 || date.getDay() === 6;
-            })
-            .reduce((acc, expense) => acc + expense.amount, 0) / 2;
-
     const expensesInCurrentMonth = useAppSelector((state) =>
         selectExpensesInMonth(state, {
             year: new Date().getFullYear(),
@@ -104,6 +96,60 @@ export const Insights = () => {
         { day: "Kein Tag", amount: 0, expense: "Keine" },
     );
 
+    // --- Advanced Insights ---
+    // 1. Unusual Spending Detection
+    // Calculate average spend per category across all months
+    const categorySpendTotals: Record<string, number[]> = {};
+    expenses.forEach((e) => {
+        const cat = e.category.name;
+        if (!categorySpendTotals[cat]) categorySpendTotals[cat] = [];
+        categorySpendTotals[cat].push(e.amount);
+    });
+    const categoryAverages: Record<string, number> = {};
+    Object.entries(categorySpendTotals).forEach(([cat, amounts]) => {
+        categoryAverages[cat] =
+            amounts.reduce((a, b) => a + b, 0) / amounts.length;
+    });
+    // This month's spend per category
+    const currentMonthCategoryTotals: Record<string, number> = {};
+    expensesInCurrentMonth.forEach((e) => {
+        const cat = e.category.name;
+        currentMonthCategoryTotals[cat] =
+            (currentMonthCategoryTotals[cat] || 0) + e.amount;
+    });
+    // Find categories with unusually high spend
+    const unusualCategories = Object.entries(currentMonthCategoryTotals)
+        .filter(
+            ([cat, total]) =>
+                categoryAverages[cat] && total > categoryAverages[cat] * 1.5,
+        )
+        .map(([cat, total]) => ({
+            name: cat,
+            total,
+            avg: categoryAverages[cat],
+        }));
+
+    // 2. Recurring Expense Patterns
+    // Find expenses with same name+category in multiple months
+    const recurringMap: Record<
+        string,
+        { name: string; category: string; count: number }
+    > = {};
+    expenses.forEach((e) => {
+        const key = `${e.name}|${e.category.name}`;
+        if (!recurringMap[key]) {
+            recurringMap[key] = {
+                name: e.name,
+                category: e.category.name,
+                count: 0,
+            };
+        }
+        recurringMap[key].count += 1;
+    });
+    const recurringExpenses = Object.values(recurringMap)
+        .filter((r) => r.count >= 3)
+        .slice(0, 5);
+
     return (
         <div className={"mt-8 mb-8 flex w-full flex-wrap gap-y-2 px-4"}>
             {/*<pre>*/}
@@ -122,16 +168,6 @@ export const Insights = () => {
                     </div>
                 </div>
             )}
-            <div
-                className={
-                    "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
-                }
-            >
-                <div>Durschnitt Wochenende</div>
-                <div className={"font-poppins font-semibold"}>
-                    {formatEuro(avgWeekendSpent)}
-                </div>
-            </div>
             <div
                 className={
                     "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
@@ -171,6 +207,48 @@ export const Insights = () => {
                     {mostExpensiveDayThisYear.expense},{" "}
                     {formatEuro(mostExpensiveDayThisYear.amount)}
                 </div>
+            </div>
+            <div
+                className={
+                    "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
+                }
+            >
+                <div>Ungewöhnlich hohe Ausgaben</div>
+                {unusualCategories.length === 0 ? (
+                    <div className={"font-poppins font-semibold"}>
+                        Keine auffälligen Kategorien
+                    </div>
+                ) : (
+                    unusualCategories.map((cat) => (
+                        <div
+                            key={cat.name}
+                            className={"font-poppins text-error font-semibold"}
+                        >
+                            {cat.name}: {formatEuro(cat.total)}
+                        </div>
+                    ))
+                )}
+            </div>
+            <div
+                className={
+                    "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
+                }
+            >
+                <div>Wiederkehrende Ausgaben</div>
+                {recurringExpenses.length === 0 ? (
+                    <div className={"font-poppins font-semibold"}>
+                        Keine gefunden
+                    </div>
+                ) : (
+                    recurringExpenses.map((r) => (
+                        <div
+                            key={r.name + r.category}
+                            className={"font-poppins font-semibold"}
+                        >
+                            {r.name} – {r.count}x
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );

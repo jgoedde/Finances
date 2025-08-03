@@ -10,9 +10,11 @@ import { cn } from "@/lib/utils.ts";
 
 export function MonthlyCategoryRow({ category }: { category: Category }) {
     const spentAmount = useAppSelector((state) =>
-        selectSpentThisMonthInCategory(state, category.name),
+        selectSpentThisMonthInCategory(state, category.name, true),
     );
-    const spentThisMonth = useAppSelector(selectSpentThisMonth);
+    const spentThisMonth = useAppSelector((state) =>
+        selectSpentThisMonth(state, true),
+    );
 
     const percentageOfTotal = spentAmount / spentThisMonth;
 

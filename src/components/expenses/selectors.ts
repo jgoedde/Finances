@@ -16,11 +16,15 @@ export const selectSpentToday = (state: RootState) => {
     return amountsToday.reduce((acc, amount) => acc + amount, 0);
 };
 
-export const selectSpentThisMonth = (state: RootState) => {
+export const selectSpentThisMonth = (
+    state: RootState,
+    onlyPositive: boolean = false,
+) => {
     const amountsThisMonth = expensesAdapter
         .getSelectors()
         .selectAll(state.expenses)
         .filter((e) => isSameMonth(new Date(), e.date))
+        .filter((e) => !onlyPositive || e.amount > 0)
         .map((e) => e.amount);
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
@@ -39,6 +43,7 @@ export const selectSpentYesterday = (state: RootState) => {
 export const selectSpentThisMonthInCategory = (
     state: RootState,
     categoryName: string,
+    onlyPositive = false,
 ) => {
     const amountsThisMonth = expensesAdapter
         .getSelectors()
@@ -48,6 +53,7 @@ export const selectSpentThisMonthInCategory = (
                 isSameMonth(new Date(e.date), new Date()) &&
                 e.category.name === categoryName,
         )
+        .filter((e) => !onlyPositive || e.amount > 0)
         .map((e) => e.amount);
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
@@ -56,6 +62,7 @@ export const selectSpentThisMonthInCategory = (
 export const selectSpentInMonth = (
     state: RootState,
     month: YearMonth,
+    onlyPositive = false,
 ): number => {
     const amountsInMonth = expensesAdapter
         .getSelectors()
@@ -66,6 +73,7 @@ export const selectSpentInMonth = (
                 new Date(month.year, month.monthIndex),
             ),
         )
+        .filter((e) => !onlyPositive || e.amount > 0)
         .map((e) => e.amount);
 
     return amountsInMonth.reduce((acc, amount) => acc + amount, 0);

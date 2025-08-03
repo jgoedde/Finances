@@ -2,7 +2,6 @@ import { ArrowDown, ArrowUp, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
 import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
-import { DynamicIcon } from "lucide-react/dynamic";
 import { useAppSelector } from "@/redux-hooks.ts";
 import { selectSpentInMonth } from "@/components/expenses/selectors.ts";
 import { addMonths } from "date-fns";
@@ -71,24 +70,6 @@ export function MonthlyOverview() {
                             key={category.icon}
                         />
                     ))}
-                </div>
-                <div
-                    className={
-                        "text-outline mt-6 flex items-center gap-x-4 rounded-sm text-sm"
-                    }
-                >
-                    <div className={"flex grow flex-wrap"}>
-                        <div>Du hast diesen Monat</div>
-                        <div className={"text-error mx-1 flex items-center"}>
-                            <ArrowUp className={"size-4"} /> 00% mehr
-                        </div>
-                        <div className={""}>
-                            für Auswärts Essen ausgegeben als im Mai.
-                        </div>
-                    </div>
-                    <div>
-                        <DynamicIcon name={categories[0].icon} />
-                    </div>
                 </div>
             </div>
         </div>
