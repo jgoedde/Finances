@@ -13,11 +13,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "../ui/label";
 import { Input } from "@/components/ui/input.tsx";
 import { useDbValidation } from "@/components/unlock/use-db-validation.ts";
-import { useLocation } from "wouter";
 import { useAppDispatch } from "@/redux-hooks.ts";
 import { loadExpenses } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
     encryptedDatabase: string;
@@ -27,7 +27,7 @@ export const UnlockLocalStorage: FC<Props> = ({ encryptedDatabase }) => {
     const dispatch = useAppDispatch();
 
     const { setKey } = useEncryption();
-    const [, route] = useLocation();
+    const navigate = useNavigate();
     const [keyLocal, setKeyLocal] = useState("");
     const { validationTries, isValidDatabase, testDatabase, isDecrypting } =
         useDbValidation({ encryptedDatabase, secretKey: keyLocal });
@@ -44,10 +44,10 @@ export const UnlockLocalStorage: FC<Props> = ({ encryptedDatabase }) => {
                 await maybeMigrateLocalStorage({ key: keyLocal });
 
                 void dispatch(loadExpenses({ key: keyLocal }));
-                route("/");
+                void navigate({ to: "/" });
             })();
         }
-    }, [dispatch, isValidDatabase, keyLocal, route, setKey]);
+    }, [dispatch, isValidDatabase, keyLocal, setKey]);
 
     return (
         <AlertDialog open>

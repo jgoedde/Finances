@@ -1,9 +1,7 @@
 import { Search } from "lucide-react";
-import { useLocation } from "wouter";
+import { Link } from "@tanstack/react-router";
 
 export function SearchBar() {
-    const [, route] = useLocation();
-
     return (
         <div
             className={
@@ -13,14 +11,11 @@ export function SearchBar() {
             <div className={"px-4"}>
                 <Search className={"text-on-surface size-6"} />
             </div>
-            <button
-                className={"text-on-surface-variant"}
-                onClick={() => {
-                    route("/expenses/search");
-                }}
-            >
-                Search for expense
-            </button>
+            <Link to={"/expenses/search"}>
+                <button type={"button"} className={"text-on-surface-variant"}>
+                    Search for expense
+                </button>
+            </Link>
         </div>
     );
 }

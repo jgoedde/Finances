@@ -2,7 +2,6 @@ import { useAppDispatch } from "@/redux-hooks.ts";
 import { useEffect, useState } from "react";
 import { useFileDialog } from "@mantine/hooks";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { useLocation } from "wouter";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,13 +20,14 @@ import {
     maybeMigrateLocalStorage,
     type V2Storage,
 } from "@/lib/app-local-storage.ts";
+import { useNavigate } from "@tanstack/react-router";
 
 export const SetupWizard = () => {
     const dispatch = useAppDispatch();
 
     const { setKey } = useEncryption();
-    const [, route] = useLocation();
 
+    const navigate = useNavigate({ from: "/unlock" });
     const [keyLocal, setKeyLocal] = useState("");
     const [keyLocalConfirm, setKeyLocalConfirm] = useState("");
     const [encryptedDatabase, setEncryptedDatabase] = useState<string>();
@@ -84,7 +84,7 @@ export const SetupWizard = () => {
                     key: keyLocal,
                 }),
             );
-            route("/");
+            void navigate({ to: "/" });
         } else if (step === "import" && !isValidDatabase) {
             await testDatabase();
         } else if (step === "empty") {
@@ -106,7 +106,7 @@ export const SetupWizard = () => {
                     key: keyLocal,
                 }),
             );
-            route("/");
+            void navigate({ to: "/" });
         }
     }
 

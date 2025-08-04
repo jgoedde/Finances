@@ -1,27 +1,28 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import { useLocation } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import type { Expense } from "@/components/expense.ts";
 import { useColorScheme } from "@mantine/hooks";
 import { cn } from "@/lib/utils.ts";
+import { useNavigate } from "@tanstack/react-router";
 
 export const ExpenseListItem = ({
     transaction: { id, name, description, category, amountFormatted, amount },
 }: {
     transaction: Expense;
 }) => {
-    const [, route] = useLocation();
     const rippleHandlers = useRipple();
     const theme = useColorScheme();
 
     const supportingText =
         description?.trim() !== "" ? description : category.name;
 
+    const navigate = useNavigate();
+
     function onEditButtonClick() {
         setTimeout(() => {
-            route(`/edit/${id}`);
+            void navigate({ to: "/edit/$id", params: { id } });
         }, 150);
     }
 

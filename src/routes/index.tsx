@@ -1,19 +1,24 @@
-import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useEffect } from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { loadExpenses } from "@/components/expenses/actions.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
+import { useEffect } from "react";
 import { maybeMigrateLocalStorage } from "@/lib/app-local-storage.ts";
+import { loadExpenses } from "@/components/expenses/actions.ts";
 import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
-import { MonthlyOverview } from "./MonthlyOverview";
-import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { SearchBar } from "@/components/expenses/SearchBar.tsx";
+import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
-import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
+import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { Insights } from "@/components/expenses/Insights.tsx";
+import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
+import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 
-export const ExpensesPage = () => {
+export const Route = createFileRoute("/")({
+    component: ExpensesPage,
+});
+
+function ExpensesPage() {
     const dispatch = useAppDispatch();
 
     const { key } = useEncryption();
@@ -83,4 +88,4 @@ export const ExpensesPage = () => {
             {!isDecrypting && !isInitial && <NewExpenseFAB />}
         </div>
     );
-};
+}

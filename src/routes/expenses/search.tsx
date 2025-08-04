@@ -1,25 +1,30 @@
-import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAppSelector } from "@/redux-hooks.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
-import type { Expense } from "@/components/expense.ts";
-import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
-import { Badge } from "../ui/badge";
-import { Drawer, DrawerContent } from "@/components/ui/drawer.tsx";
-import { cn } from "@/lib/utils.ts";
-import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content.tsx";
-import { CategoriesFilterDrawerContent } from "@/components/search/filters/categories/categories-filter-drawer-content.tsx";
-import {
-    getDateFilterStr,
-    isMatchingDateFilter,
-} from "@/components/search/filters/date/date-filter.ts";
 import {
     isMatchingCategoryFilter,
     type SelectedCategoriesFilter,
 } from "@/components/search/filters/categories/categories-filter.ts";
+import type { Expense } from "@/components/expense.ts";
+import {
+    getDateFilterStr,
+    isMatchingDateFilter,
+} from "@/components/search/filters/date/date-filter.ts";
 import { isMatchingSearchFilter } from "@/components/search/filters/text/text-filter.ts";
+import { cn } from "@/lib/utils.ts";
+import { selectAllExpenses } from "@/components/expenses/slice.ts";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content";
+import { CategoriesFilterDrawerContent } from "@/components/search/filters/categories/categories-filter-drawer-content";
+import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ExpenseListItem } from "@/components/expenses/history/expense-list-item";
 
-export const SearchPage = () => {
+export const Route = createFileRoute("/expenses/search")({
+    component: SearchPage,
+});
+
+function SearchPage() {
     const [search, setSearch] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<{
@@ -188,4 +193,4 @@ export const SearchPage = () => {
             </Drawer>
         </div>
     );
-};
+}

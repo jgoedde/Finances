@@ -1,14 +1,16 @@
 import { Banknote } from "lucide-react";
-import { useLocation } from "wouter";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { cn } from "@/lib/utils.ts";
+import { useNavigate } from "@tanstack/react-router";
 
 export function NewExpenseFAB() {
-    const [, route] = useLocation();
     const ripple = useRipple();
+
+    const navigate = useNavigate();
 
     return (
         <button
+            type={"button"}
             className={cn(
                 "ripple-container bg-primary-container text-on-primary-container size-16 shrink-0 -translate-x-1/5 rounded-2xl shadow-lg",
             )}
@@ -23,7 +25,7 @@ export function NewExpenseFAB() {
                 ripple.onClick(e);
 
                 setTimeout(() => {
-                    route("/new");
+                    void navigate({ to: "/new" });
                 }, 100);
             }}
         >

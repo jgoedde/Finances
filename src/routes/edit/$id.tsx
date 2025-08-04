@@ -1,14 +1,20 @@
-import type { FC } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAppSelector } from "@/redux-hooks.ts";
 import { selectExpenseById } from "@/components/expenses/slice.ts";
-import { Redirect } from "wouter";
 import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
 
-export const EditExpensePage: FC<{ id: string }> = ({ id }) => {
+export const Route = createFileRoute("/edit/$id")({
+    component: EditExpensePage,
+});
+
+function EditExpensePage() {
+    const { id } = Route.useParams();
+    const navigate = useNavigate();
     const expense = useAppSelector((state) => selectExpenseById(state, id));
 
     if (!expense) {
-        return <Redirect to={"/"} />;
+        void navigate({ to: "/" });
+        return null;
     }
 
     return (
@@ -21,4 +27,4 @@ export const EditExpensePage: FC<{ id: string }> = ({ id }) => {
             description={expense.description}
         />
     );
-};
+}
