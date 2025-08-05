@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnlockRouteImport } from './routes/unlock'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExpensesSearchRouteImport } from './routes/expenses/search'
@@ -18,6 +19,11 @@ import { Route as EditIdRouteImport } from './routes/edit/$id'
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
   path: '/unlock',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewRoute = NewRouteImport.update({
@@ -44,6 +50,7 @@ const EditIdRoute = EditIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
   '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
   '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
@@ -59,21 +67,36 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
   '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/new' | '/unlock' | '/edit/$id' | '/expenses/search'
+  fullPaths:
+    | '/'
+    | '/new'
+    | '/setup'
+    | '/unlock'
+    | '/edit/$id'
+    | '/expenses/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/new' | '/unlock' | '/edit/$id' | '/expenses/search'
-  id: '__root__' | '/' | '/new' | '/unlock' | '/edit/$id' | '/expenses/search'
+  to: '/' | '/new' | '/setup' | '/unlock' | '/edit/$id' | '/expenses/search'
+  id:
+    | '__root__'
+    | '/'
+    | '/new'
+    | '/setup'
+    | '/unlock'
+    | '/edit/$id'
+    | '/expenses/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NewRoute: typeof NewRoute
+  SetupRoute: typeof SetupRoute
   UnlockRoute: typeof UnlockRoute
   EditIdRoute: typeof EditIdRoute
   ExpensesSearchRoute: typeof ExpensesSearchRoute
@@ -86,6 +109,13 @@ declare module '@tanstack/react-router' {
       path: '/unlock'
       fullPath: '/unlock'
       preLoaderRoute: typeof UnlockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/new': {
@@ -122,6 +152,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NewRoute: NewRoute,
+  SetupRoute: SetupRoute,
   UnlockRoute: UnlockRoute,
   EditIdRoute: EditIdRoute,
   ExpensesSearchRoute: ExpensesSearchRoute,
