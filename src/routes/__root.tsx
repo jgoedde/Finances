@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { store } from "@/store.ts";
 
 export const Route = createRootRoute({
     component: () => (
@@ -9,12 +10,14 @@ export const Route = createRootRoute({
         </>
     ),
     beforeLoad: () => {
-        console.log(location.pathname, "location.pathname");
+        const masterPassword = store.getState().app.masterPassword;
         if (
-            sessionStorage.getItem("encryption-key") == null &&
-            location.pathname !== "/unlock"
+            (!masterPassword ||
+                masterPassword.trim() === "" ||
+                localStorage.getItem("finances-login") == null) &&
+            location.pathname !== "/setup"
         ) {
-            throw redirect({ to: "/unlock" });
+            throw redirect({ to: "/setup" });
         }
     },
 });
