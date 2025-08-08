@@ -5,6 +5,7 @@ import {
 } from "@/components/expenses/actions.ts";
 
 export interface AppState {
+    masterPassword?: string;
     isShowingMore: boolean;
     isDecrypting: boolean;
     isEncrypting: boolean;
@@ -22,6 +23,9 @@ export const appSlice = createSlice({
     reducers: () => ({
         showMore: (state) => {
             state.isShowingMore = true;
+        },
+        setMasterPassword: (state, action) => {
+            state.masterPassword = action.payload;
         },
     }),
     extraReducers: (builder) => {
@@ -46,10 +50,11 @@ export const appSlice = createSlice({
     },
     selectors: {
         selectIsShowingMore: (state: AppState) => state.isShowingMore,
+        selectMasterPassword: (state: AppState) => state.masterPassword,
     },
 });
 
-export const { showMore } = appSlice.actions;
-export const { selectIsShowingMore } = appSlice.selectors;
+export const { showMore, setMasterPassword } = appSlice.actions;
+export const { selectIsShowingMore, selectMasterPassword } = appSlice.selectors;
 
 export default appSlice.reducer;

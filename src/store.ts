@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { expensesSlice } from "@/components/expenses/slice.ts";
-import { createLogger } from "redux-logger";
 import { fixedCostsSlice } from "@/components/fixed-costs/slice.ts";
 import { appSlice } from "@/app-slice.ts";
 
@@ -9,16 +8,6 @@ export const store = configureStore({
         app: appSlice.reducer,
         expenses: expensesSlice.reducer,
         fixedCosts: fixedCostsSlice.reducer,
-    },
-    middleware: (getDefaultMiddleware) => {
-        const logger = createLogger();
-        const isProd = import.meta.env.PROD;
-
-        if (!isProd) {
-            console.info("Redux logger is enabled in development mode.");
-        }
-
-        return getDefaultMiddleware().concat(isProd ? [] : [logger]);
     },
 });
 
