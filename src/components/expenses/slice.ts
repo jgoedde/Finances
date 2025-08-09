@@ -16,7 +16,7 @@ export const expensesAdapter = createEntityAdapter({
     sortComparer: (a: Expense, b: Expense) => b.date - a.date,
 });
 
-export const expensesSlice = createSlice({
+const expensesSlice = createSlice({
     name: "expenses",
     initialState: expensesAdapter.getInitialState({ ...initialState }),
     reducers: {
@@ -45,4 +45,4 @@ export const { selectAll: selectAllExpenses, selectById: selectExpenseById } =
 
 export const { removeExpense, upsertExpense } = expensesSlice.actions;
 
-export default expensesSlice.reducer;
+export const expensesReducer = expensesSlice.reducer;

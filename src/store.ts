@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { expensesSlice } from "@/components/expenses/slice.ts";
-import { fixedCostsSlice } from "@/components/fixed-costs/slice.ts";
-import { appSlice } from "@/app-slice.ts";
+import { expensesReducer } from "@/components/expenses/slice.ts";
+import { appReducer } from "@/app-slice.ts";
+import { fixedCostsReducer } from "@/components/fixed-costs/slice.ts";
 
 export const store = configureStore({
     reducer: {
-        app: appSlice.reducer,
-        expenses: expensesSlice.reducer,
-        fixedCosts: fixedCostsSlice.reducer,
+        app: appReducer,
+        expenses: expensesReducer,
+        fixedCosts: fixedCostsReducer,
     },
 });
 

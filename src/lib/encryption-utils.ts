@@ -1,27 +1,21 @@
-import { readLocalStorageValue } from "@mantine/hooks";
-import {
-    isV1Persistence,
-    type V1Storage,
-    type V2Storage,
-} from "@/lib/app-local-storage.ts";
+import type { Expense } from "@/components/expense.ts";
+import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 
-export async function decryptLocalStorageData(
+export interface Db {
+    expenses: Expense[];
+    fixedCosts: FixedCost[];
+    version: 2;
+}
+
+export async function decryptDatabase(
+    encryptedData: string,
     key: string,
-): Promise<V1Storage | V2Storage> {
-    const encryptedLs = readLocalStorageValue({
-        key: "expenses",
-        defaultValue: "",
-    });
-
-    if (!encryptedLs) {
-        return [];
-    }
-
+): Promise<Db> {
     const decrypted = await new Promise<string>((resolve) => {
         const worker = new Worker(
             new URL("@/workers/decrypt-worker.js", import.meta.url),
         );
-        worker.postMessage({ ciphertext: encryptedLs, key });
+        worker.postMessage({ ciphertext: encryptedData, key });
 
         worker.onmessage = (e) => {
             const { decrypted, error: errorMessage } = e.data;
@@ -31,13 +25,7 @@ export async function decryptLocalStorageData(
         };
     });
 
-    const data = JSON.parse(decrypted);
-
-    if (isV1Persistence(decrypted)) {
-        return data as V1Storage;
-    }
-
-    return data as V2Storage;
+    return JSON.parse(decrypted) as Db;
 }
 
 export async function encrypt(data: unknown, encryptionKey: string) {

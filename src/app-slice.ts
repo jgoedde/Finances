@@ -6,24 +6,19 @@ import {
 
 export interface AppState {
     masterPassword?: string;
-    isShowingMore: boolean;
     isDecrypting: boolean;
     isEncrypting: boolean;
 }
 
 const initialState: AppState = {
-    isShowingMore: false,
     isDecrypting: false,
     isEncrypting: false,
 };
 
-export const appSlice = createSlice({
+const appSlice = createSlice({
     name: "app",
     initialState,
     reducers: () => ({
-        showMore: (state) => {
-            state.isShowingMore = true;
-        },
         setMasterPassword: (state, action) => {
             state.masterPassword = action.payload;
         },
@@ -49,12 +44,11 @@ export const appSlice = createSlice({
         });
     },
     selectors: {
-        selectIsShowingMore: (state: AppState) => state.isShowingMore,
         selectMasterPassword: (state: AppState) => state.masterPassword,
     },
 });
 
-export const { showMore, setMasterPassword } = appSlice.actions;
-export const { selectIsShowingMore, selectMasterPassword } = appSlice.selectors;
+export const { setMasterPassword } = appSlice.actions;
+export const { selectMasterPassword } = appSlice.selectors;
 
-export default appSlice.reducer;
+export const appReducer = appSlice.reducer;

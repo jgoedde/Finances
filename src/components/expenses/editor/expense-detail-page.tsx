@@ -22,6 +22,8 @@ import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/dele
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
 import { ExpenseInput } from "@/components/expenses/editor/ExpenseInput.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
+import { useGitHubClient } from "@/gitHubClient.tsx";
+import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
 
 const now = new Date();
 
@@ -46,13 +48,15 @@ export const ExpenseDetailPage: FC<Props> = ({
 
     const { key } = useEncryption();
     const ripple = useRipple();
+    const gitHubClient = useGitHubClient();
+    const [gitHubConfig] = useGitHubConfig();
 
     const isEditing = id != null;
     const isAdding = !isEditing;
 
     const amountInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLInputElement>(null);
-    
+
     const [selectedCategoryIconNameLocal, setSelectedCategoryIconNameLocal] =
         useState<string | undefined>(category?.iconName);
     const [descriptionLocal, setDescriptionLocal] = useState<string>(
@@ -78,7 +82,7 @@ export const ExpenseDetailPage: FC<Props> = ({
     };
 
     function onSubmit() {
-        if (!key) {
+        if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
             return;
         }
 
@@ -115,7 +119,14 @@ export const ExpenseDetailPage: FC<Props> = ({
             }),
         );
 
-        void dispatch(saveToLocalStorage({ encryptionKey: key }));
+        void dispatch(
+            saveToLocalStorage({
+                key,
+                gistId: gitHubConfig.gistId,
+                apiClient: gitHubClient,
+                gistName: gitHubConfig.gistName,
+            }),
+        );
 
         history.back();
     }
@@ -256,7 +267,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                             onApplySuggestion={(e) => {
                                 setExpenseLocal(e);
                                 setShouldShowSuggestions(false);
-                                if(descriptionInputRef.current){
+                                if (descriptionInputRef.current) {
                                     descriptionInputRef.current.focus();
                                 }
                             }}

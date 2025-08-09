@@ -15,7 +15,7 @@ export const fixedCostsAdapter = createEntityAdapter({
     selectId: (a: FixedCost) => a.id,
 });
 
-export const fixedCostsSlice = createSlice({
+const fixedCostsSlice = createSlice({
     name: "fixedCosts",
     initialState: fixedCostsAdapter.getInitialState(),
     reducers: {
@@ -61,4 +61,4 @@ export const { selectMonthlyFixCosts, selectMonthlyIncome } =
 
 export const { setFixedCosts } = fixedCostsSlice.actions;
 
-export default fixedCostsSlice.reducer;
+export const fixedCostsReducer = fixedCostsSlice.reducer;

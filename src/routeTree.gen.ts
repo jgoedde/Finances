@@ -9,18 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExpensesSearchRouteImport } from './routes/expenses/search'
 import { Route as EditIdRouteImport } from './routes/edit/$id'
 
-const UnlockRoute = UnlockRouteImport.update({
-  id: '/unlock',
-  path: '/unlock',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
@@ -51,7 +45,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
-  '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
 }
@@ -59,7 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
-  '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
 }
@@ -68,49 +60,27 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
-  '/unlock': typeof UnlockRoute
   '/edit/$id': typeof EditIdRoute
   '/expenses/search': typeof ExpensesSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/new'
-    | '/setup'
-    | '/unlock'
-    | '/edit/$id'
-    | '/expenses/search'
+  fullPaths: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/new' | '/setup' | '/unlock' | '/edit/$id' | '/expenses/search'
-  id:
-    | '__root__'
-    | '/'
-    | '/new'
-    | '/setup'
-    | '/unlock'
-    | '/edit/$id'
-    | '/expenses/search'
+  to: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
+  id: '__root__' | '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NewRoute: typeof NewRoute
   SetupRoute: typeof SetupRoute
-  UnlockRoute: typeof UnlockRoute
   EditIdRoute: typeof EditIdRoute
   ExpensesSearchRoute: typeof ExpensesSearchRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unlock': {
-      id: '/unlock'
-      path: '/unlock'
-      fullPath: '/unlock'
-      preLoaderRoute: typeof UnlockRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/setup': {
       id: '/setup'
       path: '/setup'
@@ -153,7 +123,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NewRoute: NewRoute,
   SetupRoute: SetupRoute,
-  UnlockRoute: UnlockRoute,
   EditIdRoute: EditIdRoute,
   ExpensesSearchRoute: ExpensesSearchRoute,
 }

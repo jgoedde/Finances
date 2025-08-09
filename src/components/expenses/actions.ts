@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { decryptLocalStorageData, encrypt } from "@/lib/encryption-utils.ts";
-import { isV1Persistence, type V2Storage } from "@/lib/app-local-storage.ts";
+import { type Db, decryptDatabase, encrypt } from "@/lib/encryption-utils.ts";
 import type { RootState } from "@/store.ts";
 import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
 import { selectAllExpenses } from "@/components/expenses/slice.ts";
+import type { GitHubClient } from "@/gitHubClient.tsx";
 
 /**
  * A Redux Toolkit async thunk for loading expenses from ``localStorage``.
@@ -13,12 +13,31 @@ import { selectAllExpenses } from "@/components/expenses/slice.ts";
  */
 export const loadExpenses = createAsyncThunk(
     "expenses/load",
-    async ({ key }: { key: string }) => {
-        const data = await decryptLocalStorageData(key);
+    async ({
+        key,
+        gistId,
+        apiClient,
+    }: {
+        key: string;
+        gistId: string;
+        apiClient: GitHubClient;
+    }) => {
+        const gistResponse = await apiClient.gists.get({
+            gist_id: gistId,
+        });
 
-        if (isV1Persistence(data)) {
-            throw new Error("Detected v1 persistence format in localStorage.");
+        const file = Object.values(gistResponse.data.files || {})[0]?.filename;
+
+        const encryptedData =
+            file == null
+                ? undefined
+                : (gistResponse.data.files ?? {})[file]?.content;
+
+        if (!encryptedData) {
+            throw new Error("No encrypted data found in the Gist.");
         }
+
+        const data = await decryptDatabase(encryptedData, key);
 
         return data.expenses;
     },
@@ -32,7 +51,20 @@ export const loadExpenses = createAsyncThunk(
  */
 export const saveToLocalStorage = createAsyncThunk(
     "expenses/save",
-    async ({ encryptionKey }: { encryptionKey: string }, thunkAPI) => {
+    async (
+        {
+            key,
+            gistId,
+            gistName,
+            apiClient,
+        }: {
+            key: string;
+            gistId: string;
+            gistName: string;
+            apiClient: GitHubClient;
+        },
+        thunkAPI,
+    ) => {
         const state = thunkAPI.getState() as RootState;
 
         const encrypted = await encrypt(
@@ -40,10 +72,17 @@ export const saveToLocalStorage = createAsyncThunk(
                 fixedCosts: fixedCostsSelectors.selectAll(state),
                 expenses: selectAllExpenses(state),
                 version: 2,
-            } as V2Storage),
-            encryptionKey,
+            } as Db),
+            key,
         );
 
-        localStorage.setItem("expenses", encrypted);
+        await apiClient.gists.update({
+            gist_id: gistId,
+            files: {
+                [gistName]: {
+                    content: encrypted,
+                },
+            },
+        });
     },
 );

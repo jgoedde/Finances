@@ -15,6 +15,8 @@ import { removeExpense } from "@/components/expenses/slice.ts";
 import { saveToLocalStorage } from "@/components/expenses/actions.ts";
 import { useAppDispatch } from "@/redux-hooks.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
+import { useGitHubClient } from "@/gitHubClient.tsx";
+import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
 
 type Props = {
     expenseId: string;
@@ -23,17 +25,22 @@ type Props = {
 export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
     const dispatch = useAppDispatch();
 
+    const [gitHubConfig] = useGitHubConfig();
     const { key } = useEncryption();
+    const gitHubClient = useGitHubClient();
 
     function onDeleteConfirmButtonClick() {
-        if (!key || !expenseId) {
+        if (!key || !expenseId || !gitHubConfig.gistId) {
             return;
         }
 
         dispatch(removeExpense(expenseId));
         void dispatch(
             saveToLocalStorage({
-                encryptionKey: key,
+                key,
+                apiClient: gitHubClient,
+                gistId: gitHubConfig.gistId,
+                gistName: gitHubConfig.gistName,
             }),
         );
     }

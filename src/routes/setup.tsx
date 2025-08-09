@@ -8,21 +8,20 @@ import {
     SquareCode,
     TriangleAlert,
 } from "lucide-react";
-import { useLocalStorage } from "@mantine/hooks";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { cn } from "@/lib/utils.ts";
 import { Input } from "@/components/ui/input.tsx";
-import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import { selectMasterPassword, setMasterPassword } from "@/app-slice.ts";
 import { useGitHubClient } from "@/gitHubClient.tsx";
+import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
+import { useEncryption } from "@/components/use-encryption.ts";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
 });
 
-export interface LsLogin {
-    pat: string;
+export interface GitHubConfig {
     gistName: string;
+    pat?: string;
     gistId?: string;
 }
 
@@ -37,18 +36,11 @@ interface GistResponse {
 type GetGistsResponse = GistResponse[];
 
 function RouteComponent() {
-    const dispatch = useAppDispatch();
-
     const navigate = useNavigate();
 
-    const [lsLogin, setLsLogin] = useLocalStorage<LsLogin>({
-        key: "finances-login",
-        defaultValue: { pat: "", gistName: "", gistId: "" },
-        getInitialValueInEffect: false,
-    });
+    const [gitHubConfig, setGitHubConfig] = useGitHubConfig();
     const gitHubClient = useGitHubClient();
-
-    const masterPassword = useAppSelector(selectMasterPassword) ?? "";
+    const { key, setKey } = useEncryption();
 
     const [errorText, setErrorText] = useState("");
     const [authCheck, setAuthCheck] = useState<
@@ -62,25 +54,25 @@ function RouteComponent() {
           }
     >({ isAuthenticated: false });
     const [gistNameTmp, setGistNameTmp] = useState<string>(
-        lsLogin.gistName.split(".")[0] || "",
+        gitHubConfig.gistName.split(".")[0] || "",
     );
 
     const selectedGistId = !authCheck.isAuthenticated
         ? undefined
-        : authCheck.gists.find((g) => g.name === lsLogin.gistName)?.id;
+        : authCheck.gists.find((g) => g.name === gitHubConfig.gistName)?.id;
 
     const isAuthenticated = useCallback(async (): Promise<
         | { isAuthenticated: true; ownerName: string; gists: GetGistsResponse }
         | { isAuthenticated: false }
     > => {
-        if (!lsLogin.pat || lsLogin.pat.trim() === "") {
+        if (!gitHubConfig.pat || gitHubConfig.pat.trim() === "") {
             return { isAuthenticated: false };
         }
 
         try {
             const response = await fetch(`https://api.github.com/gists`, {
                 headers: {
-                    Authorization: `Bearer ${lsLogin.pat}`,
+                    Authorization: `Bearer ${gitHubConfig.pat}`,
                 },
             });
 
@@ -98,10 +90,10 @@ function RouteComponent() {
             console.error("Error checking authentication:", e);
             return { isAuthenticated: false };
         }
-    }, [lsLogin.pat]);
+    }, [gitHubConfig.pat]);
 
     const handleTokenBlur = useCallback(async () => {
-        if (!lsLogin.pat || lsLogin.pat.trim() === "") {
+        if (!gitHubConfig.pat || gitHubConfig.pat.trim() === "") {
             return;
         }
 
@@ -126,27 +118,23 @@ function RouteComponent() {
             })),
         });
         setErrorText("");
-    }, [isAuthenticated, lsLogin.pat]);
+    }, [isAuthenticated, gitHubConfig.pat]);
 
     const handleGistNameBlur = useCallback(() => {
         if (!authCheck.isAuthenticated) {
             return;
         }
 
-        setLsLogin((prev) => ({
+        setGitHubConfig((prev) => ({
             ...prev,
             gistId: selectedGistId,
         }));
-    }, [authCheck.isAuthenticated, selectedGistId, setLsLogin]);
+    }, [authCheck.isAuthenticated, selectedGistId, setGitHubConfig]);
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
-        if (
-            !authCheck.isAuthenticated ||
-            !masterPassword ||
-            gistNameTmp === ""
-        ) {
+        if (!authCheck.isAuthenticated || !key || gistNameTmp === "") {
             return;
         }
 
@@ -155,7 +143,7 @@ function RouteComponent() {
                 const createdGist = await gitHubClient.gists.create({
                     public: false,
                     files: {
-                        [lsLogin.gistName]: {
+                        [gitHubConfig.gistName]: {
                             content: "abc",
                         },
                     },
@@ -163,7 +151,7 @@ function RouteComponent() {
                 });
 
                 const gistId = createdGist.data.id;
-                setLsLogin((prev) => ({
+                setGitHubConfig((prev) => ({
                     ...prev,
                     gistId: gistId,
                 }));
@@ -184,19 +172,19 @@ function RouteComponent() {
     }
 
     function handleTokenChange(e: ChangeEvent<HTMLInputElement>) {
-        setLsLogin((prev) => ({ ...prev, pat: e.target.value }));
+        setGitHubConfig((prev) => ({ ...prev, pat: e.target.value }));
     }
 
     function handleGistNameChange(e: ChangeEvent<HTMLInputElement>) {
         setGistNameTmp(e.target.value);
 
         if (e.target.value.trim() === "") {
-            setLsLogin((prev) => ({
+            setGitHubConfig((prev) => ({
                 ...prev,
                 gistName: `my-finances.enc`,
             }));
         } else {
-            setLsLogin((prev) => ({
+            setGitHubConfig((prev) => ({
                 ...prev,
                 gistName: `${e.target.value}.enc`,
                 gistId: selectedGistId,
@@ -241,7 +229,7 @@ function RouteComponent() {
                                 name="token"
                                 placeholder="ghp_**************"
                                 className="border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
-                                value={lsLogin.pat}
+                                value={gitHubConfig.pat ?? ""}
                                 onChange={handleTokenChange}
                                 onBlur={() => void handleTokenBlur()}
                                 required
@@ -304,11 +292,9 @@ function RouteComponent() {
                             <Input
                                 name={"master"}
                                 id={"master"}
-                                value={masterPassword}
+                                value={key ?? ""}
                                 type={"password"}
-                                onChange={(e) =>
-                                    dispatch(setMasterPassword(e.target.value))
-                                }
+                                onChange={(e) => setKey(e.target.value)}
                                 placeholder={"<super sicheres Passwort>"}
                                 className={
                                     "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
@@ -364,15 +350,15 @@ function RouteComponent() {
                                         <>
                                             Werde neuen privaten Gist{" "}
                                             <span className={"text-secondary"}>
-                                                {lsLogin.gistName ||
+                                                {gitHubConfig.gistName ||
                                                     "my-finances.enc"}
                                             </span>{" "}
                                             anlegen
                                         </>
                                     ) : (
                                         <>
-                                            Vorhandenes Gist {lsLogin.gistName}{" "}
-                                            wird{" "}
+                                            Vorhandenes Gist{" "}
+                                            {gitHubConfig.gistName} wird{" "}
                                             <span className={"text-error"}>
                                                 überschrieben
                                             </span>
