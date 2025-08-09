@@ -1,20 +1,21 @@
 import type { Category } from "@/components/expenses/editor/categories.ts";
 import { DynamicIcon } from "lucide-react/dynamic";
-import { useAppSelector } from "@/redux-hooks.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import {
-    selectSpentThisMonth,
-    selectSpentThisMonthInCategory,
+    getSpentAmountThisMonth,
+    getSpentAmountThisMonthInCategory,
 } from "@/components/expenses/selectors.ts";
 import { cn } from "@/lib/utils.ts";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export function MonthlyCategoryRow({ category }: { category: Category }) {
-    const spentAmount = useAppSelector((state) =>
-        selectSpentThisMonthInCategory(state, category.name, true),
+    const { data: expenses } = useExpenses();
+    const spentAmount = getSpentAmountThisMonthInCategory(
+        expenses ?? [],
+        category.name,
+        true,
     );
-    const spentThisMonth = useAppSelector((state) =>
-        selectSpentThisMonth(state, true),
-    );
+    const spentThisMonth = getSpentAmountThisMonth(expenses ?? [], true);
 
     const percentageOfTotal = spentAmount / spentThisMonth;
 

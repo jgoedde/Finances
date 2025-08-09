@@ -1,41 +1,42 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { useAppSelector } from "@/redux-hooks.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { isAfter, startOfWeek } from "date-fns";
-import { selectExpensesInMonth } from "@/components/expenses/selectors.ts";
+import { getExpensesInMonth } from "@/components/expenses/selectors.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
 import type { Expense } from "@/components/expense.ts";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export const Insights = () => {
-    const expenses = useAppSelector(selectAllExpenses);
+    const { data: expenses } = useExpenses();
 
-    const topExpenseThisWeek: Expense | { amount: number; name: string } =
-        expenses
-            .filter((e) => {
-                const startOfThisWeek = startOfWeek(new Date(), {
-                    weekStartsOn: 1,
-                });
+    const topExpenseThisWeek: Expense | { amount: number; name: string } = (
+        expenses ?? []
+    )
+        .filter((e) => {
+            const startOfThisWeek = startOfWeek(new Date(), {
+                weekStartsOn: 1,
+            });
 
-                return (
-                    isAfter(new Date(e.date), startOfThisWeek) &&
-                    !isAfter(new Date(e.date), new Date())
-                );
-            })
-            .reduce(
-                (acc, expense) => {
-                    if (expense.amount > acc.amount) {
-                        return expense;
-                    }
-                    return acc;
-                },
-                { amount: 0, name: "Kein Ausgaben diese Woche" },
+            return (
+                isAfter(new Date(e.date), startOfThisWeek) &&
+                !isAfter(new Date(e.date), new Date())
             );
+        })
+        .reduce(
+            (acc, expense) => {
+                if (expense.amount > acc.amount) {
+                    return expense;
+                }
+                return acc;
+            },
+            { amount: 0, name: "Kein Ausgaben diese Woche" },
+        );
 
-    const expensesInCurrentMonth = useAppSelector((state) =>
-        selectExpensesInMonth(state, {
+    const expensesInCurrentMonth = getExpensesInMonth(
+        {
             year: new Date().getFullYear(),
             monthIndex: new Date().getMonth(),
-        }),
+        },
+        expenses ?? [],
     );
 
     const expensesEatingOut = expensesInCurrentMonth.filter((e) => {
@@ -75,7 +76,7 @@ export const Insights = () => {
             },
             { day: "Kein Tag", amount: 0 },
         );
-    const mostExpensiveDayThisYear = expenses.reduce(
+    const mostExpensiveDayThisYear = (expenses ?? []).reduce(
         (acc, expense) => {
             const date = new Date(expense.date);
             if (date.getFullYear() === new Date().getFullYear()) {
@@ -100,7 +101,7 @@ export const Insights = () => {
     // 1. Unusual Spending Detection
     // Calculate average spend per category across all months
     const categorySpendTotals: Record<string, number[]> = {};
-    expenses.forEach((e) => {
+    (expenses ?? []).forEach((e) => {
         const cat = e.category.name;
         if (!categorySpendTotals[cat]) categorySpendTotals[cat] = [];
         categorySpendTotals[cat].push(e.amount);
@@ -117,17 +118,6 @@ export const Insights = () => {
         currentMonthCategoryTotals[cat] =
             (currentMonthCategoryTotals[cat] || 0) + e.amount;
     });
-    // Find categories with unusually high spend
-    const unusualCategories = Object.entries(currentMonthCategoryTotals)
-        .filter(
-            ([cat, total]) =>
-                categoryAverages[cat] && total > categoryAverages[cat] * 1.5,
-        )
-        .map(([cat, total]) => ({
-            name: cat,
-            total,
-            avg: categoryAverages[cat],
-        }));
 
     // 2. Recurring Expense Patterns
     // Find expenses with same name+category in multiple months
@@ -135,7 +125,7 @@ export const Insights = () => {
         string,
         { name: string; category: string; count: number }
     > = {};
-    expenses.forEach((e) => {
+    (expenses ?? []).forEach((e) => {
         const key = `${e.name}|${e.category.name}`;
         if (!recurringMap[key]) {
             recurringMap[key] = {
@@ -146,9 +136,6 @@ export const Insights = () => {
         }
         recurringMap[key].count += 1;
     });
-    const recurringExpenses = Object.values(recurringMap)
-        .filter((r) => r.count >= 3)
-        .slice(0, 5);
 
     return (
         <div className={"mt-8 mb-8 flex w-full flex-wrap gap-y-2 px-4"}>
@@ -207,48 +194,6 @@ export const Insights = () => {
                     {mostExpensiveDayThisYear.expense},{" "}
                     {formatEuro(mostExpensiveDayThisYear.amount)}
                 </div>
-            </div>
-            <div
-                className={
-                    "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
-                }
-            >
-                <div>Ungewöhnlich hohe Ausgaben</div>
-                {unusualCategories.length === 0 ? (
-                    <div className={"font-poppins font-semibold"}>
-                        Keine auffälligen Kategorien
-                    </div>
-                ) : (
-                    unusualCategories.map((cat) => (
-                        <div
-                            key={cat.name}
-                            className={"font-poppins text-error font-semibold"}
-                        >
-                            {cat.name}: {formatEuro(cat.total)}
-                        </div>
-                    ))
-                )}
-            </div>
-            <div
-                className={
-                    "bg-surface-container-low flex w-1/2 flex-col gap-y-1 rounded-sm p-2 text-center"
-                }
-            >
-                <div>Wiederkehrende Ausgaben</div>
-                {recurringExpenses.length === 0 ? (
-                    <div className={"font-poppins font-semibold"}>
-                        Keine gefunden
-                    </div>
-                ) : (
-                    recurringExpenses.map((r) => (
-                        <div
-                            key={r.name + r.category}
-                            className={"font-poppins font-semibold"}
-                        >
-                            {r.name} – {r.count}x
-                        </div>
-                    ))
-                )}
             </div>
         </div>
     );

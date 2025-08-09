@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAppSelector } from "@/redux-hooks.ts";
-import { selectExpenseById } from "@/components/expenses/slice.ts";
 import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export const Route = createFileRoute("/edit/$id")({
     component: EditExpensePage,
@@ -10,7 +9,8 @@ export const Route = createFileRoute("/edit/$id")({
 function EditExpensePage() {
     const { id } = Route.useParams();
     const navigate = useNavigate();
-    const expense = useAppSelector((state) => selectExpenseById(state, id));
+    const { data: expenses } = useExpenses();
+    const expense = expenses?.find((e) => e.id === id);
 
     if (!expense) {
         void navigate({ to: "/" });

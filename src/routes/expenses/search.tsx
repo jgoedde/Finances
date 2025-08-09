@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useAppSelector } from "@/redux-hooks.ts";
 import {
     isMatchingCategoryFilter,
     type SelectedCategoriesFilter,
@@ -12,13 +11,13 @@ import {
 } from "@/components/search/filters/date/date-filter.ts";
 import { isMatchingSearchFilter } from "@/components/search/filters/text/text-filter.ts";
 import { cn } from "@/lib/utils.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content";
 import { CategoriesFilterDrawerContent } from "@/components/search/filters/categories/categories-filter-drawer-content";
 import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export const Route = createFileRoute("/expenses/search")({
     component: SearchPage,
@@ -32,7 +31,7 @@ function SearchPage() {
         isOpen: boolean;
     }>({ isOpen: false });
 
-    const expenses = useAppSelector(selectAllExpenses);
+    const { data: expenses } = useExpenses();
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -46,13 +45,13 @@ function SearchPage() {
 
     const filteredExpenses: Expense[] = useMemo(() => {
         if (search.trim() === "") {
-            return expenses
+            return (expenses ?? [])
                 .filter((e) => isMatchingDateFilter(e, dateFilterOption))
                 .filter((e) => isMatchingCategoryFilter(e, selectedCategories));
         }
 
         const searchLower = search.toLowerCase();
-        return expenses
+        return (expenses ?? [])
             .filter((e) => isMatchingDateFilter(e, dateFilterOption))
             .filter((e) => isMatchingCategoryFilter(e, selectedCategories))
             .filter((e) => isMatchingSearchFilter(e, searchLower));
@@ -101,6 +100,7 @@ function SearchPage() {
                     }
                 >
                     <button
+                        type={"button"}
                         onClick={() => {
                             history.back();
                         }}

@@ -2,24 +2,21 @@ import { ArrowDown, ArrowUp, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
 import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
-import { useAppSelector } from "@/redux-hooks.ts";
-import { selectSpentInMonth } from "@/components/expenses/selectors.ts";
+import { getSpentAmountInMonth } from "@/components/expenses/selectors.ts";
 import { addMonths } from "date-fns";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export function MonthlyOverview() {
+    const { data: expenses } = useExpenses();
     const lastMonth = addMonths(new Date(), -1);
-    const spentThisMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, {
-            year: new Date().getFullYear(),
-            monthIndex: new Date().getMonth(),
-        }),
-    );
-    const spentLastMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, {
-            year: lastMonth.getFullYear(),
-            monthIndex: lastMonth.getMonth(),
-        }),
-    );
+    const spentThisMonth = getSpentAmountInMonth(expenses ?? [], {
+        year: new Date().getFullYear(),
+        monthIndex: new Date().getMonth(),
+    });
+    const spentLastMonth = getSpentAmountInMonth(expenses ?? [], {
+        year: lastMonth.getFullYear(),
+        monthIndex: lastMonth.getMonth(),
+    });
 
     const amountDiffNowVsLastMonth = spentThisMonth - spentLastMonth;
     const trendPercentage = (amountDiffNowVsLastMonth / spentLastMonth) * 100;

@@ -5,16 +5,15 @@ import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { addDays, addWeeks, isAfter, isSameDay, isToday } from "date-fns";
-import { useAppSelector } from "@/redux-hooks.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 type DateFilter = "today" | "yesterday" | "last-week";
 
 export function ExpensesList() {
-    const expenses = useAppSelector(selectAllExpenses);
+    const { data: expenses } = useExpenses();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
@@ -40,7 +39,7 @@ export function ExpensesList() {
     );
 
     const filteredExpenses: Expense[] = useMemo(() => {
-        return expenses.filter((e) => isMatchingDateFilter(e));
+        return (expenses ?? []).filter((e) => isMatchingDateFilter(e));
     }, [expenses, isMatchingDateFilter]);
 
     function getActiveDateFilter() {

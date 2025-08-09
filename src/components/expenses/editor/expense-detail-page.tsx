@@ -4,12 +4,6 @@ import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, {
     type CurrencyInputProps,
 } from "react-currency-input-field";
-import { formatEuro } from "@/lib/currency-utils.ts";
-import { type IconName } from "lucide-react/dynamic";
-import { useAppDispatch } from "@/redux-hooks.ts";
-import { upsertExpense } from "@/components/expenses/slice.ts";
-import { nanoid } from "nanoid";
-import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import {
     categories,
@@ -22,8 +16,14 @@ import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/dele
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
 import { ExpenseInput } from "@/components/expenses/editor/ExpenseInput.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
-import { useGitHubClient } from "@/gitHubClient.tsx";
 import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
+import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
+import { useGitHubClient } from "@/gitHubClient.tsx";
+import { useExpenses, useExpensesQueryKey } from "@/hooks/use-expenses.ts";
+import { nanoid } from "nanoid";
+import { formatEuro } from "@/lib/currency-utils.ts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 
 const now = new Date();
 
@@ -44,12 +44,14 @@ export const ExpenseDetailPage: FC<Props> = ({
     id,
     name,
 }) => {
-    const dispatch = useAppDispatch();
-
     const { key } = useEncryption();
+    const navigate = useNavigate();
     const ripple = useRipple();
     const gitHubClient = useGitHubClient();
     const [gitHubConfig] = useGitHubConfig();
+    const { data: expenses } = useExpenses();
+    const queryClient = useQueryClient();
+    const expensesQueryKey = useExpensesQueryKey();
 
     const isEditing = id != null;
     const isAdding = !isEditing;
@@ -81,6 +83,45 @@ export const ExpenseDetailPage: FC<Props> = ({
         setAmountStr(value ?? "");
     };
 
+    const expenseMutation = useMutation({
+        mutationFn: async (expense: Expense) => {
+            if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
+                return Promise.resolve();
+            }
+
+            let updatedExpenses: Expense[];
+            if (isEditing) {
+                updatedExpenses = (expenses ?? []).map((e) =>
+                    e.id === id ? expense : e,
+                );
+            } else {
+                updatedExpenses = [...(expenses ?? []), expense];
+            }
+
+            return encryptAndUpdateGist({
+                key,
+                gistId: gitHubConfig.gistId,
+                gistName: gitHubConfig.gistName,
+                expenses: updatedExpenses,
+                apiClient: gitHubClient,
+            });
+        },
+        onMutate: async (expense) => {
+            await queryClient.cancelQueries({ queryKey: expensesQueryKey });
+
+            queryClient.setQueryData(expensesQueryKey, (old: Expense[]) => {
+                if (isEditing) {
+                    return old.map((e) => (e.id === id ? expense : e));
+                } else {
+                    return [...old, expense];
+                }
+            });
+        },
+        onSettled: () => {
+            void queryClient.invalidateQueries({ queryKey: expensesQueryKey });
+        },
+    });
+
     function onSubmit() {
         if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
             return;
@@ -103,32 +144,22 @@ export const ExpenseDetailPage: FC<Props> = ({
             return;
         }
 
-        dispatch(
-            upsertExpense({
-                id: id ?? nanoid(8),
-                date: dateLocal.getTime(),
-                category: {
-                    name: cat.name,
-                    iconName: selectedCategoryIconNameLocal as IconName,
-                    color: cat.color,
-                },
-                amount,
-                amountFormatted: formatEuro(amount),
-                name: expenseLocal,
-                description: descriptionLocal,
-            }),
-        );
+        const expense: Expense = {
+            id: id ?? nanoid(8),
+            date: dateLocal.getTime(),
+            category: {
+                name: cat.name,
+                iconName: cat.icon,
+                color: cat.color,
+            },
+            amount,
+            amountFormatted: formatEuro(amount),
+            name: expenseLocal,
+            description: descriptionLocal,
+        };
 
-        void dispatch(
-            encryptAndUpdateGist({
-                key,
-                gistId: gitHubConfig.gistId,
-                apiClient: gitHubClient,
-                gistName: gitHubConfig.gistName,
-            }),
-        );
-
-        history.back();
+        expenseMutation.mutate(expense);
+        void navigate({ to: "/" });
     }
 
     function onCategoryTileClick(c: Category) {

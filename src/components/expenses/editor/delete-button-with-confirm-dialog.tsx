@@ -11,44 +11,69 @@ import {
 } from "@/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
 import { type FC } from "react";
-import { removeExpense } from "@/components/expenses/slice.ts";
-import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
-import { useAppDispatch } from "@/redux-hooks.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useGitHubClient } from "@/gitHubClient.tsx";
 import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useExpenses, useExpensesQueryKey } from "@/hooks/use-expenses.ts";
+import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
+import { useNavigate } from "@tanstack/react-router";
+import type { Expense } from "@/components/expense.ts";
 
 type Props = {
     expenseId: string;
 };
 
 export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
-    const dispatch = useAppDispatch();
-
     const [gitHubConfig] = useGitHubConfig();
     const { key } = useEncryption();
+    const navigate = useNavigate();
     const gitHubClient = useGitHubClient();
+    const queryClient = useQueryClient();
+    const expenses = useExpenses().data ?? [];
+    const expensesQueryKey = useExpensesQueryKey();
 
-    function onDeleteConfirmButtonClick() {
-        if (!key || !expenseId || !gitHubConfig.gistId) {
-            return;
-        }
+    const mutation = useMutation({
+        mutationFn: () => {
+            if (!key || !gitHubConfig.gistId || !expensesQueryKey) {
+                return Promise.resolve();
+            }
 
-        dispatch(removeExpense(expenseId));
-        void dispatch(
-            encryptAndUpdateGist({
+            return encryptAndUpdateGist({
                 key,
-                apiClient: gitHubClient,
                 gistId: gitHubConfig.gistId,
                 gistName: gitHubConfig.gistName,
-            }),
-        );
+                expenses: expenses.filter(
+                    (expense) => expense.id !== expenseId,
+                ),
+                apiClient: gitHubClient,
+            });
+        },
+        onMutate: async () => {
+            // Cancel any outgoing refetches
+            // (so they don't overwrite our optimistic update)
+            await queryClient.cancelQueries({ queryKey: expensesQueryKey });
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(expensesQueryKey, (old: Expense[]) => [
+                ...(old ?? []).filter((expense) => expense.id !== expenseId),
+            ]);
+        },
+        onSettled: () => {
+            void queryClient.invalidateQueries({ queryKey: expensesQueryKey });
+        },
+    });
+
+    function onDeleteConfirmButtonClick() {
+        mutation.mutate();
+
+        void navigate({ to: "/" });
     }
 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <button className={"cursor-pointer"}>
+                <button type={"button"} className={"cursor-pointer"}>
                     <Trash className={"size-5"} />
                 </button>
             </AlertDialogTrigger>

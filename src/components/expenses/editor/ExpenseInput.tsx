@@ -1,12 +1,11 @@
 import { Input } from "@/components/ui/input.tsx";
-import { useAppSelector } from "@/redux-hooks.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import { addMonths, isAfter } from "date-fns";
 import * as React from "react";
 import { useMemo } from "react";
 import { mergeSimilarKeys } from "@/lib/utils";
 import { groupBy } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 const now = new Date();
 
@@ -23,11 +22,11 @@ export function ExpenseInput({
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
 }) {
-    const expenses = useAppSelector(selectAllExpenses);
+    const { data: expenses } = useExpenses();
 
     const filteredExpenses = useMemo(
         () =>
-            expenses
+            (expenses ?? [])
                 .filter((e) => e.category.iconName === categoryIconName)
                 .filter((e) => isAfter(e.date, addMonths(now, -3))),
         [categoryIconName, expenses],

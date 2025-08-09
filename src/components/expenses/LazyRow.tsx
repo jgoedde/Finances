@@ -4,26 +4,26 @@ import { formatEuro } from "@/lib/currency-utils.ts";
 import { setFixedCosts } from "@/components/fixed-costs/slice.ts";
 import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
+import { useAppDispatch } from "@/redux-hooks.ts";
 import {
-    selectSpentInMonth,
-    selectSpentToday,
-    selectSpentYesterday,
+    getSpentAmountInMonth,
+    getSpentAmountToday,
+    getSpentAmountYesterday,
 } from "@/components/expenses/selectors.ts";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export function LazyRow() {
     const dispatch = useAppDispatch();
+    const { data: expenses } = useExpenses();
 
     const ripple = useRipple();
 
-    const spentThisMonth = useAppSelector((state) =>
-        selectSpentInMonth(state, {
-            year: new Date().getFullYear(),
-            monthIndex: new Date().getMonth(),
-        }),
-    );
-    const spentToday = useAppSelector(selectSpentToday);
-    const spentYesterday = useAppSelector(selectSpentYesterday);
+    const spentThisMonth = getSpentAmountInMonth(expenses ?? [], {
+        year: new Date().getFullYear(),
+        monthIndex: new Date().getMonth(),
+    });
+    const spentToday = getSpentAmountToday(expenses ?? []);
+    const spentYesterday = getSpentAmountYesterday(expenses ?? []);
 
     return (
         <div

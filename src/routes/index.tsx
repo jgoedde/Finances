@@ -1,51 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
-import { useEncryption } from "@/components/use-encryption.ts";
-import { selectAllExpenses } from "@/components/expenses/slice.ts";
-import { useEffect } from "react";
-import { loadExpenses } from "@/components/expenses/actions.ts";
 import { SearchBar } from "@/components/expenses/SearchBar.tsx";
 import { LazyRow } from "@/components/expenses/LazyRow.tsx";
-import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { Insights } from "@/components/expenses/Insights.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useGitHubClient } from "@/gitHubClient.tsx";
-import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
-import { loadFixedCosts } from "@/components/fixed-costs/actions.ts";
+import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
 });
 
 function ExpensesPage() {
-    const dispatch = useAppDispatch();
-
-    const { key } = useEncryption();
-    const githubClient = useGitHubClient();
-    const [gitHubConfig] = useGitHubConfig();
-
-    const isDecrypting = useAppSelector((state) => state.app.isDecrypting);
-    const isInitial = useAppSelector((state) => state.expenses.isInitial);
-    const expenses = useAppSelector(selectAllExpenses);
-
-    useEffect(() => {
-        if (!key || !gitHubConfig.gistId) {
-            return;
-        }
-
-        (async () => {
-            dispatch(
-                loadExpenses({
-                    gistId: gitHubConfig.gistId as string,
-                    apiClient: githubClient,
-                    key,
-                }),
-            );
-            dispatch(loadFixedCosts());
-        })();
-    }, [dispatch, gitHubConfig.gistId, githubClient, key]);
+    const { data: expenses, isLoading, error } = useExpenses();
 
     function getHeadlineText() {
         // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian
@@ -80,12 +47,15 @@ function ExpensesPage() {
                         >
                             {headlineText}
                         </h2>
-                        {expenses.length > 0 && <ExportButton />}
                     </div>
                     <div className={"mt-2"}>
-                        Du hast bislang {expenses.length} Ausgaben getrackt. Je
-                        mehr du trackst, desto besser kannst du deine Ausgaben
-                        im Blick behalten.
+                        {expenses != null && !isLoading && !error && (
+                            <>
+                                Du hast bislang {expenses.length} Ausgaben
+                                getrackt. Je mehr du trackst, desto besser
+                                kannst du deine Ausgaben im Blick behalten.
+                            </>
+                        )}
                     </div>
                 </div>
                 <MonthlyOverview />
@@ -93,7 +63,7 @@ function ExpensesPage() {
                 <ExpensesList />
             </main>
 
-            {!isDecrypting && !isInitial && <NewExpenseFAB />}
+            <NewExpenseFAB />
         </div>
     );
 }

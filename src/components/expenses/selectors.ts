@@ -1,53 +1,40 @@
-import {
-    expensesAdapter,
-    selectAllExpenses,
-} from "@/components/expenses/slice.ts";
 import { isSameMonth, isToday, isYesterday } from "date-fns";
-import type { RootState } from "@/store.ts";
-import { createSelector } from "@reduxjs/toolkit";
+import type { Expense } from "@/components/expense.ts";
 
-export const selectSpentToday = (state: RootState) => {
-    const amountsToday = expensesAdapter
-        .getSelectors()
-        .selectAll(state.expenses)
+export function getSpentAmountToday(expensesList: Expense[]) {
+    const amountsToday = expensesList
         .filter((e) => isToday(e.date))
         .map((e) => e.amount);
 
     return amountsToday.reduce((acc, amount) => acc + amount, 0);
-};
+}
 
-export const selectSpentThisMonth = (
-    state: RootState,
+export function getSpentAmountThisMonth(
+    expenses: Expense[],
     onlyPositive: boolean = false,
-) => {
-    const amountsThisMonth = expensesAdapter
-        .getSelectors()
-        .selectAll(state.expenses)
+) {
+    const amountsThisMonth = expenses
         .filter((e) => isSameMonth(new Date(), e.date))
         .filter((e) => !onlyPositive || e.amount > 0)
         .map((e) => e.amount);
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
-};
+}
 
-export const selectSpentYesterday = (state: RootState) => {
-    const amountsYesterday = expensesAdapter
-        .getSelectors()
-        .selectAll(state.expenses)
+export function getSpentAmountYesterday(expensesList: Expense[]) {
+    const amountsYesterday = expensesList
         .filter((e) => isYesterday(e.date))
         .map((e) => e.amount);
 
     return amountsYesterday.reduce((acc, amount) => acc + amount, 0);
-};
+}
 
-export const selectSpentThisMonthInCategory = (
-    state: RootState,
+export function getSpentAmountThisMonthInCategory(
+    expenses: Expense[],
     categoryName: string,
     onlyPositive = false,
-) => {
-    const amountsThisMonth = expensesAdapter
-        .getSelectors()
-        .selectAll(state.expenses)
+) {
+    const amountsThisMonth = expenses
         .filter(
             (e) =>
                 isSameMonth(new Date(e.date), new Date()) &&
@@ -57,16 +44,14 @@ export const selectSpentThisMonthInCategory = (
         .map((e) => e.amount);
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
-};
+}
 
-export const selectSpentInMonth = (
-    state: RootState,
+export function getSpentAmountInMonth(
+    expensesList: Expense[],
     month: YearMonth,
     onlyPositive = false,
-): number => {
-    const amountsInMonth = expensesAdapter
-        .getSelectors()
-        .selectAll(state.expenses)
+): number {
+    const amountsInMonth = expensesList
         .filter((e) =>
             isSameMonth(
                 new Date(e.date),
@@ -77,18 +62,13 @@ export const selectSpentInMonth = (
         .map((e) => e.amount);
 
     return amountsInMonth.reduce((acc, amount) => acc + amount, 0);
-};
-export const selectExpensesInMonth = createSelector(
-    (_: RootState, month: YearMonth) => month,
-    selectAllExpenses,
-    (month, expenses) =>
-        expenses.filter((e) =>
-            isSameMonth(
-                new Date(e.date),
-                new Date(month.year, month.monthIndex),
-            ),
-        ),
-);
+}
+
+export function getExpensesInMonth(month: YearMonth, expenses: Expense[]) {
+    return expenses.filter((e) =>
+        isSameMonth(new Date(e.date), new Date(month.year, month.monthIndex)),
+    );
+}
 
 interface YearMonth {
     year: number;
