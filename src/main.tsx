@@ -7,6 +7,7 @@ import { StrictMode } from "react";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { GitHubClientProvider } from "@/gitHubClient.tsx";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -22,9 +23,11 @@ createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <ThemeProvider>
             <NuqsAdapter>
-                <Provider store={store}>
-                    <RouterProvider router={router} />
-                </Provider>
+                <GitHubClientProvider>
+                    <Provider store={store}>
+                        <RouterProvider router={router} />
+                    </Provider>
+                </GitHubClientProvider>
             </NuqsAdapter>
         </ThemeProvider>
     </StrictMode>,

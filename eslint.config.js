@@ -22,6 +22,7 @@ export default tseslint.config(
             "react-dom": reactDom,
         },
         rules: {
+            ...reactHooks.configs.recommended.rules,
             ...reactX.configs["recommended-typescript"].rules,
             ...reactDom.configs.recommended.rules,
         },

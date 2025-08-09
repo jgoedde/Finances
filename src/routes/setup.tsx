@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { type ChangeEvent, type FormEvent, useState } from "react";
+import { type ChangeEvent, type FormEvent, useCallback, useState } from "react";
 import {
     Check,
     CloudCheck,
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils.ts";
 import { Input } from "@/components/ui/input.tsx";
 import { useAppDispatch, useAppSelector } from "@/redux-hooks.ts";
 import { selectMasterPassword, setMasterPassword } from "@/app-slice.ts";
+import { useGitHubClient } from "@/gitHubClient.tsx";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/setup")({
 export interface LsLogin {
     pat: string;
     gistName: string;
+    gistId?: string;
 }
 
 interface GistResponse {
@@ -41,8 +43,10 @@ function RouteComponent() {
 
     const [lsLogin, setLsLogin] = useLocalStorage<LsLogin>({
         key: "finances-login",
-        defaultValue: { pat: "", gistName: "" },
+        defaultValue: { pat: "", gistName: "", gistId: "" },
+        getInitialValueInEffect: false,
     });
+    const gitHubClient = useGitHubClient();
 
     const masterPassword = useAppSelector(selectMasterPassword) ?? "";
 
@@ -50,19 +54,25 @@ function RouteComponent() {
     const [authCheck, setAuthCheck] = useState<
         | {
               isAuthenticated: true;
-              gistNames: string[];
+              gists: { name: string; id: string }[];
               gitHubUserName: string;
           }
         | {
               isAuthenticated: false;
           }
     >({ isAuthenticated: false });
-    const [gistNameTmp, setGistNameTmp] = useState<string>(lsLogin.gistName);
+    const [gistNameTmp, setGistNameTmp] = useState<string>(
+        lsLogin.gistName.split(".")[0] || "",
+    );
 
-    async function isAuthenticated(): Promise<
-        | { isAuthenticated: true; ownerName: string; gistNames: string[] }
+    const selectedGistId = !authCheck.isAuthenticated
+        ? undefined
+        : authCheck.gists.find((g) => g.name === lsLogin.gistName)?.id;
+
+    const isAuthenticated = useCallback(async (): Promise<
+        | { isAuthenticated: true; ownerName: string; gists: GetGistsResponse }
         | { isAuthenticated: false }
-    > {
+    > => {
         if (!lsLogin.pat || lsLogin.pat.trim() === "") {
             return { isAuthenticated: false };
         }
@@ -79,7 +89,7 @@ function RouteComponent() {
                 const data = (await response.json()) as GetGistsResponse;
                 return {
                     isAuthenticated: true,
-                    gistNames: data.map((gist) => Object.keys(gist.files)[0]),
+                    gists: data,
                     ownerName: data.length > 0 ? data[0].owner.login : "",
                 };
             }
@@ -88,12 +98,16 @@ function RouteComponent() {
             console.error("Error checking authentication:", e);
             return { isAuthenticated: false };
         }
-    }
+    }, [lsLogin.pat]);
 
-    async function handleBlur() {
+    const handleTokenBlur = useCallback(async () => {
         if (!lsLogin.pat || lsLogin.pat.trim() === "") {
             return;
         }
+
+        setErrorText(""); // Clear any previous error messages
+        setAuthCheck({ isAuthenticated: false });
+
         const authCheck = await isAuthenticated();
 
         if (!authCheck.isAuthenticated) {
@@ -106,10 +120,24 @@ function RouteComponent() {
         setAuthCheck({
             gitHubUserName: authCheck.ownerName,
             isAuthenticated: true,
-            gistNames: authCheck.gistNames,
+            gists: authCheck.gists.map((g) => ({
+                id: g.id,
+                name: Object.keys(g.files)[0],
+            })),
         });
         setErrorText("");
-    }
+    }, [isAuthenticated, lsLogin.pat]);
+
+    const handleGistNameBlur = useCallback(() => {
+        if (!authCheck.isAuthenticated) {
+            return;
+        }
+
+        setLsLogin((prev) => ({
+            ...prev,
+            gistId: selectedGistId,
+        }));
+    }, [authCheck.isAuthenticated, selectedGistId, setLsLogin]);
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
@@ -122,13 +150,58 @@ function RouteComponent() {
             return;
         }
 
-        void navigate({ to: "/" });
+        if (selectedGistId == null) {
+            try {
+                const createdGist = await gitHubClient.gists.create({
+                    public: false,
+                    files: {
+                        [lsLogin.gistName]: {
+                            content: "abc",
+                        },
+                    },
+                    description: "Verschlüsselte Datenbank für Finanzen",
+                });
+
+                const gistId = createdGist.data.id;
+                setLsLogin((prev) => ({
+                    ...prev,
+                    gistId: gistId,
+                }));
+
+                void navigate({ to: "/" });
+            } catch (e) {
+                if (e instanceof Error) {
+                    setErrorText(
+                        "Fehler beim Erstellen des Gists: " + e.message,
+                    );
+                } else if (typeof e === "string") {
+                    setErrorText("Fehler beim Erstellen des Gists: " + e);
+                }
+            }
+        } else {
+            void navigate({ to: "/" });
+        }
     }
 
     function handleTokenChange(e: ChangeEvent<HTMLInputElement>) {
-        setErrorText(""); // Clear any previous error messages
-        setAuthCheck({ isAuthenticated: false }); // Reset authentication check
         setLsLogin((prev) => ({ ...prev, pat: e.target.value }));
+    }
+
+    function handleGistNameChange(e: ChangeEvent<HTMLInputElement>) {
+        setGistNameTmp(e.target.value);
+
+        if (e.target.value.trim() === "") {
+            setLsLogin((prev) => ({
+                ...prev,
+                gistName: `my-finances.enc`,
+            }));
+        } else {
+            setLsLogin((prev) => ({
+                ...prev,
+                gistName: `${e.target.value}.enc`,
+                gistId: selectedGistId,
+            }));
+        }
     }
 
     return (
@@ -153,37 +226,33 @@ function RouteComponent() {
                     )}
 
                     {/* GitHub Token Input */}
-                    <div>
-                        <div className={"flex gap-x-8"}>
-                            <div className={"text-secondary size-4"}>
-                                <SquareCode />
-                            </div>
-                            <div className={"w-full"}>
-                                <label
-                                    htmlFor="token"
-                                    className="block text-sm"
-                                >
-                                    GitHub Personal Access Token
-                                </label>
-                                <input
-                                    type="password"
-                                    id="token"
-                                    name="token"
-                                    placeholder="ghp_**************"
-                                    className="border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
-                                    value={lsLogin.pat}
-                                    onChange={handleTokenChange}
-                                    onBlur={() => void handleBlur()}
-                                    required
-                                />
-                                <div
-                                    className={
-                                        "text-on-surface-variant mx-auto mt-2 text-xs"
-                                    }
-                                >
-                                    Der Token muss die Rolle{" "}
-                                    <strong>Gists</strong> haben.
-                                </div>
+                    <div className={"flex gap-x-8"}>
+                        <div className={"text-secondary size-4"}>
+                            <SquareCode />
+                        </div>
+                        <div className={"w-full"}>
+                            <label htmlFor="token" className="block text-sm">
+                                GitHub Personal Access Token
+                            </label>
+                            <input
+                                autoComplete={"current-password"}
+                                type="password"
+                                id="token"
+                                name="token"
+                                placeholder="ghp_**************"
+                                className="border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
+                                value={lsLogin.pat}
+                                onChange={handleTokenChange}
+                                onBlur={() => void handleTokenBlur()}
+                                required
+                            />
+                            <div
+                                className={
+                                    "text-on-surface-variant mx-auto mt-2 text-xs"
+                                }
+                            >
+                                Der Token muss die Rolle <strong>Gists</strong>{" "}
+                                haben.
                             </div>
                         </div>
                     </div>
@@ -205,13 +274,8 @@ function RouteComponent() {
                                     placeholder="my-finances"
                                     className="border-outline absolute block w-full rounded-xs border px-4 py-2 pr-12 text-sm shadow-sm"
                                     value={gistNameTmp}
-                                    onChange={(e) => {
-                                        setGistNameTmp(e.target.value);
-                                        setLsLogin((prev) => ({
-                                            ...prev,
-                                            gistName: `${e.target.value}.enc`,
-                                        }));
-                                    }}
+                                    onChange={handleGistNameChange}
+                                    onBlur={handleGistNameBlur}
                                     required
                                 />
                                 <span className="text-on-surface-variant pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm">
@@ -234,10 +298,12 @@ function RouteComponent() {
                             <KeyRound />
                         </div>
                         <div className={"w-full"}>
-                            <label htmlFor="token" className="block text-sm">
+                            <label htmlFor="master" className="block text-sm">
                                 Master Passwort
                             </label>
                             <Input
+                                name={"master"}
+                                id={"master"}
                                 value={masterPassword}
                                 type={"password"}
                                 onChange={(e) =>
@@ -265,7 +331,7 @@ function RouteComponent() {
                                     />
                                 </div>
                                 <div>
-                                    {authCheck.gistNames.length} Gists von dem
+                                    {authCheck.gists.length} Gists von dem
                                     Nutzer{" "}
                                     <span className={"text-secondary"}>
                                         {authCheck.gitHubUserName}
@@ -281,34 +347,20 @@ function RouteComponent() {
                                 <div>
                                     <DynamicIcon
                                         name={
-                                            authCheck.gistNames.includes(
-                                                lsLogin.gistName,
-                                            )
-                                                ? "triangle-alert"
-                                                : "file-plus"
+                                            selectedGistId == null
+                                                ? "file-plus"
+                                                : "triangle-alert"
                                         }
                                         className={cn(
                                             "size-4",
-                                            authCheck.gistNames.includes(
-                                                lsLogin.gistName,
-                                            )
-                                                ? "text-error"
-                                                : "text-primary",
+                                            selectedGistId == null
+                                                ? "text-primary"
+                                                : "text-error",
                                         )}
                                     />
                                 </div>
                                 <div>
-                                    {authCheck.gistNames.includes(
-                                        lsLogin.gistName,
-                                    ) ? (
-                                        <>
-                                            Vorhandenes Gist {lsLogin.gistName}{" "}
-                                            wird{" "}
-                                            <span className={"text-error"}>
-                                                überschrieben
-                                            </span>
-                                        </>
-                                    ) : (
+                                    {selectedGistId == null ? (
                                         <>
                                             Werde neuen privaten Gist{" "}
                                             <span className={"text-secondary"}>
@@ -316,6 +368,14 @@ function RouteComponent() {
                                                     "my-finances.enc"}
                                             </span>{" "}
                                             anlegen
+                                        </>
+                                    ) : (
+                                        <>
+                                            Vorhandenes Gist {lsLogin.gistName}{" "}
+                                            wird{" "}
+                                            <span className={"text-error"}>
+                                                überschrieben
+                                            </span>
                                         </>
                                     )}
                                 </div>
