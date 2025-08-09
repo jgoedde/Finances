@@ -31,7 +31,7 @@ function ExpensesPage() {
     const expenses = useAppSelector(selectAllExpenses);
 
     useEffect(() => {
-        if (!key || expenses.length > 0 || !gitHubConfig.gistId) {
+        if (!key || !gitHubConfig.gistId) {
             return;
         }
 
@@ -45,7 +45,7 @@ function ExpensesPage() {
             );
             dispatch(loadFixedCosts());
         })();
-    }, [dispatch, expenses.length, githubClient, key, gitHubConfig.gistId]);
+    }, [dispatch, gitHubConfig.gistId, githubClient, key]);
 
     function getHeadlineText() {
         // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian
