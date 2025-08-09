@@ -354,6 +354,7 @@ function RouteComponent() {
                                             className={
                                                 "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
                                             }
+                                            autoComplete={"current-password"}
                                             required
                                         />
                                     </div>
