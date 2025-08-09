@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+    encryptAndUpdateGist,
     loadExpenses,
-    saveToLocalStorage,
 } from "@/components/expenses/actions.ts";
 
 export interface AppState {
@@ -33,13 +33,13 @@ const appSlice = createSlice({
         builder.addCase(loadExpenses.rejected, (state) => {
             state.isDecrypting = false;
         });
-        builder.addCase(saveToLocalStorage.fulfilled, (state) => {
+        builder.addCase(encryptAndUpdateGist.fulfilled, (state) => {
             state.isEncrypting = false;
         });
-        builder.addCase(saveToLocalStorage.pending, (state) => {
+        builder.addCase(encryptAndUpdateGist.pending, (state) => {
             state.isEncrypting = true;
         });
-        builder.addCase(saveToLocalStorage.rejected, (state) => {
+        builder.addCase(encryptAndUpdateGist.rejected, (state) => {
             state.isEncrypting = false;
         });
     },

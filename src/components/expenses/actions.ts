@@ -5,12 +5,6 @@ import { fixedCostsSelectors } from "@/components/fixed-costs/slice.ts";
 import { selectAllExpenses } from "@/components/expenses/slice.ts";
 import type { GitHubClient } from "@/gitHubClient.tsx";
 
-/**
- * A Redux Toolkit async thunk for loading expenses from ``localStorage``.
- * The expenses are stored in an encrypted format and are decrypted using a Web Worker.
- *
- * @returns {Promise<Expense[]>} A promise that resolves to an array of expenses.
- */
 export const loadExpenses = createAsyncThunk(
     "expenses/load",
     async ({
@@ -43,13 +37,7 @@ export const loadExpenses = createAsyncThunk(
     },
 );
 
-/**
- * A Redux Toolkit async thunk for saving expenses to localStorage.
- * The expenses are encrypted using a Web Worker before being stored.
- *
- * @returns {Promise<void>} A promise that resolves when the expenses are successfully saved.
- */
-export const saveToLocalStorage = createAsyncThunk(
+export const encryptAndUpdateGist = createAsyncThunk(
     "expenses/save",
     async (
         {

@@ -9,7 +9,7 @@ import { type IconName } from "lucide-react/dynamic";
 import { useAppDispatch } from "@/redux-hooks.ts";
 import { upsertExpense } from "@/components/expenses/slice.ts";
 import { nanoid } from "nanoid";
-import { saveToLocalStorage } from "@/components/expenses/actions.ts";
+import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import {
     categories,
@@ -120,7 +120,7 @@ export const ExpenseDetailPage: FC<Props> = ({
         );
 
         void dispatch(
-            saveToLocalStorage({
+            encryptAndUpdateGist({
                 key,
                 gistId: gitHubConfig.gistId,
                 apiClient: gitHubClient,

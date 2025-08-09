@@ -12,7 +12,7 @@ import {
 import { Trash } from "lucide-react";
 import { type FC } from "react";
 import { removeExpense } from "@/components/expenses/slice.ts";
-import { saveToLocalStorage } from "@/components/expenses/actions.ts";
+import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
 import { useAppDispatch } from "@/redux-hooks.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { useGitHubClient } from "@/gitHubClient.tsx";
@@ -36,7 +36,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
 
         dispatch(removeExpense(expenseId));
         void dispatch(
-            saveToLocalStorage({
+            encryptAndUpdateGist({
                 key,
                 apiClient: gitHubClient,
                 gistId: gitHubConfig.gistId,
