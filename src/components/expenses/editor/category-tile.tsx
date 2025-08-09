@@ -29,6 +29,7 @@ export const CategoryTile: FC<Props> = ({
 
     return (
         <button
+            type={"button"}
             style={{
                 ...(selectedCategoryIconNameLocal !== category.icon &&
                     selectedCategoryIconNameLocal !== undefined && {

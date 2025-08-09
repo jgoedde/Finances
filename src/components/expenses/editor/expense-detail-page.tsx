@@ -1,10 +1,9 @@
 import { ArrowLeft, Check } from "lucide-react";
-import { type FC, useRef, useState } from "react";
+import { type FC, type FormEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput, { type CurrencyInputProps } from "react-currency-input-field";
 import { useEncryption } from "@/components/use-encryption.ts";
 import { categories, type Category } from "@/components/expenses/editor/categories.ts";
-import { useRipple } from "@/hooks/use-ripple.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import type { Expense } from "@/components/expense.ts";
 import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
@@ -41,7 +40,6 @@ export const ExpenseDetailPage: FC<Props> = ({
 }) => {
     const { key } = useEncryption();
     const navigate = useNavigate();
-    const ripple = useRipple();
     const gitHubClient = useGitHubClient();
     const [gitHubConfig] = useGitHubConfig();
     const { data: expenses } = useExpenses();
@@ -117,7 +115,9 @@ export const ExpenseDetailPage: FC<Props> = ({
         },
     });
 
-    function onSubmit() {
+    function handleFormSubmit(event: FormEvent) {
+        event.preventDefault();
+
         if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
             return;
         }
@@ -162,7 +162,7 @@ export const ExpenseDetailPage: FC<Props> = ({
             setSelectedCategoryIconNameLocal(undefined);
         } else {
             setSelectedCategoryIconNameLocal(c.icon);
-            if (isAdding) {
+            if (isAdding && expenseLocal.trim() === "") {
                 setShouldShowSuggestions(true);
             }
             if (amountStr?.trim() === "") {
@@ -172,7 +172,7 @@ export const ExpenseDetailPage: FC<Props> = ({
     }
 
     return (
-        <>
+        <form onSubmit={handleFormSubmit}>
             <div
                 className={
                     "bg-surface-container flex h-16 w-dvw items-center py-2"
@@ -201,17 +201,10 @@ export const ExpenseDetailPage: FC<Props> = ({
                     )}
 
                     <button
-                        type={"button"}
+                        type={"submit"}
                         className={
                             "ripple-container bg-primary text-on-primary cursor-pointer rounded-full px-3 py-1"
                         }
-                        data-ripple-color={"bg-on-primary/20"}
-                        {...ripple}
-                        onClick={(e) => {
-                            ripple.onClick(e);
-
-                            setTimeout(() => onSubmit(), 150);
-                        }}
                     >
                         <Check className={"size"} />
                     </button>
@@ -287,9 +280,13 @@ export const ExpenseDetailPage: FC<Props> = ({
                         <ExpenseInput
                             shouldShowSuggestions={shouldShowSuggestions}
                             expenseLocal={expenseLocal}
-                            onInputChange={(e) =>
-                                setExpenseLocal(e.target.value)
-                            }
+                            onInputChange={(e) => {
+                                setExpenseLocal(e.target.value);
+
+                                setShouldShowSuggestions(
+                                    e.target.value.trim() === "",
+                                );
+                            }}
                             onApplySuggestion={(e) => {
                                 setExpenseLocal(e);
                                 setShouldShowSuggestions(false);
@@ -314,13 +311,6 @@ export const ExpenseDetailPage: FC<Props> = ({
                             onChange={(e) => {
                                 setDescriptionLocal(e.target.value);
                             }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault();
-
-                                    onSubmit();
-                                }
-                            }}
                             type={"text"}
                             className={
                                 "rounded-none border-none shadow-none focus-visible:ring-0"
@@ -329,6 +319,6 @@ export const ExpenseDetailPage: FC<Props> = ({
                     </div>
                 </div>
             </div>
-        </>
+        </form>
     );
 };
