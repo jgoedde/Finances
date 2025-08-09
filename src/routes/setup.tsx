@@ -1,5 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { type ChangeEvent, type FormEvent, useCallback, useState } from "react";
+import {
+    type ChangeEvent,
+    type FormEvent,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 import {
     Check,
     CloudCheck,
@@ -119,6 +125,11 @@ function RouteComponent() {
         });
         setErrorText("");
     }, [isAuthenticated, gitHubConfig.pat]);
+
+    useEffect(() => {
+        void handleTokenBlur();
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- We really just want to have this once because the local storage populates the local state not initially.
+    }, []);
 
     const handleGistNameBlur = useCallback(() => {
         if (!authCheck.isAuthenticated) {
