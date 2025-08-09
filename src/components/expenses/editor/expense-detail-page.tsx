@@ -1,14 +1,9 @@
 import { ArrowLeft, Check } from "lucide-react";
 import { type FC, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import CurrencyInput, {
-    type CurrencyInputProps,
-} from "react-currency-input-field";
+import CurrencyInput, { type CurrencyInputProps } from "react-currency-input-field";
 import { useEncryption } from "@/components/use-encryption.ts";
-import {
-    categories,
-    type Category,
-} from "@/components/expenses/editor/categories.ts";
+import { categories, type Category } from "@/components/expenses/editor/categories.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import type { Expense } from "@/components/expense.ts";
@@ -118,7 +113,7 @@ export const ExpenseDetailPage: FC<Props> = ({
             });
         },
         onSettled: () => {
-            void queryClient.invalidateQueries({ queryKey: expensesQueryKey });
+            void queryClient.invalidateQueries();
         },
     });
 

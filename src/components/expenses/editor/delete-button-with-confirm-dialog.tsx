@@ -60,7 +60,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
             ]);
         },
         onSettled: () => {
-            void queryClient.invalidateQueries({ queryKey: expensesQueryKey });
+            void queryClient.invalidateQueries();
         },
     });
 
