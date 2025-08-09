@@ -20,6 +20,12 @@ import { Input } from "@/components/ui/input.tsx";
 import { useGitHubClient } from "@/gitHubClient.tsx";
 import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion.tsx";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -203,6 +209,9 @@ function RouteComponent() {
         }
     }
 
+    const defaultAccordion =
+        (gitHubConfig.pat || "").trim() === "" ? "item-1" : "item-2";
+
     return (
         <div className={"flex h-dvh items-center justify-center"}>
             <div className="bg-surface-container-highest w-full max-w-sm rounded-2xl p-6 shadow-xl">
@@ -224,96 +233,134 @@ function RouteComponent() {
                         </div>
                     )}
 
-                    {/* GitHub Token Input */}
-                    <div className={"flex gap-x-8"}>
-                        <div className={"text-secondary size-4"}>
-                            <SquareCode />
-                        </div>
-                        <div className={"w-full"}>
-                            <label htmlFor="token" className="block text-sm">
-                                GitHub Personal Access Token
-                            </label>
-                            <input
-                                autoComplete={"current-password"}
-                                type="password"
-                                id="token"
-                                name="token"
-                                placeholder="ghp_**************"
-                                className="border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
-                                value={gitHubConfig.pat ?? ""}
-                                onChange={handleTokenChange}
-                                onBlur={() => void handleTokenBlur()}
-                                required
-                            />
-                            <div
-                                className={
-                                    "text-on-surface-variant mx-auto mt-2 text-xs"
-                                }
-                            >
-                                Der Token muss die Rolle <strong>Gists</strong>{" "}
-                                haben.
-                            </div>
-                        </div>
-                    </div>
+                    <Accordion
+                        type="single"
+                        collapsible
+                        defaultValue={defaultAccordion}
+                    >
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>
+                                GitHub Konfiguration
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                <div className={"flex flex-col space-y-4"}>
+                                    <div className={"flex gap-x-4"}>
+                                        <div className={"text-secondary w-8"}>
+                                            <SquareCode className={"w-full"} />
+                                        </div>
+                                        <div className={"w-full"}>
+                                            <label
+                                                htmlFor="token"
+                                                className="block text-sm"
+                                            >
+                                                GitHub Personal Access Token
+                                            </label>
+                                            <input
+                                                autoComplete={
+                                                    "current-password"
+                                                }
+                                                type="text"
+                                                id="token"
+                                                name="token"
+                                                placeholder="ghp_**************"
+                                                className="border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
+                                                value={gitHubConfig.pat ?? ""}
+                                                onChange={handleTokenChange}
+                                                onBlur={() =>
+                                                    void handleTokenBlur()
+                                                }
+                                                required
+                                            />
+                                            <div
+                                                className={
+                                                    "text-on-surface-variant mx-auto mt-2 text-xs"
+                                                }
+                                            >
+                                                Der Token muss die Rolle{" "}
+                                                <strong>Gists</strong> haben.
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    {/* Custom Text Input */}
-                    <div className={"flex gap-x-8"}>
-                        <div className={"text-secondary size-4"}>
-                            <FilePenLine />
-                        </div>
-                        <div className={"w-full"}>
-                            <label htmlFor="gistName" className="block text-sm">
-                                Gist Name
-                            </label>
-                            <div className="relative mt-1 h-10">
-                                <input
-                                    type="text"
-                                    id="gistName"
-                                    name="gistName"
-                                    placeholder="my-finances"
-                                    className="border-outline absolute block w-full rounded-xs border px-4 py-2 pr-12 text-sm shadow-sm"
-                                    value={gistNameTmp}
-                                    onChange={handleGistNameChange}
-                                    onBlur={handleGistNameBlur}
-                                    required
-                                />
-                                <span className="text-on-surface-variant pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm">
-                                    .enc
-                                </span>
-                            </div>
-                            <div
-                                className={
-                                    "text-on-surface-variant mx-auto mt-2 text-xs"
-                                }
-                            >
-                                Unter diesem Namen wird die Datenbank über Deine
-                                Ausgaben verschlüsselt gespeichert.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={"flex gap-x-8"}>
-                        <div className={"text-secondary size-4"}>
-                            <KeyRound />
-                        </div>
-                        <div className={"w-full"}>
-                            <label htmlFor="master" className="block text-sm">
-                                Master Passwort
-                            </label>
-                            <Input
-                                name={"master"}
-                                id={"master"}
-                                value={key ?? ""}
-                                type={"password"}
-                                onChange={(e) => setKey(e.target.value)}
-                                placeholder={"<super sicheres Passwort>"}
-                                className={
-                                    "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
-                                }
-                                required
-                            />
-                        </div>
-                    </div>
+                                    {/* Custom Text Input */}
+                                    <div className={"flex gap-x-4"}>
+                                        <div className={"text-secondary w-8"}>
+                                            <FilePenLine className={"w-full"} />
+                                        </div>
+                                        <div className={"w-full"}>
+                                            <label
+                                                htmlFor="gistName"
+                                                className="block text-sm"
+                                            >
+                                                Gist Name
+                                            </label>
+                                            <div className="relative mt-1 h-10">
+                                                <input
+                                                    type="text"
+                                                    id="gistName"
+                                                    name="gistName"
+                                                    placeholder="my-finances"
+                                                    className="border-outline absolute block w-full rounded-xs border px-4 py-2 pr-12 text-sm shadow-sm"
+                                                    value={gistNameTmp}
+                                                    onChange={
+                                                        handleGistNameChange
+                                                    }
+                                                    onBlur={handleGistNameBlur}
+                                                    required
+                                                />
+                                                <span className="text-on-surface-variant pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm">
+                                                    .enc
+                                                </span>
+                                            </div>
+                                            <div
+                                                className={
+                                                    "text-on-surface-variant mx-auto mt-2 text-xs"
+                                                }
+                                            >
+                                                Unter diesem Namen wird die
+                                                Datenbank über Deine Ausgaben
+                                                verschlüsselt gespeichert.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                            <AccordionTrigger>Verschlüsselung</AccordionTrigger>
+                            <AccordionContent>
+                                <div className={"flex gap-x-4"}>
+                                    <div className={"text-secondary w-8"}>
+                                        <KeyRound className={"w-full"} />
+                                    </div>
+                                    <div className={"w-full"}>
+                                        <label
+                                            htmlFor="master"
+                                            className="block text-sm"
+                                        >
+                                            Master Passwort
+                                        </label>
+                                        <Input
+                                            name={"master"}
+                                            id={"master"}
+                                            value={key ?? ""}
+                                            type={"password"}
+                                            onChange={(e) =>
+                                                setKey(e.target.value)
+                                            }
+                                            placeholder={
+                                                "<super sicheres Passwort>"
+                                            }
+                                            className={
+                                                "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
+                                            }
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
 
                     {authCheck.isAuthenticated && (
                         <div className={"flex flex-col gap-y-2"}>
