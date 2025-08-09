@@ -84,6 +84,8 @@ export function ExpenseInput({
                 <div className={"my-2 flex flex-wrap gap-2"}>
                     {top.map((e) => (
                         <button
+                            tabIndex={-1}
+                            aria-hidden="true"
                             className={
                                 "border-outline-variant bg-surface-container-low text-on-surface-variant ripple-container cursor-pointer rounded-md border-1 px-2 py-1"
                             }
