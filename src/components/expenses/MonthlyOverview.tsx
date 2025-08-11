@@ -1,25 +1,25 @@
 import { ArrowDown, ArrowUp, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
-import { getSpentAmountInMonth } from "@/components/expenses/selectors.ts";
-import { addMonths } from "date-fns";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { addMonths, endOfMonth, startOfMonth } from "date-fns";
+import { useSpentByTimeRange } from "@/components/expenses/use-expenses.ts";
 import { useCategories } from "@/components/expenses/use-categories.ts";
 import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
 
 const now = new Date();
 
 export function MonthlyOverview() {
-    const expenses = useExpenses();
     const categories = useCategories();
 
     const lastMonth = addMonths(now, -1);
-    const spentThisMonth = getSpentAmountInMonth(expenses, {
-        year: now.getFullYear(),
-        monthIndex: now.getMonth(),
+    const spentThisMonth = useSpentByTimeRange({
+        start: startOfMonth(now),
+        end: endOfMonth(now),
+        onlyPositive: true,
     });
-    const spentLastMonth = getSpentAmountInMonth(expenses, {
-        year: lastMonth.getFullYear(),
-        monthIndex: lastMonth.getMonth(),
+    const spentLastMonth = useSpentByTimeRange({
+        start: startOfMonth(lastMonth),
+        end: endOfMonth(lastMonth),
+        onlyPositive: true,
     });
 
     const amountDiffNowVsLastMonth = spentThisMonth - spentLastMonth;

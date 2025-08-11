@@ -90,7 +90,7 @@ export function ExpenseDetailPage({ expense }: Props) {
             void expensesRepository.add(
                 {
                     id: nanoid(8),
-                    date: dateLocal.toISOString(),
+                    date: dateLocal.getTime(),
                     category_id: selectedCategory.id,
                     amount: amount,
                     currency: "EUR",
@@ -105,7 +105,7 @@ export function ExpenseDetailPage({ expense }: Props) {
         } else if (expense) {
             expense.amount = amount;
             expense.currency = "EUR";
-            expense.date = dateLocal.toISOString();
+            expense.date = dateLocal.getTime();
             expense.category_id = selectedCategory.id;
             expense.description =
                 descriptionLocal.trim() === ""

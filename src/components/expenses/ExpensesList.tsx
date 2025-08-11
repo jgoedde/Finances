@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC, useMemo, useState } from "react";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
@@ -21,27 +21,12 @@ type DateFilter = "today" | "yesterday" | "last-week";
 const now = new Date();
 
 export function ExpensesList() {
-    const expenses = useExpensesByTimeRange(getQueryOptions());
-
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
         history: "push",
     });
 
-    function getActiveDateFilter() {
-        if (dateFilterOption === "today") {
-            return "Heute";
-        }
-        if (dateFilterOption === "yesterday") {
-            return "Gestern";
-        }
-        if (dateFilterOption === "last-week") {
-            return "Letzte Woche";
-        }
-    }
-
-    function getQueryOptions(): { start: Date; end: Date } {
+    const queryOptions: { start: Date; end: Date } = useMemo(() => {
         const todayFilter = {
             start: startOfDay(now),
             end: endOfDay(now),
@@ -63,6 +48,22 @@ export function ExpensesList() {
             };
         } else {
             return todayFilter;
+        }
+    }, [dateFilterOption]);
+
+    const expenses = useExpensesByTimeRange(queryOptions);
+
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    function getActiveDateFilter() {
+        if (dateFilterOption === "today") {
+            return "Heute";
+        }
+        if (dateFilterOption === "yesterday") {
+            return "Gestern";
+        }
+        if (dateFilterOption === "last-week") {
+            return "Letzte Woche";
         }
     }
 

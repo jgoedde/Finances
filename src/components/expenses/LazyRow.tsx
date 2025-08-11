@@ -5,25 +5,37 @@ import { setFixedCosts } from "@/components/fixed-costs/slice.ts";
 import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useAppDispatch } from "@/redux-hooks.ts";
+import { useSpentByTimeRange } from "@/components/expenses/use-expenses.ts";
 import {
-    getSpentAmountInMonth,
-    getSpentAmountToday,
-    getSpentAmountYesterday,
-} from "@/components/expenses/selectors.ts";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+    addDays,
+    endOfDay,
+    endOfMonth,
+    startOfDay,
+    startOfMonth,
+} from "date-fns";
+
+const now = new Date();
 
 export function LazyRow() {
     const dispatch = useAppDispatch();
-    const expenses = useExpenses();
 
     const ripple = useRipple();
 
-    const spentThisMonth = getSpentAmountInMonth(expenses, {
-        year: new Date().getFullYear(),
-        monthIndex: new Date().getMonth(),
+    const spentThisMonth = useSpentByTimeRange({
+        start: startOfMonth(now),
+        end: endOfMonth(now),
+        onlyPositive: true,
     });
-    const spentToday = getSpentAmountToday(expenses);
-    const spentYesterday = getSpentAmountYesterday(expenses);
+    const spentToday = useSpentByTimeRange({
+        start: startOfDay(now),
+        end: endOfDay(now),
+        onlyPositive: true,
+    });
+    const spentYesterday = useSpentByTimeRange({
+        start: startOfDay(addDays(now, -1)),
+        end: endOfDay(addDays(now, -1)),
+        onlyPositive: true,
+    });
 
     return (
         <div

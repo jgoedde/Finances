@@ -41,13 +41,29 @@ export function useExpensesByTimeRange({
     );
 }
 
-export function useCountExpenses(): number {
-    const { key } = useEncryption();
+export function useSpentByTimeRange({
+    start,
+    end,
+    onlyPositive = false,
+}: {
+    start: Date;
+    end: Date;
+    onlyPositive?: boolean;
+}) {
+    return useTableSubscription(
+        () =>
+            expensesRepository.getSpentAmountByTimeRange(
+                start.getTime(),
+                end.getTime(),
+                undefined,
+                onlyPositive,
+            ),
+        [start, end],
+        "expenses:changed",
+    );
+}
 
-    if (!key) {
-        throw new Error("Unable to query expenses without encryption key");
-    }
-
+export function useCountExpenses() {
     return useTableSubscription(
         () => expensesRepository.count(),
         [],

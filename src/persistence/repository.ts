@@ -1,12 +1,7 @@
 import type { Database } from "sql.js";
 import { dbEvents } from "@/persistence/db-events.ts";
 import { getDatabase, persistDatabase } from "@/persistence/db.ts";
-import type {
-    Category,
-    Expense,
-    ExpenseWithCategory,
-} from "@/persistence/types.ts";
-import { formatISO } from "date-fns";
+import type { Category, Expense, ExpenseWithCategory } from "@/persistence/types.ts";
 import CryptoJS from "crypto-js";
 
 export const expensesRepository = {
@@ -47,13 +42,18 @@ export const expensesRepository = {
         return typeof count === "number" ? count : 0;
     },
 
-    getAll(key: string): Expense[] {
+    getAll(key: string, onlyPositive: boolean = false): Expense[] {
         const query = `            
             SELECT *
             FROM expenses
+            WHERE (amount > 0 OR :onlyPositive = 0)
             ORDER BY date DESC`;
 
-        return rowsFromResult<Expense>(getDatabase().exec(query), {
+        const params = {
+            ":onlyPositive": onlyPositive ? 1 : 0,
+        };
+
+        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
             key,
             encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
         });
@@ -118,21 +118,21 @@ export const expensesRepository = {
         startTimestamp: number,
         endTimestamp: number,
         categoryId?: number,
+        onlyPositive: boolean = false,
     ): number {
-        const startISO = formatISO(startTimestamp);
-        const endISO = formatISO(endTimestamp);
-
         const query = `            
             SELECT SUM(amount) as total
             FROM expenses
             WHERE date >= :start
               AND date <= :end
-              AND (category_id = :categoryId OR :categoryId IS NULL)`;
+              AND (category_id = :categoryId OR :categoryId IS NULL)
+              AND (amount > 0 OR :onlyPositive = 0)`;
 
         const params = {
-            ":start": startISO,
-            ":end": endISO,
+            ":start": startTimestamp,
+            ":end": endTimestamp,
             ":categoryId": categoryId ?? null,
+            ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
         const result = getDatabase().exec(query, params);
@@ -150,22 +150,22 @@ export const expensesRepository = {
         endTimestamp: number,
         key: string,
         categoryId?: number,
+        onlyPositive: boolean = false,
     ): Expense[] {
-        const startISO = formatISO(startTimestamp);
-        const endISO = formatISO(endTimestamp);
-
         const query = `            
             SELECT *
             FROM expenses
             WHERE date >= :start
               AND date <= :end
               AND (category_id = :categoryId OR :categoryId IS NULL)
+              AND (amount > 0 OR :onlyPositive = 0)
             ORDER BY date DESC`;
 
         const params = {
-            ":start": startISO,
-            ":end": endISO,
+            ":start": startTimestamp,
+            ":end": endTimestamp,
             ":categoryId": categoryId ?? null,
+            ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
         return rowsFromResult<Expense>(getDatabase().exec(query, params), {
@@ -300,6 +300,12 @@ function encryptEntity<T extends object>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const copy: any = { ...entity };
     encryptedFields.forEach((field) => {
+        if (
+            copy[field] == null ||
+            (typeof copy[field] === "string" && copy[field].trim() === "")
+        ) {
+            return; // Skip if field is null or undefined
+        }
         copy[field] = encryptValue(copy[field], key);
     });
     return copy;

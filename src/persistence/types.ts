@@ -8,9 +8,9 @@ export interface Category {
 export interface Expense {
     id: string;
     /**
-     * The date of the expense represented as ISO 8601
+     * The date of the expense represented as unix timestamp in milliseconds.
      */
-    date: string;
+    date: number;
     name: string;
     description?: string;
     amount: number;

@@ -1,21 +1,27 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import {
-    getSpentAmountThisMonth,
-    getSpentAmountThisMonthInCategory,
-} from "@/components/expenses/selectors.ts";
 import { cn } from "@/lib/utils.ts";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { useSpentByTimeRange } from "@/components/expenses/use-expenses.ts";
 import type { Category } from "@/persistence/types.ts";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { useSpentAmountInCategory } from "@/components/expenses/use-categories.ts";
+
+const now = new Date();
 
 export function MonthlyCategoryRow({ category }: { category: Category }) {
-    const expenses = useExpenses();
-    const spentAmount = getSpentAmountThisMonthInCategory(
-        expenses ?? [],
-        category.name,
-        true,
-    );
-    const spentThisMonth = getSpentAmountThisMonth(expenses ?? [], true);
+    const spentAmount = useSpentAmountInCategory({
+        timeRange: {
+            start: startOfMonth(now),
+            end: endOfMonth(now),
+        },
+        categoryId: category.id,
+        onlyPositive: true,
+    });
+    const spentThisMonth = useSpentByTimeRange({
+        start: startOfMonth(now),
+        end: endOfMonth(now),
+        onlyPositive: true,
+    });
 
     const percentageOfTotal = spentAmount / spentThisMonth;
 

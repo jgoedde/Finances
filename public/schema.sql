@@ -8,19 +8,19 @@ CREATE TABLE IF NOT EXISTS categories
     icon_name TEXT                              NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS expenses
+-- auto-generated definition
+create table expenses
 (
-    id          TEXT PRIMARY KEY NOT NULL,
-    date        TEXT             NOT NULL DEFAULT (datetime('now')),
-    name        TEXT             NOT NULL,
-    description TEXT,
-    amount      NUMERIC          NOT NULL,
-    currency    TEXT             NOT NULL,
-    category_id INTEGER          NOT NULL,
-    FOREIGN KEY (category_id)
-        REFERENCES categories (id)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT
+    id          TEXT                              not null
+        primary key,
+    date        INTEGER default (datetime('now')) not null,
+    name        TEXT                              not null,
+    description TEXT    default null,
+    amount      NUMERIC                           not null,
+    currency    TEXT                              not null,
+    category_id INTEGER                           not null
+        references categories
+            on update cascade on delete restrict
 );
 
 INSERT INTO categories ("id", "name", "color", "icon_name")
@@ -32,4 +32,5 @@ VALUES ('1', 'Auswärts essen', '#00202e', 'utensils'),
        ('6', 'Freizeit', '#ffa600', 'joystick'),
        ('7', 'Urlaub', '#80d353', 'plane'),
        ('8', 'Büro/Arbeit', '#609f3f', 'lamp-desk'),
-       ('9', 'Snacks', '#D8DC6A', 'popcorn');
+       ('9', 'Snacks', '#D8DC6A', 'popcorn'),
+       ('10', 'Wohnung', '#ff6361', 'sofa');;
