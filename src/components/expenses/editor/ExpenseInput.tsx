@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { mergeSimilarKeys } from "@/lib/utils";
 import { groupBy } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 const now = new Date();
 
@@ -22,14 +22,17 @@ export function ExpenseInput({
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
 }) {
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
+
+    console.log(categoryIconName, "categoryIconName");
 
     const filteredExpenses = useMemo(
         () =>
-            (expenses ?? [])
-                .filter((e) => e.category.iconName === categoryIconName)
+            expenses
+                .filter((_e) => false) // TODO
+                // .filter((e) => e.category.iconName === categoryIconName)
                 .filter((e) => isAfter(e.date, addMonths(now, -3))),
-        [categoryIconName, expenses],
+        [expenses], // TODO
     );
 
     // Shuffle top 8 for randomness

@@ -1,19 +1,17 @@
 import { ArrowDown, ArrowUp, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils.ts";
-import { categories } from "@/components/expenses/editor/categories.ts";
-import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
 import { getSpentAmountInMonth } from "@/components/expenses/selectors.ts";
 import { addMonths } from "date-fns";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 export function MonthlyOverview() {
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
     const lastMonth = addMonths(new Date(), -1);
-    const spentThisMonth = getSpentAmountInMonth(expenses ?? [], {
+    const spentThisMonth = getSpentAmountInMonth(expenses, {
         year: new Date().getFullYear(),
         monthIndex: new Date().getMonth(),
     });
-    const spentLastMonth = getSpentAmountInMonth(expenses ?? [], {
+    const spentLastMonth = getSpentAmountInMonth(expenses, {
         year: lastMonth.getFullYear(),
         monthIndex: lastMonth.getMonth(),
     });
@@ -60,14 +58,14 @@ export function MonthlyOverview() {
                         <div className={""}>Ausgaben als im Mai.</div>
                     </div>
                 </div>
-                <div className={"mt-8 flex flex-col gap-y-3"}>
-                    {categories.map((category) => (
-                        <MonthlyCategoryRow
-                            category={category}
-                            key={category.icon}
-                        />
-                    ))}
-                </div>
+                {/*<div className={"mt-8 flex flex-col gap-y-3"}>*/}
+                {/*    {categories.map((category) => (*/}
+                {/*        <MonthlyCategoryRow*/}
+                {/*            category={category}*/}
+                {/*            key={category.icon}*/}
+                {/*        />*/}
+                {/*    ))}*/}
+                {/*</div>*/}
             </div>
         </div>
     );

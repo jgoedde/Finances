@@ -12,9 +12,7 @@ export const Route = createRootRoute({
     beforeLoad: () => {
         const masterPassword = store.getState().app.masterPassword;
         if (
-            (!masterPassword ||
-                masterPassword.trim() === "" ||
-                localStorage.getItem("finances-login") == null) &&
+            (!masterPassword || masterPassword.trim() === "") &&
             location.pathname !== "/setup"
         ) {
             throw redirect({ to: "/setup" });

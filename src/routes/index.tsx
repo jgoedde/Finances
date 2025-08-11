@@ -5,14 +5,14 @@ import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { Insights } from "@/components/expenses/Insights.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useCountExpenses } from "@/components/expenses/use-expenses";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
 });
 
 function ExpensesPage() {
-    const { data: expenses, isLoading, error } = useExpenses();
+    const expensesCount = useCountExpenses();
 
     function getHeadlineText() {
         // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian
@@ -49,13 +49,11 @@ function ExpensesPage() {
                         </h2>
                     </div>
                     <div className={"mt-2"}>
-                        {expenses != null && !isLoading && !error && (
-                            <>
-                                Du hast bislang {expenses.length} Ausgaben
-                                getrackt. Je mehr du trackst, desto besser
-                                kannst du deine Ausgaben im Blick behalten.
-                            </>
-                        )}
+                        <>
+                            Du hast bislang {expensesCount} Ausgaben getrackt.
+                            Je mehr du trackst, desto besser kannst du deine
+                            Ausgaben im Blick behalten.
+                        </>
                     </div>
                 </div>
                 <MonthlyOverview />

@@ -4,7 +4,6 @@ import {
     isMatchingCategoryFilter,
     type SelectedCategoriesFilter,
 } from "@/components/search/filters/categories/categories-filter.ts";
-import type { Expense } from "@/components/expense.ts";
 import {
     getDateFilterStr,
     isMatchingDateFilter,
@@ -17,7 +16,8 @@ import { CategoriesFilterDrawerContent } from "@/components/search/filters/categ
 import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import type { Expense } from "@/persistence/types.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 export const Route = createFileRoute("/expenses/search")({
     component: SearchPage,
@@ -31,7 +31,7 @@ function SearchPage() {
         isOpen: boolean;
     }>({ isOpen: false });
 
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -45,13 +45,13 @@ function SearchPage() {
 
     const filteredExpenses: Expense[] = useMemo(() => {
         if (search.trim() === "") {
-            return (expenses ?? [])
+            return expenses
                 .filter((e) => isMatchingDateFilter(e, dateFilterOption))
                 .filter((e) => isMatchingCategoryFilter(e, selectedCategories));
         }
 
         const searchLower = search.toLowerCase();
-        return (expenses ?? [])
+        return expenses
             .filter((e) => isMatchingDateFilter(e, dateFilterOption))
             .filter((e) => isMatchingCategoryFilter(e, selectedCategories))
             .filter((e) => isMatchingSearchFilter(e, searchLower));
@@ -116,6 +116,7 @@ function SearchPage() {
                         placeholder={"Ausgabe"}
                     />
                     <button
+                        type={"button"}
                         onClick={() => {
                             setSearch("");
                             inputRef.current?.focus();

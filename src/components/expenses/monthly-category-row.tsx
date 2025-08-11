@@ -6,10 +6,10 @@ import {
     getSpentAmountThisMonthInCategory,
 } from "@/components/expenses/selectors.ts";
 import { cn } from "@/lib/utils.ts";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 export function MonthlyCategoryRow({ category }: { category: Category }) {
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
     const spentAmount = getSpentAmountThisMonthInCategory(
         expenses ?? [],
         category.name,

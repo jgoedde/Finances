@@ -39,6 +39,7 @@
         "cron-schedule": "^5.0.4",
         "crypto-js": "^4.2.0",
         "date-fns": "^4.1.0",
+        "idb": "^8.0.3",
         "lodash": "^4.17.21",
         "lucide-react": "^0.522.0",
         "nanoid": "^5.1.5",
@@ -48,6 +49,7 @@
         "react-day-picker": "^9.8.1",
         "react-dom": "^19.1.0",
         "react-redux": "^9.2.0",
+        "sql.js": "^1.13.0",
         "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.11",
         "vaul": "^1.1.2"
@@ -61,6 +63,7 @@
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@types/redux-logger": "^3.0.13",
+        "@types/sql.js": "^1.4.9",
         "@vitejs/plugin-react-swc": "^3.11.0",
         "eslint": "^9.32.0",
         "eslint-plugin-react-dom": "^1.52.3",

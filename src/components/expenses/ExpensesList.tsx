@@ -1,5 +1,4 @@
 import { type FC, useCallback, useMemo, useState } from "react";
-import type { Expense } from "@/components/expense.ts";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
@@ -8,12 +7,13 @@ import { addDays, addWeeks, isAfter, isSameDay, isToday } from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import type { Expense } from "@/persistence/types.ts";
 
 type DateFilter = "today" | "yesterday" | "last-week";
 
 export function ExpensesList() {
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
@@ -39,7 +39,7 @@ export function ExpensesList() {
     );
 
     const filteredExpenses: Expense[] = useMemo(() => {
-        return (expenses ?? []).filter((e) => isMatchingDateFilter(e));
+        return expenses.filter((e) => isMatchingDateFilter(e));
     }, [expenses, isMatchingDateFilter]);
 
     function getActiveDateFilter() {

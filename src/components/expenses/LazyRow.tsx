@@ -10,20 +10,20 @@ import {
     getSpentAmountToday,
     getSpentAmountYesterday,
 } from "@/components/expenses/selectors.ts";
-import { useExpenses } from "@/hooks/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 export function LazyRow() {
     const dispatch = useAppDispatch();
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
 
     const ripple = useRipple();
 
-    const spentThisMonth = getSpentAmountInMonth(expenses ?? [], {
+    const spentThisMonth = getSpentAmountInMonth(expenses, {
         year: new Date().getFullYear(),
         monthIndex: new Date().getMonth(),
     });
-    const spentToday = getSpentAmountToday(expenses ?? []);
-    const spentYesterday = getSpentAmountYesterday(expenses ?? []);
+    const spentToday = getSpentAmountToday(expenses);
+    const spentYesterday = getSpentAmountYesterday(expenses);
 
     return (
         <div

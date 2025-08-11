@@ -1,5 +1,5 @@
-import type { Expense } from "@/components/expense.ts";
 import { addMonths, addWeeks, addYears, isBefore } from "date-fns";
+import type { Expense } from "@/persistence/types.ts";
 
 export type DateFilterOption =
     | "any"

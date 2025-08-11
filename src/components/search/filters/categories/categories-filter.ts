@@ -1,4 +1,4 @@
-import type { Expense } from "@/components/expense.ts";
+import type { Expense } from "@/persistence/types.ts";
 
 export type SelectedCategoriesFilter =
     | { isActive: false; categories: [] }
@@ -12,5 +12,8 @@ export function isMatchingCategoryFilter(
         return true;
     }
 
-    return filter.categories.includes(expense.category.color);
+    console.log(expense, "expense"); // TODO: Remove, just here for TS
+
+    return false;
+    // return filter.categories.includes(expense.category.color); // TODO
 }

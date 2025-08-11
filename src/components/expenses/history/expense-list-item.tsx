@@ -1,22 +1,27 @@
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { ChevronRight } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
-import type { Expense } from "@/components/expense.ts";
 import { useColorScheme } from "@mantine/hooks";
 import { cn } from "@/lib/utils.ts";
 import { useNavigate } from "@tanstack/react-router";
+import type { Expense } from "@/persistence/types.ts";
+import { categories } from "@/components/expenses/editor/categories.ts";
+
+// TODO: All of this
 
 export const ExpenseListItem = ({
-    transaction: { id, name, description, category, amountFormatted, amount },
+    transaction: { id, name, description, amount },
+    // transaction: { id, name, description, category, amountFormatted, amount }, TODO
 }: {
     transaction: Expense;
 }) => {
     const rippleHandlers = useRipple();
     const theme = useColorScheme();
 
-    const supportingText =
-        description?.trim() !== "" ? description : category.name;
+    const supportingText = "todo";
+    console.log(description, "description");
+    // description?.trim() !== "" ? description : category.name;
 
     const navigate = useNavigate();
 
@@ -26,7 +31,7 @@ export const ExpenseListItem = ({
         }, 150);
     }
 
-    const tonal = convertHexToTonal(category.color);
+    const tonal = convertHexToTonal("#000");
     const backgroundColor =
         theme === "dark" ? tonal.dark.container : tonal.light.container;
 
@@ -50,7 +55,7 @@ export const ExpenseListItem = ({
                 }}
             >
                 <DynamicIcon
-                    name={category.iconName as IconName}
+                    name={categories[0].icon} // TODO
                     className={"size-7"}
                     style={{
                         color: textColor,
@@ -60,6 +65,7 @@ export const ExpenseListItem = ({
             <div className={"flex flex-1 flex-col"}>
                 <div className={"text-on-surface font-medium"}>
                     <button
+                        type={"button"}
                         onClick={() => onEditButtonClick()}
                         className={"inline-flex items-center gap-x-1"}
                     >
@@ -82,9 +88,9 @@ export const ExpenseListItem = ({
                 )}
             >
                 {amount < 0 ? (
-                    <div>+{amountFormatted.split("-")[1]}</div>
+                    <div>+{"-12€".split("-")[1]}</div>
                 ) : (
-                    <div>{amountFormatted}</div>
+                    <div>{"12€"}</div>
                 )}
             </div>
         </div>

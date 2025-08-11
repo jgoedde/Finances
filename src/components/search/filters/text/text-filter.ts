@@ -1,4 +1,4 @@
-import type { Expense } from "@/components/expense.ts";
+import type { Expense } from "@/persistence/types.ts";
 
 export function isMatchingSearchFilter(
     expense: Expense,
@@ -8,9 +8,10 @@ export function isMatchingSearchFilter(
     const descriptionMatch = expense.description
         ? expense.description.toLowerCase().includes(searchLower)
         : false;
-    const categoryMatch = expense.category.name
-        .toLowerCase()
-        .includes(searchLower);
+    const categoryMatch = false; // TODO
+    // const categoryMatch = expense.category.name
+    //     .toLowerCase()
+    //     .includes(searchLower);
 
     return nameMatch || descriptionMatch || categoryMatch;
 }

@@ -1,5 +1,5 @@
 import { isSameMonth, isToday, isYesterday } from "date-fns";
-import type { Expense } from "@/components/expense.ts";
+import type { Expense } from "@/persistence/types.ts";
 
 export function getSpentAmountToday(expensesList: Expense[]) {
     const amountsToday = expensesList
@@ -34,14 +34,22 @@ export function getSpentAmountThisMonthInCategory(
     categoryName: string,
     onlyPositive = false,
 ) {
-    const amountsThisMonth = expenses
-        .filter(
-            (e) =>
-                isSameMonth(new Date(e.date), new Date()) &&
-                e.category.name === categoryName,
-        )
-        .filter((e) => !onlyPositive || e.amount > 0)
-        .map((e) => e.amount);
+    console.log(
+        expenses,
+        categoryName,
+        onlyPositive,
+        "expenses,categoryName,onlyPositive",
+    );
+    const amountsThisMonth = [1];
+    //TODO
+    // const amountsThisMonth = expenses
+    //     .filter(
+    //         (e) =>
+    //             isSameMonth(new Date(e.date), new Date()) &&
+    //             e.category.name === categoryName,
+    //     )
+    //     .filter((e) => !onlyPositive || e.amount > 0)
+    //     .map((e) => e.amount);
 
     return amountsThisMonth.reduce((acc, amount) => acc + amount, 0);
 }

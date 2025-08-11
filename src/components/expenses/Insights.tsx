@@ -1,12 +1,12 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { isAfter, startOfWeek } from "date-fns";
 import { getExpensesInMonth } from "@/components/expenses/selectors.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import type { Expense } from "@/persistence/types.ts";
 import { categories } from "@/components/expenses/editor/categories.ts";
-import type { Expense } from "@/components/expense.ts";
-import { useExpenses } from "@/hooks/use-expenses.ts";
 
 export const Insights = () => {
-    const { data: expenses } = useExpenses();
+    const expenses = useExpenses();
 
     const topExpenseThisWeek: Expense | { amount: number; name: string } = (
         expenses ?? []
@@ -40,7 +40,9 @@ export const Insights = () => {
     );
 
     const expensesEatingOut = expensesInCurrentMonth.filter((e) => {
-        return e.category.iconName === categories[0].icon;
+        console.log(e, "e");
+        return false; // TODO
+        // return e.category.iconName === categories[0].icon;
     });
 
     const avgSpentEatingOut =
@@ -102,7 +104,8 @@ export const Insights = () => {
     // Calculate average spend per category across all months
     const categorySpendTotals: Record<string, number[]> = {};
     (expenses ?? []).forEach((e) => {
-        const cat = e.category.name;
+        const cat = categories[0].name; // TODO
+        // const cat = e.category.name;
         if (!categorySpendTotals[cat]) categorySpendTotals[cat] = [];
         categorySpendTotals[cat].push(e.amount);
     });
@@ -114,7 +117,8 @@ export const Insights = () => {
     // This month's spend per category
     const currentMonthCategoryTotals: Record<string, number> = {};
     expensesInCurrentMonth.forEach((e) => {
-        const cat = e.category.name;
+        const cat = categories[0].name; // TODO
+        // const cat = e.category.name;
         currentMonthCategoryTotals[cat] =
             (currentMonthCategoryTotals[cat] || 0) + e.amount;
     });
@@ -126,11 +130,13 @@ export const Insights = () => {
         { name: string; category: string; count: number }
     > = {};
     (expenses ?? []).forEach((e) => {
-        const key = `${e.name}|${e.category.name}`;
+        const key = `${e.name}|${categories[0].name}`;
+        // const key = `${e.name}|${e.category.name}`; TODO
         if (!recurringMap[key]) {
             recurringMap[key] = {
                 name: e.name,
-                category: e.category.name,
+                category: categories[0].name,
+                // category: e.category.name, TODO
                 count: 0,
             };
         }

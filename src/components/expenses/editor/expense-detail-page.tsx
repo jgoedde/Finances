@@ -1,23 +1,23 @@
 import { ArrowLeft, Check } from "lucide-react";
 import { type FC, type FormEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import CurrencyInput, { type CurrencyInputProps } from "react-currency-input-field";
+import CurrencyInput, {
+    type CurrencyInputProps,
+} from "react-currency-input-field";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { categories, type Category } from "@/components/expenses/editor/categories.ts";
+import {
+    categories,
+    type Category,
+} from "@/components/expenses/editor/categories.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
-import type { Expense } from "@/components/expense.ts";
 import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
 import { ExpenseInput } from "@/components/expenses/editor/ExpenseInput.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
-import { useGitHubConfig } from "@/hooks/useGitHubConfig.ts";
-import { encryptAndUpdateGist } from "@/components/expenses/actions.ts";
-import { useGitHubClient } from "@/gitHubClient.tsx";
-import { useExpenses, useExpensesQueryKey } from "@/hooks/use-expenses.ts";
 import { nanoid } from "nanoid";
-import { formatEuro } from "@/lib/currency-utils.ts";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { expensesRepository } from "@/persistence/repository.ts";
+import { useExpense } from "@/components/expenses/use-expense.ts";
 
 const now = new Date();
 
@@ -26,7 +26,7 @@ type Props = {
     id?: string;
     date?: Date;
     amount?: number;
-    category?: Expense["category"];
+    category?: Category;
     name?: string;
 };
 
@@ -40,20 +40,17 @@ export const ExpenseDetailPage: FC<Props> = ({
 }) => {
     const { key } = useEncryption();
     const navigate = useNavigate();
-    const gitHubClient = useGitHubClient();
-    const [gitHubConfig] = useGitHubConfig();
-    const { data: expenses } = useExpenses();
-    const queryClient = useQueryClient();
-    const expensesQueryKey = useExpensesQueryKey();
 
     const isEditing = id != null;
     const isAdding = !isEditing;
+
+    const expense = useExpense(id ?? "");
 
     const amountInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLInputElement>(null);
 
     const [selectedCategoryIconNameLocal, setSelectedCategoryIconNameLocal] =
-        useState<string | undefined>(category?.iconName);
+        useState<string | undefined>(category?.icon);
     const [descriptionLocal, setDescriptionLocal] = useState<string>(
         description ?? "",
     );
@@ -76,49 +73,10 @@ export const ExpenseDetailPage: FC<Props> = ({
         setAmountStr(value ?? "");
     };
 
-    const expenseMutation = useMutation({
-        mutationFn: async (expense: Expense) => {
-            if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
-                return Promise.resolve();
-            }
-
-            let updatedExpenses: Expense[];
-            if (isEditing) {
-                updatedExpenses = (expenses ?? []).map((e) =>
-                    e.id === id ? expense : e,
-                );
-            } else {
-                updatedExpenses = [...(expenses ?? []), expense];
-            }
-
-            return encryptAndUpdateGist({
-                key,
-                gistId: gitHubConfig.gistId,
-                gistName: gitHubConfig.gistName,
-                expenses: updatedExpenses,
-                apiClient: gitHubClient,
-            });
-        },
-        onMutate: async (expense) => {
-            await queryClient.cancelQueries({ queryKey: expensesQueryKey });
-
-            queryClient.setQueryData(expensesQueryKey, (old: Expense[]) => {
-                if (isEditing) {
-                    return old.map((e) => (e.id === id ? expense : e));
-                } else {
-                    return [...old, expense];
-                }
-            });
-        },
-        onSettled: () => {
-            void queryClient.invalidateQueries();
-        },
-    });
-
     function handleFormSubmit(event: FormEvent) {
         event.preventDefault();
 
-        if (!key || !gitHubConfig.gistId || !gitHubConfig.gistName) {
+        if (!key) {
             return;
         }
 
@@ -139,21 +97,36 @@ export const ExpenseDetailPage: FC<Props> = ({
             return;
         }
 
-        const expense: Expense = {
-            id: id ?? nanoid(8),
-            date: dateLocal.getTime(),
-            category: {
-                name: cat.name,
-                iconName: cat.icon,
-                color: cat.color,
-            },
-            amount,
-            amountFormatted: formatEuro(amount),
-            name: expenseLocal,
-            description: descriptionLocal,
-        };
+        if (isAdding) {
+            void expensesRepository.add(
+                {
+                    id: nanoid(8),
+                    date: dateLocal.toISOString(),
+                    category_id: -1, // TODO,
+                    amount: amount,
+                    currency: "EUR",
+                    name: expenseLocal,
+                    description:
+                        descriptionLocal.trim() === ""
+                            ? undefined
+                            : descriptionLocal.trim(),
+                },
+                key,
+            );
+        } else if (expense) {
+            expense.amount = amount;
+            expense.currency = "EUR";
+            expense.date = dateLocal.toISOString();
+            // expense.category_id = cat.id; // TODO
+            expense.description =
+                descriptionLocal.trim() === ""
+                    ? undefined
+                    : descriptionLocal.trim();
+            expense.name = expenseLocal;
 
-        expenseMutation.mutate(expense);
+            void expensesRepository.update(expense, key);
+        }
+
         void navigate({ to: "/" });
     }
 
