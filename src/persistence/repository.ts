@@ -49,11 +49,10 @@ export const expensesRepository = {
             FROM expenses
             ORDER BY date DESC`;
 
-        return rowsFromResult<Expense>(
-            getDatabase().exec(query),
+        return rowsFromResult<Expense>(getDatabase().exec(query), {
             key,
-            EXPENSES_ENCRYPTED_FIELDS,
-        );
+            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+        });
     },
 
     findById(id: string, key: string): Expense | undefined {
@@ -68,8 +67,7 @@ export const expensesRepository = {
 
         const rows = rowsFromResult<Expense>(
             getDatabase().exec(query, params),
-            key,
-            EXPENSES_ENCRYPTED_FIELDS,
+            { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
         return rows[0];
     },
@@ -85,11 +83,10 @@ export const expensesRepository = {
             ":categoryId": categoryId,
         };
 
-        return rowsFromResult<Expense>(
-            getDatabase().exec(query, params),
+        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
             key,
-            EXPENSES_ENCRYPTED_FIELDS,
-        );
+            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+        });
     },
 
     getSpentAmountByTimeRange(
@@ -146,11 +143,10 @@ export const expensesRepository = {
             ":categoryId": categoryId ?? null,
         };
 
-        return rowsFromResult<Expense>(
-            getDatabase().exec(query, params),
+        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
             key,
-            EXPENSES_ENCRYPTED_FIELDS,
-        );
+            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+        });
     },
 
     async update(entity: Expense, key: string) {
@@ -201,21 +197,17 @@ export const expensesRepository = {
     },
 };
 
-export const categoriesRepo = {
-    getAll(key: string): Category[] {
+export const categoriesRepository = {
+    getAll(): Category[] {
         const query = `            
             SELECT *
             FROM categories
             ORDER BY name`;
 
-        return rowsFromResult<Category>(
-            getDatabase().exec(query),
-            key,
-            CATEGORIES_ENCRYPTED_FIELDS,
-        );
+        return rowsFromResult<Category>(getDatabase().exec(query));
     },
 
-    findById(id: string, key: string): Category | undefined {
+    findById(id: string): Category | undefined {
         const query = `            
             SELECT *
             FROM categories
@@ -227,8 +219,6 @@ export const categoriesRepo = {
 
         const rows = rowsFromResult<Category>(
             getDatabase().exec(query, params),
-            key,
-            CATEGORIES_ENCRYPTED_FIELDS,
         );
         return rows[0];
     },
@@ -238,7 +228,6 @@ export const EXPENSES_ENCRYPTED_FIELDS: (keyof Expense)[] = [
     "name",
     "description",
 ];
-export const CATEGORIES_ENCRYPTED_FIELDS: (keyof Category)[] = ["name"];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function decryptValue(value: any, key: string): any {
@@ -254,8 +243,7 @@ function decryptValue(value: any, key: string): any {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowsFromResult<T = any>(
     result: ReturnType<Database["exec"]>,
-    key: string,
-    encryptedFields: (keyof T)[] = [],
+    encryptionConfig?: { key: string; encryptedFields: (keyof T)[] },
 ): T[] {
     if (result.length === 0) return [];
     const { columns, values } = result[0];
@@ -263,8 +251,12 @@ function rowsFromResult<T = any>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const obj: any = {};
         columns.forEach((col, i) => {
-            const shouldDecrypt = encryptedFields.includes(col as keyof T);
-            obj[col] = shouldDecrypt ? decryptValue(row[i], key) : row[i];
+            const shouldDecrypt =
+                encryptionConfig != null &&
+                encryptionConfig.encryptedFields.includes(col as keyof T);
+            obj[col] = shouldDecrypt
+                ? decryptValue(row[i], encryptionConfig.key)
+                : row[i];
         });
         return obj as T;
     });
