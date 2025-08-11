@@ -13,7 +13,8 @@ export const Route = createRootRoute({
         const masterPassword = store.getState().app.masterPassword;
         if (
             (!masterPassword || masterPassword.trim() === "") &&
-            location.pathname !== "/setup"
+            location.pathname !== "/setup" &&
+            location.pathname !== "/blob"
         ) {
             throw redirect({ to: "/setup" });
         }

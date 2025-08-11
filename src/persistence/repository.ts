@@ -1,7 +1,11 @@
 import type { Database } from "sql.js";
 import { dbEvents } from "@/persistence/db-events.ts";
 import { getDatabase, persistDatabase } from "@/persistence/db.ts";
-import type { Category, Expense, ExpenseWithCategory } from "@/persistence/types.ts";
+import type {
+    Category,
+    Expense,
+    ExpenseWithCategory,
+} from "@/persistence/types.ts";
 import CryptoJS from "crypto-js";
 
 export const expensesRepository = {

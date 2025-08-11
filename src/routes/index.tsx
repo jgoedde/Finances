@@ -5,6 +5,7 @@ import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useCountExpenses } from "@/components/expenses/use-expenses";
+import { ExportButton } from "@/components/expenses/export-button.tsx";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
@@ -46,6 +47,7 @@ function ExpensesPage() {
                         >
                             {headlineText}
                         </h2>
+                        <ExportButton />
                     </div>
                     <div className={"mt-2"}>
                         <>

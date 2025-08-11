@@ -70,3 +70,27 @@ export async function persistDatabase(): Promise<void> {
     if (!dbInstance) throw new Error("Database not initialized.");
     await saveToIndexedDB(dbInstance);
 }
+
+export async function exportFile() {
+    const data = await loadFromIndexedDB();
+    if (!data) throw new Error("No database found");
+
+    const blob = new Blob([data], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "finances.sqlite";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+}
+
+export async function importFile(file: File) {
+    const arrayBuffer = await file.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+
+    const idb = await openIndexedDB();
+    await idb.put(DB_STORE, data, DB_KEY);
+}
