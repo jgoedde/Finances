@@ -1,14 +1,8 @@
 import { ArrowLeft, Check } from "lucide-react";
-import { type FC, type FormEvent, useRef, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import CurrencyInput, {
-    type CurrencyInputProps,
-} from "react-currency-input-field";
+import CurrencyInput from "react-currency-input-field";
 import { useEncryption } from "@/components/use-encryption.ts";
-import {
-    categories,
-    type Category,
-} from "@/components/expenses/editor/categories.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
@@ -17,61 +11,60 @@ import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { nanoid } from "nanoid";
 import { useNavigate } from "@tanstack/react-router";
 import { expensesRepository } from "@/persistence/repository.ts";
-import { useExpense } from "@/components/expenses/use-expense.ts";
+import type { Category, ExpenseWithCategory } from "@/persistence/types.ts";
+import { useCategories } from "@/components/expenses/use-categories.ts";
 
 const now = new Date();
 
 type Props = {
-    description?: string;
-    id?: string;
-    date?: Date;
-    amount?: number;
-    category?: Category;
-    name?: string;
+    expense?: ExpenseWithCategory;
 };
 
-export const ExpenseDetailPage: FC<Props> = ({
-    date,
-    description,
-    category,
-    amount,
-    id,
-    name,
-}) => {
+export function ExpenseDetailPage({ expense }: Props) {
     const { key } = useEncryption();
     const navigate = useNavigate();
 
-    const isEditing = id != null;
-    const isAdding = !isEditing;
+    const categories = useCategories();
 
-    const expense = useExpense(id ?? "");
+    const isEditing = expense != null;
+    const isAdding = !isEditing;
 
     const amountInputRef = useRef<HTMLInputElement>(null);
     const descriptionInputRef = useRef<HTMLInputElement>(null);
 
-    const [selectedCategoryIconNameLocal, setSelectedCategoryIconNameLocal] =
-        useState<string | undefined>(category?.icon);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<
+        number | undefined
+    >(expense?.category_id);
     const [descriptionLocal, setDescriptionLocal] = useState<string>(
-        description ?? "",
+        expense?.description ?? "",
     );
-    const [dateLocal, setDateLocal] = useState<Date>(date ?? now);
-    const [expenseLocal, setExpenseLocal] = useState(name ?? "");
-
+    const [dateLocal, setDateLocal] = useState<Date>(
+        expense?.date ? new Date(expense.date) : now,
+    );
+    const [expenseLocal, setExpenseLocal] = useState(expense?.name ?? "");
     // Always positive amount string for input
     const [amountStr, setAmountStr] = useState<string>(
-        isAdding ? "" : Math.abs(amount as number).toFixed(2),
+        isAdding ? "" : Math.abs(expense?.amount as number).toFixed(2),
     );
     const [transactionType, setTransactionType] = useState<
         "income" | "expense"
-    >(isAdding ? "expense" : (amount as number) < 0 ? "income" : "expense");
+    >(
+        isAdding
+            ? "expense"
+            : (expense?.amount as number) < 0
+              ? "income"
+              : "expense",
+    );
     const [shouldShowSuggestions, setShouldShowSuggestions] =
         useState(isAdding);
 
-    const onAmountInputChange: CurrencyInputProps["onValueChange"] = (
-        value: string | undefined,
-    ) => {
+    const selectedCategory = categories.find(
+        (category) => category.id === selectedCategoryId,
+    );
+
+    function onAmountInputChange(value: string | undefined) {
         setAmountStr(value ?? "");
-    };
+    }
 
     function handleFormSubmit(event: FormEvent) {
         event.preventDefault();
@@ -88,11 +81,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                 ? positiveAmount
                 : positiveAmount * -1;
 
-        const cat = categories.find(
-            (x) => x.icon === (selectedCategoryIconNameLocal as string),
-        );
-
-        if (!cat || isNaN(positiveAmount) || !expenseLocal) {
+        if (!selectedCategory || isNaN(positiveAmount) || !expenseLocal) {
             alert("Please select a category, specify an amount and a name.");
             return;
         }
@@ -102,7 +91,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                 {
                     id: nanoid(8),
                     date: dateLocal.toISOString(),
-                    category_id: -1, // TODO,
+                    category_id: selectedCategory.id,
                     amount: amount,
                     currency: "EUR",
                     name: expenseLocal,
@@ -117,7 +106,7 @@ export const ExpenseDetailPage: FC<Props> = ({
             expense.amount = amount;
             expense.currency = "EUR";
             expense.date = dateLocal.toISOString();
-            // expense.category_id = cat.id; // TODO
+            expense.category_id = selectedCategory.id;
             expense.description =
                 descriptionLocal.trim() === ""
                     ? undefined
@@ -131,10 +120,10 @@ export const ExpenseDetailPage: FC<Props> = ({
     }
 
     function onCategoryTileClick(c: Category) {
-        if (selectedCategoryIconNameLocal === c.icon) {
-            setSelectedCategoryIconNameLocal(undefined);
+        if (selectedCategoryId === c.id) {
+            setSelectedCategoryId(undefined);
         } else {
-            setSelectedCategoryIconNameLocal(c.icon);
+            setSelectedCategoryId(c.id);
             if (isAdding && expenseLocal.trim() === "") {
                 setShouldShowSuggestions(true);
             }
@@ -170,7 +159,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                     />
 
                     {isEditing && (
-                        <DeleteButtonWithConfirmDialog expenseId={id} />
+                        <DeleteButtonWithConfirmDialog expenseId={expense.id} />
                     )}
 
                     <button
@@ -210,9 +199,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                     {categories.map((c) => (
                         <CategoryTile
                             key={c.name}
-                            selectedCategoryIconNameLocal={
-                                selectedCategoryIconNameLocal
-                            }
+                            selectedCategoryId={selectedCategoryId}
                             category={c}
                             onClick={() => onCategoryTileClick(c)}
                         />
@@ -249,7 +236,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                             step={1}
                         />
                     </div>
-                    {selectedCategoryIconNameLocal != null && (
+                    {selectedCategoryId != null && (
                         <ExpenseInput
                             shouldShowSuggestions={shouldShowSuggestions}
                             expenseLocal={expenseLocal}
@@ -267,7 +254,7 @@ export const ExpenseDetailPage: FC<Props> = ({
                                     descriptionInputRef.current.focus();
                                 }
                             }}
-                            categoryIconName={selectedCategoryIconNameLocal}
+                            selectedCategoryId={selectedCategoryId}
                         />
                     )}
                     <div className={"flex items-center gap-x-2"}>
@@ -294,4 +281,4 @@ export const ExpenseDetailPage: FC<Props> = ({
             </div>
         </form>
     );
-};
+}

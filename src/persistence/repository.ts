@@ -1,7 +1,11 @@
 import type { Database } from "sql.js";
 import { dbEvents } from "@/persistence/db-events.ts";
 import { getDatabase, persistDatabase } from "@/persistence/db.ts";
-import type { Category, Expense } from "@/persistence/types.ts";
+import type {
+    Category,
+    Expense,
+    ExpenseWithCategory,
+} from "@/persistence/types.ts";
 import { formatISO } from "date-fns";
 import CryptoJS from "crypto-js";
 
@@ -70,6 +74,27 @@ export const expensesRepository = {
             { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
         return rows[0];
+    },
+
+    findByIdWithCategory(
+        id: string,
+        key: string,
+    ): ExpenseWithCategory | undefined {
+        const query = `            
+            SELECT e.*, c.name as category_name, c.icon_name as category_icon_name, c.color as category_color
+            FROM expenses e
+                     JOIN categories c on c.id = category_id
+            WHERE e.id = :id`;
+
+        const params = {
+            ":id": id,
+        };
+
+        const rows = rowsFromResult<Expense>(
+            getDatabase().exec(query, params),
+            { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
+        );
+        return mapExpenseWithCategory(rows[0]);
     },
 
     getByCategoryId(categoryId: number, key: string): Expense[] {
@@ -278,4 +303,23 @@ function encryptEntity<T extends object>(
         copy[field] = encryptValue(copy[field], key);
     });
     return copy;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapExpenseWithCategory(row: Record<string, any>): ExpenseWithCategory {
+    return {
+        id: row.id,
+        date: row.date,
+        name: row.name,
+        description: row.description,
+        amount: Number(row.amount),
+        currency: row.currency,
+        category_id: row.category_id,
+        category: {
+            id: row.category_id,
+            name: row.category_name,
+            color: row.category_color,
+            icon_name: row.category_icon_name,
+        },
+    };
 }

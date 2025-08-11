@@ -1,5 +1,4 @@
-import type { Category } from "@/components/expenses/editor/categories.ts";
-import { DynamicIcon } from "lucide-react/dynamic";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import {
     getSpentAmountThisMonth,
@@ -7,6 +6,7 @@ import {
 } from "@/components/expenses/selectors.ts";
 import { cn } from "@/lib/utils.ts";
 import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import type { Category } from "@/persistence/types.ts";
 
 export function MonthlyCategoryRow({ category }: { category: Category }) {
     const expenses = useExpenses();
@@ -53,7 +53,7 @@ export function MonthlyCategoryRow({ category }: { category: Category }) {
             <div className={"flex items-center gap-x-3"}>
                 <div>
                     <DynamicIcon
-                        name={category.icon}
+                        name={category.icon_name as IconName}
                         className="text-outline text-lg"
                     />
                 </div>

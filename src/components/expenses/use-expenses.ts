@@ -16,6 +16,31 @@ export function useExpenses() {
     );
 }
 
+export function useExpensesByTimeRange({
+    start,
+    end,
+}: {
+    start: Date;
+    end: Date;
+}) {
+    const { key } = useEncryption();
+
+    if (!key) {
+        throw new Error("Unable to query expenses without encryption key");
+    }
+
+    return useTableSubscription(
+        () =>
+            expensesRepository.getByTimeRange(
+                start.getTime(),
+                end.getTime(),
+                key,
+            ),
+        [key, start, end],
+        "expenses:changed",
+    );
+}
+
 export function useCountExpenses(): number {
     const { key } = useEncryption();
 

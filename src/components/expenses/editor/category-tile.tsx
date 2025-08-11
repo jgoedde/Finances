@@ -1,12 +1,12 @@
-import { DynamicIcon } from "lucide-react/dynamic";
-import type { Category } from "@/components/expenses/editor/categories.ts";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { type FC } from "react";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useColorScheme } from "@mantine/hooks";
+import type { Category } from "@/persistence/types.ts";
 
 type Props = {
-    selectedCategoryIconNameLocal: string | undefined;
+    selectedCategoryId: number | undefined;
     category: Category;
     onClick: () => void;
 };
@@ -14,7 +14,7 @@ type Props = {
 export const CategoryTile: FC<Props> = ({
     category,
     onClick,
-    selectedCategoryIconNameLocal,
+    selectedCategoryId,
 }) => {
     const theme = useColorScheme();
 
@@ -31,8 +31,8 @@ export const CategoryTile: FC<Props> = ({
         <button
             type={"button"}
             style={{
-                ...(selectedCategoryIconNameLocal !== category.icon &&
-                    selectedCategoryIconNameLocal !== undefined && {
+                ...(selectedCategoryId !== category.id &&
+                    selectedCategoryId !== undefined && {
                         opacity: 0.5,
                     }),
                 backgroundColor,
@@ -66,7 +66,10 @@ export const CategoryTile: FC<Props> = ({
                     color: textColor,
                 }}
             >
-                <DynamicIcon name={category.icon} className={"size-full"} />
+                <DynamicIcon
+                    name={category.icon_name as IconName}
+                    className={"size-full"}
+                />
             </div>
         </button>
     );

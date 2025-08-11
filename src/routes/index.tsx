@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SearchBar } from "@/components/expenses/SearchBar.tsx";
 import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
-import { Insights } from "@/components/expenses/Insights.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useCountExpenses } from "@/components/expenses/use-expenses";
@@ -57,7 +56,7 @@ function ExpensesPage() {
                     </div>
                 </div>
                 <MonthlyOverview />
-                <Insights />
+                {/*<Insights />*/}
                 <ExpensesList />
             </main>
 

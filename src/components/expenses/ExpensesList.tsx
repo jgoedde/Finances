@@ -1,46 +1,33 @@
-import { type FC, useCallback, useMemo, useState } from "react";
+import { type FC, useState } from "react";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { addDays, addWeeks, isAfter, isSameDay, isToday } from "date-fns";
+import {
+    addDays,
+    addWeeks,
+    endOfDay,
+    endOfWeek,
+    startOfDay,
+    startOfWeek,
+} from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
-import type { Expense } from "@/persistence/types.ts";
+import { useExpensesByTimeRange } from "@/components/expenses/use-expenses.ts";
 
 type DateFilter = "today" | "yesterday" | "last-week";
 
+const now = new Date();
+
 export function ExpensesList() {
-    const expenses = useExpenses();
+    const expenses = useExpensesByTimeRange(getQueryOptions());
+
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
         history: "push",
     });
-
-    const isMatchingDateFilter = useCallback(
-        (expense: Expense) => {
-            const expenseDate = new Date(expense.date);
-            const now = new Date();
-            switch (dateFilterOption) {
-                case "today":
-                    return isToday(expenseDate);
-                case "yesterday":
-                    return isSameDay(expenseDate, addDays(now, -1));
-                case "last-week":
-                    return isAfter(expenseDate, addWeeks(now, -1));
-                default:
-                    return true;
-            }
-        },
-        [dateFilterOption],
-    );
-
-    const filteredExpenses: Expense[] = useMemo(() => {
-        return expenses.filter((e) => isMatchingDateFilter(e));
-    }, [expenses, isMatchingDateFilter]);
 
     function getActiveDateFilter() {
         if (dateFilterOption === "today") {
@@ -51,6 +38,31 @@ export function ExpensesList() {
         }
         if (dateFilterOption === "last-week") {
             return "Letzte Woche";
+        }
+    }
+
+    function getQueryOptions(): { start: Date; end: Date } {
+        const todayFilter = {
+            start: startOfDay(now),
+            end: endOfDay(now),
+        };
+
+        if (dateFilterOption === "today") {
+            return todayFilter;
+        } else if (dateFilterOption === "yesterday") {
+            const yesterday = addDays(now, -1);
+            return {
+                start: startOfDay(yesterday),
+                end: endOfDay(yesterday),
+            };
+        } else if (dateFilterOption === "last-week") {
+            const lastWeek = addWeeks(now, -1);
+            return {
+                start: startOfWeek(lastWeek),
+                end: endOfWeek(lastWeek),
+            };
+        } else {
+            return todayFilter;
         }
     }
 
@@ -76,13 +88,13 @@ export function ExpensesList() {
             </Badge>
 
             <div className={"mt-4 flex w-full flex-col"}>
-                {filteredExpenses.length === 0 && (
+                {expenses.length === 0 && (
                     <div className={"text-outline mt-2 text-center"}>
                         Keine Ausgaben für {getActiveDateFilter()}
                     </div>
                 )}
-                {filteredExpenses.map((expense) => (
-                    <ExpenseListItem key={expense.id} transaction={expense} />
+                {expenses.map((expense) => (
+                    <ExpenseListItem key={expense.id} expense={expense} />
                 ))}
             </div>
 

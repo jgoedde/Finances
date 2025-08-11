@@ -11,28 +11,25 @@ const now = new Date();
 
 export function ExpenseInput({
     expenseLocal,
-    categoryIconName,
+    selectedCategoryId,
     onInputChange,
     onApplySuggestion,
     shouldShowSuggestions,
 }: {
     expenseLocal: string;
-    categoryIconName: string;
+    selectedCategoryId: number | undefined;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
 }) {
     const expenses = useExpenses();
 
-    console.log(categoryIconName, "categoryIconName");
-
     const filteredExpenses = useMemo(
         () =>
             expenses
-                .filter((_e) => false) // TODO
-                // .filter((e) => e.category.iconName === categoryIconName)
+                .filter((e) => e.category_id === selectedCategoryId)
                 .filter((e) => isAfter(e.date, addMonths(now, -3))),
-        [expenses], // TODO
+        [expenses, selectedCategoryId],
     );
 
     // Shuffle top 8 for randomness
@@ -87,6 +84,7 @@ export function ExpenseInput({
                 <div className={"my-2 flex flex-wrap gap-2"}>
                     {top.map((e) => (
                         <button
+                            key={`suggestion-${e}`}
                             tabIndex={-1}
                             aria-hidden="true"
                             className={
@@ -94,7 +92,6 @@ export function ExpenseInput({
                             }
                             data-ripple-color={"bg-on-surface/50"}
                             {...ripple}
-                            key={`suggestion-${e}`}
                             type={"button"}
                             onClick={(event) => {
                                 ripple.onClick(event);

@@ -3,13 +3,19 @@ import { cn } from "@/lib/utils.ts";
 import { getSpentAmountInMonth } from "@/components/expenses/selectors.ts";
 import { addMonths } from "date-fns";
 import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { useCategories } from "@/components/expenses/use-categories.ts";
+import { MonthlyCategoryRow } from "@/components/expenses/monthly-category-row.tsx";
+
+const now = new Date();
 
 export function MonthlyOverview() {
     const expenses = useExpenses();
-    const lastMonth = addMonths(new Date(), -1);
+    const categories = useCategories();
+
+    const lastMonth = addMonths(now, -1);
     const spentThisMonth = getSpentAmountInMonth(expenses, {
-        year: new Date().getFullYear(),
-        monthIndex: new Date().getMonth(),
+        year: now.getFullYear(),
+        monthIndex: now.getMonth(),
     });
     const spentLastMonth = getSpentAmountInMonth(expenses, {
         year: lastMonth.getFullYear(),
@@ -58,14 +64,14 @@ export function MonthlyOverview() {
                         <div className={""}>Ausgaben als im Mai.</div>
                     </div>
                 </div>
-                {/*<div className={"mt-8 flex flex-col gap-y-3"}>*/}
-                {/*    {categories.map((category) => (*/}
-                {/*        <MonthlyCategoryRow*/}
-                {/*            category={category}*/}
-                {/*            key={category.icon}*/}
-                {/*        />*/}
-                {/*    ))}*/}
-                {/*</div>*/}
+                <div className={"mt-8 flex flex-col gap-y-3"}>
+                    {categories.map((category) => (
+                        <MonthlyCategoryRow
+                            category={category}
+                            key={category.id}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

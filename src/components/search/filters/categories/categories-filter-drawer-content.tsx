@@ -1,11 +1,11 @@
 import { DrawerClose } from "@/components/ui/drawer.tsx";
 import { X } from "lucide-react";
 import { type Dispatch, type FC, type SetStateAction, useState } from "react";
-import { categories } from "@/components/expenses/editor/categories.ts";
-import { DynamicIcon } from "lucide-react/dynamic";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import type { SelectedCategoriesFilter } from "@/components/search/filters/categories/categories-filter.ts";
+import { useCategories } from "@/components/expenses/use-categories.ts";
 
 type Props = {
     selectedCategories: SelectedCategoriesFilter;
@@ -18,6 +18,8 @@ export const CategoriesFilterDrawerContent: FC<Props> = ({
     selectedCategories,
     closeDrawer,
 }) => {
+    const categories = useCategories();
+
     const [localCategories, setLocalCategories] = useState<string[]>(
         selectedCategories.categories,
     );
@@ -32,6 +34,7 @@ export const CategoriesFilterDrawerContent: FC<Props> = ({
                 </DrawerClose>
                 <div className={"font-medium"}>Kategorien</div>
                 <button
+                    type={"button"}
                     className={"text-primary ml-auto text-sm"}
                     onClick={() => {
                         setSelectedCategories(() => {
@@ -66,7 +69,7 @@ export const CategoriesFilterDrawerContent: FC<Props> = ({
                     >
                         <div>
                             <DynamicIcon
-                                name={cat.icon}
+                                name={cat.icon_name as IconName}
                                 className={"text-primary"}
                             />
                         </div>
