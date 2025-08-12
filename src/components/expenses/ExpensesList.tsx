@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge.tsx";
 import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
-import { useExpensesByTimeRange } from "@/components/expenses/use-expenses.ts";
+import { useExpenses } from "@/components/expenses/use-expenses.ts";
 
 type DateFilter = "today" | "yesterday" | "last-week";
 
@@ -51,7 +51,7 @@ export function ExpensesList() {
         }
     }, [dateFilterOption]);
 
-    const expenses = useExpensesByTimeRange(queryOptions);
+    const expenses = useExpenses(queryOptions);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -91,7 +91,7 @@ export function ExpensesList() {
             <div className={"mt-4 flex w-full flex-col"}>
                 {expenses.length === 0 && (
                     <div className={"text-outline mt-2 text-center"}>
-                        Keine Ausgaben für {getActiveDateFilter()}
+                        Keine Geldbewegungen für {getActiveDateFilter()}
                     </div>
                 )}
                 {expenses.map((expense) => (

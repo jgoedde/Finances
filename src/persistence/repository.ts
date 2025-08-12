@@ -33,6 +33,96 @@ export const expensesRepository = {
         dbEventEmitter.emit("expenses:changed");
     },
 
+    checkMasterPassword(key: string): boolean {
+        const query = `            
+            SELECT name
+            FROM expenses
+            LIMIT 1`;
+
+        const result = rowsFromResult<{ name: string }>(
+            PersistentDatabase.get().exec(query),
+        );
+
+        if (result.length === 0) {
+            throw new Error("No expenses found in the database.");
+        }
+
+        try {
+            // @ts-expect-error intentially want to ignore the return value
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const _ = decryptValue(result[0].name, key, false);
+            return true;
+        } catch (error) {
+            if (error instanceof DecryptionError) {
+                console.error("Decryption failed:", error.message, error.value);
+            } else {
+                console.error("Unexpected error during decryption:", error);
+            }
+            return false;
+        }
+    },
+
+    getTop(options: { start: Date; end: Date; limit: number }, key: string) {
+        const query = `            
+            SELECT *
+            FROM expenses
+            WHERE date >= :start
+              AND date <= :end
+              AND amount > 0
+            ORDER BY amount DESC
+            LIMIT :limit
+            `;
+
+        const params = {
+            ":start": options.start.getTime(),
+            ":end": options.end.getTime(),
+            ":limit": options.limit,
+        };
+
+        return rowsFromResult<Expense>(
+            PersistentDatabase.get().exec(query, params),
+            {
+                key,
+                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+            },
+        );
+    },
+    getWeekDayMostSpentOn({ start, end }: { start: Date; end: Date }):
+        | {
+              day: string;
+              total: number;
+          }
+        | undefined {
+        const query = `
+            SELECT
+                CASE strftime('%w', datetime(date / 1000, 'unixepoch'))
+                    WHEN '0' THEN 'Sonntag'
+                    WHEN '1' THEN 'Montag'
+                    WHEN '2' THEN 'Dienstag'
+                    WHEN '3' THEN 'Mittwoch'
+                    WHEN '4' THEN 'Donnerstag'
+                    WHEN '5' THEN 'Freitag'
+                    WHEN '6' THEN 'Samstag'
+                    END AS day,
+                SUM(amount) AS total
+            FROM expenses
+            WHERE amount > 0
+              AND date >= :start
+              AND date <= :end
+            GROUP BY day
+            ORDER BY total DESC
+            LIMIT 1`;
+
+        const params = {
+            ":start": start.getTime(),
+            ":end": end.getTime(),
+        };
+
+        const result = rowsFromResult<{ day: string; total: number }>(
+            PersistentDatabase.get().exec(query, params),
+        );
+        return result[0];
+    },
     count() {
         const query = `            
             SELECT COUNT(*) as count
@@ -232,34 +322,6 @@ export const expensesRepository = {
         await PersistentDatabase.persist();
 
         dbEventEmitter.emit("expenses:changed");
-    },
-    checkMasterPassword(key: string): boolean {
-        const query = `            
-            SELECT name
-            FROM expenses
-            LIMIT 1`;
-
-        const result = rowsFromResult<{ name: string }>(
-            PersistentDatabase.get().exec(query),
-        );
-
-        if (result.length === 0) {
-            throw new Error("No expenses found in the database.");
-        }
-
-        try {
-            // @ts-expect-error intentially want to ignore the return value
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const _ = decryptValue(result[0].name, key, false);
-            return true;
-        } catch (error) {
-            if (error instanceof DecryptionError) {
-                console.error("Decryption failed:", error.message, error.value);
-            } else {
-                console.error("Unexpected error during decryption:", error);
-            }
-            return false;
-        }
     },
 };
 

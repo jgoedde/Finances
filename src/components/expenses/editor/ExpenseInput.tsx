@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input.tsx";
-import { addMonths, isAfter } from "date-fns";
+import { addMonths, endOfDay, startOfMonth } from "date-fns";
 import * as React from "react";
 import { useMemo } from "react";
 import { mergeSimilarKeys } from "@/lib/utils";
@@ -22,15 +22,10 @@ export function ExpenseInput({
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
 }) {
-    const expenses = useExpenses();
-
-    const filteredExpenses = useMemo(
-        () =>
-            expenses
-                .filter((e) => e.category_id === selectedCategoryId)
-                .filter((e) => isAfter(e.date, addMonths(now, -3))),
-        [expenses, selectedCategoryId],
-    );
+    const expenses = useExpenses({
+        start: startOfMonth(addMonths(now, -3)),
+        end: endOfDay(now),
+    }).filter((e) => e.category_id === selectedCategoryId);
 
     // Shuffle top 8 for randomness
     const top = useMemo(() => {
@@ -46,7 +41,7 @@ export function ExpenseInput({
         const currentWeekday = now.getDay();
 
         // Group by name using mergeSimilarKeys
-        const grouped = mergeSimilarKeys(groupBy(filteredExpenses, "name"));
+        const grouped = mergeSimilarKeys(groupBy(expenses, "name"));
 
         // Score suggestions by frequency, time of day, and weekday
         const scored = Object.entries(grouped).map(([name, arr]) => {
@@ -74,7 +69,7 @@ export function ExpenseInput({
             .sort(() => Math.random() - 0.5)
             .slice(0, 4)
             .map((s) => s.name);
-    }, [filteredExpenses]);
+    }, [expenses]);
 
     const ripple = useRipple();
 

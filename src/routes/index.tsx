@@ -6,6 +6,7 @@ import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { useExpensesCount } from "@/components/expenses/use-expenses";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
+import { Insights } from "@/components/expenses/Insights.tsx";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
@@ -50,15 +51,13 @@ function ExpensesPage() {
                         <ExportButton />
                     </div>
                     <div className={"mt-2"}>
-                        <>
-                            Du hast bislang {expensesCount} Ausgaben getrackt.
-                            Je mehr du trackst, desto besser kannst du deine
-                            Ausgaben im Blick behalten.
-                        </>
+                        Du hast bislang {expensesCount} Geldbewegungen getrackt.
+                        Je mehr du trackst, desto besser kannst du deine
+                        Ausgaben im Blick behalten.
                     </div>
                 </div>
                 <MonthlyOverview />
-                {/*<Insights />*/}
+                <Insights />
                 <ExpensesList />
             </main>
 
