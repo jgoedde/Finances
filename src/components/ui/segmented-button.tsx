@@ -24,11 +24,11 @@ const segmentedButton = cva(
     },
 );
 
-export type SegmentedButtonOption = {
+interface SegmentedButtonOption {
     label: ReactNode;
     value: string;
     icon: IconName;
-};
+}
 
 export function SegmentedButton({
     options,

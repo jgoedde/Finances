@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS categories
 );
 
 -- auto-generated definition
-create table expenses
+CREATE TABLE IF NOT EXISTS expenses
 (
     id          TEXT                              not null
         primary key,

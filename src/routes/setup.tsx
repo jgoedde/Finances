@@ -12,12 +12,6 @@ export const Route = createFileRoute("/setup")({
     component: RouteComponent,
 });
 
-export interface GitHubConfig {
-    gistName: string;
-    pat?: string;
-    gistId?: string;
-}
-
 function RouteComponent() {
     const navigate = useNavigate();
 
@@ -29,10 +23,15 @@ function RouteComponent() {
         { isInitial: true } | { isInitial: false; canDecrypt: boolean }
     >({ isInitial: true });
 
-    async function handleSubmit(event: FormEvent) {
+    function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
         if (!key) {
+            return;
+        }
+
+        if (expensesCount === 0) {
+            void navigate({ to: "/" });
             return;
         }
 
