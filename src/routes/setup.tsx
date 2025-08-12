@@ -1,8 +1,12 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { type FormEvent } from "react";
-import { Check, KeyRound } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { type FormEvent, useState } from "react";
+import { Check, KeyRound, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
+import {
+    useExpensesCount,
+    useMasterPasswordCheck,
+} from "@/components/expenses/use-expenses.ts";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -18,6 +22,12 @@ function RouteComponent() {
     const navigate = useNavigate();
 
     const { key, setKey } = useEncryption();
+    const expensesCount = useExpensesCount();
+    const check = useMasterPasswordCheck();
+
+    const [canDecrypt, setCanDecrypt] = useState<
+        { isInitial: true } | { isInitial: false; canDecrypt: boolean }
+    >({ isInitial: true });
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
@@ -26,7 +36,12 @@ function RouteComponent() {
             return;
         }
 
-        void navigate({ to: "/" });
+        const isValid = check(key);
+        setCanDecrypt({ isInitial: false, canDecrypt: isValid });
+
+        if (isValid) {
+            void navigate({ to: "/" });
+        }
     }
 
     return (
@@ -35,6 +50,27 @@ function RouteComponent() {
                 <h2 className="font-poppins mb-6 text-center text-2xl font-semibold">
                     Entschlüsselung
                 </h2>
+
+                <div
+                    className={
+                        "text-on-surface-variant mb-6 flex flex-col gap-y-2 text-sm"
+                    }
+                >
+                    <div>
+                        In der lokalen Datenbank sind {expensesCount}{" "}
+                        Geldbewegungen gespeichert.
+                    </div>
+                    <div className={"ml-auto"}>
+                        <Link
+                            className={
+                                "text-primary decoration-primary hover:underline"
+                            }
+                            to={"/blob"}
+                        >
+                            Importieren
+                        </Link>
+                    </div>
+                </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div className={"flex gap-x-4"}>
@@ -60,6 +96,27 @@ function RouteComponent() {
                             />
                         </div>
                     </div>
+
+                    {!canDecrypt.isInitial && !canDecrypt.canDecrypt && (
+                        <div
+                            className={
+                                "bg-error text-on-error flex items-center gap-x-4 rounded-md p-3 text-sm"
+                            }
+                        >
+                            <div>
+                                <TriangleAlert />
+                            </div>
+                            <div>
+                                <div className={"font-semibold"}>
+                                    Das Master Passwort ist falsch.
+                                </div>
+                                <div>
+                                    Bitte überprüfe dein Passwort und versuche
+                                    es erneut.
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Submit Button */}
                     <div className={"mt-6 flex w-full justify-center"}>

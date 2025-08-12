@@ -1,12 +1,12 @@
 import { Download } from "lucide-react";
-import { exportFile } from "@/persistence/db.ts";
+import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 export function ExportButton() {
     return (
         <button
             type={"button"}
             onClick={() => {
-                void exportFile();
+                void PersistentDatabase.exportFile();
             }}
         >
             <Download className={"text-secondary size-5"} />

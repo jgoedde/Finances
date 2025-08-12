@@ -16,6 +16,15 @@ export function useExpenses() {
     );
 }
 
+export function useMasterPasswordCheck(): (key?: string) => boolean {
+    return (key) => {
+        if (!key) {
+            return false;
+        }
+        return expensesRepository.checkMasterPassword(key);
+    };
+}
+
 export function useExpensesByTimeRange({
     start,
     end,
@@ -63,7 +72,7 @@ export function useSpentByTimeRange({
     );
 }
 
-export function useCountExpenses() {
+export function useExpensesCount() {
     return useTableSubscription(
         () => expensesRepository.count(),
         [],

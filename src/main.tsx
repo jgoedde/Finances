@@ -7,7 +7,7 @@ import { NuqsAdapter } from "nuqs/adapters/react";
 import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
-import { initDatabase } from "@/persistence/db.ts";
+import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -19,7 +19,7 @@ declare module "@tanstack/react-router" {
     }
 }
 
-await initDatabase();
+await PersistentDatabase.init();
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>

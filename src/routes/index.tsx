@@ -4,7 +4,7 @@ import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useCountExpenses } from "@/components/expenses/use-expenses";
+import { useExpensesCount } from "@/components/expenses/use-expenses";
 import { ExportButton } from "@/components/expenses/export-button.tsx";
 
 export const Route = createFileRoute("/")({
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/")({
 });
 
 function ExpensesPage() {
-    const expensesCount = useCountExpenses();
+    const expensesCount = useExpensesCount();
 
     function getHeadlineText() {
         // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian

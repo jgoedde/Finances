@@ -1,12 +1,8 @@
 import type { Database } from "sql.js";
-import { dbEvents } from "@/persistence/db-events.ts";
-import { getDatabase, persistDatabase } from "@/persistence/db.ts";
-import type {
-    Category,
-    Expense,
-    ExpenseWithCategory,
-} from "@/persistence/types.ts";
+import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
+import type { Category, Expense, ExpenseWithCategory } from "@/persistence/types.ts";
 import CryptoJS from "crypto-js";
+import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 export const expensesRepository = {
     async add(entity: Expense, key: string) {
@@ -26,11 +22,11 @@ export const expensesRepository = {
             ":categoryId": encrypted.category_id,
         };
 
-        getDatabase().run(query, params);
+        PersistentDatabase.get().run(query, params);
 
-        await persistDatabase();
+        await PersistentDatabase.persist();
 
-        dbEvents.emit("expenses:changed");
+        dbEventEmitter.emit("expenses:changed");
     },
 
     count() {
@@ -38,7 +34,7 @@ export const expensesRepository = {
             SELECT COUNT(*) as count
             FROM expenses`;
 
-        const result = getDatabase().exec(query);
+        const result = PersistentDatabase.get().exec(query);
         if (result.length === 0 || result[0].values.length === 0) {
             return 0;
         }
@@ -57,10 +53,13 @@ export const expensesRepository = {
             ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
-        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
-            key,
-            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-        });
+        return rowsFromResult<Expense>(
+            PersistentDatabase.get().exec(query, params),
+            {
+                key,
+                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+            },
+        );
     },
 
     findById(id: string, key: string): Expense | undefined {
@@ -74,7 +73,7 @@ export const expensesRepository = {
         };
 
         const rows = rowsFromResult<Expense>(
-            getDatabase().exec(query, params),
+            PersistentDatabase.get().exec(query, params),
             { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
         return rows[0];
@@ -95,7 +94,7 @@ export const expensesRepository = {
         };
 
         const rows = rowsFromResult<Expense>(
-            getDatabase().exec(query, params),
+            PersistentDatabase.get().exec(query, params),
             { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
         return mapExpenseWithCategory(rows[0]);
@@ -112,10 +111,13 @@ export const expensesRepository = {
             ":categoryId": categoryId,
         };
 
-        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
-            key,
-            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-        });
+        return rowsFromResult<Expense>(
+            PersistentDatabase.get().exec(query, params),
+            {
+                key,
+                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+            },
+        );
     },
 
     getSpentAmountByTimeRange(
@@ -139,7 +141,7 @@ export const expensesRepository = {
             ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
-        const result = getDatabase().exec(query, params);
+        const result = PersistentDatabase.get().exec(query, params);
 
         if (result.length === 0 || result[0].values.length === 0) {
             return 0;
@@ -172,10 +174,13 @@ export const expensesRepository = {
             ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
-        return rowsFromResult<Expense>(getDatabase().exec(query, params), {
-            key,
-            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-        });
+        return rowsFromResult<Expense>(
+            PersistentDatabase.get().exec(query, params),
+            {
+                key,
+                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+            },
+        );
     },
 
     async update(entity: Expense, key: string) {
@@ -201,11 +206,11 @@ export const expensesRepository = {
             ":categoryId": encrypted.category_id,
         };
 
-        getDatabase().run(query, params);
+        PersistentDatabase.get().run(query, params);
 
-        await persistDatabase();
+        await PersistentDatabase.persist();
 
-        dbEvents.emit("expenses:changed");
+        dbEventEmitter.emit("expenses:changed");
     },
 
     async delete(id: string) {
@@ -218,11 +223,39 @@ export const expensesRepository = {
             ":id": id,
         };
 
-        getDatabase().run(query, params);
+        PersistentDatabase.get().run(query, params);
 
-        await persistDatabase();
+        await PersistentDatabase.persist();
 
-        dbEvents.emit("expenses:changed");
+        dbEventEmitter.emit("expenses:changed");
+    },
+    checkMasterPassword(key: string): boolean {
+        const query = `            
+            SELECT name
+            FROM expenses
+            LIMIT 1`;
+
+        const result = rowsFromResult<{ name: string }>(
+            PersistentDatabase.get().exec(query),
+        );
+
+        if (result.length === 0) {
+            throw new Error("No expenses found in the database.");
+        }
+
+        try {
+            // @ts-expect-error intentially want to ignore the return value
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const _ = decryptValue(result[0].name, key, false);
+            return true;
+        } catch (error) {
+            if (error instanceof DecryptionError) {
+                console.error("Decryption failed:", error.message, error.value);
+            } else {
+                console.error("Unexpected error during decryption:", error);
+            }
+            return false;
+        }
     },
 };
 
@@ -233,7 +266,7 @@ export const categoriesRepository = {
             FROM categories
             ORDER BY name`;
 
-        return rowsFromResult<Category>(getDatabase().exec(query));
+        return rowsFromResult<Category>(PersistentDatabase.get().exec(query));
     },
 
     findById(id: string): Category | undefined {
@@ -247,7 +280,7 @@ export const categoriesRepository = {
         };
 
         const rows = rowsFromResult<Category>(
-            getDatabase().exec(query, params),
+            PersistentDatabase.get().exec(query, params),
         );
         return rows[0];
     },
@@ -258,15 +291,29 @@ export const EXPENSES_ENCRYPTED_FIELDS: (keyof Expense)[] = [
     "description",
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function decryptValue(value: any, key: string): any {
-    if (typeof value !== "string") return value;
-    try {
-        const bytes = CryptoJS.AES.decrypt(value, key);
-        return bytes.toString(CryptoJS.enc.Utf8);
-    } catch {
-        return value; // fallback if not encrypted
+class DecryptionError extends Error {
+    public value: string;
+
+    constructor(message: string, value: string) {
+        super(message);
+        this.value = value;
+        this.name = "DecryptionError";
     }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function decryptValue(value: any, key: string, silent: boolean = true): any {
+    if (typeof value !== "string") return value;
+
+    const bytes = CryptoJS.AES.decrypt(value, key);
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+
+    if (!decrypted) {
+        if (silent) return "";
+        throw new DecryptionError("Decryption failed", value);
+    }
+
+    return decrypted;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

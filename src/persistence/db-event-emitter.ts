@@ -2,7 +2,7 @@ export type DBEventName = "expenses:changed" | "categories:changed";
 
 type DBEventHandler = () => void;
 
-class DBEvents {
+class DBEventEmitter {
     private listeners: Map<DBEventName, Set<DBEventHandler>> = new Map();
 
     on(event: DBEventName, handler: DBEventHandler) {
@@ -25,4 +25,4 @@ class DBEvents {
     }
 }
 
-export const dbEvents = new DBEvents();
+export const dbEventEmitter = new DBEventEmitter();
