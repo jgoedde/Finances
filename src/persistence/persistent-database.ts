@@ -5,9 +5,9 @@ import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
 export class PersistentDatabase {
     private static sql: SqlJsStatic | null = null;
     private static dbInstance: Database | null = null;
-    public static readonly DB_NAME = "finances";
-    public static readonly DB_STORE = "sqlite-db";
-    public static readonly DB_KEY = "main";
+    private static readonly DB_NAME = "finances";
+    private static readonly DB_STORE = "sqlite-db";
+    private static readonly DB_KEY = "main";
 
     private static async ensurePersistentStorage(): Promise<void> {
         if (navigator.storage && navigator.storage.persist) {
