@@ -61,7 +61,12 @@ export function MonthlyOverview() {
                             {trendPercentageStr}%{" "}
                             {amountDiffNowVsLastMonth > 0 ? "mehr" : "weniger"}
                         </div>
-                        <div className={""}>Ausgaben als im Mai.</div>
+                        <div className={""}>
+                            Ausgaben als im{" "}
+                            {lastMonth.toLocaleDateString("de-DE", {
+                                month: "long",
+                            })}
+                        </div>
                     </div>
                 </div>
                 <div className={"mt-8 flex flex-col gap-y-3"}>
