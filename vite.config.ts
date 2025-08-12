@@ -17,13 +17,6 @@ export default defineConfig({
         VitePWA({
             includeAssets: ["favicon.ico", "apple-touch-icon.png"],
             registerType: "autoUpdate",
-            injectRegister: false,
-
-            pwaAssets: {
-                disabled: false,
-                config: true,
-            },
-
             manifest: {
                 name: "Finances",
                 short_name: "Finances",
@@ -50,9 +43,9 @@ export default defineConfig({
             },
 
             devOptions: {
-                enabled: false,
+                enabled: true,
                 navigateFallback: "index.html",
-                suppressWarnings: true,
+                suppressWarnings: false,
                 type: "module",
             },
         }),

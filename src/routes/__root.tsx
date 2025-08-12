@@ -1,13 +1,11 @@
 import { createRootRoute, Outlet, redirect } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { store } from "@/store.ts";
-import PWABadge from "@/PWABadge.tsx";
 
 export const Route = createRootRoute({
     component: () => (
         <>
             <Outlet />
-            <PWABadge />
             <TanStackRouterDevtools />
         </>
     ),

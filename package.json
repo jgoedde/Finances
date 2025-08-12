@@ -17,9 +17,7 @@
         ]
     },
     "overrides": {
-        "react-is": "^19.0.0-rc-69d4b800-20241021",
-        "sharp": "0.32.6",
-        "sharp-ico": "0.1.5"
+        "react-is": "^19.0.0-rc-69d4b800-20241021"
     },
     "dependencies": {
         "@mantine/hooks": "^8.2.1",
@@ -63,7 +61,6 @@
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@types/sql.js": "^1.4.9",
-        "@vite-pwa/assets-generator": "^1.0.0",
         "@vitejs/plugin-react-swc": "^3.11.0",
         "eslint": "^9.32.0",
         "eslint-plugin-react-dom": "^1.52.3",

@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
+import { registerServiceWorker } from "@/sw-registration.ts";
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -32,3 +33,5 @@ createRoot(document.getElementById("root")!).render(
         </ThemeProvider>
     </StrictMode>,
 );
+
+registerServiceWorker();
