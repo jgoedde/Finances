@@ -15,7 +15,18 @@ function ExpensesPage() {
     const expensesCount = useExpensesCount();
 
     function getHeadlineText() {
-        return "HALLO, MARCELL DAVIS!";
+        // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian
+        // 11:00 Uhr - 17:00 Uhr - Guten Tag, Julian
+        // 17:00 Uhr - 23:59 Uhr - Guten Abend, Julian
+        const now = new Date();
+        const hours = now.getHours();
+        let greeting = "Guten Tag";
+        if (hours < 11) {
+            greeting = "Guten Morgen";
+        } else if (hours >= 17) {
+            greeting = "Guten Abend";
+        }
+        return `${greeting}, Julian`;
     }
 
     const headlineText = getHeadlineText();
