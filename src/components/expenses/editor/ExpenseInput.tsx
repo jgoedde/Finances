@@ -22,10 +22,16 @@ export function ExpenseInput({
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
 }) {
-    const expenses = useExpenses({
-        start: startOfMonth(addMonths(now, -3)),
-        end: endOfDay(now),
-    }).filter((e) => e.category_id === selectedCategoryId);
+    const queryOptions = useMemo(
+        () => ({
+            start: startOfMonth(addMonths(now, -3)),
+            end: endOfDay(now),
+            categoryId: selectedCategoryId,
+        }),
+        [selectedCategoryId],
+    );
+
+    const expenses = useExpenses(queryOptions);
 
     // Shuffle top 8 for randomness
     const top = useMemo(() => {

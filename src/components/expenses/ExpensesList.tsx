@@ -3,20 +3,15 @@ import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import {
-    addDays,
-    addWeeks,
-    endOfDay,
-    endOfWeek,
-    startOfDay,
-    startOfWeek,
-} from "date-fns";
+import { addDays, endOfDay, startOfDay } from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
-import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 import { useQueryState } from "nuqs";
 import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { groupBy } from "lodash";
+import type { Expense } from "@/persistence/types.ts";
+import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
 
-type DateFilter = "today" | "yesterday" | "last-week";
+type DateFilter = "today" | "yesterday" | "last-7-days";
 
 const now = new Date();
 
@@ -40,11 +35,10 @@ export function ExpensesList() {
                 start: startOfDay(yesterday),
                 end: endOfDay(yesterday),
             };
-        } else if (dateFilterOption === "last-week") {
-            const lastWeek = addWeeks(now, -1);
+        } else if (dateFilterOption === "last-7-days") {
             return {
-                start: startOfWeek(lastWeek),
-                end: endOfWeek(lastWeek),
+                start: addDays(now, -7),
+                end: endOfDay(now),
             };
         } else {
             return todayFilter;
@@ -62,10 +56,18 @@ export function ExpensesList() {
         if (dateFilterOption === "yesterday") {
             return "Gestern";
         }
-        if (dateFilterOption === "last-week") {
-            return "Letzte Woche";
+        if (dateFilterOption === "last-7-days") {
+            return "Letzte 7 Tage";
         }
     }
+
+    const grouped: Record<string, Expense[]> = groupBy(expenses, (e) =>
+        new Date(e.date).toLocaleDateString("de-DE", {
+            weekday: "short",
+            day: "2-digit",
+            month: "long",
+        }),
+    );
 
     return (
         <div
@@ -94,9 +96,17 @@ export function ExpensesList() {
                         Keine Geldbewegungen für {getActiveDateFilter()}
                     </div>
                 )}
-                {expenses.map((expense) => (
-                    <ExpenseListItem key={expense.id} expense={expense} />
-                ))}
+                {dateFilterOption === "last-7-days"
+                    ? Object.keys(grouped).map((day) => (
+                          <ExpensesGroup
+                              key={day}
+                              day={day}
+                              expenses={grouped[day]}
+                          />
+                      ))
+                    : expenses.map((expense) => (
+                          <ExpenseListItem key={expense.id} expense={expense} />
+                      ))}
             </div>
 
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -151,10 +161,35 @@ const DateFilterDrawerContent: FC<Props> = ({
                 </div>
 
                 <div className="mb-3 flex items-center gap-5">
-                    <RadioGroupItem value="last-week" id="last-week" />
-                    <Label htmlFor="last-week">Letzte Woche</Label>
+                    <RadioGroupItem value="last-7-days" id="last-7-days" />
+                    <Label htmlFor="last-7-days">Letzte 7 Tage</Label>
                 </div>
             </RadioGroup>
         </div>
     );
 };
+
+function ExpensesGroup({
+    day,
+    expenses,
+}: {
+    day: string;
+    expenses: Expense[];
+}) {
+    return (
+        <div className={"flex flex-col py-1"}>
+            <div
+                className={
+                    "text-on-surface-variant/80 mb-1 px-4 text-sm font-medium"
+                }
+            >
+                {day}
+            </div>
+            <div className={"flex flex-col gap-y-1.5"}>
+                {expenses.map((expense) => (
+                    <ExpenseListItem key={expense.id} expense={expense} />
+                ))}
+            </div>
+        </div>
+    );
+}
