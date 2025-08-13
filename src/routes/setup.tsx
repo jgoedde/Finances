@@ -127,7 +127,7 @@ function RouteComponent() {
                             <div>
                                 <Check />
                             </div>
-                            <div>Start Tracking</div>
+                            <div>Loslegen</div>
                         </button>
                     </div>
                 </form>
