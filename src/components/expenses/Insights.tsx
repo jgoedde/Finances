@@ -1,13 +1,11 @@
-import {expensesRepository} from "@/persistence/repository.ts";
-import {useEncryption} from "@/components/use-encryption.ts";
-import {formatEuro} from "@/lib/currency-utils.ts";
-import {ChartContainer} from "@/components/ui/chart.tsx";
-import {CartesianGrid, Line, LineChart, XAxis} from "recharts";
-import {useTonalColor} from "@/lib/color-utils.ts";
+import { expensesRepository } from "@/persistence/repository.ts";
+import { useEncryption } from "@/components/use-encryption.ts";
+import { formatEuro } from "@/lib/currency-utils.ts";
+import { ChartContainer } from "@/components/ui/chart.tsx";
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { useTonalColor } from "@/lib/color-utils.ts";
 
-const now = new Date();
-
-function BiggestDailySpike({ mp: key }: { mp: string }) {
+function BiggestDailySpike() {
     const trend = expensesRepository.getTrend();
     const spike = expensesRepository.getSpike();
 
@@ -99,7 +97,7 @@ export function Insights() {
 
     return (
         <div className={"mt-8 mb-8 flex w-full flex-col px-2"}>
-            <BiggestDailySpike mp={key} />
+            <BiggestDailySpike />
         </div>
     );
 }
