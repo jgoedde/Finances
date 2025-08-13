@@ -144,8 +144,9 @@ export function ExpenseInput({
                         Ausgabe
                     </Label>
                     <Input
-                        list={"frequent-expenses"}
+                        id={"expense"}
                         name={"expense"}
+                        required
                         value={expenseLocal}
                         onChange={onInputChange}
                         type={"text"}
