@@ -234,6 +234,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                                 locale: "de-DE",
                                 currency: "EUR",
                             }}
+                            required
                             allowNegativeValue={false}
                             className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
                             onValueChange={onAmountInputChange}
