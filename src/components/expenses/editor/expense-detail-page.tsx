@@ -13,6 +13,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { expensesRepository } from "@/persistence/repository.ts";
 import type { Category, ExpenseWithCategory } from "@/persistence/types.ts";
 import { useCategories } from "@/components/expenses/use-categories.ts";
+import { Label } from "@/components/ui/label.tsx";
 
 const now = new Date();
 
@@ -219,12 +220,12 @@ export function ExpenseDetailPage({ expense }: Props) {
                     <div
                         className={"flex items-center justify-between gap-x-2"}
                     >
-                        <label
+                        <Label
                             htmlFor="amount"
                             className={"text-on-surface-variant"}
                         >
                             Preis
-                        </label>
+                        </Label>
                         <CurrencyInput
                             ref={amountInputRef}
                             id="amount"
@@ -248,9 +249,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                             onInputChange={(e) => {
                                 setExpenseLocal(e.target.value);
 
-                                setShouldShowSuggestions(
-                                    e.target.value.trim() === "",
-                                );
+                                setShouldShowSuggestions(true);
                             }}
                             onApplySuggestion={(e) => {
                                 setExpenseLocal(e);
@@ -267,12 +266,12 @@ export function ExpenseDetailPage({ expense }: Props) {
                         />
                     )}
                     <div className={"flex items-center gap-x-2"}>
-                        <label
+                        <Label
                             htmlFor="description"
                             className={"text-on-surface-variant"}
                         >
                             Beschreibung
-                        </label>
+                        </Label>
                         <Input
                             ref={descriptionInputRef}
                             name={"description"}

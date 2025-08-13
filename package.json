@@ -37,6 +37,7 @@
         "cron-schedule": "^5.0.4",
         "crypto-js": "^4.2.0",
         "date-fns": "^4.1.0",
+        "fuse.js": "^7.1.0",
         "idb": "^8.0.3",
         "lodash": "^4.17.21",
         "lucide-react": "^0.522.0",

@@ -7,6 +7,7 @@ import {
     useExpensesCount,
     useMasterPasswordCheck,
 } from "@/components/expenses/use-expenses.ts";
+import { Label } from "@/components/ui/label.tsx";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -77,9 +78,9 @@ function RouteComponent() {
                             <KeyRound className={"w-full"} />
                         </div>
                         <div className={"w-full"}>
-                            <label htmlFor="master" className="block text-sm">
+                            <Label htmlFor="master" className="block text-sm">
                                 Master Passwort
-                            </label>
+                            </Label>
                             <Input
                                 name={"master"}
                                 id={"master"}

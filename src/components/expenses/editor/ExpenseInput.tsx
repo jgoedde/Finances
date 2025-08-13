@@ -2,12 +2,13 @@ import { Input } from "@/components/ui/input.tsx";
 import { addMonths, endOfDay, startOfMonth } from "date-fns";
 import * as React from "react";
 import { useMemo } from "react";
-import { mergeSimilarKeys } from "@/lib/utils";
-import { groupBy } from "lodash";
+import { mergeSimilarKeys, mergeSimilarStrings } from "@/lib/utils";
+import { groupBy, uniq } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useExpenses } from "@/components/expenses/use-expenses.ts";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Label } from "@/components/ui/label.tsx";
+import Fuse from "fuse.js";
 
 const now = new Date();
 
@@ -39,8 +40,23 @@ export function ExpenseInput({
 
     const expenses = useExpenses(queryOptions);
 
+    const fuse = useMemo(() => {
+        return new Fuse(expenses, {
+            keys: ["name", "description"],
+            shouldSort: true,
+        });
+    }, [expenses]);
+
+    const similarExpenses = useMemo(() => {
+        if (expenseLocal.trim() === "") {
+            return [];
+        }
+        const names = uniq(fuse.search(expenseLocal).map((e) => e.item.name));
+        return mergeSimilarStrings(names, 2).slice(0, 4);
+    }, [expenseLocal, fuse]);
+
     // Shuffle top 8 for randomness
-    const top = useMemo(() => {
+    const topExpenses = useMemo(() => {
         function getTimeOfDayBucket(date: Date) {
             const hour = date.getHours();
             if (hour >= 5 && hour < 11) return "Morgen";
@@ -85,11 +101,19 @@ export function ExpenseInput({
 
     const ripple = useRipple();
 
+    const suggestions = useMemo(() => {
+        if (expenseLocal.trim() === "") {
+            return topExpenses;
+        } else {
+            return similarExpenses;
+        }
+    }, [expenseLocal, similarExpenses, topExpenses]);
+
     return (
         <div className={"flex flex-col gap-x-2"}>
-            {top.length > 0 && shouldShowSuggestions && (
+            {suggestions.length > 0 && shouldShowSuggestions && (
                 <div className={"my-2 flex flex-wrap gap-2"}>
-                    {top.map((e) => (
+                    {suggestions.map((e) => (
                         <button
                             key={`suggestion-${e}`}
                             tabIndex={-1}
@@ -113,12 +137,12 @@ export function ExpenseInput({
             )}
             <div className={"flex items-center justify-between"}>
                 <div className={"flex items-center"}>
-                    <label
+                    <Label
                         htmlFor="expense"
                         className={"text-on-surface-variant"}
                     >
                         Ausgabe
-                    </label>
+                    </Label>
                     <Input
                         list={"frequent-expenses"}
                         name={"expense"}

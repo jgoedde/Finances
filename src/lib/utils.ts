@@ -56,3 +56,32 @@ export function mergeSimilarKeys<T>(
 
     return merged;
 }
+
+export function mergeSimilarStrings(list: string[], threshold = 2): string[] {
+    const result: string[] = [];
+    const visited = new Set<number>(); // track indices we've merged
+
+    for (let i = 0; i < list.length; i++) {
+        if (visited.has(i)) continue;
+
+        const baseStr = list[i];
+        visited.add(i);
+
+        for (let j = i + 1; j < list.length; j++) {
+            if (visited.has(j)) continue;
+
+            const compareStr = list[j];
+
+            if (
+                levenshtein(baseStr.toLowerCase(), compareStr.toLowerCase()) <=
+                threshold
+            ) {
+                visited.add(j);
+            }
+        }
+
+        result.push(baseStr);
+    }
+
+    return result;
+}
