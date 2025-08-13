@@ -1,15 +1,18 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS categories
+create table if not exists categories
 (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    name      TEXT                              NOT NULL UNIQUE,
-    color     TEXT                              NOT NULL UNIQUE,
-    icon_name TEXT                              NOT NULL UNIQUE
+    id        INTEGER not null
+        primary key autoincrement,
+    name      TEXT    not null
+        unique,
+    color     TEXT    not null
+        unique,
+    icon_name TEXT    not null
+        unique
 );
 
--- auto-generated definition
-CREATE TABLE IF NOT EXISTS expenses
+create table if not exists expenses
 (
     id          TEXT                              not null
         primary key,
@@ -20,7 +23,8 @@ CREATE TABLE IF NOT EXISTS expenses
     currency    TEXT                              not null,
     category_id INTEGER                           not null
         references categories
-            on update cascade on delete restrict
+            on update cascade on delete restrict,
+    exceptional INTEGER default 0                 not null
 );
 
 INSERT INTO categories ("id", "name", "color", "icon_name")

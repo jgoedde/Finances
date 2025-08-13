@@ -16,6 +16,11 @@ export interface Expense {
     amount: number;
     currency: string;
     category_id: number;
+
+    /**
+     * Is this expense an exceptional expense, i.e. buying a car, paying for a wedding, etc
+     */
+    exceptional: boolean;
 }
 
 export type ExpenseWithCategory = Expense & { category: Category };

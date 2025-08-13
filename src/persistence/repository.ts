@@ -13,8 +13,8 @@ export const expensesRepository = {
         const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
 
         const query = `            
-            INSERT INTO expenses (id, date, name, description, amount, currency, category_id)
-            VALUES (:id, :date, :name, :description, :amount, :currency, :categoryId)`;
+            INSERT INTO expenses (id, date, name, description, amount, currency, category_id, exceptional)
+            VALUES (:id, :date, :name, :description, :amount, :currency, :categoryId, :isExceptional)`;
 
         const params = {
             ":id": encrypted.id,
@@ -24,6 +24,7 @@ export const expensesRepository = {
             ":amount": encrypted.amount,
             ":currency": encrypted.currency,
             ":categoryId": encrypted.category_id,
+            ":isExceptional": encrypted.exceptional ? 1 : 0,
         };
 
         PersistentDatabase.get().run(query, params);
@@ -187,10 +188,22 @@ export const expensesRepository = {
             ":id": id,
         };
 
-        const rows = rowsFromResult<Expense>(
-            PersistentDatabase.get().exec(query, params),
-            { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
-        );
+        const rows = rowsFromResult<{
+            id: string;
+            date: number;
+            name: string;
+            description?: string;
+            amount: number;
+            currency: string;
+            category_id: number;
+            exceptional: boolean;
+            category_name: string;
+            category_icon_name: string;
+            category_color: string;
+        }>(PersistentDatabase.get().exec(query, params), {
+            key,
+            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
+        });
         return mapExpenseWithCategory(rows[0]);
     },
 
@@ -287,7 +300,8 @@ export const expensesRepository = {
                 description = :description,
                 amount      = :amount,
                 currency    = :currency,
-                category_id = :categoryId
+                category_id = :categoryId,
+                exceptional = :exceptional
             WHERE id = :id`;
 
         const params = {
@@ -298,6 +312,7 @@ export const expensesRepository = {
             ":amount": encrypted.amount,
             ":currency": encrypted.currency,
             ":categoryId": encrypted.category_id,
+            ":exceptional": encrypted.exceptional ? 1 : 0,
         };
 
         PersistentDatabase.get().run(query, params);
@@ -428,21 +443,23 @@ function encryptEntity<T extends object>(
     return copy;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapExpenseWithCategory(row: Record<string, any>): ExpenseWithCategory {
+function mapExpenseWithCategory(
+    row: Record<string, unknown>,
+): ExpenseWithCategory {
     return {
-        id: row.id,
-        date: row.date,
-        name: row.name,
-        description: row.description,
+        id: row.id as string,
+        date: row.date as number,
+        name: row.name as string,
+        description: row.descripion as string,
         amount: Number(row.amount),
-        currency: row.currency,
-        category_id: row.category_id,
+        currency: row.currency as string,
+        category_id: row.category_id as number,
+        exceptional: Boolean(row.exceptional),
         category: {
-            id: row.category_id,
-            name: row.category_name,
-            color: row.category_color,
-            icon_name: row.category_icon_name,
+            id: row.category_id as number,
+            name: row.category_name as string,
+            color: row.category_color as string,
+            icon_name: row.category_icon_name as string,
         },
     };
 }
