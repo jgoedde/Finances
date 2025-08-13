@@ -57,6 +57,9 @@ export function ExpenseDetailPage({ expense }: Props) {
     );
     const [shouldShowSuggestions, setShouldShowSuggestions] =
         useState(isAdding);
+    const [isExceptional, setIsExceptional] = useState(
+        expense?.exceptional ?? false,
+    );
 
     const selectedCategory = categories.find(
         (category) => category.id === selectedCategoryId,
@@ -99,6 +102,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                         descriptionLocal.trim() === ""
                             ? undefined
                             : descriptionLocal.trim(),
+                    exceptional: isExceptional,
                 },
                 key,
             );
@@ -112,6 +116,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                     ? undefined
                     : descriptionLocal.trim();
             expense.name = expenseLocal;
+            expense.exceptional = isExceptional;
 
             void expensesRepository.update(expense, key);
         }
@@ -255,6 +260,10 @@ export function ExpenseDetailPage({ expense }: Props) {
                                 }
                             }}
                             selectedCategoryId={selectedCategoryId}
+                            isExceptional={isExceptional}
+                            onExceptionalCheckBoxClick={(val) => {
+                                setIsExceptional(val);
+                            }}
                         />
                     )}
                     <div className={"flex items-center gap-x-2"}>

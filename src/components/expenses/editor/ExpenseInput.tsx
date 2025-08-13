@@ -6,6 +6,8 @@ import { mergeSimilarKeys } from "@/lib/utils";
 import { groupBy } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import { Label } from "@/components/ui/label.tsx";
 
 const now = new Date();
 
@@ -15,12 +17,16 @@ export function ExpenseInput({
     onInputChange,
     onApplySuggestion,
     shouldShowSuggestions,
+    isExceptional,
+    onExceptionalCheckBoxClick,
 }: {
     expenseLocal: string;
     selectedCategoryId: number | undefined;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
+    isExceptional: boolean;
+    onExceptionalCheckBoxClick: (val: boolean) => void;
 }) {
     const queryOptions = useMemo(
         () => ({
@@ -105,20 +111,36 @@ export function ExpenseInput({
                     ))}
                 </div>
             )}
-            <div className={"flex items-center"}>
-                <label htmlFor="expense" className={"text-on-surface-variant"}>
-                    Ausgabe
-                </label>
-                <Input
-                    list={"frequent-expenses"}
-                    name={"expense"}
-                    value={expenseLocal}
-                    onChange={onInputChange}
-                    type={"text"}
-                    className={
-                        "rounded-none border-none shadow-none focus-visible:ring-0"
-                    }
-                />
+            <div className={"flex items-center justify-between"}>
+                <div className={"flex items-center"}>
+                    <label
+                        htmlFor="expense"
+                        className={"text-on-surface-variant"}
+                    >
+                        Ausgabe
+                    </label>
+                    <Input
+                        list={"frequent-expenses"}
+                        name={"expense"}
+                        value={expenseLocal}
+                        onChange={onInputChange}
+                        type={"text"}
+                        className={
+                            "rounded-none border-none shadow-none focus-visible:ring-0"
+                        }
+                    />
+                </div>
+                <div className={"flex items-center gap-x-4"}>
+                    <Checkbox
+                        id={"exceptional"}
+                        name={"exceptional"}
+                        checked={isExceptional}
+                        onCheckedChange={onExceptionalCheckBoxClick}
+                    />
+                    <Label htmlFor={"exceptional"} className={"text-md"}>
+                        Außerordentlich
+                    </Label>
+                </div>
             </div>
         </div>
     );
