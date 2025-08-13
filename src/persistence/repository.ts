@@ -290,6 +290,237 @@ export const expensesRepository = {
         );
     },
 
+    getTrend() {
+        const sql = `            
+            SELECT date(date / 1000, 'unixepoch') AS day,
+                   SUM(amount)                    AS total
+            FROM expenses
+            WHERE amount > 0
+              AND exceptional = 0
+              AND date(date / 1000, 'unixepoch') >= (date('now', '-30 days'))
+            GROUP BY day`;
+
+        return rowsFromResult<{
+            day: string;
+            total: number;
+        }>(PersistentDatabase.get().exec(sql));
+    },
+
+    /**
+     * Gets the day with the highest amount spent in the last 30 days.
+     */
+    getSpike() {
+        const sql = `
+            WITH daily_category_totals AS (SELECT date(date / 1000, 'unixepoch') AS day,
+                                                  c.id                           as category_id,
+                                                  c.name                         as category_name,
+                                                  c.color                        as category_color,
+                                                  SUM(amount)                    AS total
+                                           FROM expenses
+                                                    INNER JOIN main.categories c on c.id = expenses.category_id
+                                           WHERE amount > 0
+                                             AND exceptional = 0
+                                             AND date(date / 1000, 'unixepoch') >= (date('now', '-30 days'))
+                                           GROUP BY day, category_id, category_name,
+                                                    category_color),
+                 ranked AS (SELECT day,
+                                   total,
+                                   category_name,
+                                   category_color,
+                                   RANK() OVER (PARTITION BY day ORDER BY total DESC) AS rnk
+                            FROM daily_category_totals)
+            SELECT day, MAX(total) as total, category_name, category_color
+            FROM ranked
+            WHERE rnk = 1`;
+
+        return rowsFromResult<{
+            day: string;
+            total: number;
+            category_name: number;
+            category_color: string;
+        }>(PersistentDatabase.get().exec(sql))[0];
+    },
+
+    /** 2) Hour with most “impulse” purchases (< threshold) */
+    getImpulsePurchaseHour(
+        threshold = 20,
+    ): { hour: string; small_purchases: number } | undefined {
+        const sql = `            
+            SELECT strftime('%H', datetime(date / 1000, 'unixepoch')) AS hour,
+                   COUNT(*)                                           AS small_purchases
+            FROM expenses
+            WHERE amount > 0
+              AND amount < :threshold
+              AND exceptional = 0
+            GROUP BY hour
+            ORDER BY small_purchases DESC
+            LIMIT 1;
+                `;
+        const rows = rowsFromResult<{ hour: string; small_purchases: number }>(
+            PersistentDatabase.get().exec(sql, { ":threshold": threshold }),
+        );
+        return rows[0];
+    },
+
+    /** 3) Categories that most often exceed a soft monthly budget */
+    getCategoryMonthsOverBudget(
+        budget = 100,
+    ): { name: string; months_over_budget: number }[] {
+        const sql = `            
+            WITH monthly_category_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
+                                                    category_id,
+                                                    SUM(amount)                                           AS total
+                                             FROM expenses
+                                             WHERE amount > 0
+                                               AND exceptional = 0
+                                             GROUP BY month, category_id)
+            SELECT c.name,
+                   COUNT(*) AS months_over_budget
+            FROM monthly_category_totals m
+                     JOIN categories c ON c.id = m.category_id
+            WHERE m.total > :budget
+            GROUP BY c.name
+            ORDER BY months_over_budget DESC;
+                `;
+        return rowsFromResult<{ name: string; months_over_budget: number }>(
+            PersistentDatabase.get().exec(sql, { ":budget": budget }),
+        );
+    },
+
+    /** 4) “Leakage” categories: many small purchases */
+    getLeakageCategories(
+        threshold = 15,
+        top = 3,
+    ): { name: string; purchase_count: number; total_spent: number }[] {
+        const sql = `            
+            SELECT c.name,
+                   COUNT(*)    AS purchase_count,
+                   SUM(amount) AS total_spent
+            FROM expenses e
+                     JOIN categories c ON c.id = e.category_id
+            WHERE amount > 0
+              AND amount < :threshold
+              AND exceptional = 0
+            GROUP BY c.name
+            ORDER BY purchase_count DESC
+            LIMIT :top;`;
+
+        return rowsFromResult<{
+            name: string;
+            purchase_count: number;
+            total_spent: number;
+        }>(
+            PersistentDatabase.get().exec(sql, {
+                ":threshold": threshold,
+                ":top": top,
+            }),
+        );
+    },
+
+    /** 5) Seasonal peaks: average spend by calendar month across years */
+    getSeasonalSpendingAverages(): { month: string; avg_spent: number }[] {
+        const sql = `            
+            SELECT month,
+                   AVG(total) AS avg_spent
+            FROM (SELECT strftime('%Y', datetime(date / 1000, 'unixepoch')) AS year,
+                         strftime('%m', datetime(date / 1000, 'unixepoch')) AS month,
+                         SUM(amount)                                        AS total
+                  FROM expenses
+                  WHERE amount > 0
+                    AND exceptional = 0
+                  GROUP BY year, month)
+            GROUP BY month
+            ORDER BY avg_spent DESC;
+                `;
+
+        return rowsFromResult<{ month: string; avg_spent: number }>(
+            PersistentDatabase.get().exec(sql),
+        );
+    },
+
+    /** 6) Weekend vs weekday totals */
+    getWeekendVsWeekdayTotals(): {
+        day_type: string;
+        total_spent: number;
+    }[] {
+        const sql = `            
+            SELECT CASE strftime('%w', datetime(date / 1000, 'unixepoch'))
+                       WHEN '0' THEN 'Sunday'
+                       WHEN '6' THEN 'Saturday'
+                       ELSE 'Weekday'
+                       END     AS day_type,
+                   SUM(amount) AS total_spent
+            FROM expenses
+            WHERE amount > 0
+              AND exceptional = 0
+            GROUP BY day_type
+            ORDER BY total_spent DESC;
+                `;
+
+        return rowsFromResult<{
+            day_type: string;
+            total_spent: number;
+        }>(PersistentDatabase.get().exec(sql));
+    },
+
+    /** 7) Longest streak with no spending (days). Note: gap is between spending days; no-spend days ≈ gap - 1 */
+    getLongestNoSpendStreakDays(): number {
+        const sql = `            
+            WITH days AS (SELECT DISTINCT date(date / 1000, 'unixepoch') AS day
+                          FROM expenses),
+                 gaps AS (SELECT day,
+                                 julianday(day) - LAG(julianday(day)) OVER (ORDER BY day) AS gap
+                          FROM days)
+            SELECT COALESCE(MAX(gap) - 1, 0) AS longest_gap_days
+            FROM gaps;
+                `;
+        const rows = rowsFromResult<{ longest_gap_days: number }>(
+            PersistentDatabase.get().exec(sql),
+        );
+        return Number(rows[0]?.longest_gap_days ?? 0);
+    },
+
+    /** 8) Fastest-growing category (MoM absolute increase) */
+    getFastestGrowingCategory(limit = 1): {
+        category: string;
+        month: string;
+        total: number;
+        prev_total: number;
+        change: number;
+    }[] {
+        const sql = `            
+            WITH monthly_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
+                                           category_id,
+                                           SUM(amount)                                           AS total
+                                    FROM expenses
+                                    WHERE amount > 0
+                                      AND exceptional = 0
+                                    GROUP BY month, category_id),
+                 with_prev AS (SELECT m.month,
+                                      m.category_id,
+                                      m.total,
+                                      LAG(m.total) OVER (PARTITION BY m.category_id ORDER BY m.month) AS prev_total
+                               FROM monthly_totals m)
+            SELECT c.name                                   AS category,
+                   with_prev.month,
+                   with_prev.total,
+                   with_prev.prev_total,
+                   (with_prev.total - with_prev.prev_total) AS change
+            FROM with_prev
+                     JOIN categories c ON c.id = with_prev.category_id
+            WHERE with_prev.prev_total IS NOT NULL
+            ORDER BY change DESC
+            LIMIT :limit;
+                `;
+        return rowsFromResult<{
+            category: string;
+            month: string;
+            total: number;
+            prev_total: number;
+            change: number;
+        }>(PersistentDatabase.get().exec(sql, { ":limit": limit }));
+    },
+
     async update(entity: Expense, key: string) {
         const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
 
