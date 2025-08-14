@@ -340,6 +340,66 @@ export const expensesRepository = {
             category_color: string;
         }>(PersistentDatabase.get().exec(sql))[0];
     },
+    getChangeOverMonth() {
+        const sql = `
+            WITH current_month AS (SELECT strftime('%d', datetime(date / 1000, 'unixepoch')) AS day,
+                                          SUM(amount)                                        AS total
+                                   FROM expenses
+                                   WHERE amount > 0
+                                     AND exceptional = 0
+                                     AND
+                                       strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) = strftime('%Y-%m', 'now')
+                                   GROUP BY day),
+                 previous_month AS (SELECT strftime('%d', datetime(date / 1000, 'unixepoch')) AS day,
+                                           SUM(amount)                                        AS total
+                                    FROM expenses
+                                    WHERE amount > 0
+                                      AND exceptional = 0
+                                      AND strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) =
+                                          strftime('%Y-%m', 'now', '-1 month')
+                                    GROUP BY day)
+            SELECT COALESCE(SUM(c.total), 0) AS current_total,
+                   COALESCE(SUM(p.total), 0) AS previous_total,
+                   round(CASE
+                             WHEN SUM(p.total) = 0 THEN NULL
+                             ELSE (SUM(c.total) - SUM(p.total)) * 100.0 / SUM(p.total)
+                             END, 0)         AS change_percentage
+            FROM current_month c
+                     LEFT JOIN previous_month p ON c.day = p.day;`;
+
+        return rowsFromResult<{
+            current_total: number;
+            previous_total: number;
+            change_percentage: number | null;
+        }>(PersistentDatabase.get().exec(sql))[0];
+    },
+    getSpentPerCategory() {
+        const sql = `
+            SELECT c.id as category_id,
+                   c.name as category_name,
+                   c.color as category_color,
+                   c.icon_name as category_icon_name,
+                   SUM(e.amount) AS total,
+                   COUNT(e.id) as expenses_count,
+                   round(AVG(e.amount),2) as avg_expense_amount
+            FROM expenses e
+                     JOIN categories c ON c.id = e.category_id
+            WHERE e.amount > 0
+              AND e.exceptional = 0
+              AND strftime('%Y-%m', datetime(e.date / 1000, 'unixepoch')) = strftime('%Y-%m', 'now')
+            GROUP BY c.id, c.name, c.color, c.icon_name
+            ORDER BY total DESC`;
+
+        return rowsFromResult<{
+            category_id: number;
+            category_name: string;
+            category_color: string;
+            category_icon_name: string;
+            total: number;
+            expenses_count: number;
+            avg_expense_amount: number;
+        }>(PersistentDatabase.get().exec(sql));
+    },
 
     /** 2) Hour with most “impulse” purchases (< threshold) */
     getImpulsePurchaseHour(

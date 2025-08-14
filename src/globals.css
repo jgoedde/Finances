@@ -71,14 +71,6 @@
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --radius: 0.625rem;
 
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: transparent;
-    --sidebar-ring: oklch(0.708 0 0);
-
     --chart-1: #ebbf5e;
     --chart-2: #54d3de;
     --chart-3: #2440a7;
@@ -152,15 +144,6 @@
     --shadow-xl:
         0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: transparent;
-    --sidebar-ring: oklch(0.556 0 0);
 
     --chart-1: #2662d9;
     --chart-2: #2eb88a;
@@ -254,14 +237,6 @@
     --shadow-lg: var(--shadow-lg);
     --shadow-xl: var(--shadow-xl);
     --shadow-2xl: var(--shadow-2xl);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: rgb(0, 0, 0, 0);
-    --color-sidebar-accent-foreground: var(--color-on-secondary-container);
-    --color-sidebar-accent: var(--color-secondary-container);
-    --color-sidebar-primary-foreground: blue;
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
 
     --color-chart-1: var(--chart-1);
     --color-chart-2: var(--chart-2);
