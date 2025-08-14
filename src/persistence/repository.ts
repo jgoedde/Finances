@@ -498,29 +498,36 @@ export const expensesRepository = {
         );
     },
 
-    /** 6) Weekend vs weekday totals */
-    getWeekendVsWeekdayTotals(): {
-        day_type: string;
-        total_spent: number;
-    }[] {
-        const sql = `            
+    /** 6) Weekend vs weekday spending totals in the past 3 months */
+    getWeekendVsWeekdayTotals(): [
+        {
+            day_type: "Weekday";
+            total_spent: number;
+        },
+        {
+            day_type: "Weekend";
+            total_spent: number;
+        },
+    ] {
+        const sql = `
             SELECT CASE strftime('%w', datetime(date / 1000, 'unixepoch'))
-                       WHEN '0' THEN 'Sunday'
-                       WHEN '6' THEN 'Saturday'
+                       WHEN '0' THEN 'Weekend'
+                       WHEN '6' THEN 'Weekend'
                        ELSE 'Weekday'
-                       END     AS day_type,
-                   SUM(amount) AS total_spent
+                       END               AS day_type,
+                   round(SUM(amount), 2) AS total_spent
             FROM expenses
             WHERE amount > 0
               AND exceptional = 0
+              AND datetime(date / 1000, 'unixepoch') >= (date('now', '-3 months'))
             GROUP BY day_type
-            ORDER BY total_spent DESC;
-                `;
+            ORDER BY day_type DESC
+        `;
 
-        return rowsFromResult<{
-            day_type: string;
-            total_spent: number;
-        }>(PersistentDatabase.get().exec(sql));
+        const rows = rowsFromResult(PersistentDatabase.get().exec(sql));
+        return [rows[0], rows[1]] as ReturnType<
+            typeof expensesRepository.getWeekendVsWeekdayTotals
+        >;
     },
 
     /** 7) Longest streak with no spending (days). Note: gap is between spending days; no-spend days ≈ gap - 1 */
