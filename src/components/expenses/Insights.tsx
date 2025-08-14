@@ -35,7 +35,7 @@ function BiggestDailySpike() {
                     30-Tage Trend
                 </div>
                 <div className={"text-md"}>
-                    Teuerste Ausgaben für {spike.category_name}, am{" "}
+                    Teuerste Ausgaben für <span className={"font-semibold"} style={{color: textColor}}>{spike.category_name}</span>, am{" "}
                     {new Date(spike.day).toLocaleDateString("de-DE", {
                         day: "2-digit",
                         month: "2-digit",

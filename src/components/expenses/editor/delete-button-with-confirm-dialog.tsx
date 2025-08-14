@@ -35,21 +35,20 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogTitle>Bist du sicher?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This action cannot be undone. This will remove this
-                        expense from your history.
+                        Diese Aktion kann nicht rückgängig gemacht werden. Die Feldbewegung wird aus der Historie gelöscht.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel className={"text-primary"}>
-                        Cancel
+                        Abbrechen
                     </AlertDialogCancel>
                     <AlertDialogAction
                         onClick={onDeleteConfirmButtonClick}
                         className={"text-primary"}
                     >
-                        Yes
+                        Ja
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
