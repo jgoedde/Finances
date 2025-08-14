@@ -3,11 +3,20 @@ import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import { expensesRepository } from "@/persistence/repository.ts";
 import { cn } from "@/lib/utils.ts";
 import { ArrowDown, ArrowUp, Calendar, CircleSlash2 } from "lucide-react";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart.tsx";
+import {
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart.tsx";
 import { LabelList, RadialBar, RadialBarChart } from "recharts";
 import { useMemo } from "react";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion.tsx";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion.tsx";
 
 const now = new Date();
 
