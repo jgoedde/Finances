@@ -8,10 +8,6 @@ export function isMatchingSearchFilter(
     const descriptionMatch = expense.description
         ? expense.description.toLowerCase().includes(searchLower)
         : false;
-    const categoryMatch = false; // TODO
-    // const categoryMatch = expense.category.name
-    //     .toLowerCase()
-    //     .includes(searchLower);
 
-    return nameMatch || descriptionMatch || categoryMatch;
+    return nameMatch || descriptionMatch;
 }
