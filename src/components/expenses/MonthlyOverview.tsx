@@ -125,7 +125,7 @@ export function MonthlyOverview() {
                         data={chartData}
                         startAngle={-90}
                         endAngle={380}
-                        innerRadius={20}
+                        innerRadius={35}
                         outerRadius={150}
                         barSize={40}
                     >
