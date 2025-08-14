@@ -45,7 +45,7 @@ function RouteComponent() {
     }
 
     return (
-        <div className={"flex h-dvh items-center justify-center"}>
+        <div className={"bg-inverse-surface flex h-dvh items-center justify-center"}>
             <div className="bg-surface-container-highest w-full max-w-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="font-poppins mb-6 text-center text-2xl font-semibold">
                     Entschlüsselung
