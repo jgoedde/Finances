@@ -8,11 +8,6 @@ export function BiggestDailySpike() {
     const trend = expensesRepository.getTrend();
     const spike = expensesRepository.getSpike();
 
-    const bgColor = useTonalColor(spike.category_color, {
-        light: 96,
-        dark: 1,
-    });
-
     const textColor = useTonalColor(spike.category_color, {
         light: 15,
         dark: 90,
@@ -24,10 +19,7 @@ export function BiggestDailySpike() {
 
     return (
         <div
-            style={{
-                backgroundColor: bgColor,
-            }}
-            className={"flex flex-col space-y-2 rounded-xl p-4 shadow-lg"}
+            className={"flex bg-surface-container-high flex-col space-y-2 rounded-xl p-4 shadow-lg"}
         >
             <div className={"flex flex-col"}>
                 <div className={"font-poppins text-lg font-semibold"}>
