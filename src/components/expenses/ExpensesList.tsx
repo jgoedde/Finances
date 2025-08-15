@@ -177,7 +177,7 @@ function ExpensesGroup({
     expenses: Expense[];
 }) {
     return (
-        <div className={"flex flex-col py-1"}>
+        <div className={"flex flex-col py-1 mb-3"}>
             <div
                 className={
                     "text-on-surface-variant/80 mb-1 px-4 text-sm font-medium"
