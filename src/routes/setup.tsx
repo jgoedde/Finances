@@ -149,18 +149,19 @@ function RouteComponent() {
                             >
                                 Master Passwort
                             </Label>
-                            <Input
-                                id={"master-password-input"}
-                                name={"master-password"}
-                                value={key ?? ""}
-                                type={"password"}
-                                onChange={(e) => setKey(e.target.value)}
-                                className={
-                                    "focus:border-primary focus:outline-none focus:ring-0 border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
-                                }
-                                autoComplete={"current-password"}
-                                required
-                            />
+          <Input
+  id={"master-password-input"}
+  name={"master-password"}
+  value={key ?? ""}
+  type={"password"}
+  onChange={(e) => setKey(e.target.value)}
+  className={
+    "border border-outline focus:border-2 focus:border-primary focus:outline-none focus:ring-0 mt-1 block w-full rounded-xs px-4 py-2 text-sm shadow-sm"
+  }
+  autoComplete={"current-password"}
+  required
+/>
+
                         </div>
                     </div>
 
