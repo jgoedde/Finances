@@ -8,6 +8,11 @@ import {
     useMasterPasswordCheck,
 } from "@/components/expenses/use-expenses.ts";
 import { Label } from "@/components/ui/label.tsx";
+import {
+    MAX_BACKUP_INTERVAL_IN_HOURS,
+    useBackupConfig,
+} from "@/hooks/use-backup-config.ts";
+import { Slider } from "@/components/ui/slider.tsx";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -19,6 +24,7 @@ function RouteComponent() {
     const { key, setKey } = useEncryption();
     const expensesCount = useExpensesCount();
     const check = useMasterPasswordCheck();
+    const [backupConfig, setBackupConfig] = useBackupConfig();
 
     const [canDecrypt, setCanDecrypt] = useState<
         { isInitial: true } | { isInitial: false; canDecrypt: boolean }
@@ -45,7 +51,11 @@ function RouteComponent() {
     }
 
     return (
-        <div className={"light:bg-inverse-surface flex h-dvh items-center justify-center"}>
+        <div
+            className={
+                "light:bg-inverse-surface flex h-dvh items-center justify-center"
+            }
+        >
             <div className="bg-surface-container-high w-full max-w-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="font-poppins mb-6 text-center text-2xl font-semibold">
                     Entschlüsselung
@@ -117,6 +127,63 @@ function RouteComponent() {
                             </div>
                         </div>
                     )}
+
+                    <div className={"flex flex-col space-y-2"}>
+                        <div className={"my-3"}>
+                            <div className={"flex flex-col"}>
+                                <Label
+                                    className={"text-sm"}
+                                    htmlFor={"backup-interval"}
+                                >
+                                    Automatisches Backup-Interval
+                                </Label>
+                                <div
+                                    className={
+                                        "text-on-surface-variant text-sm"
+                                    }
+                                >
+                                    {backupConfig.interval === -1 ? (
+                                        <>Keine automatischen Backups</>
+                                    ) : (
+                                        <>
+                                            Alle {backupConfig.interval} Stunden
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <div className={"mt-2"}>
+                                <Slider
+                                    min={MAX_BACKUP_INTERVAL_IN_HOURS}
+                                    max={MAX_BACKUP_INTERVAL_IN_HOURS}
+                                    step={12}
+                                    name={"backup-interval"}
+                                    value={[
+                                        backupConfig.interval === -1
+                                            ? 12
+                                            : 60 - backupConfig.interval + 12,
+                                    ]}
+                                    onValueChange={([v]) => {
+                                        // very right = 12, very left = 60
+                                        // so we need to invert the value
+                                        const int = 60 - v + 12;
+
+                                        if (int === 60) {
+                                            setBackupConfig({
+                                                ...backupConfig,
+                                                interval: -1, //disable
+                                            });
+                                            return;
+                                        }
+
+                                        setBackupConfig({
+                                            ...backupConfig,
+                                            interval: int,
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Submit Button */}
                     <div className={"mt-6 flex w-full justify-center"}>

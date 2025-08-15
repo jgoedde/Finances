@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getDateFilterStr, isMatchingDateFilter } from "@/components/search/filters/date/date-filter.ts";
+import {
+    getDateFilterStr,
+    isMatchingDateFilter,
+} from "@/components/search/filters/date/date-filter.ts";
 import { isMatchingSearchFilter } from "@/components/search/filters/text/text-filter.ts";
 import { cn } from "@/lib/utils.ts";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
