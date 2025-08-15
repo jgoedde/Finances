@@ -22,7 +22,7 @@ export function BiggestDailySpike() {
             className={"flex bg-surface-container-high flex-col space-y-2 rounded-xl p-4 shadow-lg"}
         >
             <div className={"flex flex-col"}>
-                <div className={"font-poppins text-lg font-semibold"}>
+                <div className={"font-poppins text-lg font-medium"}>
                     30-Tage Trend
                 </div>
                 <div className={"text-md"}>
