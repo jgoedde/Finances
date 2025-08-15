@@ -10,6 +10,7 @@ import {
 import { Label } from "@/components/ui/label.tsx";
 import {
     MAX_BACKUP_INTERVAL_IN_HOURS,
+    MIN_BACKUP_INTERVAL_IN_HOURS,
     useBackupConfig,
 } from "@/hooks/use-backup-config.ts";
 import { Slider } from "@/components/ui/slider.tsx";
@@ -51,11 +52,7 @@ function RouteComponent() {
     }
 
     return (
-        <div
-            className={
-                "light:bg-inverse-surface flex h-dvh items-center justify-center"
-            }
-        >
+        <div className={"bg-scrim/80 flex h-dvh items-center justify-center"}>
             <div className="bg-surface-container-high w-full max-w-sm rounded-2xl p-6 shadow-xl">
                 <h2 className="font-poppins mb-6 text-center text-2xl font-semibold">
                     Entschlüsselung
@@ -153,7 +150,7 @@ function RouteComponent() {
                             </div>
                             <div className={"mt-2"}>
                                 <Slider
-                                    min={MAX_BACKUP_INTERVAL_IN_HOURS}
+                                    min={MIN_BACKUP_INTERVAL_IN_HOURS - 12}
                                     max={MAX_BACKUP_INTERVAL_IN_HOURS}
                                     step={12}
                                     name={"backup-interval"}
