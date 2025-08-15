@@ -155,7 +155,6 @@ function RouteComponent() {
                                 value={key ?? ""}
                                 type={"password"}
                                 onChange={(e) => setKey(e.target.value)}
-                                placeholder={"<super sicheres Passwort>"}
                                 className={
                                     "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
                                 }
