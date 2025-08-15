@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NewRouteImport } from './routes/new'
-import { Route as BlobRouteImport } from './routes/blob'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ExpensesSearchRouteImport } from './routes/expenses/search'
 import { Route as EditIdRouteImport } from './routes/edit/$id'
@@ -24,11 +23,6 @@ const SetupRoute = SetupRouteImport.update({
 const NewRoute = NewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlobRoute = BlobRouteImport.update({
-  id: '/blob',
-  path: '/blob',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,7 +43,6 @@ const EditIdRoute = EditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/blob': typeof BlobRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
@@ -57,7 +50,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/blob': typeof BlobRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
@@ -66,7 +58,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/blob': typeof BlobRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
@@ -74,28 +65,14 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/blob'
-    | '/new'
-    | '/setup'
-    | '/edit/$id'
-    | '/expenses/search'
+  fullPaths: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/blob' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
-  id:
-    | '__root__'
-    | '/'
-    | '/blob'
-    | '/new'
-    | '/setup'
-    | '/edit/$id'
-    | '/expenses/search'
+  to: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
+  id: '__root__' | '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BlobRoute: typeof BlobRoute
   NewRoute: typeof NewRoute
   SetupRoute: typeof SetupRoute
   EditIdRoute: typeof EditIdRoute
@@ -116,13 +93,6 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/new'
       preLoaderRoute: typeof NewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blob': {
-      id: '/blob'
-      path: '/blob'
-      fullPath: '/blob'
-      preLoaderRoute: typeof BlobRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -151,7 +121,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BlobRoute: BlobRoute,
   NewRoute: NewRoute,
   SetupRoute: SetupRoute,
   EditIdRoute: EditIdRoute,

@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { type FormEvent, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
 import { Check, KeyRound, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
@@ -14,6 +14,7 @@ import {
     useBackupConfig,
 } from "@/hooks/use-backup-config.ts";
 import { Slider } from "@/components/ui/slider.tsx";
+import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -26,9 +27,16 @@ function RouteComponent() {
     const expensesCount = useExpensesCount();
     const check = useMasterPasswordCheck();
     const [backupConfig, setBackupConfig] = useBackupConfig();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [canDecrypt, setCanDecrypt] = useState<
         { isInitial: true } | { isInitial: false; canDecrypt: boolean }
+    >({ isInitial: true });
+    const [importStatus, setImportStatus] = useState<
+        | {
+              isInitial: true;
+          }
+        | { isInitial: false; successful: boolean }
     >({ isInitial: true });
 
     function handleSubmit(event: FormEvent) {
@@ -51,6 +59,21 @@ function RouteComponent() {
         }
     }
 
+    async function handleImportChangeEvent(
+        event: ChangeEvent<HTMLInputElement>,
+    ) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        try {
+            await PersistentDatabase.importFile(file);
+            setImportStatus({ isInitial: false, successful: true });
+        } catch (e) {
+            console.error("Import failed:", e);
+            setImportStatus({ isInitial: false, successful: false });
+        }
+    }
+
     return (
         <div className={"bg-scrim/80 flex h-dvh items-center justify-center"}>
             <div className="bg-surface-container-high w-full max-w-sm rounded-2xl p-6 shadow-xl">
@@ -64,18 +87,53 @@ function RouteComponent() {
                     }
                 >
                     <div>
-                        In der lokalen Datenbank sind {expensesCount}{" "}
-                        Geldbewegungen gespeichert.
+                        {expensesCount === 0 ? (
+                            "Es sind keine Geldbewegungen getrackt. Du kannst eine bestehende Datenbank importieren."
+                        ) : (
+                            <>
+                                In der lokalen Datenbank sind {expensesCount}{" "}
+                                Geldbewegungen gespeichert.
+                            </>
+                        )}
                     </div>
                     <div className={"ml-auto"}>
-                        <Link
+                        <button
+                            type={"button"}
                             className={
-                                "text-primary decoration-primary hover:underline"
+                                "border-outline-variant text-on-surface-variant flex h-10 items-center space-x-2 rounded-full border-2 px-4"
                             }
-                            to={"/blob"}
+                            onClick={() => {
+                                if (!fileInputRef.current) {
+                                    return;
+                                }
+
+                                fileInputRef.current.click();
+                            }}
                         >
-                            Importieren
-                        </Link>
+                            {!importStatus.isInitial &&
+                                importStatus.successful && (
+                                    <Check
+                                        className={
+                                            "text-on-surface-variant size-5"
+                                        }
+                                    />
+                                )}
+                            <div>
+                                {!importStatus.isInitial &&
+                                importStatus.successful
+                                    ? "Importiert"
+                                    : "Importieren"}
+                            </div>
+                        </button>
+                        <Input
+                            type={"file"}
+                            max={1}
+                            multiple={false}
+                            accept={".sqlite"}
+                            className={"hidden"}
+                            ref={fileInputRef}
+                            onChange={handleImportChangeEvent}
+                        />
                     </div>
                 </div>
 
@@ -85,12 +143,15 @@ function RouteComponent() {
                             <KeyRound className={"w-full"} />
                         </div>
                         <div className={"w-full"}>
-                            <Label htmlFor="master" className="block text-sm">
+                            <Label
+                                htmlFor="master-password-input"
+                                className="block text-sm"
+                            >
                                 Master Passwort
                             </Label>
                             <Input
-                                name={"master"}
-                                id={"master"}
+                                id={"master-password-input"}
+                                name={"master-password"}
                                 value={key ?? ""}
                                 type={"password"}
                                 onChange={(e) => setKey(e.target.value)}
@@ -128,12 +189,9 @@ function RouteComponent() {
                     <div className={"flex flex-col space-y-2"}>
                         <div className={"my-3"}>
                             <div className={"flex flex-col"}>
-                                <Label
-                                    className={"text-sm"}
-                                    htmlFor={"backup-interval"}
-                                >
+                                <div className={"text-sm"}>
                                     Automatisches Backup-Interval
-                                </Label>
+                                </div>
                                 <div
                                     className={
                                         "text-on-surface-variant text-sm"
@@ -150,10 +208,11 @@ function RouteComponent() {
                             </div>
                             <div className={"mt-2"}>
                                 <Slider
+                                    id={"backup-interval-slider"}
+                                    name={"backup-interval"}
                                     min={MIN_BACKUP_INTERVAL_IN_HOURS - 12}
                                     max={MAX_BACKUP_INTERVAL_IN_HOURS}
                                     step={12}
-                                    name={"backup-interval"}
                                     value={[
                                         backupConfig.interval === -1
                                             ? 12
@@ -186,7 +245,7 @@ function RouteComponent() {
                     <div className={"mt-6 flex w-full justify-center"}>
                         <button
                             type="submit"
-                            className="bg-primary-container text-on-primary-container flex gap-x-2 rounded-full px-4 py-2 font-medium"
+                            className="bg-primary text-on-primary flex gap-x-2 rounded-full px-4 py-2 font-medium"
                         >
                             <div>
                                 <Check />
