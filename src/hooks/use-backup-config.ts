@@ -55,6 +55,10 @@ export function useBackupCheck() {
     }
 
     return () => {
+        if (backupConfig.interval === -1) {
+            return;
+        }
+
         if (!backupConfig.lastBackup) {
             showToast();
             return;
