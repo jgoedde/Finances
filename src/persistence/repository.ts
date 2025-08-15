@@ -748,7 +748,7 @@ function mapExpenseWithCategory(
         id: row.id as string,
         date: row.date as number,
         name: row.name as string,
-        description: row.descripion as string,
+        description: row.description as string,
         amount: Number(row.amount),
         currency: row.currency as string,
         category_id: row.category_id as number,
