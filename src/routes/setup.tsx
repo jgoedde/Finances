@@ -156,7 +156,7 @@ function RouteComponent() {
                                 type={"password"}
                                 onChange={(e) => setKey(e.target.value)}
                                 className={
-                                    "border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
+                                    "focus:border-primary focus:outline-none focus:ring-0 border-outline mt-1 block w-full rounded-xs border px-4 py-2 text-sm shadow-sm"
                                 }
                                 autoComplete={"current-password"}
                                 required
