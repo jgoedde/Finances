@@ -4,58 +4,32 @@ import { LazyRow } from "@/components/expenses/LazyRow.tsx";
 import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
 import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
 import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { useExpensesCount } from "@/components/expenses/use-expenses";
-import { ExportButton } from "@/components/expenses/export-button.tsx";
 import { Insights } from "@/components/expenses/Insights.tsx";
+import { useBackupCheck } from "@/hooks/use-backup-config.ts";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
 });
 
 function ExpensesPage() {
-    const expensesCount = useExpensesCount();
+    const checkBackup = useBackupCheck();
 
-    function getHeadlineText() {
-        // 00:00 Uhr - 11:00 Uhr - Guten Morgen, Julian
-        // 11:00 Uhr - 17:00 Uhr - Guten Tag, Julian
-        // 17:00 Uhr - 23:59 Uhr - Guten Abend, Julian
-        const now = new Date();
-        const hours = now.getHours();
-        let greeting = "Guten Tag";
-        if (hours < 11) {
-            greeting = "Guten Morgen";
-        } else if (hours >= 17) {
-            greeting = "Guten Abend";
-        }
-        return `${greeting}, Julian`;
-    }
+    const hasRun = useRef(false);
 
-    const headlineText = getHeadlineText();
+    useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
+
+        checkBackup();
+    }, [checkBackup]);
 
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <SearchBar />
-
             <LazyRow />
-
             <main className={"grow"}>
-                <div className={"my-4 px-4"}>
-                    <div className={"flex items-center justify-between"}>
-                        <h2
-                            className={
-                                "text-primary font-poppins text-2xl font-bold"
-                            }
-                        >
-                            {headlineText}
-                        </h2>
-                        <ExportButton />
-                    </div>
-                    <div className={"mt-2"}>
-                        Du hast bislang {expensesCount} Geldbewegungen getrackt.
-                        Je mehr du trackst, desto besser kannst du deine
-                        Ausgaben im Blick behalten.
-                    </div>
-                </div>
+                <div className={"my-4 px-4"}></div>
                 <MonthlyOverview />
                 <Insights />
                 <ExpensesList />
