@@ -27,7 +27,7 @@ export function BiggestDailySpike() {
                 <div className={"font-poppins text-lg font-medium"}>
                     30-Tage Trend
                 </div>
-                <div className={"text-md"}>
+                <div className={"text-md text-on-surface-variant"}>
                     Teuerste Ausgaben für{" "}
                     <span
                         className={"font-semibold"}
