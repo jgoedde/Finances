@@ -7,6 +7,7 @@ import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
 import { Insights } from "@/components/expenses/Insights.tsx";
 import { useBackupCheck } from "@/hooks/use-backup-config.ts";
 import { useEffect, useRef } from "react";
+import { Toaster } from "@/components/ui/sonner.tsx";
 
 export const Route = createFileRoute("/")({
     component: ExpensesPage,
@@ -36,6 +37,7 @@ function ExpensesPage() {
             </main>
 
             <NewExpenseFAB />
+            <Toaster />
         </div>
     );
 }
