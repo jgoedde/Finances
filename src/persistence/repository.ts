@@ -588,6 +588,31 @@ export const expensesRepository = {
         }>(PersistentDatabase.get().exec(sql, { ":limit": limit }));
     },
 
+    getMonths() {
+        const query = `            
+            WITH monthly_category_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
+                                                    category_id,
+                                                    SUM(amount)                                           AS total
+                                             FROM expenses
+                                             WHERE amount > 0
+                                             GROUP BY month, category_id)
+            SELECT month,
+                   c.name AS category,
+                   c.icon_name as category_icon_name,
+                   total
+            FROM monthly_category_totals m
+                     JOIN categories c ON c.id = m.category_id
+            ORDER BY month, total DESC;
+`;
+
+        return rowsFromResult<{
+            month: string;
+            category: string;
+            category_icon_name: string;
+            total: number;
+        }>(PersistentDatabase.get().exec(query));
+    },
+
     async update(entity: Expense, key: string) {
         const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
 

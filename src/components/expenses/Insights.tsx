@@ -1,6 +1,6 @@
 import { useEncryption } from "@/components/use-encryption.ts";
 import { BiggestDailySpike } from "@/components/expenses/BiggestDailySpike.tsx";
-import { WeekdayVsWeekend } from "@/components/expenses/WeekdayVsWeekend.tsx";
+import { MonthsSnapRow } from "@/components/expenses/MonthsSnapRow.tsx";
 
 export function Insights() {
     const { key } = useEncryption();
@@ -12,7 +12,7 @@ export function Insights() {
     return (
         <div className={"my-8 flex w-full flex-col space-y-8 px-2"}>
             <BiggestDailySpike />
-            <WeekdayVsWeekend />
+            <MonthsSnapRow />
         </div>
     );
 }
