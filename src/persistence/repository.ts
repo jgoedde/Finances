@@ -602,7 +602,7 @@ export const expensesRepository = {
                    total
             FROM monthly_category_totals m
                      JOIN categories c ON c.id = m.category_id
-            ORDER BY month, total DESC;
+            ORDER BY month DESC, category asc;
 `;
 
         return rowsFromResult<{
