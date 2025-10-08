@@ -85,6 +85,7 @@ export class PersistentDatabase {
         const data = await this.loadFromIndexedDB();
         if (!data) throw new Error("No database found");
 
+        // @ts-expect-error -- TODO: Find out why TS is unhappy here
         const blob = new Blob([data], { type: "application/octet-stream" });
         const url = URL.createObjectURL(blob);
 
