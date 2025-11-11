@@ -1,5 +1,19 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
 
+function sanitizeForSankey(name: string): string {
+    return name
+        .replace(/ä/g, "ae")
+        .replace(/ö/g, "oe")
+        .replace(/ü/g, "ue")
+        .replace(/Ä/g, "Ae")
+        .replace(/Ö/g, "Oe")
+        .replace(/Ü/g, "Ue")
+        .replace(/ß/g, "ss")
+        .replace(/[^a-zA-Z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
 interface IncomeSource {
     name: string;
     amount: number;
@@ -16,6 +30,7 @@ interface SavingsTarget {
 }
 
 interface Expense {
+    name: string;
     category_id: number;
     amount: number;
 }
@@ -26,7 +41,7 @@ interface SankeyCSVConfig {
     incomeSources: IncomeSource[];
     fixedCosts: FixedCost[];
     savingsTargets: SavingsTarget[];
-    expenses: Expense[];
+    transactions: Expense[];
 }
 
 export function buildSankeyCSV(config: SankeyCSVConfig): string {
@@ -36,8 +51,11 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         incomeSources,
         fixedCosts,
         savingsTargets,
-        expenses,
+        transactions,
     } = config;
+
+    const incomes = transactions.filter((e) => e.amount < 0);
+    const expenses = transactions.filter((e) => e.amount >= 0);
 
     const ausweartsEssen = expenses
         .filter((e) => e.category_id === 1)
@@ -60,8 +78,12 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         )
         .reduce((sum, e) => sum + e.amount, 0);
 
-    const totalIncome = incomeSources.reduce(
+    const totalFixedIncome = incomeSources.reduce(
         (sum, s) => sum + (s.amount || 0),
+        0,
+    );
+    const totalTrackedIncome = incomes.reduce(
+        (sum, e) => sum + Math.abs(e.amount),
         0,
     );
     const totalFixedCosts = fixedCosts.reduce(
@@ -74,7 +96,11 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     );
     const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
     const unspentMoney =
-        totalIncome - totalFixedCosts - totalSavings - totalExpenses;
+        totalFixedIncome +
+        totalTrackedIncome -
+        totalFixedCosts -
+        totalSavings -
+        totalExpenses;
 
     const monthName = new Date(year, monthIndex).toLocaleString("en-US", {
         month: "long",
@@ -83,7 +109,8 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     let csv = `# Financial Overview - ${monthName} ${year}\n\n`;
     csv += `## Key Facts\n\n`;
     csv += `- **Month:** ${monthName} ${year}\n`;
-    csv += `- **Total Income:** ${formatEuro(totalIncome.toFixed(2))}\n`;
+    csv += `- **Total Income:** ${formatEuro(totalFixedIncome.toFixed(2))}\n`;
+    csv += `- **Tracked Income:** ${formatEuro(totalTrackedIncome.toFixed(2))}\n`;
     csv += `- **Fixed Costs:** ${formatEuro(totalFixedCosts.toFixed(2))}\n`;
     csv += `- **Expenses:** ${formatEuro(totalExpenses.toFixed(2))}\n`;
     csv += `- **Savings:** ${formatEuro(totalSavings.toFixed(2))}\n`;
@@ -95,7 +122,14 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
 
     incomeSources.forEach((source) => {
         if (source.name && source.amount) {
-            csv += `${source.name},budget,${Math.round(source.amount)}\n`;
+            csv += `${sanitizeForSankey(source.name)},budget,${Math.round(source.amount)}\n`;
+        }
+    });
+
+    incomes.forEach((income) => {
+        if (income.name && income.amount < 0) {
+            const safeName = sanitizeForSankey(income.name);
+            csv += `${safeName},budget,${Math.round(Math.abs(income.amount))}\n`;
         }
     });
 
@@ -103,7 +137,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
 
     fixedCosts.forEach((cost) => {
         if (cost.name && cost.amount) {
-            csv += `fixkosten,${cost.name},${Math.round(cost.amount)}\n`;
+            csv += `fixkosten,${sanitizeForSankey(cost.name)},${Math.round(cost.amount)}\n`;
         }
     });
 
@@ -123,7 +157,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         csv += `\nbudget,sparen,${Math.round(totalSavings)}\n`;
         savingsTargets.forEach((target) => {
             if (target.name && target.amount) {
-                csv += `sparen,${target.name},${Math.round(target.amount)}\n`;
+                csv += `sparen,${sanitizeForSankey(target.name)},${Math.round(target.amount)}\n`;
             }
         });
     }

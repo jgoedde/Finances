@@ -162,7 +162,7 @@ export function ExportSankeyDialog() {
             endDate.getTime(),
             key,
             undefined,
-            true,
+            false,
             true,
         );
 
@@ -181,7 +181,7 @@ export function ExportSankeyDialog() {
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            expenses,
+            transactions: expenses,
         });
 
         downloadSankeyCSV(csv, `sankey-${year}-${month.padStart(2, "0")}.md`);
