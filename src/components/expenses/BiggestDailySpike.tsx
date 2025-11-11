@@ -58,7 +58,11 @@ export function BiggestDailySpike() {
                         }}
                     >
                         <LineChart accessibilityLayer data={trend}>
-                            <CartesianGrid horizontal={true} vertical={false} stroke={"var(--color-surface-variant)"} />
+                            <CartesianGrid
+                                horizontal={true}
+                                vertical={false}
+                                stroke={"var(--color-surface-variant)"}
+                            />
                             <XAxis
                                 dataKey="day"
                                 tickLine={false}

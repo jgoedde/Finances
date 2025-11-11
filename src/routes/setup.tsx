@@ -15,6 +15,7 @@ import {
 } from "@/hooks/use-backup-config.ts";
 import { Slider } from "@/components/ui/slider.tsx";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
+import { Button } from "@/components/ui/button.tsx";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -97,11 +98,8 @@ function RouteComponent() {
                         )}
                     </div>
                     <div className={"ml-auto"}>
-                        <button
-                            type={"button"}
-                            className={
-                                "border-outline-variant text-on-surface-variant flex h-10 items-center space-x-2 rounded-full border-2 px-4"
-                            }
+                        <Button
+                            variant={"outline"}
                             onClick={() => {
                                 if (!fileInputRef.current) {
                                     return;
@@ -124,7 +122,7 @@ function RouteComponent() {
                                     ? "Importiert"
                                     : "Importieren"}
                             </div>
-                        </button>
+                        </Button>
                         <Input
                             type={"file"}
                             max={1}
@@ -149,19 +147,18 @@ function RouteComponent() {
                             >
                                 Master Passwort
                             </Label>
-          <Input
-  id={"master-password-input"}
-  name={"master-password"}
-  value={key ?? ""}
-  type={"password"}
-  onChange={(e) => setKey(e.target.value)}
-  className={
-    "border h-10 border-outline focus:border-2 focus:border-primary focus:outline-none focus:ring-0 mt-1 block w-full rounded-xs px-4 py-2 text-sm shadow-sm"
-  }
-  autoComplete={"current-password"}
-  required
-/>
-
+                            <Input
+                                id={"master-password-input"}
+                                name={"master-password"}
+                                value={key ?? ""}
+                                type={"password"}
+                                onChange={(e) => setKey(e.target.value)}
+                                className={
+                                    "border-outline focus:border-primary mt-1 block h-10 w-full rounded-xs border px-4 py-2 text-sm shadow-sm focus:border-2 focus:ring-0 focus:outline-none"
+                                }
+                                autoComplete={"current-password"}
+                                required
+                            />
                         </div>
                     </div>
 
