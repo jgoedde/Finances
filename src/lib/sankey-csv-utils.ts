@@ -1,19 +1,5 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
 
-function sanitizeForSankey(name: string): string {
-    return name
-        .replace(/ä/g, "ae")
-        .replace(/ö/g, "oe")
-        .replace(/ü/g, "ue")
-        .replace(/Ä/g, "Ae")
-        .replace(/Ö/g, "Oe")
-        .replace(/Ü/g, "Ue")
-        .replace(/ß/g, "ss")
-        .replace(/[^a-zA-Z0-9\s]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
 interface IncomeSource {
     name: string;
     amount: number;
@@ -122,47 +108,110 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
 
     incomeSources.forEach((source) => {
         if (source.name && source.amount) {
-            csv += `${sanitizeForSankey(source.name)},budget,${Math.round(source.amount)}\n`;
+            csv += `${sanitizeForSankey(source.name)},Budget,${Math.round(source.amount)}\n`;
         }
     });
 
     incomes.forEach((income) => {
         if (income.name && income.amount < 0) {
             const safeName = sanitizeForSankey(income.name);
-            csv += `${safeName},budget,${Math.round(Math.abs(income.amount))}\n`;
+            csv += `${safeName},Budget,${Math.round(Math.abs(income.amount))}\n`;
         }
     });
 
-    csv += `\nbudget,fixkosten,${Math.round(totalFixedCosts)}\n\n`;
+    csv += `\nBudget,Fixkosten,${Math.round(totalFixedCosts)}\n\n`;
 
-    fixedCosts.forEach((cost) => {
+    const mergedFixedCosts = mergeSmallEntries(fixedCosts, totalFixedCosts);
+
+    mergedFixedCosts.items.forEach((cost) => {
         if (cost.name && cost.amount) {
-            csv += `fixkosten,${sanitizeForSankey(cost.name)},${Math.round(cost.amount)}\n`;
+            csv += `Fixkosten,${sanitizeForSankey(cost.name)},${Math.round(cost.amount)}\n`;
         }
     });
+
+    if (mergedFixedCosts.mergedTotal > 0) {
+        csv += `Fixkosten,andere Fixkosten,${Math.round(mergedFixedCosts.mergedTotal)}\n`;
+    }
 
     const taeglichTotal = ausweartsEssen + einkaeufe + sonstiges;
-    csv += `\nbudget,Taeglicher Bedarf,${Math.round(taeglichTotal)}\n`;
-    csv += `Taeglicher Bedarf,auswaerts essen,${Math.round(ausweartsEssen)}\n`;
-    csv += `Taeglicher Bedarf,einkaeufe,${Math.round(einkaeufe)}\n`;
+    csv += `\nBudget,Taeglicher Bedarf,${Math.round(taeglichTotal)}\n`;
+    csv += `Taeglicher Bedarf,Auswaerts essen,${Math.round(ausweartsEssen)}\n`;
+    csv += `Taeglicher Bedarf,Einkaeufe,${Math.round(einkaeufe)}\n`;
     if (sonstiges > 0) {
-        csv += `Taeglicher Bedarf,sonstiges,${Math.round(sonstiges)}\n`;
+        csv += `Taeglicher Bedarf,andere Ausgaben,${Math.round(sonstiges)}\n`;
     }
 
     if (gesundheit > 0) {
-        csv += `\nbudget,Gesundheit,${Math.round(gesundheit)}\n`;
+        csv += `\nBudget,Gesundheit,${Math.round(gesundheit)}\n`;
     }
 
     if (totalSavings > 0) {
-        csv += `\nbudget,sparen,${Math.round(totalSavings)}\n`;
+        csv += `\nBudget,Sparen,${Math.round(totalSavings)}\n`;
+
         savingsTargets.forEach((target) => {
             if (target.name && target.amount) {
-                csv += `sparen,${sanitizeForSankey(target.name)},${Math.round(target.amount)}\n`;
+                csv += `Sparen,${sanitizeForSankey(target.name)},${Math.round(target.amount)}\n`;
             }
         });
     }
 
-    csv += `\`\`\`\n`;
+    csv += `\`\`\`\n\n`;
+    csv += `---\n\n`;
+    csv += `## Detailed Breakdown\n\n`;
+
+    if (incomeSources.length > 0) {
+        csv += `### Income Sources\n\n`;
+        incomeSources.forEach((source) => {
+            csv += `- **${source.name}**: ${formatEuro(source.amount.toFixed(2))}\n`;
+        });
+        csv += `\n`;
+    }
+
+    if (incomes.length > 0) {
+        csv += `### Tracked Income\n\n`;
+        incomes.forEach((income) => {
+            csv += `- **${income.name}**: ${formatEuro(Math.abs(income.amount).toFixed(2))}\n`;
+        });
+        csv += `\n`;
+    }
+
+    if (
+        mergedFixedCosts.items.length > 0 ||
+        mergedFixedCosts.merged.length > 0
+    ) {
+        csv += `### Fixed Costs\n\n`;
+        mergedFixedCosts.items.forEach((cost) => {
+            csv += `- **${cost.name}**: ${formatEuro(cost.amount.toFixed(2))}\n`;
+        });
+        if (mergedFixedCosts.merged.length > 0) {
+            csv += `\n**Other Fixed Costs** (${formatEuro(mergedFixedCosts.mergedTotal.toFixed(2))}):\n`;
+            mergedFixedCosts.merged.forEach((cost) => {
+                csv += `- ${cost.name}: ${formatEuro(cost.amount.toFixed(2))}\n`;
+            });
+        }
+        csv += `\n`;
+    }
+
+    csv += `### Daily Expenses\n\n`;
+    csv += `- **Auswärts essen**: ${formatEuro(ausweartsEssen.toFixed(2))}\n`;
+    csv += `- **Einkäufe**: ${formatEuro(einkaeufe.toFixed(2))}\n`;
+    if (sonstiges > 0) {
+        csv += `- **Other**: ${formatEuro(sonstiges.toFixed(2))}\n`;
+    }
+    csv += `\n`;
+
+    if (gesundheit > 0) {
+        csv += `### Health\n\n`;
+        csv += `- **Total**: ${formatEuro(gesundheit.toFixed(2))}\n\n`;
+    }
+
+    if (totalSavings > 0) {
+        csv += `### Savings\n\n`;
+        savingsTargets.forEach((target) => {
+            csv += `- **${target.name}**: ${formatEuro(target.amount.toFixed(2))}\n`;
+        });
+        csv += `\n`;
+    }
 
     return csv;
 }
@@ -177,4 +226,47 @@ export function downloadSankeyCSV(csvContent: string, filename: string): void {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+const MERGE_THRESHOLD_PERCENT = 10;
+
+function sanitizeForSankey(name: string): string {
+    return name
+        .replace(/ä/g, "ae")
+        .replace(/ö/g, "oe")
+        .replace(/ü/g, "ue")
+        .replace(/Ä/g, "Ae")
+        .replace(/Ö/g, "Oe")
+        .replace(/Ü/g, "Ue")
+        .replace(/ß/g, "ss")
+        .replace(/[^a-zA-Z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+interface MergedEntry<T> {
+    items: T[];
+    merged: T[];
+    mergedTotal: number;
+}
+
+function mergeSmallEntries<T extends { name: string; amount: number }>(
+    entries: T[],
+    total: number,
+): MergedEntry<T> {
+    const threshold = total * (MERGE_THRESHOLD_PERCENT / 100);
+    const items: T[] = [];
+    const merged: T[] = [];
+    let mergedTotal = 0;
+
+    entries.forEach((entry) => {
+        if (entry.amount && entry.amount >= threshold) {
+            items.push(entry);
+        } else if (entry.amount) {
+            merged.push(entry);
+            mergedTotal += entry.amount;
+        }
+    });
+
+    return { items, merged, mergedTotal };
 }
