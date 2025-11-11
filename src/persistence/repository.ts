@@ -264,6 +264,7 @@ export const expensesRepository = {
         key: string,
         categoryId?: number,
         onlyPositive: boolean = false,
+        excludeExceptional: boolean = false,
     ): Expense[] {
         const query = `            
             SELECT *
@@ -272,6 +273,7 @@ export const expensesRepository = {
               AND date <= :end
               AND (category_id = :categoryId OR :categoryId IS NULL)
               AND (amount > 0 OR :onlyPositive = 0)
+              AND (exceptional = 0 OR :excludeExceptional = 0)
             ORDER BY date DESC`;
 
         const params = {
@@ -279,6 +281,7 @@ export const expensesRepository = {
             ":end": endTimestamp,
             ":categoryId": categoryId ?? null,
             ":onlyPositive": onlyPositive ? 1 : 0,
+            ":excludeExceptional": excludeExceptional ? 1 : 0,
         };
 
         return rowsFromResult<Expense>(

@@ -17,6 +17,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion.tsx";
+import { ExportSankeyDialog } from "@/components/export-as-sankey.tsx";
 
 const now = new Date();
 
@@ -172,6 +173,9 @@ export function MonthlyOverview() {
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
+                <div>
+                    <ExportSankeyDialog />
+                </div>
             </div>
         </div>
     );
