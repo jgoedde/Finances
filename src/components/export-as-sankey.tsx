@@ -14,7 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { expensesRepository } from "@/persistence/repository";
+import {
+    categoriesRepository,
+    expensesRepository,
+} from "@/persistence/repository";
 import { useEncryption } from "@/components/use-encryption";
 import { Download, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -166,6 +169,8 @@ export function ExportSankeyDialog() {
             true,
         );
 
+        const categories = categoriesRepository.getAll();
+
         const csv = buildSankeyCSV({
             monthIndex: parseInt(month) - 1,
             year: parseInt(year),
@@ -182,6 +187,7 @@ export function ExportSankeyDialog() {
                 amount: parseFloat(s.amount) || 0,
             })),
             transactions: expenses,
+            categories,
         });
 
         downloadSankeyCSV(csv, `sankey-${year}-${month.padStart(2, "0")}.md`);

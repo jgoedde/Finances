@@ -1,4 +1,5 @@
 import { formatEuro } from "@/lib/currency-utils.ts";
+import type { Category } from "@/persistence/types.ts";
 
 interface IncomeSource {
     name: string;
@@ -28,6 +29,7 @@ interface SankeyCSVConfig {
     fixedCosts: FixedCost[];
     savingsTargets: SavingsTarget[];
     transactions: Expense[];
+    categories: Category[];
 }
 
 export function buildSankeyCSV(config: SankeyCSVConfig): string {
@@ -38,31 +40,27 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         fixedCosts,
         savingsTargets,
         transactions,
+        categories,
     } = config;
 
     const incomes = transactions.filter((e) => e.amount < 0);
     const expenses = transactions.filter((e) => e.amount >= 0);
 
-    const ausweartsEssen = expenses
-        .filter((e) => e.category_id === 1)
-        .reduce((sum, e) => sum + e.amount, 0);
-
-    const einkaeufe = expenses
-        .filter((e) => e.category_id === 2)
-        .reduce((sum, e) => sum + e.amount, 0);
-
-    const gesundheit = expenses
-        .filter((e) => e.category_id === 4)
-        .reduce((sum, e) => sum + e.amount, 0);
-
-    const sonstiges = expenses
-        .filter(
-            (e) =>
-                e.category_id !== 1 &&
-                e.category_id !== 2 &&
-                e.category_id !== 4,
-        )
-        .reduce((sum, e) => sum + e.amount, 0);
+    const categoryTotals = new Map<number, { name: string; amount: number }>();
+    expenses.forEach((expense) => {
+        const existing = categoryTotals.get(expense.category_id);
+        if (existing) {
+            existing.amount += expense.amount;
+        } else {
+            const category = categories.find(
+                (c) => c.id === expense.category_id,
+            );
+            categoryTotals.set(expense.category_id, {
+                name: category?.name || "Unknown",
+                amount: expense.amount,
+            });
+        }
+    });
 
     const totalFixedIncome = incomeSources.reduce(
         (sum, s) => sum + (s.amount || 0),
@@ -133,23 +131,35 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         csv += `Fixkosten,andere Fixkosten,${Math.round(mergedFixedCosts.mergedTotal)}\n`;
     }
 
-    const taeglichTotal = ausweartsEssen + einkaeufe + gesundheit + sonstiges;
-    csv += `\nBudget,Variable Kosten,${Math.round(taeglichTotal)}\n`;
-    csv += `Variable Kosten,Auswaerts essen,${Math.round(ausweartsEssen)}\n`;
-    csv += `Variable Kosten,Einkaeufe,${Math.round(einkaeufe)}\n`;
-    if (gesundheit > 0) {
-        csv += `Variable Kosten,Gesundheit,${Math.round(gesundheit)}\n`;
-    }
-    if (sonstiges > 0) {
-        csv += `Variable Kosten,andere Ausgaben,${Math.round(sonstiges)}\n`;
+    const totalExpensesByCat = Array.from(categoryTotals.values());
+    const totalVariableCosts = totalExpensesByCat.reduce(
+        (sum, cat) => sum + cat.amount,
+        0,
+    );
+
+    csv += `\nBudget,Variable Kosten,${Math.round(totalVariableCosts)}\n`;
+
+    const mergedVariableCosts = mergeSmallEntries(
+        totalExpensesByCat,
+        totalVariableCosts,
+    );
+
+    mergedVariableCosts.items.forEach((cat) => {
+        if (cat.name && cat.amount > 0) {
+            csv += `Variable Kosten,${sanitizeForSankey(cat.name)},${Math.round(cat.amount)}\n`;
+        }
+    });
+
+    if (mergedVariableCosts.mergedTotal > 0) {
+        csv += `Variable Kosten,andere Ausgaben,${Math.round(mergedVariableCosts.mergedTotal)}\n`;
     }
 
     if (totalSavings > 0) {
-        csv += `\nBudget,Sparen,${Math.round(totalSavings)}\n`;
+        csv += `\nBudget,Investieren,${Math.round(totalSavings)}\n`;
 
         savingsTargets.forEach((target) => {
             if (target.name && target.amount) {
-                csv += `Sparen,${sanitizeForSankey(target.name)},${Math.round(target.amount)}\n`;
+                csv += `Investieren,${sanitizeForSankey(target.name)},${Math.round(target.amount)}\n`;
             }
         });
     }
@@ -191,16 +201,22 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         csv += `\n`;
     }
 
-    csv += `### Daily Expenses\n\n`;
-    csv += `- **Auswärts essen**: ${formatEuro(ausweartsEssen.toFixed(2))}\n`;
-    csv += `- **Einkäufe**: ${formatEuro(einkaeufe.toFixed(2))}\n`;
-    if (gesundheit > 0) {
-        csv += `- **Gesundheit**: ${formatEuro(gesundheit.toFixed(2))}\n`;
+    if (
+        mergedVariableCosts.items.length > 0 ||
+        mergedVariableCosts.merged.length > 0
+    ) {
+        csv += `### Variable Costs\n\n`;
+        mergedVariableCosts.items.forEach((cat) => {
+            csv += `- **${cat.name}**: ${formatEuro(cat.amount.toFixed(2))}\n`;
+        });
+        if (mergedVariableCosts.merged.length > 0) {
+            csv += `\n**Other Expenses** (${formatEuro(mergedVariableCosts.mergedTotal.toFixed(2))}):\n`;
+            mergedVariableCosts.merged.forEach((cat) => {
+                csv += `- ${cat.name}: ${formatEuro(cat.amount.toFixed(2))}\n`;
+            });
+        }
+        csv += `\n`;
     }
-    if (sonstiges > 0) {
-        csv += `- **Other**: ${formatEuro(sonstiges.toFixed(2))}\n`;
-    }
-    csv += `\n`;
 
     if (totalSavings > 0) {
         csv += `### Savings\n\n`;
