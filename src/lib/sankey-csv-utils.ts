@@ -133,16 +133,15 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
         csv += `Fixkosten,andere Fixkosten,${Math.round(mergedFixedCosts.mergedTotal)}\n`;
     }
 
-    const taeglichTotal = ausweartsEssen + einkaeufe + sonstiges;
-    csv += `\nBudget,Taeglicher Bedarf,${Math.round(taeglichTotal)}\n`;
-    csv += `Taeglicher Bedarf,Auswaerts essen,${Math.round(ausweartsEssen)}\n`;
-    csv += `Taeglicher Bedarf,Einkaeufe,${Math.round(einkaeufe)}\n`;
-    if (sonstiges > 0) {
-        csv += `Taeglicher Bedarf,andere Ausgaben,${Math.round(sonstiges)}\n`;
-    }
-
+    const taeglichTotal = ausweartsEssen + einkaeufe + gesundheit + sonstiges;
+    csv += `\nBudget,Variable Kosten,${Math.round(taeglichTotal)}\n`;
+    csv += `Variable Kosten,Auswaerts essen,${Math.round(ausweartsEssen)}\n`;
+    csv += `Variable Kosten,Einkaeufe,${Math.round(einkaeufe)}\n`;
     if (gesundheit > 0) {
-        csv += `\nBudget,Gesundheit,${Math.round(gesundheit)}\n`;
+        csv += `Variable Kosten,Gesundheit,${Math.round(gesundheit)}\n`;
+    }
+    if (sonstiges > 0) {
+        csv += `Variable Kosten,andere Ausgaben,${Math.round(sonstiges)}\n`;
     }
 
     if (totalSavings > 0) {
@@ -195,15 +194,13 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     csv += `### Daily Expenses\n\n`;
     csv += `- **Auswärts essen**: ${formatEuro(ausweartsEssen.toFixed(2))}\n`;
     csv += `- **Einkäufe**: ${formatEuro(einkaeufe.toFixed(2))}\n`;
+    if (gesundheit > 0) {
+        csv += `- **Gesundheit**: ${formatEuro(gesundheit.toFixed(2))}\n`;
+    }
     if (sonstiges > 0) {
         csv += `- **Other**: ${formatEuro(sonstiges.toFixed(2))}\n`;
     }
     csv += `\n`;
-
-    if (gesundheit > 0) {
-        csv += `### Health\n\n`;
-        csv += `- **Total**: ${formatEuro(gesundheit.toFixed(2))}\n\n`;
-    }
 
     if (totalSavings > 0) {
         csv += `### Savings\n\n`;
