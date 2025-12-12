@@ -3,10 +3,7 @@ import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
 import { Check, KeyRound, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
-import {
-    useExpensesCount,
-    useMasterPasswordCheck,
-} from "@/components/expenses/use-expenses.ts";
+import { useExpensesCount } from "@/components/expenses/use-expenses.ts";
 import { Label } from "@/components/ui/label.tsx";
 import {
     MAX_BACKUP_INTERVAL_IN_HOURS,
@@ -16,6 +13,7 @@ import {
 import { Slider } from "@/components/ui/slider.tsx";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 import { Button } from "@/components/ui/button.tsx";
+import { expensesRepository } from "@/persistence/repository.ts";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -26,7 +24,6 @@ function RouteComponent() {
 
     const { key, setKey } = useEncryption();
     const expensesCount = useExpensesCount();
-    const check = useMasterPasswordCheck();
     const [backupConfig, setBackupConfig] = useBackupConfig();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,7 +49,7 @@ function RouteComponent() {
             return;
         }
 
-        const isValid = check(key);
+        const isValid = expensesRepository.checkMasterPassword(key);
         setCanDecrypt({ isInitial: false, canDecrypt: isValid });
 
         if (isValid) {

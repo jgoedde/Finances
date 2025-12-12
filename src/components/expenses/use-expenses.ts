@@ -2,15 +2,6 @@ import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import { expensesRepository } from "@/persistence/repository.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
 
-export function useMasterPasswordCheck(): (key?: string) => boolean {
-    return (key) => {
-        if (!key) {
-            return false;
-        }
-        return expensesRepository.checkMasterPassword(key);
-    };
-}
-
 export function useExpenses({
     start,
     end,
