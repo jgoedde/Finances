@@ -36,6 +36,8 @@ function RouteComponent() {
           }
         | { isInitial: false; successful: boolean }
     >({ isInitial: true });
+    const formRef = useRef<HTMLFormElement | null>(null);
+    const prevKeyLengthRef = useRef<number>(0);
 
     function handleSubmit(event: FormEvent) {
         event.preventDefault();
@@ -132,7 +134,11 @@ function RouteComponent() {
                     </div>
                 </div>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
+                <form
+                    className="space-y-4"
+                    onSubmit={handleSubmit}
+                    ref={formRef}
+                >
                     <div className={"flex gap-x-4"}>
                         <div className={"text-secondary w-8"}>
                             <KeyRound className={"w-full"} />
@@ -149,7 +155,34 @@ function RouteComponent() {
                                 name={"master-password"}
                                 value={key ?? ""}
                                 type={"password"}
-                                onChange={(e) => setKey(e.target.value)}
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    const lengthDiff = Math.abs(
+                                        newValue.length -
+                                            prevKeyLengthRef.current,
+                                    );
+
+                                    setKey(newValue);
+
+                                    if (lengthDiff > 1 && newValue.length > 0) {
+                                        setTimeout(() => {
+                                            const form = formRef.current;
+                                            if (form) {
+                                                form.requestSubmit();
+                                            }
+                                        }, 0);
+                                    }
+
+                                    prevKeyLengthRef.current = newValue.length;
+                                }}
+                                onPaste={() => {
+                                    setTimeout(() => {
+                                        const form = formRef.current;
+                                        if (form) {
+                                            form.requestSubmit();
+                                        }
+                                    }, 0);
+                                }}
                                 className={
                                     "border-outline focus:border-primary mt-1 block h-10 w-full rounded-xs border px-4 py-2 text-sm shadow-sm focus:border-2 focus:ring-0 focus:outline-none"
                                 }
