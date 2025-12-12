@@ -1,10 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { Calendar, Clock, History } from "lucide-react";
 import { formatEuro } from "@/lib/currency-utils.ts";
-import { setFixedCosts } from "@/components/fixed-costs/slice.ts";
-import type { FixedCost } from "@/components/fixed-costs/fixed-cost.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useAppDispatch } from "@/redux-hooks.ts";
 import { useSpentByTimeRange } from "@/components/expenses/use-expenses.ts";
 import {
     addDays,
@@ -17,8 +14,6 @@ import {
 const now = new Date();
 
 export function LazyRow() {
-    const dispatch = useAppDispatch();
-
     const ripple = useRipple();
 
     const spentThisMonth = useSpentByTimeRange({
@@ -75,22 +70,6 @@ export function LazyRow() {
                 }
                 data-ripple-color="bg-on-surface/10"
                 {...ripple}
-                onClick={(e) => {
-                    ripple.onClick(e);
-
-                    setTimeout(() => {
-                        const fixedCostsJson = prompt("Enter stuff as JSON");
-                        if (!fixedCostsJson) {
-                            return;
-                        }
-
-                        dispatch(
-                            setFixedCosts(
-                                JSON.parse(fixedCostsJson) as FixedCost[],
-                            ),
-                        );
-                    }, 150);
-                }}
             >
                 <CardHeader className={"flex flex-col items-center"}>
                     <div className={"text-outline"}>
