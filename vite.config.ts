@@ -40,7 +40,13 @@ export default defineConfig({
                 globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
                 cleanupOutdatedCaches: true,
                 clientsClaim: true,
-                disableDevLogs: true,
+            },
+
+            devOptions: {
+                enabled: true,
+                navigateFallback: "index.html",
+                suppressWarnings: false,
+                type: "module",
             },
         }),
     ],
