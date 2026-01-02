@@ -6,7 +6,7 @@ import { useEncryption } from "@/components/use-encryption.ts";
 import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
 import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
 import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
-import { ExpenseInput } from "@/components/expenses/editor/ExpenseInput.tsx";
+import { TransactionInput } from "@/components/expenses/editor/TransactionInput.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { nanoid } from "nanoid";
 import { useNavigate } from "@tanstack/react-router";
@@ -244,7 +244,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                         />
                     </div>
                     {selectedCategoryId != null && (
-                        <ExpenseInput
+                        <TransactionInput
                             shouldShowSuggestions={shouldShowSuggestions}
                             expenseLocal={expenseLocal}
                             onInputChange={(e) => {
@@ -264,6 +264,7 @@ export function ExpenseDetailPage({ expense }: Props) {
                             onExceptionalCheckBoxClick={(val) => {
                                 setIsExceptional(val);
                             }}
+                            transactionType={transactionType}
                         />
                     )}
                     <div className={"flex items-center gap-x-2"}>

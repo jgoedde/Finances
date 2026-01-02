@@ -12,15 +12,7 @@ import Fuse from "fuse.js";
 
 const now = new Date();
 
-export function ExpenseInput({
-    expenseLocal,
-    selectedCategoryId,
-    onInputChange,
-    onApplySuggestion,
-    shouldShowSuggestions,
-    isExceptional,
-    onExceptionalCheckBoxClick,
-}: {
+interface TransactionInputProps {
     expenseLocal: string;
     selectedCategoryId: number | undefined;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,7 +20,19 @@ export function ExpenseInput({
     shouldShowSuggestions: boolean;
     isExceptional: boolean;
     onExceptionalCheckBoxClick: (val: boolean) => void;
-}) {
+    transactionType: "expense" | "income";
+}
+
+export function TransactionInput({
+    expenseLocal,
+    selectedCategoryId,
+    onInputChange,
+    onApplySuggestion,
+    shouldShowSuggestions,
+    isExceptional,
+    onExceptionalCheckBoxClick,
+    transactionType,
+}: TransactionInputProps) {
     const queryOptions = useMemo(
         () => ({
             start: startOfMonth(addMonths(now, -3)),
@@ -141,7 +145,7 @@ export function ExpenseInput({
                         htmlFor="expense"
                         className={"text-on-surface-variant"}
                     >
-                        Ausgabe
+                        {transactionType === "expense" ? "Ausgabe" : "Einnahme"}
                     </Label>
                     <Input
                         id={"expense"}
