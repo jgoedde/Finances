@@ -1,6 +1,7 @@
 {
     "name": "Finances",
     "short_name": "Finances",
+    "description": "Behalte deine persönlichen Finanzen im Blick.",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
