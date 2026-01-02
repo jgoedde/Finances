@@ -36,6 +36,18 @@ function ExpensesPage() {
                 <ExpensesList />
             </main>
 
+            <footer>
+                <div
+                    className={
+                        "bg-surface-container-lowest text-surface-variant flex flex-col items-center px-4 py-2"
+                    }
+                >
+                    <span>Ausgabentracker v{__APP_VERSION__}</span>
+                    <span>{__APP_ENV__}</span>
+                    <span>{__APP_COMMIT_HASH__}</span>
+                </div>
+            </footer>
+
             <NewExpenseFAB />
             <Toaster />
         </div>
