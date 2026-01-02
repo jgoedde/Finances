@@ -7,7 +7,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
+    AlertDialogTrigger
 } from "@/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
 import { type FC } from "react";
