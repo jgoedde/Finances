@@ -693,7 +693,7 @@ export const categoriesRepository = {
     },
 };
 
-export const EXPENSES_ENCRYPTED_FIELDS: (keyof Transaction)[] = [
+const EXPENSES_ENCRYPTED_FIELDS: (keyof Transaction)[] = [
     "name",
     "description",
 ];
