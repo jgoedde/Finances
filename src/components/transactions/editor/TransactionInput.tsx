@@ -2,29 +2,30 @@ import { Input } from "@/components/ui/input.tsx";
 import { addMonths, endOfDay, startOfMonth } from "date-fns";
 import * as React from "react";
 import { useMemo } from "react";
-import { mergeSimilarKeys, mergeSimilarStrings } from "@/lib/utils";
+import { mergeSimilarKeys, mergeSimilarStrings } from "@/lib/utils.ts";
 import { groupBy, uniq } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { useTransactions } from "@/components/transactions/use-transactions.ts";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import Fuse from "fuse.js";
+import { TransactionType } from "@/persistence/types.ts";
 
 const now = new Date();
 
 interface TransactionInputProps {
-    expenseLocal: string;
+    transactionLocal: string;
     selectedCategoryId: number | undefined;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
     isExceptional: boolean;
     onExceptionalCheckBoxClick: (val: boolean) => void;
-    transactionType: "expense" | "income";
+    transactionType: TransactionType;
 }
 
 export function TransactionInput({
-    expenseLocal,
+    transactionLocal,
     selectedCategoryId,
     onInputChange,
     onApplySuggestion,
@@ -42,25 +43,27 @@ export function TransactionInput({
         [selectedCategoryId],
     );
 
-    const expenses = useExpenses(queryOptions);
+    const transactions = useTransactions(queryOptions);
 
     const fuse = useMemo(() => {
-        return new Fuse(expenses, {
+        return new Fuse(transactions, {
             keys: ["name", "description"],
             shouldSort: true,
         });
-    }, [expenses]);
+    }, [transactions]);
 
-    const similarExpenses = useMemo(() => {
-        if (expenseLocal.trim() === "") {
+    const similarTransactions = useMemo(() => {
+        if (transactionLocal.trim() === "") {
             return [];
         }
-        const names = uniq(fuse.search(expenseLocal).map((e) => e.item.name));
+        const names = uniq(
+            fuse.search(transactionLocal).map((e) => e.item.name),
+        );
         return mergeSimilarStrings(names, 2).slice(0, 4);
-    }, [expenseLocal, fuse]);
+    }, [transactionLocal, fuse]);
 
     // Shuffle top 8 for randomness
-    const topExpenses = useMemo(() => {
+    const topTransactions = useMemo(() => {
         function getTimeOfDayBucket(date: Date) {
             const hour = date.getHours();
             if (hour >= 5 && hour < 11) return "Morgen";
@@ -73,11 +76,11 @@ export function TransactionInput({
         const currentWeekday = now.getDay();
 
         // Group by name using mergeSimilarKeys
-        const grouped = mergeSimilarKeys(groupBy(expenses, "name"));
+        const grouped = mergeSimilarKeys(groupBy(transactions, "name"));
 
         // Score suggestions by frequency, time of day, and weekday
         const scored = Object.entries(grouped).map(([name, arr]) => {
-            // arr: Expense[]
+            // arr: Transaction[]
             const freq = arr.length;
             // How many match current time bucket?
             const timeMatches = arr.filter((e) => {
@@ -101,17 +104,17 @@ export function TransactionInput({
             .sort(() => Math.random() - 0.5)
             .slice(0, 4)
             .map((s) => s.name);
-    }, [expenses]);
+    }, [transactions]);
 
     const ripple = useRipple();
 
     const suggestions = useMemo(() => {
-        if (expenseLocal.trim() === "") {
-            return topExpenses;
+        if (transactionLocal.trim() === "") {
+            return topTransactions;
         } else {
-            return similarExpenses;
+            return similarTransactions;
         }
-    }, [expenseLocal, similarExpenses, topExpenses]);
+    }, [transactionLocal, similarTransactions, topTransactions]);
 
     return (
         <div className={"flex flex-col gap-x-2"}>
@@ -142,16 +145,18 @@ export function TransactionInput({
             <div className={"flex items-center justify-between"}>
                 <div className={"flex items-center"}>
                     <Label
-                        htmlFor="expense"
+                        htmlFor="transaction"
                         className={"text-on-surface-variant"}
                     >
-                        {transactionType === "expense" ? "Ausgabe" : "Einnahme"}
+                        {transactionType === TransactionType.expense
+                            ? "Ausgabe"
+                            : "Einnahme"}
                     </Label>
                     <Input
-                        id={"expense"}
-                        name={"expense"}
+                        id={"transaction"}
+                        name={"transaction"}
                         required
-                        value={expenseLocal}
+                        value={transactionLocal}
                         onChange={onInputChange}
                         type={"text"}
                         className={

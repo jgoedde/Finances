@@ -10,12 +10,11 @@ import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content";
 import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ExpenseListItem } from "@/components/expenses/history/expense-list-item";
-import type { Expense } from "@/persistence/types.ts";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { useTransactions } from "@/components/transactions/use-transactions.ts";
 import { addYears, endOfYear } from "date-fns";
+import { TransactionListItem } from "@/components/transactions/history/transaction-list-item.tsx";
 
-export const Route = createFileRoute("/expenses/search")({
+export const Route = createFileRoute("/transactions/search")({
     component: SearchPage,
 });
 
@@ -34,7 +33,7 @@ function SearchPage() {
         [],
     );
 
-    const expenses = useExpenses(query);
+    const transactions = useTransactions(query);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -44,18 +43,18 @@ function SearchPage() {
         "any" | "oneWeek" | "oneMonth" | "halfYear" | "oneYear"
     >("any");
 
-    const filteredExpenses: Expense[] = useMemo(() => {
+    const filteredTransactions = useMemo(() => {
         if (search.trim() === "") {
-            return expenses.filter((e) =>
+            return transactions.filter((e) =>
                 isMatchingDateFilter(e, dateFilterOption),
             );
         }
 
         const searchLower = search.toLowerCase();
-        return expenses
+        return transactions
             .filter((e) => isMatchingDateFilter(e, dateFilterOption))
             .filter((e) => isMatchingSearchFilter(e, searchLower));
-    }, [dateFilterOption, expenses, search]);
+    }, [dateFilterOption, transactions, search]);
 
     return (
         <div
@@ -102,7 +101,7 @@ function SearchPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className={"border-none text-lg outline-none"}
-                        placeholder={"Ausgabe"}
+                        placeholder={"Buchung/Transaktion suchen"}
                     />
                     <button
                         type={"button"}
@@ -143,7 +142,7 @@ function SearchPage() {
                         </div>
                     </Badge>
                 </div>
-                {filteredExpenses.length === 0 && search !== "" && (
+                {filteredTransactions.length === 0 && search !== "" && (
                     <div className={"my-auto text-center"}>
                         <h3 className={"text-outline text-xl"}>
                             Keine Ergebnisse
@@ -151,9 +150,9 @@ function SearchPage() {
                     </div>
                 )}
                 <div className={"flex w-full flex-col px-4"}>
-                    {filteredExpenses.length > 0 &&
-                        filteredExpenses.map((e) => (
-                            <ExpenseListItem key={e.id} expense={e} />
+                    {filteredTransactions.length > 0 &&
+                        filteredTransactions.map((it) => (
+                            <TransactionListItem key={it.id} transaction={it} />
                         ))}
                 </div>
             </Drawer>

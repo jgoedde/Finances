@@ -1,6 +1,6 @@
 import { useEncryption } from "@/components/use-encryption.ts";
-import { BiggestDailySpike } from "@/components/expenses/BiggestDailySpike.tsx";
-import { MonthsSnapRow } from "@/components/expenses/MonthsSnapRow.tsx";
+import { BiggestDailySpike } from "@/components/transactions/BiggestDailySpike.tsx";
+import { MonthsSnapRow } from "@/components/transactions/MonthsSnapRow.tsx";
 
 export function Insights() {
     const { key } = useEncryption();

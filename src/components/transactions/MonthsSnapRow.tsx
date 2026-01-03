@@ -1,7 +1,7 @@
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts";
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
@@ -27,7 +27,7 @@ export function MonthsSnapRow() {
     });
 
     const res = useTableSubscription(
-        () => expensesRepository.getMonths(),
+        () => transactionsRepository.getMonths(),
         [],
         "expenses:changed",
     );

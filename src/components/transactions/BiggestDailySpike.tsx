@@ -1,12 +1,12 @@
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 import { useTonalColor } from "@/lib/color-utils.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 export function BiggestDailySpike() {
-    const trend = expensesRepository.getTrend();
-    const spike = expensesRepository.getSpike();
+    const trend = transactionsRepository.getTrend();
+    const spike = transactionsRepository.getSpike();
 
     const textColor = useTonalColor(spike.category_color, {
         light: 15,

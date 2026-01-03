@@ -3,7 +3,7 @@ import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
 import { Check, KeyRound, TriangleAlert } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { useExpensesCount } from "@/components/expenses/use-expenses.ts";
+import { useTransactionCount } from "@/components/transactions/use-transactions.ts";
 import { Label } from "@/components/ui/label.tsx";
 import {
     MAX_BACKUP_INTERVAL_IN_HOURS,
@@ -13,7 +13,7 @@ import {
 import { Slider } from "@/components/ui/slider.tsx";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 import { Button } from "@/components/ui/button.tsx";
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 
 export const Route = createFileRoute("/setup")({
     component: RouteComponent,
@@ -23,7 +23,7 @@ function RouteComponent() {
     const navigate = useNavigate();
 
     const { key, setKey } = useEncryption();
-    const expensesCount = useExpensesCount();
+    const transactionCount = useTransactionCount();
     const [backupConfig, setBackupConfig] = useBackupConfig();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,12 +46,12 @@ function RouteComponent() {
             return;
         }
 
-        if (expensesCount === 0) {
+        if (transactionCount === 0) {
             void navigate({ to: "/" });
             return;
         }
 
-        const isValid = expensesRepository.checkMasterPassword(key);
+        const isValid = transactionsRepository.checkMasterPassword(key);
         setCanDecrypt({ isInitial: false, canDecrypt: isValid });
 
         if (isValid) {
@@ -87,11 +87,11 @@ function RouteComponent() {
                     }
                 >
                     <div>
-                        {expensesCount === 0 ? (
+                        {transactionCount === 0 ? (
                             "Es sind keine Geldbewegungen getrackt. Du kannst eine bestehende Datenbank importieren."
                         ) : (
                             <>
-                                In der lokalen Datenbank sind {expensesCount}{" "}
+                                In der lokalen Datenbank sind {transactionCount}{" "}
                                 Geldbewegungen gespeichert.
                             </>
                         )}

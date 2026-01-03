@@ -1,5 +1,5 @@
 import { addMonths, addWeeks, addYears, isBefore } from "date-fns";
-import type { Expense } from "@/persistence/types.ts";
+import type { Transaction } from "@/persistence/types.ts";
 
 export type DateFilterOption =
     | "any"
@@ -9,24 +9,24 @@ export type DateFilterOption =
     | "oneYear";
 
 export function isMatchingDateFilter(
-    expense: Expense,
+    transaction: Transaction,
     dateFilterOption: DateFilterOption,
 ) {
     if (dateFilterOption === "any") {
         return true;
     }
 
-    const expenseDate = new Date(expense.date);
+    const transactionDate = new Date(transaction.date);
     const now = new Date();
     switch (dateFilterOption) {
         case "oneWeek":
-            return isBefore(expenseDate, addWeeks(now, -1));
+            return isBefore(transactionDate, addWeeks(now, -1));
         case "oneMonth":
-            return isBefore(expenseDate, addMonths(now, -1));
+            return isBefore(transactionDate, addMonths(now, -1));
         case "halfYear":
-            return isBefore(expenseDate, addMonths(now, -6));
+            return isBefore(transactionDate, addMonths(now, -6));
         case "oneYear":
-            return isBefore(expenseDate, addYears(now, -1));
+            return isBefore(transactionDate, addYears(now, -1));
         default:
             return true;
     }

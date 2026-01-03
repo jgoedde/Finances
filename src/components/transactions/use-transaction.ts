@@ -1,16 +1,19 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 import { useEncryption } from "@/components/use-encryption.ts";
-import type { Expense, ExpenseWithCategory } from "@/persistence/types.ts";
+import type {
+    Transaction,
+    TransactionWithCategory,
+} from "@/persistence/types.ts";
 
-export function useExpense<
+export function useTransaction<
     T extends { includeCategory: boolean } | undefined = undefined,
 >(
     id: string,
     options?: T,
 ): T extends { includeCategory: true }
-    ? ExpenseWithCategory | undefined
-    : Expense | undefined {
+    ? TransactionWithCategory | undefined
+    : Transaction | undefined {
     const { key } = useEncryption();
 
     if (!key) {
@@ -20,8 +23,8 @@ export function useExpense<
     return useTableSubscription(
         () =>
             options?.includeCategory
-                ? expensesRepository.findByIdWithCategory(id, key)
-                : expensesRepository.findById(id, key),
+                ? transactionsRepository.findByIdWithCategory(id, key)
+                : transactionsRepository.findById(id, key),
         [options?.includeCategory, id, key],
         "expenses:changed",
     ) as never;

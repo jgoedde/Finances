@@ -2,14 +2,14 @@ import type { Database } from "sql.js";
 import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
 import type {
     Category,
-    Expense,
-    ExpenseWithCategory,
+    Transaction,
+    TransactionWithCategory,
 } from "@/persistence/types.ts";
 import CryptoJS from "crypto-js";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
-export const expensesRepository = {
-    async add(entity: Expense, key: string) {
+export const transactionsRepository = {
+    async add(entity: Transaction, key: string) {
         const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
 
         const query = `            
@@ -80,7 +80,7 @@ export const expensesRepository = {
             ":limit": options.limit,
         };
 
-        return rowsFromResult<Expense>(
+        return rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
             {
                 key,
@@ -137,7 +137,7 @@ export const expensesRepository = {
         return typeof count === "number" ? count : 0;
     },
 
-    getAll(key: string, onlyPositive: boolean = false): Expense[] {
+    getAll(key: string, onlyPositive: boolean = false): Transaction[] {
         const query = `            
             SELECT *
             FROM expenses
@@ -148,7 +148,7 @@ export const expensesRepository = {
             ":onlyPositive": onlyPositive ? 1 : 0,
         };
 
-        return rowsFromResult<Expense>(
+        return rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
             {
                 key,
@@ -157,7 +157,7 @@ export const expensesRepository = {
         );
     },
 
-    findById(id: string, key: string): Expense | undefined {
+    findById(id: string, key: string): Transaction | undefined {
         const query = `            
             SELECT *
             FROM expenses
@@ -167,7 +167,7 @@ export const expensesRepository = {
             ":id": id,
         };
 
-        const rows = rowsFromResult<Expense>(
+        const rows = rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
             { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
@@ -177,7 +177,7 @@ export const expensesRepository = {
     findByIdWithCategory(
         id: string,
         key: string,
-    ): ExpenseWithCategory | undefined {
+    ): TransactionWithCategory | undefined {
         const query = `            
             SELECT e.*, c.name as category_name, c.icon_name as category_icon_name, c.color as category_color
             FROM expenses e
@@ -207,7 +207,7 @@ export const expensesRepository = {
         return mapExpenseWithCategory(rows[0]);
     },
 
-    getByCategoryId(categoryId: number, key: string): Expense[] {
+    getByCategoryId(categoryId: number, key: string): Transaction[] {
         const query = `            
             SELECT *
             FROM expenses
@@ -218,7 +218,7 @@ export const expensesRepository = {
             ":categoryId": categoryId,
         };
 
-        return rowsFromResult<Expense>(
+        return rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
             {
                 key,
@@ -265,7 +265,7 @@ export const expensesRepository = {
         categoryId?: number,
         onlyPositive: boolean = false,
         excludeExceptional: boolean = false,
-    ): Expense[] {
+    ): Transaction[] {
         const query = `            
             SELECT *
             FROM expenses
@@ -284,7 +284,7 @@ export const expensesRepository = {
             ":excludeExceptional": excludeExceptional ? 1 : 0,
         };
 
-        return rowsFromResult<Expense>(
+        return rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
             {
                 key,
@@ -529,7 +529,7 @@ export const expensesRepository = {
 
         const rows = rowsFromResult(PersistentDatabase.get().exec(sql));
         return [rows[0], rows[1]] as ReturnType<
-            typeof expensesRepository.getWeekendVsWeekdayTotals
+            typeof transactionsRepository.getWeekendVsWeekdayTotals
         >;
     },
 
@@ -616,7 +616,7 @@ export const expensesRepository = {
         }>(PersistentDatabase.get().exec(query));
     },
 
-    async update(entity: Expense, key: string) {
+    async update(entity: Transaction, key: string) {
         const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
 
         const query = `            
@@ -693,7 +693,7 @@ export const categoriesRepository = {
     },
 };
 
-export const EXPENSES_ENCRYPTED_FIELDS: (keyof Expense)[] = [
+export const EXPENSES_ENCRYPTED_FIELDS: (keyof Transaction)[] = [
     "name",
     "description",
 ];
@@ -771,7 +771,7 @@ function encryptEntity<T extends object>(
 
 function mapExpenseWithCategory(
     row: Record<string, unknown>,
-): ExpenseWithCategory {
+): TransactionWithCategory {
     return {
         id: row.id as string,
         date: row.date as number,

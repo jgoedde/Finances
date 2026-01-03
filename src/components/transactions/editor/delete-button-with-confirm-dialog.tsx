@@ -12,17 +12,17 @@ import {
 import { Trash } from "lucide-react";
 import { type FC } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 
 type Props = {
-    expenseId: string;
+    transactionId: string;
 };
 
-export const DeleteButtonWithConfirmDialog: FC<Props> = ({ expenseId }) => {
+export const DeleteButtonWithConfirmDialog: FC<Props> = ({ transactionId }) => {
     const navigate = useNavigate();
 
     function onDeleteConfirmButtonClick() {
-        void expensesRepository.delete(expenseId);
+        void transactionsRepository.delete(transactionId);
         void navigate({ to: "/" });
     }
 

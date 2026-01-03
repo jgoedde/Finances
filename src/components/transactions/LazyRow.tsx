@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card.tsx";
 import { Calendar, Clock, History } from "lucide-react";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useSpentByTimeRange } from "@/components/expenses/use-expenses.ts";
+import { useSpentByTimeRange } from "@/components/transactions/use-transactions.ts";
 import {
     addDays,
     endOfDay,

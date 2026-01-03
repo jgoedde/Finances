@@ -3,31 +3,35 @@ import { type FormEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import CurrencyInput from "react-currency-input-field";
 import { useEncryption } from "@/components/use-encryption.ts";
-import { CategoryTile } from "@/components/expenses/editor/category-tile.tsx";
-import { DeleteButtonWithConfirmDialog } from "@/components/expenses/editor/delete-button-with-confirm-dialog.tsx";
-import { DateChooserPopover } from "@/components/expenses/editor/date-chooser-popover.tsx";
-import { TransactionInput } from "@/components/expenses/editor/TransactionInput.tsx";
+import { CategoryTile } from "@/components/transactions/editor/category-tile.tsx";
+import { DeleteButtonWithConfirmDialog } from "@/components/transactions/editor/delete-button-with-confirm-dialog.tsx";
+import { DateChooserPopover } from "@/components/transactions/editor/date-chooser-popover.tsx";
+import { TransactionInput } from "@/components/transactions/editor/TransactionInput.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { nanoid } from "nanoid";
 import { useNavigate } from "@tanstack/react-router";
-import { expensesRepository } from "@/persistence/repository.ts";
-import type { Category, ExpenseWithCategory } from "@/persistence/types.ts";
-import { useCategories } from "@/components/expenses/use-categories.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
+import {
+    type Category,
+    TransactionType,
+    type TransactionWithCategory,
+} from "@/persistence/types.ts";
+import { useCategories } from "@/components/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
 
 const now = new Date();
 
 type Props = {
-    expense?: ExpenseWithCategory;
+    transaction?: TransactionWithCategory;
 };
 
-export function ExpenseDetailPage({ expense }: Props) {
+export function TransactionDetailPage({ transaction }: Props) {
     const { key } = useEncryption();
     const navigate = useNavigate();
 
     const categories = useCategories();
 
-    const isEditing = expense != null;
+    const isEditing = transaction != null;
     const isAdding = !isEditing;
 
     const amountInputRef = useRef<HTMLInputElement>(null);
@@ -35,31 +39,31 @@ export function ExpenseDetailPage({ expense }: Props) {
 
     const [selectedCategoryId, setSelectedCategoryId] = useState<
         number | undefined
-    >(expense?.category_id);
+    >(transaction?.category_id);
     const [descriptionLocal, setDescriptionLocal] = useState<string>(
-        expense?.description ?? "",
+        transaction?.description ?? "",
     );
     const [dateLocal, setDateLocal] = useState<Date>(
-        expense?.date ? new Date(expense.date) : now,
+        transaction?.date ? new Date(transaction.date) : now,
     );
-    const [expenseLocal, setExpenseLocal] = useState(expense?.name ?? "");
+    const [transactionLocal, setTransactionLocal] = useState(
+        transaction?.name ?? "",
+    );
     // Always positive amount string for input
     const [amountStr, setAmountStr] = useState<string>(
-        isAdding ? "" : Math.abs(expense?.amount as number).toFixed(2),
+        isAdding ? "" : Math.abs(transaction?.amount as number).toFixed(2),
     );
-    const [transactionType, setTransactionType] = useState<
-        "income" | "expense"
-    >(
+    const [transactionType, setTransactionType] = useState<TransactionType>(
         isAdding
-            ? "expense"
-            : (expense?.amount as number) < 0
-              ? "income"
-              : "expense",
+            ? TransactionType.expense
+            : (transaction?.amount as number) < 0
+              ? TransactionType.income
+              : TransactionType.expense,
     );
     const [shouldShowSuggestions, setShouldShowSuggestions] =
         useState(isAdding);
     const [isExceptional, setIsExceptional] = useState(
-        expense?.exceptional ?? false,
+        transaction?.exceptional ?? false,
     );
 
     const selectedCategory = categories.find(
@@ -81,24 +85,24 @@ export function ExpenseDetailPage({ expense }: Props) {
             (amountStr as string).replace(",", "."),
         );
         const amount =
-            transactionType === "expense"
+            transactionType === TransactionType.expense
                 ? positiveAmount
                 : positiveAmount * -1;
 
-        if (!selectedCategory || isNaN(positiveAmount) || !expenseLocal) {
+        if (!selectedCategory || isNaN(positiveAmount) || !transactionLocal) {
             alert("Please select a category, specify an amount and a name.");
             return;
         }
 
         if (isAdding) {
-            void expensesRepository.add(
+            void transactionsRepository.add(
                 {
                     id: nanoid(8),
                     date: dateLocal.getTime(),
                     category_id: selectedCategory.id,
                     amount: amount,
                     currency: "EUR",
-                    name: expenseLocal,
+                    name: transactionLocal,
                     description:
                         descriptionLocal.trim() === ""
                             ? undefined
@@ -107,19 +111,19 @@ export function ExpenseDetailPage({ expense }: Props) {
                 },
                 key,
             );
-        } else if (expense) {
-            expense.amount = amount;
-            expense.currency = "EUR";
-            expense.date = dateLocal.getTime();
-            expense.category_id = selectedCategory.id;
-            expense.description =
+        } else if (transaction) {
+            transaction.amount = amount;
+            transaction.currency = "EUR";
+            transaction.date = dateLocal.getTime();
+            transaction.category_id = selectedCategory.id;
+            transaction.description =
                 descriptionLocal.trim() === ""
                     ? undefined
                     : descriptionLocal.trim();
-            expense.name = expenseLocal;
-            expense.exceptional = isExceptional;
+            transaction.name = transactionLocal;
+            transaction.exceptional = isExceptional;
 
-            void expensesRepository.update(expense, key);
+            void transactionsRepository.update(transaction, key);
         }
 
         void navigate({ to: "/" });
@@ -130,7 +134,7 @@ export function ExpenseDetailPage({ expense }: Props) {
             setSelectedCategoryId(undefined);
         } else {
             setSelectedCategoryId(c.id);
-            if (isAdding && expenseLocal.trim() === "") {
+            if (isAdding && transactionLocal.trim() === "") {
                 setShouldShowSuggestions(true);
             }
             if (amountStr?.trim() === "") {
@@ -165,7 +169,9 @@ export function ExpenseDetailPage({ expense }: Props) {
                     />
 
                     {isEditing && (
-                        <DeleteButtonWithConfirmDialog expenseId={expense.id} />
+                        <DeleteButtonWithConfirmDialog
+                            transactionId={transaction.id}
+                        />
                     )}
 
                     <button
@@ -184,18 +190,18 @@ export function ExpenseDetailPage({ expense }: Props) {
                     options={[
                         {
                             label: "Einnahme",
-                            value: "income",
+                            value: TransactionType.income,
                             icon: "banknote-arrow-up",
                         },
                         {
                             label: "Ausgabe",
-                            value: "expense",
+                            value: TransactionType.expense,
                             icon: "banknote-arrow-down",
                         },
                     ]}
                     value={transactionType}
                     onChange={(e) => {
-                        setTransactionType(e as "income" | "expense");
+                        setTransactionType(e as TransactionType);
                     }}
                 />
             </div>
@@ -246,14 +252,14 @@ export function ExpenseDetailPage({ expense }: Props) {
                     {selectedCategoryId != null && (
                         <TransactionInput
                             shouldShowSuggestions={shouldShowSuggestions}
-                            expenseLocal={expenseLocal}
+                            transactionLocal={transactionLocal}
                             onInputChange={(e) => {
-                                setExpenseLocal(e.target.value);
+                                setTransactionLocal(e.target.value);
 
                                 setShouldShowSuggestions(true);
                             }}
                             onApplySuggestion={(e) => {
-                                setExpenseLocal(e);
+                                setTransactionLocal(e);
                                 setShouldShowSuggestions(false);
                                 if (descriptionInputRef.current) {
                                     descriptionInputRef.current.focus();

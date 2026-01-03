@@ -1,6 +1,6 @@
 import { addMonths } from "date-fns";
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { expensesRepository } from "@/persistence/repository.ts";
+import { transactionsRepository } from "@/persistence/repository.ts";
 import { cn } from "@/lib/utils.ts";
 import { ArrowDown, ArrowUp, Calendar, CircleSlash2 } from "lucide-react";
 import {
@@ -25,13 +25,13 @@ export function MonthlyOverview() {
     const lastMonth = addMonths(now, -1);
 
     const changeOverMonth = useTableSubscription(
-        () => expensesRepository.getChangeOverMonth(),
+        () => transactionsRepository.getChangeOverMonth(),
         [],
         "expenses:changed",
     );
 
     const categories = useTableSubscription(
-        () => expensesRepository.getSpentPerCategory(),
+        () => transactionsRepository.getSpentPerCategory(),
         [],
         "expenses:changed",
     );

@@ -1,12 +1,12 @@
-import type { Expense } from "@/persistence/types.ts";
+import type { Transaction } from "@/persistence/types.ts";
 
 export function isMatchingSearchFilter(
-    expense: Expense,
+    transaction: Transaction,
     searchLower: string,
 ): boolean {
-    const nameMatch = expense.name.toLowerCase().includes(searchLower);
-    const descriptionMatch = expense.description
-        ? expense.description.toLowerCase().includes(searchLower)
+    const nameMatch = transaction.name.toLowerCase().includes(searchLower);
+    const descriptionMatch = transaction.description
+        ? transaction.description.toLowerCase().includes(searchLower)
         : false;
 
     return nameMatch || descriptionMatch;

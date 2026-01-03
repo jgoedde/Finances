@@ -3,7 +3,7 @@ import { useRipple } from "@/hooks/use-ripple.ts";
 import { cn } from "@/lib/utils.ts";
 import { useNavigate } from "@tanstack/react-router";
 
-export function NewExpenseFAB() {
+export function NewTransactionFAB() {
     const ripple = useRipple();
 
     const navigate = useNavigate();

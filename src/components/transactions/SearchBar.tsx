@@ -11,9 +11,9 @@ export function SearchBar() {
             <div className={"px-4"}>
                 <Search className={"text-on-surface size-6"} />
             </div>
-            <Link to={"/expenses/search"}>
+            <Link to={"/transactions/search"}>
                 <button type={"button"} className={"text-on-surface-variant"}>
-                    Search for expense
+                    Search for transaction
                 </button>
             </Link>
         </div>

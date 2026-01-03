@@ -1,7 +1,7 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import {
     categoriesRepository,
-    expensesRepository,
+    transactionsRepository,
 } from "@/persistence/repository.ts";
 import type { Category } from "@/persistence/types.ts";
 
@@ -24,7 +24,7 @@ export function useSpentAmountInCategory({
 }) {
     return useTableSubscription(
         () =>
-            expensesRepository.getSpentAmountByTimeRange(
+            transactionsRepository.getSpentAmountByTimeRange(
                 timeRange.start.getTime(),
                 timeRange.end.getTime(),
                 categoryId,

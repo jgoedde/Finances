@@ -1,22 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ExpenseDetailPage } from "@/components/expenses/editor/expense-detail-page.tsx";
-import { useExpense } from "@/components/expenses/use-expense.ts";
+import { TransactionDetailPage } from "@/components/transactions/editor/transaction-detail-page.tsx";
+import { useTransaction } from "@/components/transactions/use-transaction.ts";
 
 export const Route = createFileRoute("/edit/$id")({
-    component: EditExpensePage,
+    component: EditTransactionPage,
 });
 
-function EditExpensePage() {
+function EditTransactionPage() {
     const { id } = Route.useParams();
     const navigate = useNavigate();
-    const expense = useExpense(id, {
+    const transaction = useTransaction(id, {
         includeCategory: true,
     });
 
-    if (!expense) {
+    if (!transaction) {
         void navigate({ to: "/" });
         return null;
     }
 
-    return <ExpenseDetailPage expense={expense} />;
+    return <TransactionDetailPage transaction={transaction} />;
 }

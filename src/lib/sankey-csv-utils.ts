@@ -16,7 +16,7 @@ interface SavingsTarget {
     amount: number;
 }
 
-interface Expense {
+interface Transaction {
     name: string;
     category_id: number;
     amount: number;
@@ -28,7 +28,7 @@ interface SankeyCSVConfig {
     incomeSources: IncomeSource[];
     fixedCosts: FixedCost[];
     savingsTargets: SavingsTarget[];
-    transactions: Expense[];
+    transactions: Transaction[];
     categories: Category[];
 }
 

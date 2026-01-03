@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     categoriesRepository,
-    expensesRepository,
+    transactionsRepository,
 } from "@/persistence/repository";
 import { useEncryption } from "@/components/use-encryption";
 import { Download, Plus, Trash2 } from "lucide-react";
@@ -160,7 +160,7 @@ export function ExportSankeyDialog() {
         const startDate = startOfMonth(new Date(yearNum, monthNum - 1));
         const endDate = endOfMonth(startDate);
 
-        const expenses = expensesRepository.getByTimeRange(
+        const transactions = transactionsRepository.getByTimeRange(
             startDate.getTime(),
             endDate.getTime(),
             key,
@@ -186,7 +186,7 @@ export function ExportSankeyDialog() {
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            transactions: expenses,
+            transactions,
             categories,
         });
 

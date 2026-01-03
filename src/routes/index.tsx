@@ -1,19 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchBar } from "@/components/expenses/SearchBar.tsx";
-import { LazyRow } from "@/components/expenses/LazyRow.tsx";
-import { MonthlyOverview } from "@/components/expenses/MonthlyOverview.tsx";
-import { ExpensesList } from "@/components/expenses/ExpensesList.tsx";
-import { NewExpenseFAB } from "@/components/expenses/new-expense-fab.tsx";
-import { Insights } from "@/components/expenses/Insights.tsx";
+import { SearchBar } from "@/components/transactions/SearchBar.tsx";
+import { LazyRow } from "@/components/transactions/LazyRow.tsx";
+import { MonthlyOverview } from "@/components/transactions/MonthlyOverview.tsx";
+import { TransactionList } from "@/components/transactions/TransactionList.tsx";
+import { NewTransactionFAB } from "@/components/transactions/new-transaction-fab.tsx";
+import { Insights } from "@/components/transactions/Insights.tsx";
 import { useBackupCheck } from "@/hooks/use-backup-config.ts";
 import { useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner.tsx";
 
 export const Route = createFileRoute("/")({
-    component: ExpensesPage,
+    component: TransactionsPage,
 });
 
-function ExpensesPage() {
+function TransactionsPage() {
     const checkBackup = useBackupCheck();
 
     const hasRun = useRef(false);
@@ -33,7 +33,7 @@ function ExpensesPage() {
                 <div className={"my-4 px-4"}></div>
                 <MonthlyOverview />
                 <Insights />
-                <ExpensesList />
+                <TransactionList />
             </main>
 
             <footer>
@@ -48,7 +48,7 @@ function ExpensesPage() {
                 </div>
             </footer>
 
-            <NewExpenseFAB />
+            <NewTransactionFAB />
             <Toaster />
         </div>
     );

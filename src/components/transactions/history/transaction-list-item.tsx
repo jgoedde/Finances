@@ -5,25 +5,29 @@ import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useColorScheme } from "@mantine/hooks";
 import { cn } from "@/lib/utils.ts";
 import { useNavigate } from "@tanstack/react-router";
-import type { Expense } from "@/persistence/types.ts";
-import { useCategories } from "@/components/expenses/use-categories.ts";
+import type { Transaction } from "@/persistence/types.ts";
+import { useCategories } from "@/components/transactions/use-categories.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
-export function ExpenseListItem({ expense }: { expense: Expense }) {
+type TransactionListItemProps = {
+    transaction: Transaction;
+};
+
+export function TransactionListItem({ transaction }: TransactionListItemProps) {
     const rippleHandlers = useRipple();
     const theme = useColorScheme();
 
     const categories = useCategories();
 
     const category = categories.find(
-        (category) => category.id === expense.category_id,
+        (category) => category.id === transaction.category_id,
     );
 
     function getSupportingText() {
-        if (expense.description != null) {
-            return expense.description;
+        if (transaction.description != null) {
+            return transaction.description;
         }
 
         if (category) {
@@ -37,7 +41,7 @@ export function ExpenseListItem({ expense }: { expense: Expense }) {
 
     function onEditButtonClick() {
         setTimeout(() => {
-            void navigate({ to: "/edit/$id", params: { id: expense.id } });
+            void navigate({ to: "/edit/$id", params: { id: transaction.id } });
         }, 150);
     }
 
@@ -88,7 +92,7 @@ export function ExpenseListItem({ expense }: { expense: Expense }) {
                         onClick={() => onEditButtonClick()}
                         className={"inline-flex items-center gap-x-1"}
                     >
-                        {expense.name}{" "}
+                        {transaction.name}{" "}
                         <ChevronRight className={"text-outline size-4"} />
                     </button>
                 </div>
@@ -103,13 +107,13 @@ export function ExpenseListItem({ expense }: { expense: Expense }) {
             <div
                 className={cn(
                     "flex items-center gap-x-2 justify-self-end font-medium",
-                    expense.amount < 0 && "text-[#3FFF68]",
+                    transaction.amount < 0 && "text-[#3FFF68]",
                 )}
             >
-                {expense.amount < 0 ? (
-                    <div>+{formatEuro(expense.amount).split("-")[1]}</div>
+                {transaction.amount < 0 ? (
+                    <div>+{formatEuro(transaction.amount).split("-")[1]}</div>
                 ) : (
-                    <div>{formatEuro(expense.amount)}</div>
+                    <div>{formatEuro(transaction.amount)}</div>
                 )}
             </div>
         </div>

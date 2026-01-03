@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ExpensesSearchRouteImport } from './routes/expenses/search'
+import { Route as TransactionsSearchRouteImport } from './routes/transactions/search'
 import { Route as EditIdRouteImport } from './routes/edit/$id'
 
 const SetupRoute = SetupRouteImport.update({
@@ -30,9 +30,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpensesSearchRoute = ExpensesSearchRouteImport.update({
-  id: '/expenses/search',
-  path: '/expenses/search',
+const TransactionsSearchRoute = TransactionsSearchRouteImport.update({
+  id: '/transactions/search',
+  path: '/transactions/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditIdRoute = EditIdRouteImport.update({
@@ -46,14 +46,14 @@ export interface FileRoutesByFullPath {
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
-  '/expenses/search': typeof ExpensesSearchRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
-  '/expenses/search': typeof ExpensesSearchRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +61,20 @@ export interface FileRoutesById {
   '/new': typeof NewRoute
   '/setup': typeof SetupRoute
   '/edit/$id': typeof EditIdRoute
-  '/expenses/search': typeof ExpensesSearchRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
+  fullPaths: '/' | '/new' | '/setup' | '/edit/$id' | '/transactions/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
-  id: '__root__' | '/' | '/new' | '/setup' | '/edit/$id' | '/expenses/search'
+  to: '/' | '/new' | '/setup' | '/edit/$id' | '/transactions/search'
+  id:
+    | '__root__'
+    | '/'
+    | '/new'
+    | '/setup'
+    | '/edit/$id'
+    | '/transactions/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,7 +82,7 @@ export interface RootRouteChildren {
   NewRoute: typeof NewRoute
   SetupRoute: typeof SetupRoute
   EditIdRoute: typeof EditIdRoute
-  ExpensesSearchRoute: typeof ExpensesSearchRoute
+  TransactionsSearchRoute: typeof TransactionsSearchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -102,11 +108,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expenses/search': {
-      id: '/expenses/search'
-      path: '/expenses/search'
-      fullPath: '/expenses/search'
-      preLoaderRoute: typeof ExpensesSearchRouteImport
+    '/transactions/search': {
+      id: '/transactions/search'
+      path: '/transactions/search'
+      fullPath: '/transactions/search'
+      preLoaderRoute: typeof TransactionsSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/edit/$id': {
@@ -124,7 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewRoute: NewRoute,
   SetupRoute: SetupRoute,
   EditIdRoute: EditIdRoute,
-  ExpensesSearchRoute: ExpensesSearchRoute,
+  TransactionsSearchRoute: TransactionsSearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

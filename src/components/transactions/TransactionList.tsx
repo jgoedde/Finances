@@ -6,16 +6,16 @@ import { Label } from "@/components/ui/label.tsx";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
 import { useQueryState } from "nuqs";
-import { useExpenses } from "@/components/expenses/use-expenses.ts";
+import { useTransactions } from "@/components/transactions/use-transactions.ts";
 import { groupBy } from "lodash";
-import type { Expense } from "@/persistence/types.ts";
-import { ExpenseListItem } from "@/components/expenses/history/expense-list-item.tsx";
+import type { Transaction } from "@/persistence/types.ts";
+import { TransactionListItem } from "@/components/transactions/history/transaction-list-item.tsx";
 
 type DateFilter = "today" | "yesterday" | "last-7-days";
 
 const now = new Date();
 
-export function ExpensesList() {
+export function TransactionList() {
     const [dateFilterOption, setDateFilterOption] = useQueryState("date", {
         defaultValue: "today",
         history: "push",
@@ -45,7 +45,7 @@ export function ExpensesList() {
         }
     }, [dateFilterOption]);
 
-    const expenses = useExpenses(queryOptions);
+    const transactions = useTransactions(queryOptions);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -61,7 +61,7 @@ export function ExpensesList() {
         }
     }
 
-    const grouped: Record<string, Expense[]> = groupBy(expenses, (e) =>
+    const grouped: Record<string, Transaction[]> = groupBy(transactions, (e) =>
         new Date(e.date).toLocaleDateString("de-DE", {
             weekday: "short",
             day: "2-digit",
@@ -91,21 +91,21 @@ export function ExpensesList() {
             </Badge>
 
             <div className={"mt-4 flex w-full flex-col"}>
-                {expenses.length === 0 && (
+                {transactions.length === 0 && (
                     <div className={"text-outline mt-2 text-center"}>
                         Keine Geldbewegungen für {getActiveDateFilter()}
                     </div>
                 )}
                 {dateFilterOption === "last-7-days"
                     ? Object.keys(grouped).map((day) => (
-                          <ExpensesGroup
+                          <TransactionGroup
                               key={day}
                               day={day}
-                              expenses={grouped[day]}
+                              transactions={grouped[day]}
                           />
                       ))
-                    : expenses.map((expense) => (
-                          <ExpenseListItem key={expense.id} expense={expense} />
+                    : transactions.map((it) => (
+                          <TransactionListItem key={it.id} transaction={it} />
                       ))}
             </div>
 
@@ -169,12 +169,12 @@ const DateFilterDrawerContent: FC<Props> = ({
     );
 };
 
-function ExpensesGroup({
+function TransactionGroup({
     day,
-    expenses,
+    transactions,
 }: {
     day: string;
-    expenses: Expense[];
+    transactions: Transaction[];
 }) {
     return (
         <div className={"mb-3 flex flex-col py-1"}>
@@ -186,8 +186,8 @@ function ExpensesGroup({
                 {day}
             </div>
             <div className={"flex flex-col gap-y-1.5"}>
-                {expenses.map((expense) => (
-                    <ExpenseListItem key={expense.id} expense={expense} />
+                {transactions.map((it) => (
+                    <TransactionListItem key={it.id} transaction={it} />
                 ))}
             </div>
         </div>
