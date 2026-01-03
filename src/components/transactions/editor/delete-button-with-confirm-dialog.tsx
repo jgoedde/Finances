@@ -38,7 +38,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ transactionId }) => {
                     <AlertDialogTitle>Bist du sicher?</AlertDialogTitle>
                     <AlertDialogDescription>
                         Diese Aktion kann nicht rückgängig gemacht werden. Die
-                        Feldbewegung wird aus der Historie gelöscht.
+                        Buchung wird aus der Historie gelöscht.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
