@@ -63,67 +63,6 @@ export const transactionsRepository = {
         }
     },
 
-    getTop(options: { start: Date; end: Date; limit: number }, key: string) {
-        const query = `            
-            SELECT *
-            FROM expenses
-            WHERE date >= :start
-              AND date <= :end
-              AND amount > 0
-            ORDER BY amount DESC
-            LIMIT :limit
-            `;
-
-        const params = {
-            ":start": options.start.getTime(),
-            ":end": options.end.getTime(),
-            ":limit": options.limit,
-        };
-
-        return rowsFromResult<Transaction>(
-            PersistentDatabase.get().exec(query, params),
-            {
-                key,
-                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-            },
-        );
-    },
-    getWeekDayMostSpentOn({ start, end }: { start: Date; end: Date }):
-        | {
-              day: string;
-              total: number;
-          }
-        | undefined {
-        const query = `
-            SELECT
-                CASE strftime('%w', datetime(date / 1000, 'unixepoch'))
-                    WHEN '0' THEN 'Sonntag'
-                    WHEN '1' THEN 'Montag'
-                    WHEN '2' THEN 'Dienstag'
-                    WHEN '3' THEN 'Mittwoch'
-                    WHEN '4' THEN 'Donnerstag'
-                    WHEN '5' THEN 'Freitag'
-                    WHEN '6' THEN 'Samstag'
-                    END AS day,
-                SUM(amount) AS total
-            FROM expenses
-            WHERE amount > 0
-              AND date >= :start
-              AND date <= :end
-            GROUP BY day
-            ORDER BY total DESC
-            LIMIT 1`;
-
-        const params = {
-            ":start": start.getTime(),
-            ":end": end.getTime(),
-        };
-
-        const result = rowsFromResult<{ day: string; total: number }>(
-            PersistentDatabase.get().exec(query, params),
-        );
-        return result[0];
-    },
     count() {
         const query = `            
             SELECT COUNT(*) as count
@@ -135,26 +74,6 @@ export const transactionsRepository = {
         }
         const count = result[0].values[0][0];
         return typeof count === "number" ? count : 0;
-    },
-
-    getAll(key: string, onlyPositive: boolean = false): Transaction[] {
-        const query = `            
-            SELECT *
-            FROM expenses
-            WHERE (amount > 0 OR :onlyPositive = 0)
-            ORDER BY date DESC`;
-
-        const params = {
-            ":onlyPositive": onlyPositive ? 1 : 0,
-        };
-
-        return rowsFromResult<Transaction>(
-            PersistentDatabase.get().exec(query, params),
-            {
-                key,
-                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-            },
-        );
     },
 
     findById(id: string, key: string): Transaction | undefined {
@@ -205,26 +124,6 @@ export const transactionsRepository = {
             encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
         });
         return mapExpenseWithCategory(rows[0]);
-    },
-
-    getByCategoryId(categoryId: number, key: string): Transaction[] {
-        const query = `            
-            SELECT *
-            FROM expenses
-            WHERE category_id = :categoryId
-            ORDER BY date DESC`;
-
-        const params = {
-            ":categoryId": categoryId,
-        };
-
-        return rowsFromResult<Transaction>(
-            PersistentDatabase.get().exec(query, params),
-            {
-                key,
-                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-            },
-        );
     },
 
     getSpentAmountByTimeRange(
@@ -404,193 +303,6 @@ export const transactionsRepository = {
         }>(PersistentDatabase.get().exec(sql));
     },
 
-    /** 2) Hour with most “impulse” purchases (< threshold) */
-    getImpulsePurchaseHour(
-        threshold = 20,
-    ): { hour: string; small_purchases: number } | undefined {
-        const sql = `            
-            SELECT strftime('%H', datetime(date / 1000, 'unixepoch')) AS hour,
-                   COUNT(*)                                           AS small_purchases
-            FROM expenses
-            WHERE amount > 0
-              AND amount < :threshold
-              AND exceptional = 0
-            GROUP BY hour
-            ORDER BY small_purchases DESC
-            LIMIT 1;
-                `;
-        const rows = rowsFromResult<{ hour: string; small_purchases: number }>(
-            PersistentDatabase.get().exec(sql, { ":threshold": threshold }),
-        );
-        return rows[0];
-    },
-
-    /** 3) Categories that most often exceed a soft monthly budget */
-    getCategoryMonthsOverBudget(
-        budget = 100,
-    ): { name: string; months_over_budget: number }[] {
-        const sql = `            
-            WITH monthly_category_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
-                                                    category_id,
-                                                    SUM(amount)                                           AS total
-                                             FROM expenses
-                                             WHERE amount > 0
-                                               AND exceptional = 0
-                                             GROUP BY month, category_id)
-            SELECT c.name,
-                   COUNT(*) AS months_over_budget
-            FROM monthly_category_totals m
-                     JOIN categories c ON c.id = m.category_id
-            WHERE m.total > :budget
-            GROUP BY c.name
-            ORDER BY months_over_budget DESC;
-                `;
-        return rowsFromResult<{ name: string; months_over_budget: number }>(
-            PersistentDatabase.get().exec(sql, { ":budget": budget }),
-        );
-    },
-
-    /** 4) “Leakage” categories: many small purchases */
-    getLeakageCategories(
-        threshold = 15,
-        top = 3,
-    ): { name: string; purchase_count: number; total_spent: number }[] {
-        const sql = `            
-            SELECT c.name,
-                   COUNT(*)    AS purchase_count,
-                   SUM(amount) AS total_spent
-            FROM expenses e
-                     JOIN categories c ON c.id = e.category_id
-            WHERE amount > 0
-              AND amount < :threshold
-              AND exceptional = 0
-            GROUP BY c.name
-            ORDER BY purchase_count DESC
-            LIMIT :top;`;
-
-        return rowsFromResult<{
-            name: string;
-            purchase_count: number;
-            total_spent: number;
-        }>(
-            PersistentDatabase.get().exec(sql, {
-                ":threshold": threshold,
-                ":top": top,
-            }),
-        );
-    },
-
-    /** 5) Seasonal peaks: average spend by calendar month across years */
-    getSeasonalSpendingAverages(): { month: string; avg_spent: number }[] {
-        const sql = `            
-            SELECT month,
-                   AVG(total) AS avg_spent
-            FROM (SELECT strftime('%Y', datetime(date / 1000, 'unixepoch')) AS year,
-                         strftime('%m', datetime(date / 1000, 'unixepoch')) AS month,
-                         SUM(amount)                                        AS total
-                  FROM expenses
-                  WHERE amount > 0
-                    AND exceptional = 0
-                  GROUP BY year, month)
-            GROUP BY month
-            ORDER BY avg_spent DESC;
-                `;
-
-        return rowsFromResult<{ month: string; avg_spent: number }>(
-            PersistentDatabase.get().exec(sql),
-        );
-    },
-
-    /** 6) Weekend vs weekday spending totals in the past 3 months */
-    getWeekendVsWeekdayTotals(): [
-        {
-            day_type: "Weekday";
-            total_spent: number;
-        },
-        {
-            day_type: "Weekend";
-            total_spent: number;
-        },
-    ] {
-        const sql = `
-            SELECT CASE strftime('%w', datetime(date / 1000, 'unixepoch'))
-                       WHEN '0' THEN 'Weekend'
-                       WHEN '6' THEN 'Weekend'
-                       ELSE 'Weekday'
-                       END               AS day_type,
-                   round(SUM(amount), 2) AS total_spent
-            FROM expenses
-            WHERE amount > 0
-              AND exceptional = 0
-              AND datetime(date / 1000, 'unixepoch') >= (date('now', '-3 months'))
-            GROUP BY day_type
-            ORDER BY day_type DESC
-        `;
-
-        const rows = rowsFromResult(PersistentDatabase.get().exec(sql));
-        return [rows[0], rows[1]] as ReturnType<
-            typeof transactionsRepository.getWeekendVsWeekdayTotals
-        >;
-    },
-
-    /** 7) Longest streak with no spending (days). Note: gap is between spending days; no-spend days ≈ gap - 1 */
-    getLongestNoSpendStreakDays(): number {
-        const sql = `            
-            WITH days AS (SELECT DISTINCT date(date / 1000, 'unixepoch') AS day
-                          FROM expenses),
-                 gaps AS (SELECT day,
-                                 julianday(day) - LAG(julianday(day)) OVER (ORDER BY day) AS gap
-                          FROM days)
-            SELECT COALESCE(MAX(gap) - 1, 0) AS longest_gap_days
-            FROM gaps;
-                `;
-        const rows = rowsFromResult<{ longest_gap_days: number }>(
-            PersistentDatabase.get().exec(sql),
-        );
-        return Number(rows[0]?.longest_gap_days ?? 0);
-    },
-
-    /** 8) Fastest-growing category (MoM absolute increase) */
-    getFastestGrowingCategory(limit = 1): {
-        category: string;
-        month: string;
-        total: number;
-        prev_total: number;
-        change: number;
-    }[] {
-        const sql = `            
-            WITH monthly_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
-                                           category_id,
-                                           SUM(amount)                                           AS total
-                                    FROM expenses
-                                    WHERE amount > 0
-                                      AND exceptional = 0
-                                    GROUP BY month, category_id),
-                 with_prev AS (SELECT m.month,
-                                      m.category_id,
-                                      m.total,
-                                      LAG(m.total) OVER (PARTITION BY m.category_id ORDER BY m.month) AS prev_total
-                               FROM monthly_totals m)
-            SELECT c.name                                   AS category,
-                   with_prev.month,
-                   with_prev.total,
-                   with_prev.prev_total,
-                   (with_prev.total - with_prev.prev_total) AS change
-            FROM with_prev
-                     JOIN categories c ON c.id = with_prev.category_id
-            WHERE with_prev.prev_total IS NOT NULL
-            ORDER BY change DESC
-            LIMIT :limit;
-                `;
-        return rowsFromResult<{
-            category: string;
-            month: string;
-            total: number;
-            prev_total: number;
-            change: number;
-        }>(PersistentDatabase.get().exec(sql, { ":limit": limit }));
-    },
-
     getMonths() {
         const query = `            
             WITH monthly_category_totals AS (SELECT strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) AS month,
@@ -605,7 +317,7 @@ export const transactionsRepository = {
                    total
             FROM monthly_category_totals m
                      JOIN categories c ON c.id = m.category_id
-            ORDER BY month DESC, category asc;
+            ORDER BY month DESC, category;
 `;
 
         return rowsFromResult<{
@@ -674,22 +386,6 @@ export const categoriesRepository = {
             ORDER BY name`;
 
         return rowsFromResult<Category>(PersistentDatabase.get().exec(query));
-    },
-
-    findById(id: string): Category | undefined {
-        const query = `            
-            SELECT *
-            FROM categories
-            WHERE id = :id`;
-
-        const params = {
-            ":id": id,
-        };
-
-        const rows = rowsFromResult<Category>(
-            PersistentDatabase.get().exec(query, params),
-        );
-        return rows[0];
     },
 };
 
