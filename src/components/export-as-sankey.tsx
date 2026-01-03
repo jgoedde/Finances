@@ -19,7 +19,7 @@ import {
     transactionsRepository,
 } from "@/persistence/repository";
 import { useEncryption } from "@/components/use-encryption";
-import { Download, Plus, Trash2 } from "lucide-react";
+import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { buildSankeyCSV, downloadSankeyCSV } from "@/lib/sankey-csv-utils.ts";
@@ -198,9 +198,9 @@ export function ExportSankeyDialog() {
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
-                <Button variant="outline" size={"sm"}>
-                    <Download />
-                    Export Sankey
+                <Button variant="filledTonal">
+                    <TableOfContents />
+                    Summarize
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[90vh] overflow-y-auto">

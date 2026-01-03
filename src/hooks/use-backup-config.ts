@@ -1,7 +1,5 @@
-import { useLocalStorage, useSessionStorage } from "@mantine/hooks";
+import { useLocalStorage } from "@mantine/hooks";
 import { differenceInHours } from "date-fns";
-import { toast, useSonner } from "sonner";
-import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 export const MIN_BACKUP_INTERVAL_IN_HOURS = 24;
 export const MAX_BACKUP_INTERVAL_IN_HOURS = 48;
@@ -11,66 +9,19 @@ interface BackupConfig {
     lastBackup?: string; // time in ISO format
 }
 
-const now = new Date();
-
-export function useBackupCheck() {
-    const [backupConfig, setBackupConfig] = useBackupConfig();
-    const [dismissed, setDismissed] = useSessionStorage({
-        key: "finances-backup",
-        defaultValue: false,
-        getInitialValueInEffect: false,
-    });
-    const toasts = useSonner().toasts;
-
-    function showToast() {
-        if (toasts.find((t) => t.id === "backup-toast") || dismissed) {
-            return;
-        }
-
-        toast("Möchtest Du jetzt ein Backup erstellen?", {
-            action: {
-                onClick: async () => {
-                    try {
-                        await PersistentDatabase.exportFile();
-                    } finally {
-                        setBackupConfig((prev) => ({
-                            ...prev,
-                            lastBackup: now.toISOString(),
-                        }));
-                        setDismissed(false);
-                    }
-                },
-                label: "Sichern",
-            },
-            dismissible: true,
-            onDismiss: () => {
-                console.info(
-                    "Dismissed backup toast. Asking again next session.",
-                );
-                setDismissed(true);
-            },
-            duration: Infinity,
-            id: "backup-toast",
-        });
+export function isBackupOverdue(date: Date, backupConfig: BackupConfig) {
+    if (backupConfig.interval === -1) {
+        return false;
     }
 
-    return () => {
-        if (backupConfig.interval === -1) {
-            return;
-        }
+    if (!backupConfig.lastBackup) {
+        return true;
+    }
 
-        if (!backupConfig.lastBackup) {
-            showToast();
-            return;
-        }
-
-        if (
-            differenceInHours(now, backupConfig.lastBackup) >=
-            backupConfig.interval
-        ) {
-            showToast();
-        }
-    };
+    return (
+        differenceInHours(date, backupConfig.lastBackup) >=
+        backupConfig.interval
+    );
 }
 
 export function useBackupConfig() {

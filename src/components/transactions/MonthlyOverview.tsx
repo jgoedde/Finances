@@ -1,15 +1,14 @@
-import { addMonths } from "date-fns";
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import { transactionsRepository } from "@/persistence/repository.ts";
 import { cn } from "@/lib/utils.ts";
-import { ArrowDown, ArrowUp, Calendar, CircleSlash2 } from "lucide-react";
+import { Check, CircleSlash2, FileLock } from "lucide-react";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart.tsx";
 import { LabelList, RadialBar, RadialBarChart } from "recharts";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import {
     Accordion,
@@ -18,12 +17,18 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion.tsx";
 import { ExportSankeyDialog } from "@/components/export-as-sankey.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { isBackupOverdue, useBackupConfig } from "@/hooks/use-backup-config.ts";
+import { PersistentDatabase } from "@/persistence/persistent-database.ts";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
 
 const now = new Date();
 
 export function MonthlyOverview() {
-    const lastMonth = addMonths(now, -1);
-
     const changeOverMonth = useTableSubscription(
         () => transactionsRepository.getChangeOverMonth(),
         [],
@@ -35,6 +40,9 @@ export function MonthlyOverview() {
         [],
         "expenses:changed",
     );
+
+    const [backupConfig, setBackupConfig] = useBackupConfig();
+    const [hasBackedUp, setHasBackedUp] = useState(false);
 
     const chartData = categories.map((c) => ({
         categoryName: c.category_name,
@@ -62,56 +70,12 @@ export function MonthlyOverview() {
         return target;
     }, [chartData]);
 
+    const shouldBackup = isBackupOverdue(new Date(), backupConfig);
+
     return (
         <div className={"bg-surface-container-lowest m-2 flex rounded-md p-4"}>
             <div className={"flex w-full flex-col"}>
-                {changeOverMonth.change_percentage != null ? (
-                    <div className={"flex items-center gap-x-4"}>
-                        <div
-                            className={
-                                "bg-primary-container flex w-24 items-center justify-center self-stretch rounded p-2 shadow-lg"
-                            }
-                        >
-                            <Calendar
-                                className={"text-on-primary-container size-6"}
-                            />
-                        </div>
-                        <div
-                            className={
-                                "text-md flex flex-wrap items-center rounded-sm"
-                            }
-                        >
-                            <div>Du hast diesen Monat insgesamt</div>
-                            <div
-                                className={cn(
-                                    "mx-1 flex items-center",
-                                    changeOverMonth.change_percentage > 0
-                                        ? "text-error"
-                                        : "text-[green] dark:text-[lightgreen]",
-                                )}
-                            >
-                                {changeOverMonth.change_percentage > 0 ? (
-                                    <ArrowUp className={"size-4"} />
-                                ) : (
-                                    <ArrowDown className={"size-4"} />
-                                )}
-                                {String(
-                                    Math.abs(changeOverMonth.change_percentage),
-                                )}
-                                %{" "}
-                                {changeOverMonth.change_percentage > 0
-                                    ? "mehr"
-                                    : "weniger"}
-                            </div>
-                            <div className={""}>
-                                Ausgaben als im{" "}
-                                {lastMonth.toLocaleDateString("de-DE", {
-                                    month: "long",
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                ) : (
+                {changeOverMonth.change_percentage == null && (
                     <>
                         Es wird Zeit für die Arbeit. Ein neuer Tag, ein neuer
                         Dollar!
@@ -173,7 +137,44 @@ export function MonthlyOverview() {
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
-                <div>
+                <div className={"flex items-center gap-x-2"}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant={
+                                    shouldBackup ? "filled" : "filledTonal"
+                                }
+                                className={cn(
+                                    shouldBackup && "rounded-sm",
+                                    "relative",
+                                )}
+                                onClick={async () => {
+                                    try {
+                                        await PersistentDatabase.exportFile();
+                                        setHasBackedUp(true);
+                                    } finally {
+                                        setBackupConfig((prev) => ({
+                                            ...prev,
+                                            lastBackup: now.toISOString(),
+                                        }));
+                                    }
+                                }}
+                            >
+                                {hasBackedUp ? <Check /> : <FileLock />}
+                                Backup
+                                {shouldBackup && (
+                                    <div className="bg-error absolute -end-0.5 -top-0.5 size-3 rounded-full"></div>
+                                )}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className={"max-w-48"}>
+                            <p>
+                                Download an encrypted copy of the database as a
+                                backup. It can be used to import it later.
+                            </p>
+                        </TooltipContent>
+                    </Tooltip>
+
                     <ExportSankeyDialog />
                 </div>
             </div>

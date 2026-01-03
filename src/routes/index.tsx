@@ -5,8 +5,6 @@ import { MonthlyOverview } from "@/components/transactions/MonthlyOverview.tsx";
 import { TransactionList } from "@/components/transactions/TransactionList.tsx";
 import { NewTransactionFAB } from "@/components/transactions/new-transaction-fab.tsx";
 import { Insights } from "@/components/transactions/Insights.tsx";
-import { useBackupCheck } from "@/hooks/use-backup-config.ts";
-import { useEffect, useRef } from "react";
 import { Toaster } from "@/components/ui/sonner.tsx";
 
 export const Route = createFileRoute("/")({
@@ -14,17 +12,6 @@ export const Route = createFileRoute("/")({
 });
 
 function TransactionsPage() {
-    const checkBackup = useBackupCheck();
-
-    const hasRun = useRef(false);
-
-    useEffect(() => {
-        if (hasRun.current) return;
-        hasRun.current = true;
-
-        checkBackup();
-    }, [checkBackup]);
-
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <SearchBar />
