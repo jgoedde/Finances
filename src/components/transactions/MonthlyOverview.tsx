@@ -113,7 +113,12 @@ export function MonthlyOverview() {
                         </RadialBar>
                     </RadialBarChart>
                 </ChartContainer>
-                <Accordion type="single" collapsible className="w-full">
+                <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue={"item-1"}
+                >
                     <AccordionItem value={"item-1"}>
                         <AccordionTrigger>Mehr</AccordionTrigger>
                         <AccordionContent>
