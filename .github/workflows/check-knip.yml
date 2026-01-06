@@ -20,11 +20,6 @@ jobs:
               with:
                   node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: $nvmrc
-
             - name: Install dependencies
               run: npm install
 
