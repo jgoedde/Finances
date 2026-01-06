@@ -30,8 +30,7 @@ function TransactionsPage() {
                     }
                 >
                     <span>Ausgabentracker v{__APP_VERSION__}</span>
-                    <span>{__APP_ENV__}</span>
-                    <span>{__APP_COMMIT_HASH__}</span>
+                    <span>{import.meta.env.MODE}</span>
                 </div>
             </footer>
 
