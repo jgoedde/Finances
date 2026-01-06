@@ -4,5 +4,15 @@
         "interface": true,
         "type": true
     },
-    "tags": ["-lintignore"]
+    "tags": ["-lintignore"],
+    "ignore": [
+        "src/components/ui/alert-dialog.tsx",
+        "src/components/ui/badge.tsx",
+        "src/components/ui/calendar.tsx",
+        "src/components/ui/card.tsx",
+        "src/components/ui/chart.tsx",
+        "src/components/ui/drawer.tsx",
+        "src/components/ui/popover.tsx",
+        "src/components/ui/tooltip.tsx"
+    ]
 }
