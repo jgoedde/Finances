@@ -36,7 +36,7 @@
         "@radix-ui/react-tooltip": "^1.2.8",
         "@reduxjs/toolkit": "^2.11.2",
         "@tailwindcss/vite": "^4.1.18",
-        "@tanstack/react-router": "^1.144.0",
+        "@tanstack/react-router": "^1.145.11",
         "@tanstack/react-router-devtools": "^1.145.7",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
