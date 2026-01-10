@@ -7,7 +7,7 @@ import reactX from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
 
 export default tseslint.config(
-    { ignores: ["dist", "dev-dist"] },
+    { ignores: ["dist", "dev-dist", "src/routeTree.gen.ts"] },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ["**/*.{ts,tsx}"],
