@@ -29,12 +29,6 @@ import {
 const now = new Date();
 
 export function MonthlyOverview() {
-    const changeOverMonth = useTableSubscription(
-        () => transactionsRepository.getChangeOverMonth(),
-        [],
-        "expenses:changed",
-    );
-
     const categories = useTableSubscription(
         () => transactionsRepository.getSpentPerCategory(),
         [],
@@ -75,13 +69,6 @@ export function MonthlyOverview() {
     return (
         <div className={"bg-surface-container-lowest m-2 flex rounded-md p-4"}>
             <div className={"flex w-full flex-col"}>
-                {changeOverMonth.change_percentage == null && (
-                    <>
-                        Es wird Zeit für die Arbeit. Ein neuer Tag, ein neuer
-                        Dollar!
-                    </>
-                )}
-
                 <ChartContainer
                     config={chartConfig}
                     className="aspect-square w-full"
