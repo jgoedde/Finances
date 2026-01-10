@@ -133,7 +133,7 @@ export const transactionsRepository = {
         onlyPositive: boolean = false,
     ): number {
         const query = `            
-            SELECT SUM(amount) as total
+            SELECT round(SUM(amount),2) as total
             FROM expenses
             WHERE date >= :start
               AND date <= :end
@@ -195,7 +195,7 @@ export const transactionsRepository = {
     getTrend() {
         const sql = `            
             SELECT date(date / 1000, 'unixepoch') AS day,
-                   SUM(amount)                    AS total
+                   round(SUM(amount),2)                    AS total
             FROM expenses
             WHERE amount > 0
               AND exceptional = 0
@@ -226,7 +226,7 @@ export const transactionsRepository = {
                                            GROUP BY day, category_id, category_name,
                                                     category_color),
                  ranked AS (SELECT day,
-                                   total,
+                                   round(total,2) as total,
                                    category_name,
                                    category_color,
                                    RANK() OVER (PARTITION BY day ORDER BY total DESC) AS rnk
@@ -242,46 +242,13 @@ export const transactionsRepository = {
             category_color: string;
         }>(PersistentDatabase.get().exec(sql))[0];
     },
-    getChangeOverMonth() {
-        const sql = `
-            WITH current_month AS (SELECT strftime('%d', datetime(date / 1000, 'unixepoch')) AS day,
-                                          SUM(amount)                                        AS total
-                                   FROM expenses
-                                   WHERE amount > 0
-                                     AND exceptional = 0
-                                     AND
-                                       strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) = strftime('%Y-%m', 'now')
-                                   GROUP BY day),
-                 previous_month AS (SELECT strftime('%d', datetime(date / 1000, 'unixepoch')) AS day,
-                                           SUM(amount)                                        AS total
-                                    FROM expenses
-                                    WHERE amount > 0
-                                      AND exceptional = 0
-                                      AND strftime('%Y-%m', datetime(date / 1000, 'unixepoch')) =
-                                          strftime('%Y-%m', 'now', '-1 month')
-                                    GROUP BY day)
-            SELECT COALESCE(SUM(c.total), 0) AS current_total,
-                   COALESCE(SUM(p.total), 0) AS previous_total,
-                   round(CASE
-                             WHEN SUM(p.total) = 0 THEN NULL
-                             ELSE (SUM(c.total) - SUM(p.total)) * 100.0 / SUM(p.total)
-                             END, 0)         AS change_percentage
-            FROM current_month c
-                     LEFT JOIN previous_month p ON c.day = p.day;`;
-
-        return rowsFromResult<{
-            current_total: number;
-            previous_total: number;
-            change_percentage: number | null;
-        }>(PersistentDatabase.get().exec(sql))[0];
-    },
     getSpentPerCategory() {
         const sql = `
             SELECT c.id as category_id,
                    c.name as category_name,
                    c.color as category_color,
                    c.icon_name as category_icon_name,
-                   SUM(e.amount) AS total,
+                   round(SUM(e.amount),2) AS total,
                    COUNT(e.id) as expenses_count,
                    round(AVG(e.amount),2) as avg_expense_amount
             FROM expenses e
@@ -314,7 +281,7 @@ export const transactionsRepository = {
             SELECT month,
                    c.name AS category,
                    c.icon_name as category_icon_name,
-                   total
+                   round(total,2) AS total
             FROM monthly_category_totals m
                      JOIN categories c ON c.id = m.category_id
             ORDER BY month DESC, category;
