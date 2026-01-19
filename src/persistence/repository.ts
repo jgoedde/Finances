@@ -276,7 +276,7 @@ export const transactionsRepository = {
                                                     category_id,
                                                     SUM(amount)                                           AS total
                                              FROM expenses
-                                             WHERE amount > 0
+                                             WHERE amount > 0 AND exceptional = 0
                                              GROUP BY month, category_id)
             SELECT month,
                    c.name AS category,
