@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocalStorage } from "@mantine/hooks";
 import {
     AlertDialog,
@@ -23,6 +22,7 @@ import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { buildSankeyCSV, downloadSankeyCSV } from "@/lib/sankey-csv-utils.ts";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 interface IncomeSource {
     id: string;
@@ -45,7 +45,10 @@ interface SavingsTarget {
 export function ExportSankeyDialog() {
     const { key } = useEncryption();
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useQueryState(
+        "sankey-export",
+        parseAsBoolean.withDefault(false).withOptions({ history: "replace" }),
+    );
 
     const [month, setMonth] = useLocalStorage({
         key: "sankey-export-month",
@@ -192,11 +195,14 @@ export function ExportSankeyDialog() {
 
         downloadSankeyCSV(csv, `sankey-${year}-${month.padStart(2, "0")}.md`);
 
-        setOpen(false);
+        void setOpen(false);
     }
 
     return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialog
+            open={open}
+            onOpenChange={(newVal) => void setOpen(newVal)}
+        >
             <AlertDialogTrigger asChild>
                 <Button variant="filledTonal">
                     <TableOfContents />
