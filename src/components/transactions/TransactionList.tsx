@@ -1,11 +1,11 @@
-import { type FC, useMemo, useState } from "react";
+import { type FC, useMemo } from "react";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
-import { useQueryState } from "nuqs";
+import { parseAsBoolean, useQueryState } from "nuqs";
 import { useTransactions } from "@/components/transactions/use-transactions.ts";
 import { groupBy } from "lodash";
 import type { Transaction } from "@/persistence/types.ts";
@@ -47,7 +47,10 @@ export function TransactionList() {
 
     const transactions = useTransactions(queryOptions);
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useQueryState(
+        "date-drawer",
+        parseAsBoolean.withDefault(false).withOptions({ history: "replace" }),
+    );
 
     function getActiveDateFilter() {
         if (dateFilterOption === "today") {

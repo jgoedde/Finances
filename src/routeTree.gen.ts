@@ -8,130 +8,130 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as SetupRouteImport } from "./routes/setup";
-import { Route as NewRouteImport } from "./routes/new";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as TransactionsSearchRouteImport } from "./routes/transactions/search";
-import { Route as EditIdRouteImport } from "./routes/edit/$id";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteImport } from './routes/setup'
+import { Route as NewRouteImport } from './routes/new'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransactionsSearchRouteImport } from './routes/transactions/search'
+import { Route as EditIdRouteImport } from './routes/edit/$id'
 
 const SetupRoute = SetupRouteImport.update({
-    id: "/setup",
-    path: "/setup",
-    getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewRoute = NewRouteImport.update({
-    id: "/new",
-    path: "/new",
-    getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
-    id: "/",
-    path: "/",
-    getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransactionsSearchRoute = TransactionsSearchRouteImport.update({
-    id: "/transactions/search",
-    path: "/transactions/search",
-    getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/transactions/search',
+  path: '/transactions/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditIdRoute = EditIdRouteImport.update({
-    id: "/edit/$id",
-    path: "/edit/$id",
-    getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-    "/": typeof IndexRoute;
-    "/new": typeof NewRoute;
-    "/setup": typeof SetupRoute;
-    "/edit/$id": typeof EditIdRoute;
-    "/transactions/search": typeof TransactionsSearchRoute;
+  '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
+  '/edit/$id': typeof EditIdRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRoutesByTo {
-    "/": typeof IndexRoute;
-    "/new": typeof NewRoute;
-    "/setup": typeof SetupRoute;
-    "/edit/$id": typeof EditIdRoute;
-    "/transactions/search": typeof TransactionsSearchRoute;
+  '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
+  '/edit/$id': typeof EditIdRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRoutesById {
-    __root__: typeof rootRouteImport;
-    "/": typeof IndexRoute;
-    "/new": typeof NewRoute;
-    "/setup": typeof SetupRoute;
-    "/edit/$id": typeof EditIdRoute;
-    "/transactions/search": typeof TransactionsSearchRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/new': typeof NewRoute
+  '/setup': typeof SetupRoute
+  '/edit/$id': typeof EditIdRoute
+  '/transactions/search': typeof TransactionsSearchRoute
 }
 export interface FileRouteTypes {
-    fileRoutesByFullPath: FileRoutesByFullPath;
-    fullPaths: "/" | "/new" | "/setup" | "/edit/$id" | "/transactions/search";
-    fileRoutesByTo: FileRoutesByTo;
-    to: "/" | "/new" | "/setup" | "/edit/$id" | "/transactions/search";
-    id:
-        | "__root__"
-        | "/"
-        | "/new"
-        | "/setup"
-        | "/edit/$id"
-        | "/transactions/search";
-    fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/new' | '/setup' | '/edit/$id' | '/transactions/search'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/new' | '/setup' | '/edit/$id' | '/transactions/search'
+  id:
+    | '__root__'
+    | '/'
+    | '/new'
+    | '/setup'
+    | '/edit/$id'
+    | '/transactions/search'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-    IndexRoute: typeof IndexRoute;
-    NewRoute: typeof NewRoute;
-    SetupRoute: typeof SetupRoute;
-    EditIdRoute: typeof EditIdRoute;
-    TransactionsSearchRoute: typeof TransactionsSearchRoute;
+  IndexRoute: typeof IndexRoute
+  NewRoute: typeof NewRoute
+  SetupRoute: typeof SetupRoute
+  EditIdRoute: typeof EditIdRoute
+  TransactionsSearchRoute: typeof TransactionsSearchRoute
 }
 
-declare module "@tanstack/react-router" {
-    interface FileRoutesByPath {
-        "/setup": {
-            id: "/setup";
-            path: "/setup";
-            fullPath: "/setup";
-            preLoaderRoute: typeof SetupRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/new": {
-            id: "/new";
-            path: "/new";
-            fullPath: "/new";
-            preLoaderRoute: typeof NewRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/": {
-            id: "/";
-            path: "/";
-            fullPath: "/";
-            preLoaderRoute: typeof IndexRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/transactions/search": {
-            id: "/transactions/search";
-            path: "/transactions/search";
-            fullPath: "/transactions/search";
-            preLoaderRoute: typeof TransactionsSearchRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
-        "/edit/$id": {
-            id: "/edit/$id";
-            path: "/edit/$id";
-            fullPath: "/edit/$id";
-            preLoaderRoute: typeof EditIdRouteImport;
-            parentRoute: typeof rootRouteImport;
-        };
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
     }
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transactions/search': {
+      id: '/transactions/search'
+      path: '/transactions/search'
+      fullPath: '/transactions/search'
+      preLoaderRoute: typeof TransactionsSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edit/$id': {
+      id: '/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/edit/$id'
+      preLoaderRoute: typeof EditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-    IndexRoute: IndexRoute,
-    NewRoute: NewRoute,
-    SetupRoute: SetupRoute,
-    EditIdRoute: EditIdRoute,
-    TransactionsSearchRoute: TransactionsSearchRoute,
-};
+  IndexRoute: IndexRoute,
+  NewRoute: NewRoute,
+  SetupRoute: SetupRoute,
+  EditIdRoute: EditIdRoute,
+  TransactionsSearchRoute: TransactionsSearchRoute,
+}
 export const routeTree = rootRouteImport
-    ._addFileChildren(rootRouteChildren)
-    ._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
