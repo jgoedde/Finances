@@ -61,7 +61,7 @@
         "vaul": "^1.1.2"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.2",
+        "@eslint/js": "^10.0.1",
         "@tanstack/router-plugin": "^1.163.2",
         "@types/crypto-js": "^4.2.2",
         "@types/lodash": "^4.17.24",
