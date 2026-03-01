@@ -6,6 +6,7 @@ import {
 import { ClockFading } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import type { FC } from "react";
+import { de } from "date-fns/locale";
 
 type Props = {
     selected: Date;
@@ -21,7 +22,7 @@ export const DateChooserPopover: FC<Props> = ({ onSelect, selected }) => (
         </PopoverTrigger>
         <PopoverContent className="w-auto border-none p-0 shadow-lg">
             <Calendar
-                weekStartsOn={1}
+                locale={de}
                 mode="single"
                 selected={selected}
                 onSelect={onSelect}
