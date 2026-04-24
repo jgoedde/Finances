@@ -23,7 +23,7 @@
         "react-is": "^19.0.0-rc-69d4b800-20241021"
     },
     "dependencies": {
-        "@mantine/hooks": "^8.3.18",
+        "@mantine/hooks": "^9.1.0",
         "@material/material-color-utilities": "^0.4.0",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-alert-dialog": "^1.1.15",
