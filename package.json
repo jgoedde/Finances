@@ -69,7 +69,7 @@
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@types/sql.js": "^1.4.11",
-        "@vitejs/plugin-react-swc": "^4.3.0",
+        "@vitejs/plugin-react": "^6.0.1",
         "eslint": "^10.2.1",
         "eslint-plugin-react-dom": "^4.2.3",
         "eslint-plugin-react-hooks": "^7.1.1",
