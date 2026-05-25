@@ -29,7 +29,12 @@ function TransactionsPage() {
                         "bg-surface-container-lowest text-surface-variant flex flex-col items-center px-4 py-2"
                     }
                 >
-                    <span>Ausgabentracker v{__APP_VERSION__}</span>
+                    <span>
+                        Ausgabentracker{" "}
+                        <a href="https://github.com/jgoedde/Finances/releases">
+                            v{__APP_VERSION__}
+                        </a>
+                    </span>
                     <span>{import.meta.env.MODE}</span>
                 </div>
             </footer>
