@@ -18,6 +18,7 @@ import {
 } from "@/persistence/types.ts";
 import { useCategories } from "@/components/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
+import { Route } from "@/routes/new.tsx";
 
 const now = new Date();
 
@@ -28,6 +29,8 @@ type Props = {
 export function TransactionDetailPage({ transaction }: Props) {
     const { key } = useEncryption();
     const navigate = useNavigate();
+    const { amount: prefilledAmount, vendor: prefilledVendor } =
+        Route.useSearch();
 
     const categories = useCategories();
 
@@ -47,11 +50,15 @@ export function TransactionDetailPage({ transaction }: Props) {
         transaction?.date ? new Date(transaction.date) : now,
     );
     const [transactionLocal, setTransactionLocal] = useState(
-        transaction?.name ?? "",
+        isAdding ? (prefilledVendor ?? "") : (transaction?.name ?? ""),
     );
     // Always positive amount string for input
     const [amountStr, setAmountStr] = useState<string>(
-        isAdding ? "" : Math.abs(transaction?.amount as number).toFixed(2),
+        isAdding
+            ? prefilledAmount === undefined
+                ? ""
+                : Math.abs(prefilledAmount).toFixed(2)
+            : Math.abs(transaction?.amount as number).toFixed(2),
     );
     const [transactionType, setTransactionType] = useState<TransactionType>(
         isAdding
