@@ -16,11 +16,15 @@ import { Button } from "@/components/ui/button.tsx";
 import { transactionsRepository } from "@/persistence/repository.ts";
 
 export const Route = createFileRoute("/setup")({
+    validateSearch: (search) => ({
+        redirect: (search.redirect as string) || "",
+    }),
     component: RouteComponent,
 });
 
 function RouteComponent() {
     const navigate = useNavigate();
+    const { redirect } = Route.useSearch();
 
     const { key, setKey } = useEncryption();
     const transactionCount = useTransactionCount();
@@ -47,7 +51,7 @@ function RouteComponent() {
         }
 
         if (transactionCount === 0) {
-            void navigate({ to: "/" });
+            void navigate({ to: redirect || "/" });
             return;
         }
 
@@ -55,7 +59,7 @@ function RouteComponent() {
         setCanDecrypt({ isInitial: false, canDecrypt: isValid });
 
         if (isValid) {
-            void navigate({ to: "/" });
+            void navigate({ to: redirect || "/" });
         }
     }
 

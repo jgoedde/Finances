@@ -9,14 +9,19 @@ export const Route = createRootRoute({
             <TanStackRouterDevtools />
         </>
     ),
-    beforeLoad: () => {
+    beforeLoad: ({ location }) => {
         const masterPassword = store.getState().app.masterPassword;
         if (
             (!masterPassword || masterPassword.trim() === "") &&
             location.pathname !== "/setup" &&
             location.pathname !== "/blob"
         ) {
-            throw redirect({ to: "/setup" });
+            throw redirect({
+                to: "/setup",
+                search: {
+                    redirect: location.href,
+                },
+            });
         }
     },
 });
