@@ -1,8 +1,4 @@
-import {
-    createFileRoute,
-    useCanGoBack,
-    useRouter,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
     TransactionForm,
     type TransactionFormSubmitData,
@@ -28,8 +24,7 @@ const now = new Date();
 
 function NewTransactionPage() {
     const { vendor, amount } = Route.useSearch();
-    const canGoBack = useCanGoBack();
-    const router = useRouter();
+    const navigate = useNavigate();
 
     const onTransactionFormSubmit = async (data: TransactionFormSubmitData) => {
         try {
@@ -44,11 +39,7 @@ function NewTransactionPage() {
                 exceptional: data.isExceptional,
             });
 
-            if (canGoBack) {
-                router.history.back();
-            } else {
-                await router.navigate({ to: "/" });
-            }
+            await navigate({ to: "/" });
             toast.success(
                 `${getTransactionTypeLabel(data.type)} bei ${data.name} gespeichert`,
             );

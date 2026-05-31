@@ -1,9 +1,4 @@
-import {
-    createFileRoute,
-    redirect,
-    useCanGoBack,
-    useRouter,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
     TransactionForm,
     type TransactionFormSubmitData,
@@ -47,10 +42,9 @@ export const Route = createFileRoute("/edit/$id")({
 
 function EditTransactionPage() {
     const { id } = Route.useParams();
-    const transaction = Route.useLoaderData();
 
-    const canGoBack = useCanGoBack();
-    const router = useRouter();
+    const navigate = useNavigate();
+    const transaction = Route.useLoaderData();
 
     const onTransactionFormSubmit = async (
         updated: TransactionFormSubmitData,
@@ -66,11 +60,7 @@ function EditTransactionPage() {
                 exceptional: updated.isExceptional,
                 currency: "EUR",
             });
-            if (canGoBack) {
-                router.history.back();
-            } else {
-                await router.navigate({ to: "/" });
-            }
+            await navigate({ to: "/" });
             toast.success("Geldbewegung aktualisiert", {
                 action: {
                     label: "Rückgängig",
@@ -86,11 +76,7 @@ function EditTransactionPage() {
     const onTransactionFormDelete = async () => {
         try {
             await transactionsRepository.delete(id);
-            if (canGoBack) {
-                router.history.back();
-            } else {
-                await router.navigate({ to: "/" });
-            }
+            await navigate({ to: "/" });
             toast.success(
                 `Die ${getTransactionTypeLabel(getTransactionType(transaction.amount))} wurde gelöscht.`,
                 {
