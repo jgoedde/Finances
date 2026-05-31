@@ -5,26 +5,23 @@ import type {
     Transaction,
     TransactionWithCategory,
 } from "@/persistence/types.ts";
-import CryptoJS from "crypto-js";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 
 export const transactionsRepository = {
-    async add(entity: Transaction, key: string) {
-        const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
-
+    async add(entity: Transaction) {
         const query = `            
             INSERT INTO expenses (id, date, name, description, amount, currency, category_id, exceptional)
             VALUES (:id, :date, :name, :description, :amount, :currency, :categoryId, :isExceptional)`;
 
         const params = {
-            ":id": encrypted.id,
-            ":date": encrypted.date,
-            ":name": encrypted.name,
-            ":description": encrypted.description ?? null,
-            ":amount": encrypted.amount,
-            ":currency": encrypted.currency,
-            ":categoryId": encrypted.category_id,
-            ":isExceptional": encrypted.exceptional ? 1 : 0,
+            ":id": entity.id,
+            ":date": entity.date,
+            ":name": entity.name,
+            ":description": entity.description ?? null,
+            ":amount": entity.amount,
+            ":currency": entity.currency,
+            ":categoryId": entity.category_id,
+            ":isExceptional": entity.exceptional ? 1 : 0,
         };
 
         PersistentDatabase.get().run(query, params);
@@ -33,36 +30,6 @@ export const transactionsRepository = {
 
         dbEventEmitter.emit("expenses:changed");
     },
-
-    checkMasterPassword(key: string): boolean {
-        const query = `            
-            SELECT name
-            FROM expenses
-            LIMIT 1`;
-
-        const result = rowsFromResult<{ name: string }>(
-            PersistentDatabase.get().exec(query),
-        );
-
-        if (result.length === 0) {
-            throw new Error("No expenses found in the database.");
-        }
-
-        try {
-            // @ts-expect-error intentially want to ignore the return value
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const _ = decryptValue(result[0].name, key, false);
-            return true;
-        } catch (error) {
-            if (error instanceof DecryptionError) {
-                console.error("Decryption failed:", error.message, error.value);
-            } else {
-                console.error("Unexpected error during decryption:", error);
-            }
-            return false;
-        }
-    },
-
     count() {
         const query = `            
             SELECT COUNT(*) as count
@@ -76,7 +43,7 @@ export const transactionsRepository = {
         return typeof count === "number" ? count : 0;
     },
 
-    findById(id: string, key: string): Transaction | undefined {
+    findById(id: string): Transaction | undefined {
         const query = `            
             SELECT *
             FROM expenses
@@ -88,15 +55,11 @@ export const transactionsRepository = {
 
         const rows = rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
-            { key, encryptedFields: EXPENSES_ENCRYPTED_FIELDS },
         );
         return rows[0];
     },
 
-    findByIdWithCategory(
-        id: string,
-        key: string,
-    ): TransactionWithCategory | undefined {
+    findByIdWithCategory(id: string): TransactionWithCategory | undefined {
         const query = `            
             SELECT e.*, c.name as category_name, c.icon_name as category_icon_name, c.color as category_color
             FROM expenses e
@@ -119,10 +82,7 @@ export const transactionsRepository = {
             category_name: string;
             category_icon_name: string;
             category_color: string;
-        }>(PersistentDatabase.get().exec(query, params), {
-            key,
-            encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-        });
+        }>(PersistentDatabase.get().exec(query, params));
         return mapExpenseWithCategory(rows[0]);
     },
 
@@ -160,7 +120,6 @@ export const transactionsRepository = {
     getByTimeRange(
         startTimestamp: number,
         endTimestamp: number,
-        key: string,
         categoryId?: number,
         onlyPositive: boolean = false,
         excludeExceptional: boolean = false,
@@ -185,10 +144,6 @@ export const transactionsRepository = {
 
         return rowsFromResult<Transaction>(
             PersistentDatabase.get().exec(query, params),
-            {
-                key,
-                encryptedFields: EXPENSES_ENCRYPTED_FIELDS,
-            },
         );
     },
 
@@ -295,9 +250,7 @@ export const transactionsRepository = {
         }>(PersistentDatabase.get().exec(query));
     },
 
-    async update(entity: Transaction, key: string) {
-        const encrypted = encryptEntity(entity, key, EXPENSES_ENCRYPTED_FIELDS);
-
+    async update(entity: Transaction) {
         const query = `            
             UPDATE expenses
             SET date        = :date,
@@ -310,14 +263,14 @@ export const transactionsRepository = {
             WHERE id = :id`;
 
         const params = {
-            ":id": encrypted.id,
-            ":date": encrypted.date,
-            ":name": encrypted.name,
-            ":description": encrypted.description ?? null,
-            ":amount": encrypted.amount,
-            ":currency": encrypted.currency,
-            ":categoryId": encrypted.category_id,
-            ":exceptional": encrypted.exceptional ? 1 : 0,
+            ":id": entity.id,
+            ":date": entity.date,
+            ":name": entity.name,
+            ":description": entity.description ?? null,
+            ":amount": entity.amount,
+            ":currency": entity.currency,
+            ":categoryId": entity.category_id,
+            ":exceptional": entity.exceptional ? 1 : 0,
         };
 
         PersistentDatabase.get().run(query, params);
@@ -356,80 +309,18 @@ export const categoriesRepository = {
     },
 };
 
-const EXPENSES_ENCRYPTED_FIELDS: (keyof Transaction)[] = [
-    "name",
-    "description",
-];
-
-class DecryptionError extends Error {
-    public value: string;
-
-    constructor(message: string, value: string) {
-        super(message);
-        this.value = value;
-        this.name = "DecryptionError";
-    }
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function decryptValue(value: any, key: string, silent: boolean = true): any {
-    if (typeof value !== "string") return value;
-
-    const bytes = CryptoJS.AES.decrypt(value, key);
-    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-
-    if (!decrypted) {
-        if (silent) return "";
-        throw new DecryptionError("Decryption failed", value);
-    }
-
-    return decrypted;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowsFromResult<T = any>(
-    result: ReturnType<Database["exec"]>,
-    encryptionConfig?: { key: string; encryptedFields: (keyof T)[] },
-): T[] {
+function rowsFromResult<T = any>(result: ReturnType<Database["exec"]>): T[] {
     if (result.length === 0) return [];
     const { columns, values } = result[0];
     return values.map((row) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const obj: any = {};
         columns.forEach((col, i) => {
-            const shouldDecrypt =
-                encryptionConfig != null &&
-                encryptionConfig.encryptedFields.includes(col as keyof T);
-            obj[col] = shouldDecrypt
-                ? decryptValue(row[i], encryptionConfig.key)
-                : row[i];
+            obj[col] = row[i];
         });
         return obj as T;
     });
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function encryptValue(value: any, key: string): string {
-    return CryptoJS.AES.encrypt(String(value ?? ""), key).toString();
-}
-
-function encryptEntity<T extends object>(
-    entity: T,
-    key: string,
-    encryptedFields: (keyof T)[],
-): T {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const copy: any = { ...entity };
-    encryptedFields.forEach((field) => {
-        if (
-            copy[field] == null ||
-            (typeof copy[field] === "string" && copy[field].trim() === "")
-        ) {
-            return; // Skip if field is null or undefined
-        }
-        copy[field] = encryptValue(copy[field], key);
-    });
-    return copy;
 }
 
 function mapExpenseWithCategory(

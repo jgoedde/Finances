@@ -10,22 +10,12 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
-import { type FC } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { transactionsRepository } from "@/persistence/repository.ts";
 
 type Props = {
-    transactionId: string;
+    onDelete: VoidFunction;
 };
 
-export const DeleteButtonWithConfirmDialog: FC<Props> = ({ transactionId }) => {
-    const navigate = useNavigate();
-
-    function onDeleteConfirmButtonClick() {
-        void transactionsRepository.delete(transactionId);
-        void navigate({ to: "/" });
-    }
-
+export function DeleteButtonWithConfirmDialog({ onDelete }: Props) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -46,7 +36,7 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ transactionId }) => {
                         Abbrechen
                     </AlertDialogCancel>
                     <AlertDialogAction
-                        onClick={onDeleteConfirmButtonClick}
+                        onClick={onDelete}
                         className={"text-primary"}
                     >
                         Ja
@@ -55,4 +45,4 @@ export const DeleteButtonWithConfirmDialog: FC<Props> = ({ transactionId }) => {
             </AlertDialogContent>
         </AlertDialog>
     );
-};
+}

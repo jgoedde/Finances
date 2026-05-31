@@ -1,8 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
-import { Provider } from "react-redux";
-import { store } from "@/store.ts";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
@@ -25,9 +23,7 @@ createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <ThemeProvider>
             <NuqsAdapter>
-                <Provider store={store}>
-                    <RouterProvider router={router} />
-                </Provider>
+                <RouterProvider router={router} />
             </NuqsAdapter>
         </ThemeProvider>
     </StrictMode>,

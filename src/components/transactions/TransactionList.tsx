@@ -1,4 +1,4 @@
-import { type FC, useMemo } from "react";
+import { useMemo } from "react";
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
@@ -125,17 +125,17 @@ export function TransactionList() {
     );
 }
 
-type Props = {
+interface Props {
     dateFilterOption: DateFilter;
     setDateFilterOption: (option: DateFilter) => void;
     closeDrawer: VoidFunction;
-};
+}
 
-const DateFilterDrawerContent: FC<Props> = ({
+function DateFilterDrawerContent({
     setDateFilterOption,
     dateFilterOption,
     closeDrawer,
-}) => {
+}: Props) {
     return (
         <div className={"mx-4"}>
             <div className={"mb-8 flex gap-x-4"}>
@@ -170,7 +170,7 @@ const DateFilterDrawerContent: FC<Props> = ({
             </RadioGroup>
         </div>
     );
-};
+}
 
 function TransactionGroup({
     day,

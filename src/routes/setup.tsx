@@ -1,10 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
-import { Check, KeyRound, TriangleAlert } from "lucide-react";
+import { Check } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
-import { useEncryption } from "@/components/use-encryption.ts";
 import { useTransactionCount } from "@/components/transactions/use-transactions.ts";
-import { Label } from "@/components/ui/label.tsx";
 import {
     MAX_BACKUP_INTERVAL_IN_HOURS,
     MIN_BACKUP_INTERVAL_IN_HOURS,
@@ -13,27 +11,18 @@ import {
 import { Slider } from "@/components/ui/slider.tsx";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
 import { Button } from "@/components/ui/button.tsx";
-import { transactionsRepository } from "@/persistence/repository.ts";
 
 export const Route = createFileRoute("/setup")({
-    validateSearch: (search) => ({
-        redirect: (search.redirect as string) || "",
-    }),
     component: RouteComponent,
 });
 
 function RouteComponent() {
     const navigate = useNavigate();
-    const { redirect } = Route.useSearch();
 
-    const { key, setKey } = useEncryption();
     const transactionCount = useTransactionCount();
     const [backupConfig, setBackupConfig] = useBackupConfig();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [canDecrypt, setCanDecrypt] = useState<
-        { isInitial: true } | { isInitial: false; canDecrypt: boolean }
-    >({ isInitial: true });
     const [importStatus, setImportStatus] = useState<
         | {
               isInitial: true;
@@ -41,26 +30,11 @@ function RouteComponent() {
         | { isInitial: false; successful: boolean }
     >({ isInitial: true });
     const formRef = useRef<HTMLFormElement | null>(null);
-    const prevKeyLengthRef = useRef<number>(0);
 
     function handleSubmit(event: FormEvent) {
         event.preventDefault();
 
-        if (!key) {
-            return;
-        }
-
-        if (transactionCount === 0) {
-            void navigate({ to: redirect || "/" });
-            return;
-        }
-
-        const isValid = transactionsRepository.checkMasterPassword(key);
-        setCanDecrypt({ isInitial: false, canDecrypt: isValid });
-
-        if (isValid) {
-            void navigate({ to: redirect || "/" });
-        }
+        void navigate({ to: "/" });
     }
 
     async function handleImportChangeEvent(
@@ -143,81 +117,6 @@ function RouteComponent() {
                     onSubmit={handleSubmit}
                     ref={formRef}
                 >
-                    <div className={"flex gap-x-4"}>
-                        <div className={"text-secondary w-8"}>
-                            <KeyRound className={"w-full"} />
-                        </div>
-                        <div className={"w-full"}>
-                            <Label
-                                htmlFor="master-password-input"
-                                className="block text-sm"
-                            >
-                                Master Passwort
-                            </Label>
-                            <Input
-                                id={"master-password-input"}
-                                name={"master-password"}
-                                value={key ?? ""}
-                                type={"password"}
-                                onChange={(e) => {
-                                    const newValue = e.target.value;
-                                    const lengthDiff = Math.abs(
-                                        newValue.length -
-                                            prevKeyLengthRef.current,
-                                    );
-
-                                    setKey(newValue);
-
-                                    if (lengthDiff > 1 && newValue.length > 0) {
-                                        setTimeout(() => {
-                                            const form = formRef.current;
-                                            if (form) {
-                                                form.requestSubmit();
-                                            }
-                                        }, 0);
-                                    }
-
-                                    prevKeyLengthRef.current = newValue.length;
-                                }}
-                                onPaste={() => {
-                                    setTimeout(() => {
-                                        const form = formRef.current;
-                                        if (form) {
-                                            form.requestSubmit();
-                                        }
-                                    }, 0);
-                                }}
-                                className={
-                                    "border-outline focus:border-primary mt-1 block h-10 w-full rounded-xs border px-4 py-2 text-sm shadow-sm focus:border-2 focus:ring-0 focus:outline-none"
-                                }
-                                autoComplete={"current-password"}
-                                autoFocus
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    {!canDecrypt.isInitial && !canDecrypt.canDecrypt && (
-                        <div
-                            className={
-                                "bg-error text-on-error flex items-center gap-x-4 rounded-md p-3 text-sm"
-                            }
-                        >
-                            <div>
-                                <TriangleAlert />
-                            </div>
-                            <div>
-                                <div className={"font-semibold"}>
-                                    Das Master Passwort ist falsch.
-                                </div>
-                                <div>
-                                    Bitte überprüfe dein Passwort und versuche
-                                    es erneut.
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                     <div className={"flex flex-col space-y-2"}>
                         <div className={"my-3"}>
                             <div className={"flex flex-col"}>

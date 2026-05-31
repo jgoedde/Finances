@@ -17,7 +17,6 @@ import {
     categoriesRepository,
     transactionsRepository,
 } from "@/persistence/repository";
-import { useEncryption } from "@/components/use-encryption";
 import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
@@ -43,8 +42,6 @@ interface SavingsTarget {
 }
 
 export function ExportSankeyDialog() {
-    const { key } = useEncryption();
-
     const [open, setOpen] = useQueryState(
         "sankey-export",
         parseAsBoolean.withDefault(false).withOptions({ history: "push" }),
@@ -147,11 +144,6 @@ export function ExportSankeyDialog() {
     }
 
     function generateSankeyCSV() {
-        if (!key) {
-            toast.error("No encryption key available");
-            return;
-        }
-
         const monthNum = parseInt(month);
         const yearNum = parseInt(year);
 
@@ -166,7 +158,6 @@ export function ExportSankeyDialog() {
         const transactions = transactionsRepository.getByTimeRange(
             startDate.getTime(),
             endDate.getTime(),
-            key,
             undefined,
             false,
             true,

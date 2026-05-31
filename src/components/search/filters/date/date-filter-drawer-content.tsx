@@ -2,23 +2,22 @@ import { DrawerClose } from "@/components/ui/drawer.tsx";
 import { X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import type { FC } from "react";
 import {
     type DateFilterOption,
     getDateFilterStr,
 } from "@/components/search/filters/date/date-filter.ts";
 
-type Props = {
+interface Props {
     dateFilterOption: DateFilterOption;
     setDateFilterOption: (option: DateFilterOption) => void;
     closeDrawer: VoidFunction;
-};
+}
 
-export const DateFilterDrawerContent: FC<Props> = ({
+export function DateFilterDrawerContent({
     setDateFilterOption,
     dateFilterOption,
     closeDrawer,
-}) => {
+}: Props) {
     return (
         <div className={"mx-4"}>
             <div className={"mb-8 flex gap-x-4"}>
@@ -73,4 +72,4 @@ export const DateFilterDrawerContent: FC<Props> = ({
             </button>
         </div>
     );
-};
+}

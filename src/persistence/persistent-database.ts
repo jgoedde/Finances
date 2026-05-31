@@ -91,7 +91,7 @@ export class PersistentDatabase {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${new Date().toISOString()}-finance.enc.sqlite`;
+        a.download = `${new Date().toISOString()}-finance.db`;
         document.body.appendChild(a);
         a.click();
         a.remove();

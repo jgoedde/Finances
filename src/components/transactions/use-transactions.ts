@@ -1,6 +1,5 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import { transactionsRepository } from "@/persistence/repository.ts";
-import { useEncryption } from "@/components/use-encryption.ts";
 
 export function useTransactions({
     start,
@@ -11,21 +10,14 @@ export function useTransactions({
     end: Date;
     categoryId?: number;
 }) {
-    const { key } = useEncryption();
-
-    if (!key) {
-        throw new Error("Unable to query expenses without encryption key");
-    }
-
     return useTableSubscription(
         () =>
             transactionsRepository.getByTimeRange(
                 start.getTime(),
                 end.getTime(),
-                key,
                 categoryId,
             ),
-        [key, start, end, categoryId],
+        [start, end, categoryId],
         "expenses:changed",
     );
 }

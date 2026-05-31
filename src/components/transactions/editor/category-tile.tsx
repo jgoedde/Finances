@@ -1,21 +1,16 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import { type FC } from "react";
 import { convertHexToTonal } from "@/lib/color-utils.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useColorScheme } from "@mantine/hooks";
 import type { Category } from "@/persistence/types.ts";
 
-type Props = {
+interface Props {
     selectedCategoryId: number | undefined;
     category: Category;
     onClick: () => void;
-};
+}
 
-export const CategoryTile: FC<Props> = ({
-    category,
-    onClick,
-    selectedCategoryId,
-}) => {
+export function CategoryTile({ category, onClick, selectedCategoryId }: Props) {
     const theme = useColorScheme();
 
     const ripple = useRipple();
@@ -73,4 +68,4 @@ export const CategoryTile: FC<Props> = ({
             </div>
         </button>
     );
-};
+}
