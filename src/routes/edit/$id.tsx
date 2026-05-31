@@ -56,7 +56,7 @@ function EditTransactionPage() {
                 amount: updated.amount,
                 name: updated.name,
                 description: updated.description,
-                date: updated.date.getDate(),
+                date: updated.date.getTime(),
                 exceptional: updated.isExceptional,
                 currency: "EUR",
             });
