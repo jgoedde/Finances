@@ -88,7 +88,7 @@ function EditTransactionPage() {
                 date: new Date(transaction.date),
                 description: transaction.description ?? "",
                 name: transaction.name,
-                amount: transaction.amount,
+                amount: Math.abs(transaction.amount),
                 categoryId: transaction.category_id,
                 type: getTransactionType(transaction.amount),
             }}
