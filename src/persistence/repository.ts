@@ -43,22 +43,6 @@ export const transactionsRepository = {
         return typeof count === "number" ? count : 0;
     },
 
-    findById(id: string): Transaction | undefined {
-        const query = `            
-            SELECT *
-            FROM expenses
-            WHERE id = :id`;
-
-        const params = {
-            ":id": id,
-        };
-
-        const rows = rowsFromResult<Transaction>(
-            PersistentDatabase.get().exec(query, params),
-        );
-        return rows[0];
-    },
-
     findByIdWithCategory(id: string): TransactionWithCategory | undefined {
         const query = `            
             SELECT e.*, c.name as category_name, c.icon_name as category_icon_name, c.color as category_color
