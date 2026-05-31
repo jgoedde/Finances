@@ -60,6 +60,7 @@ function EditTransactionPage() {
                 exceptional: updated.isExceptional,
                 currency: "EUR",
             });
+            await navigate({ to: "/" });
             toast.success("Geldbewegung aktualisiert");
         } catch {
             toast.error("Geldbewegung konnte nicht aktualisiert werden.");
