@@ -4,13 +4,14 @@ import { Input } from "@/components/ui/input.tsx";
 import { CategoryTile } from "@/components/transactions/editor/category-tile.tsx";
 import { DeleteButtonWithConfirmDialog } from "@/components/transactions/editor/delete-button-with-confirm-dialog.tsx";
 import { DateChooserPopover } from "@/components/transactions/editor/date-chooser-popover.tsx";
-import { TransactionInput } from "@/components/transactions/editor/TransactionInput.tsx";
+import { TransactionInput } from "@/components/transactions/editor/transaction-input.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { type Category, TransactionType } from "@/persistence/types.ts";
 import { useCategories } from "@/components/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
+import { SelectedCategoryBadge } from "@/components/transactions/editor/selected-category-badge.tsx";
 
 export interface TransactionFormSubmitData {
     categoryId: number;
@@ -171,14 +172,15 @@ export function TransactionForm({
 
             <div className={"container flex max-w-md flex-col"}>
                 <div className={"flex flex-wrap"}>
-                    {categories.map((c) => (
-                        <CategoryTile
-                            key={c.name}
-                            selectedCategoryId={categoryId}
-                            category={c}
-                            onClick={() => onCategoryTileClick(c)}
-                        />
-                    ))}
+                    {selectedCategory === undefined &&
+                        categories.map((c) => (
+                            <CategoryTile
+                                key={c.name}
+                                selectedCategoryId={categoryId}
+                                category={c}
+                                onClick={() => onCategoryTileClick(c)}
+                            />
+                        ))}
                 </div>
 
                 <div
@@ -256,6 +258,14 @@ export function TransactionForm({
                             }
                         />
                     </div>
+                    {selectedCategory !== undefined && (
+                        <div className={"mt-4 ml-auto"}>
+                            <SelectedCategoryBadge
+                                category={selectedCategory}
+                                onClear={() => setCategoryId(undefined)}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </form>

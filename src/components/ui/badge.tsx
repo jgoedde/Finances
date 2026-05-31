@@ -18,6 +18,7 @@ const badgeVariants = cva(
                 outline:
                     "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
                 md3: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground border-outline-variant h-8 text-sm",
+                input: "rounded-small outline-none border-none text-lg h-8 text-lg bg-secondary-container text-on-secondary-container",
             },
         },
         defaultVariants: {
