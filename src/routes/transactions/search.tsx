@@ -8,11 +8,12 @@ import { isMatchingSearchFilter } from "@/components/search/filters/text/text-fi
 import { cn } from "@/lib/utils.ts";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content";
-import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTransactions } from "@/components/transactions/use-transactions.ts";
 import { addYears, endOfYear } from "date-fns";
 import { TransactionListItem } from "@/components/transactions/history/transaction-list-item.tsx";
+import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 
 export const Route = createFileRoute("/transactions/search")({
     component: SearchPage,
@@ -87,15 +88,7 @@ function SearchPage() {
                         "border-outline bg-surface-container-high flex h-16 w-dvw shrink-0 items-center border-b py-2"
                     }
                 >
-                    <button
-                        type={"button"}
-                        onClick={() => {
-                            history.back();
-                        }}
-                        className={"text-on-surface cursor-pointer px-4"}
-                    >
-                        <ArrowLeft className={"size-6"} />
-                    </button>
+                    <BackArrowButton />
                     <input
                         ref={inputRef}
                         value={search}

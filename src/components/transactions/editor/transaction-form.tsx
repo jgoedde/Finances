@@ -1,4 +1,4 @@
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { type SubmitEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import { CategoryTile } from "@/components/transactions/editor/category-tile.tsx";
@@ -10,6 +10,7 @@ import { type Category, TransactionType } from "@/persistence/types.ts";
 import { useCategories } from "@/components/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
+import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 
 export interface TransactionFormSubmitData {
     categoryId: number;
@@ -124,15 +125,7 @@ export function TransactionForm({
                     "bg-surface-container flex h-16 w-dvw items-center py-2"
                 }
             >
-                <button
-                    type={"button"}
-                    onClick={() => {
-                        history.back();
-                    }}
-                    className={"text-on-surface cursor-pointer px-4"}
-                >
-                    <ArrowLeft className={"size-6"} />
-                </button>
+                <BackArrowButton />
                 <div className={"text-lg"}>{title}</div>
                 <div className={"ml-auto flex items-center gap-x-4 pr-4"}>
                     <DateChooserPopover
