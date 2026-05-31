@@ -104,7 +104,7 @@ function RouteComponent() {
                             type={"file"}
                             max={1}
                             multiple={false}
-                            accept={".sqlite"}
+                            accept={".db"}
                             className={"hidden"}
                             ref={fileInputRef}
                             onChange={handleImportChangeEvent}
