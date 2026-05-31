@@ -4,40 +4,18 @@ import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
 import { transactionsRepository } from "@/persistence/repository.ts";
 import { formatEuro } from "@/lib/currency-utils.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { startOfMonth } from "date-fns";
 
-interface YearMonth {
-    year: number;
-    monthIndex: number; // 0-11
-}
-
-interface ChartData {
-    category: string;
-    totalSpent: number;
-    iconName: string;
-}
+const now = new Date();
 
 export function MonthsSnapRow() {
-    const pastMonths: YearMonth[] = Array.from({ length: 12 }, (_, i) => {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
-        return {
-            year: date.getFullYear(),
-            monthIndex: date.getMonth(),
-        };
-    });
+    const pastMonths = getPastMonths(now, 12);
 
     const res = useTableSubscription(
         () => transactionsRepository.getMonths(),
         [],
         "expenses:changed",
     );
-
-    function getMonthName(date: YearMonth) {
-        return new Date(date.year, date.monthIndex).toLocaleString("de-DE", {
-            month: "long",
-            year: "numeric",
-        });
-    }
 
     function getChartDataAt(date: YearMonth): ChartData[] {
         const dataForMonth = res.filter(
@@ -81,11 +59,29 @@ export function MonthsSnapRow() {
     );
 }
 
-function Chart({ data, monthName }: { data: ChartData[]; monthName: string }) {
+function getMonthName(date: YearMonth) {
+    return new Date(date.year, date.monthIndex).toLocaleString("de-DE", {
+        month: "long",
+        year: "numeric",
+    });
+}
+
+interface ChartData {
+    category: string;
+    totalSpent: number;
+    iconName: string;
+}
+
+interface ChartProps {
+    data: ChartData[];
+    monthName: string;
+}
+
+function Chart({ data, monthName }: ChartProps) {
     return (
         <div
             className={
-                "flex w-full flex-shrink-0 snap-center flex-col items-center justify-center"
+                "flex w-full shrink-0 snap-center flex-col items-center justify-center"
             }
         >
             <div
@@ -148,4 +144,24 @@ function Chart({ data, monthName }: { data: ChartData[]; monthName: string }) {
             </ChartContainer>
         </div>
     );
+}
+
+interface YearMonth {
+    year: number;
+    monthIndex: number; // 0-11
+}
+
+function getPastMonths(referenceDate: Date, count: number): YearMonth[] {
+    const months: YearMonth[] = [];
+    const startOfReferenceMonth = startOfMonth(referenceDate);
+
+    for (let i = 0; i < count; i++) {
+        months.push({
+            year: startOfReferenceMonth.getFullYear(),
+            monthIndex: startOfReferenceMonth.getMonth(),
+        });
+        startOfReferenceMonth.setMonth(startOfReferenceMonth.getMonth() - 1);
+    }
+
+    return months;
 }
