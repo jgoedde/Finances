@@ -61,7 +61,13 @@ function EditTransactionPage() {
                 currency: "EUR",
             });
             await navigate({ to: "/" });
-            toast.success("Geldbewegung aktualisiert");
+            toast.success("Geldbewegung aktualisiert", {
+                action: {
+                    label: "Rückgängig",
+                    onClick: () =>
+                        void transactionsRepository.update(transaction),
+                },
+            });
         } catch {
             toast.error("Geldbewegung konnte nicht aktualisiert werden.");
         }
@@ -73,6 +79,13 @@ function EditTransactionPage() {
             await navigate({ to: "/" });
             toast.success(
                 `Die ${getTransactionTypeLabel(getTransactionType(transaction.amount))} wurde gelöscht.`,
+                {
+                    action: {
+                        label: "Wiederherstellen",
+                        onClick: () =>
+                            void transactionsRepository.add(transaction),
+                    },
+                },
             );
         } catch {
             toast.error(
