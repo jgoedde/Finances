@@ -13,15 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    categoriesRepository,
-    transactionsRepository,
-} from "@/persistence/repository";
 import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { buildSankeyCSV, downloadSankeyCSV } from "@/lib/sankey-csv-utils.ts";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+import { categoryRepository } from "@/persistence/repositories/category-repository.ts";
 
 interface IncomeSource {
     id: string;
@@ -155,7 +153,7 @@ export function ExportSankeyDialog() {
         const startDate = startOfMonth(new Date(yearNum, monthNum - 1));
         const endDate = endOfMonth(startDate);
 
-        const transactions = transactionsRepository.getByTimeRange(
+        const transactions = transactionRepository.getByTimeRange(
             startDate.getTime(),
             endDate.getTime(),
             undefined,
@@ -163,7 +161,7 @@ export function ExportSankeyDialog() {
             true,
         );
 
-        const categories = categoriesRepository.getAll();
+        const categories = categoryRepository.getAll();
 
         const csv = buildSankeyCSV({
             monthIndex: parseInt(month) - 1,

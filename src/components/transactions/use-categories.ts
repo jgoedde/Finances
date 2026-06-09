@@ -1,10 +1,10 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { categoriesRepository } from "@/persistence/repository.ts";
 import type { Category } from "@/persistence/types.ts";
+import { categoryRepository } from "@/persistence/repositories/category-repository.ts";
 
 export function useCategories(): Category[] {
     return useTableSubscription(
-        () => categoriesRepository.getAll(),
+        () => categoryRepository.getAll(),
         [],
         "categories:changed",
     );

@@ -5,10 +5,10 @@ import {
 } from "@/components/transactions/editor/transaction-form.tsx";
 import { z } from "zod";
 import { TransactionType } from "@/persistence/types.ts";
-import { transactionsRepository } from "@/persistence/repository.ts";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { getTransactionTypeLabel } from "@/lib/transaction-utils.ts";
+import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
 
 const prefilledSchema = z.object({
     vendor: z.string().nonempty().optional().catch(undefined),
@@ -28,7 +28,7 @@ function NewTransactionPage() {
 
     const onTransactionFormSubmit = async (data: TransactionFormSubmitData) => {
         try {
-            await transactionsRepository.add({
+            await transactionRepository.add({
                 id: nanoid(8),
                 date: data.date.getTime(),
                 category_id: data.categoryId,

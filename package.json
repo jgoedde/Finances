@@ -46,6 +46,7 @@
         "lucide-react": "^1.17.0",
         "nanoid": "^5.1.11",
         "nuqs": "^2.8.9",
+        "radix-ui": "^1.5.0",
         "react": "^19.2.7",
         "react-currency-input-field": "^4.0.5",
         "react-day-picker": "^10.0.1",

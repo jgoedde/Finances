@@ -1,5 +1,4 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { transactionsRepository } from "@/persistence/repository.ts";
 import { cn } from "@/lib/utils.ts";
 import { Check, CircleSlash2, FileLock } from "lucide-react";
 import {
@@ -25,12 +24,13 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
 
 const now = new Date();
 
 export function MonthlyOverview() {
     const categories = useTableSubscription(
-        () => transactionsRepository.getSpentPerCategory(),
+        () => transactionRepository.getSpentPerCategory(),
         [],
         "expenses:changed",
     );

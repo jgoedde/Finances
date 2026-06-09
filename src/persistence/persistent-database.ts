@@ -56,13 +56,9 @@ export class PersistentDatabase {
             ? new this.sql.Database(savedData)
             : new this.sql.Database();
 
-        if (!savedData) {
-            const schema = await fetch("/schema.sql").then((r) => r.text());
-            this.dbInstance.run(schema);
-            await this.saveToIndexedDB(this.dbInstance);
-        } else {
-            await this.ensureExceptionalColumn(this.dbInstance);
-        }
+        const schema = await fetch("/schema.sql").then((r) => r.text());
+        this.dbInstance.run(schema);
+        await this.saveToIndexedDB(this.dbInstance);
 
         return this.dbInstance;
     }
@@ -109,19 +105,5 @@ export class PersistentDatabase {
 
         dbEventEmitter.emit("categories:changed");
         dbEventEmitter.emit("expenses:changed");
-    }
-
-    private static async ensureExceptionalColumn(db: Database) {
-        const result = db.exec(`
-        PRAGMA table_info(expenses);
-    `);
-        const columns = result[0]?.values?.map((row) => row[1]); // column names
-        if (!columns.includes("exceptional")) {
-            console.info("Adding 'exceptional' column to expenses table");
-            db.run(
-                `ALTER TABLE expenses ADD COLUMN exceptional INTEGER DEFAULT 0;`,
-            );
-            await this.saveToIndexedDB(db);
-        }
     }
 }

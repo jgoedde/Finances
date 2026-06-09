@@ -1,13 +1,15 @@
-import type { Database } from "sql.js";
-import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
 import type {
-    Category,
     Transaction,
     TransactionWithCategory,
 } from "@/persistence/types.ts";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
+import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
+import {
+    mapExpenseWithCategory,
+    rowsFromResult,
+} from "@/persistence/row-mapper.ts";
 
-export const transactionsRepository = {
+export const transactionRepository = {
     async add(entity: Transaction) {
         const query = `            
             INSERT INTO expenses (id, date, name, description, amount, currency, category_id, exceptional)
@@ -281,49 +283,3 @@ export const transactionsRepository = {
         dbEventEmitter.emit("expenses:changed");
     },
 };
-
-export const categoriesRepository = {
-    getAll(): Category[] {
-        const query = `            
-            SELECT *
-            FROM categories
-            ORDER BY name`;
-
-        return rowsFromResult<Category>(PersistentDatabase.get().exec(query));
-    },
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowsFromResult<T = any>(result: ReturnType<Database["exec"]>): T[] {
-    if (result.length === 0) return [];
-    const { columns, values } = result[0];
-    return values.map((row) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const obj: any = {};
-        columns.forEach((col, i) => {
-            obj[col] = row[i];
-        });
-        return obj as T;
-    });
-}
-
-function mapExpenseWithCategory(
-    row: Record<string, unknown>,
-): TransactionWithCategory {
-    return {
-        id: row.id as string,
-        date: row.date as number,
-        name: row.name as string,
-        description: row.description as string,
-        amount: Number(row.amount),
-        currency: row.currency as string,
-        category_id: row.category_id as number,
-        exceptional: Boolean(row.exceptional),
-        category: {
-            id: row.category_id as number,
-            name: row.category_name as string,
-            color: row.category_color as string,
-            icon_name: row.category_icon_name as string,
-        },
-    };
-}

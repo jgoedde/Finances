@@ -3,12 +3,12 @@ import {
     TransactionForm,
     type TransactionFormSubmitData,
 } from "@/components/transactions/editor/transaction-form.tsx";
-import { transactionsRepository } from "@/persistence/repository.ts";
 import { toast } from "sonner";
 import {
     getTransactionType,
     getTransactionTypeLabel,
 } from "@/lib/transaction-utils.ts";
+import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
 
 class TransactionNotFoundError extends Error {
     constructor(message: string) {
@@ -20,7 +20,7 @@ class TransactionNotFoundError extends Error {
 export const Route = createFileRoute("/edit/$id")({
     component: EditTransactionPage,
     loader: (a) => {
-        const t = transactionsRepository.findByIdWithCategory(a.params.id);
+        const t = transactionRepository.findByIdWithCategory(a.params.id);
         if (t === undefined) {
             throw new TransactionNotFoundError("transaction not found");
         }
@@ -50,7 +50,7 @@ function EditTransactionPage() {
         updated: TransactionFormSubmitData,
     ) => {
         try {
-            await transactionsRepository.update({
+            await transactionRepository.update({
                 id,
                 category_id: updated.categoryId,
                 amount: updated.amount,
@@ -65,7 +65,7 @@ function EditTransactionPage() {
                 action: {
                     label: "Rückgängig",
                     onClick: () =>
-                        void transactionsRepository.update(transaction),
+                        void transactionRepository.update(transaction),
                 },
             });
         } catch {
@@ -75,7 +75,7 @@ function EditTransactionPage() {
 
     const onTransactionFormDelete = async () => {
         try {
-            await transactionsRepository.delete(id);
+            await transactionRepository.delete(id);
             await navigate({ to: "/" });
             toast.success(
                 `Die ${getTransactionTypeLabel(getTransactionType(transaction.amount))} wurde gelöscht.`,
@@ -83,7 +83,7 @@ function EditTransactionPage() {
                     action: {
                         label: "Wiederherstellen",
                         onClick: () =>
-                            void transactionsRepository.add(transaction),
+                            void transactionRepository.add(transaction),
                     },
                 },
             );

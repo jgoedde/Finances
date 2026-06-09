@@ -6,6 +6,7 @@ import { TransactionList } from "@/components/transactions/TransactionList.tsx";
 import { NewTransactionFAB } from "@/components/transactions/new-transaction-fab.tsx";
 import { Insights } from "@/components/transactions/Insights.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
+import { FixedCostsTable } from "@/components/fixed-costs/fixed-costs-table.tsx";
 
 export const Route = createFileRoute("/")({
     component: TransactionsPage,
@@ -21,6 +22,7 @@ function TransactionsPage() {
                 <MonthlyOverview />
                 <Insights />
                 <TransactionList />
+                <FixedCostsTable />
             </main>
 
             <footer>

@@ -37,4 +37,23 @@ VALUES ('1', 'Auswärts essen', '#00202e', 'utensils'),
        ('7', 'Urlaub', '#80d353', 'plane'),
        ('8', 'Büro/Arbeit', '#609f3f', 'lamp-desk'),
        ('9', 'Snacks', '#D8DC6A', 'popcorn'),
-       ('10', 'Wohnung', '#ff6361', 'sofa');;
+       ('10', 'Wohnung', '#ff6361', 'sofa')
+ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS fixed_costs
+(
+    id          INTEGER                       NOT NULL
+        PRIMARY KEY AUTOINCREMENT,
+    name        TEXT                          NOT NULL,
+    description TEXT    DEFAULT NULL,
+    amount      NUMERIC                       NOT NULL,
+    currency    TEXT    DEFAULT 'EUR'         NOT NULL,
+    interval    TEXT    DEFAULT 'monthly'     NOT NULL
+        CHECK (interval IN ('monthly', 'quarterly', 'yearly')),
+    category_id INTEGER                       NOT NULL
+        REFERENCES categories ON UPDATE CASCADE ON DELETE RESTRICT,
+    active      INTEGER DEFAULT 1             NOT NULL
+        CHECK (active IN (0, 1)),
+    start_date  TEXT    DEFAULT (date('now')) NOT NULL,
+    end_date    TEXT    DEFAULT NULL
+);

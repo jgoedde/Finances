@@ -1,5 +1,6 @@
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { transactionsRepository } from "@/persistence/repository.ts";
+
+import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
 
 export function useTransactions({
     start,
@@ -12,7 +13,7 @@ export function useTransactions({
 }) {
     return useTableSubscription(
         () =>
-            transactionsRepository.getByTimeRange(
+            transactionRepository.getByTimeRange(
                 start.getTime(),
                 end.getTime(),
                 categoryId,
@@ -33,7 +34,7 @@ export function useSpentByTimeRange({
 }) {
     return useTableSubscription(
         () =>
-            transactionsRepository.getSpentAmountByTimeRange(
+            transactionRepository.getSpentAmountByTimeRange(
                 start.getTime(),
                 end.getTime(),
                 undefined,
@@ -46,7 +47,7 @@ export function useSpentByTimeRange({
 
 export function useTransactionCount() {
     return useTableSubscription(
-        () => transactionsRepository.count(),
+        () => transactionRepository.count(),
         [],
         "expenses:changed",
     );
