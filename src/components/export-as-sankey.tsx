@@ -223,7 +223,6 @@ export function ExportSankeyDialog() {
                                 value={month}
                                 onChange={(e) => setMonth(e.target.value)}
                                 placeholder="e.g., 11"
-                                variant={"md3"}
                                 required
                             />
                         </div>
@@ -239,7 +238,6 @@ export function ExportSankeyDialog() {
                                 value={year}
                                 onChange={(e) => setYear(e.target.value)}
                                 placeholder="e.g., 2025"
-                                variant={"md3"}
                                 required
                             />
                         </div>
@@ -273,7 +271,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Input
                                         type="number"
@@ -286,7 +283,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Button
                                         variant="ghost"
@@ -331,7 +327,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Input
                                         type="number"
@@ -344,7 +339,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Button
                                         variant="ghost"
@@ -387,7 +381,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Input
                                         type="number"
@@ -400,7 +393,6 @@ export function ExportSankeyDialog() {
                                                 e.target.value,
                                             )
                                         }
-                                        variant={"md3"}
                                     />
                                     <Button
                                         variant="ghost"

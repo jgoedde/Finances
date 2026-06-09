@@ -12,23 +12,21 @@ import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
+    SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import {
-    Check,
-    Pencil,
-    ToggleLeft,
-    ToggleRight,
-    Trash2,
-    X,
-} from "lucide-react";
+import { Check, Pencil, Trash2, X } from "lucide-react";
 import { fixedCostRepository } from "@/persistence/repositories/fixed-costs-repository";
 import type { FixedCost } from "@/persistence/types";
 import type { FixedCostPayload } from "@/persistence/row-mapper";
 import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch.tsx";
+import { useCategories } from "@/components/transactions/use-categories.ts";
 
 type EditState = Partial<FixedCostPayload> & { id: number };
 
@@ -52,7 +50,9 @@ export function FixedCostsTable() {
         "fixedCosts:changed",
     );
 
-    const [editing, setEditing] = useState<EditState | null>(null);
+    const categories = useCategories();
+
+    const [editing, setEditing] = useState<EditState>();
 
     function startEdit(row: FixedCost) {
         setEditing({
@@ -72,24 +72,54 @@ export function FixedCostsTable() {
     }
 
     function cancelEdit() {
-        setEditing(null);
+        setEditing(undefined);
     }
 
     async function saveEdit() {
-        if (!editing) return;
+        if (!editing) {
+            return;
+        }
+
         const { id, ...patch } = editing;
-        await fixedCostRepository.update(id, patch);
-        setEditing(null);
+
+        try {
+            await fixedCostRepository.update(id, patch);
+            toast.success("Die Fixkostenstelle wurde erfolgreich gespeichert.");
+        } catch {
+            toast.error(
+                "Die Fixkostenstelle konnte nicht gespeichert werden. Bitte versuche es erneut.",
+            );
+        } finally {
+            setEditing(undefined);
+        }
     }
 
     async function toggleActive(row: FixedCost) {
-        await fixedCostRepository.update(row.id, {
-            active: row.active ? 0 : 1,
-        });
+        try {
+            await fixedCostRepository.update(row.id, {
+                active: row.active ? 0 : 1,
+            });
+            toast.success(
+                "Die Fixkostenstelle ist nun " +
+                    (row.active ? "deaktiviert" : "aktiv") +
+                    ".",
+            );
+        } catch {
+            toast.error(
+                "Die Fixkostenstelle konnte nicht aktualisiert werden. Bitte versuche es erneut.",
+            );
+        }
     }
 
     async function remove(id: number) {
-        await fixedCostRepository.remove(id);
+        try {
+            await fixedCostRepository.remove(id);
+            toast.success("Die Fixkostenstelle wurde gelöscht");
+        } catch {
+            toast.error(
+                "Die Fixkostenstelle konnte nicht gelöscht werden. Bitte versuche es erneut",
+            );
+        }
     }
 
     function patchEdit(field: keyof FixedCostPayload, value: unknown) {
@@ -143,11 +173,35 @@ export function FixedCostsTable() {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {/* category editing out of scope without a category select,
-                                        show current as read-only for now */}
-                                    <span className="text-muted-foreground text-sm">
-                                        {row.category.name}
-                                    </span>
+                                    <Select
+                                        value={
+                                            editing.category_id === undefined
+                                                ? ""
+                                                : String(editing.category_id)
+                                        }
+                                        onValueChange={(v) =>
+                                            patchEdit("category_id", v)
+                                        }
+                                    >
+                                        <SelectTrigger className="h-8 w-36">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>
+                                                    Intervalle
+                                                </SelectLabel>
+                                                {categories.map((it) => (
+                                                    <SelectItem
+                                                        key={it.id}
+                                                        value={String(it.id)}
+                                                    >
+                                                        {it.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </TableCell>
                                 <TableCell>
                                     <Input
@@ -175,13 +229,21 @@ export function FixedCostsTable() {
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {Object.entries(
-                                                INTERVAL_LABELS,
-                                            ).map(([k, v]) => (
-                                                <SelectItem key={k} value={k}>
-                                                    {v}
-                                                </SelectItem>
-                                            ))}
+                                            <SelectGroup>
+                                                <SelectLabel>
+                                                    Intervalle
+                                                </SelectLabel>
+                                                {Object.entries(
+                                                    INTERVAL_LABELS,
+                                                ).map(([k, v]) => (
+                                                    <SelectItem
+                                                        key={k}
+                                                        value={k}
+                                                    >
+                                                        {v}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
                                         </SelectContent>
                                     </Select>
                                 </TableCell>
@@ -247,26 +309,15 @@ export function FixedCostsTable() {
                                     )}
                                 </TableCell>
                                 <TableCell className="flex items-center gap-1">
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-7 w-7"
-                                        onClick={() => toggleActive(row)}
-                                        title={
-                                            row.active
-                                                ? "Deaktivieren"
-                                                : "Aktivieren"
+                                    <Switch
+                                        checked={row.active}
+                                        onCheckedChange={() =>
+                                            toggleActive(row)
                                         }
-                                    >
-                                        {row.active ? (
-                                            <ToggleRight className="h-4 w-4" />
-                                        ) : (
-                                            <ToggleLeft className="text-muted-foreground h-4 w-4" />
-                                        )}
-                                    </Button>
+                                    />
                                     <Button
                                         size="icon"
-                                        variant="ghost"
+                                        variant="filledTonal"
                                         className="h-7 w-7"
                                         onClick={() => startEdit(row)}
                                     >
@@ -274,8 +325,8 @@ export function FixedCostsTable() {
                                     </Button>
                                     <Button
                                         size="icon"
-                                        variant="ghost"
-                                        className="text-destructive h-7 w-7"
+                                        variant="filledTonal"
+                                        className="text-error bg-error-container h-7 w-7"
                                         onClick={() => remove(row.id)}
                                     >
                                         <Trash2 className="h-4 w-4" />
