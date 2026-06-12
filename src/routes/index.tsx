@@ -9,10 +9,10 @@ import { Toaster } from "@/components/ui/sonner.tsx";
 import { FixedCostsTable } from "@/components/fixed-costs/fixed-costs-table.tsx";
 
 export const Route = createFileRoute("/")({
-    component: TransactionsPage,
+    component: RouteComponent,
 });
 
-function TransactionsPage() {
+function RouteComponent() {
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <SearchBar />

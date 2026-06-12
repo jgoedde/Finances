@@ -81,7 +81,10 @@ export function TransactionList() {
     );
 
     return (
-        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <Drawer
+            open={isDrawerOpen}
+            onOpenChange={(o) => void setIsDrawerOpen(o)}
+        >
             <div
                 className={`bg-surface-container-lowest m-2 mt-4 flex flex-col
                     rounded-md p-4`}
@@ -91,7 +94,7 @@ export function TransactionList() {
                         variant={"md3"}
                         className={"flex gap-x-2"}
                         onClick={() => {
-                            setIsDrawerOpen(true);
+                            void setIsDrawerOpen(true);
                         }}
                     >
                         <div>
@@ -124,29 +127,27 @@ export function TransactionList() {
                               />
                           ))}
                 </div>
-
-                <DrawerContent>
-                    <DrawerHeader className={"mb-4 pt-0"}>
-                        <DrawerTitle asChild>
-                            <div className="flex gap-x-4">
-                                <DrawerClose asChild>
-                                    <div>
-                                        <X />
-                                    </div>
-                                </DrawerClose>
-                                Datum
-                            </div>
-                        </DrawerTitle>
-                        <DrawerDescription></DrawerDescription>
-                    </DrawerHeader>
-                    {/*<div className={"mb-8 flex gap-x-4"}></div>*/}
-                    <DateFilterDrawerContent
-                        closeDrawer={() => setIsDrawerOpen(false)}
-                        dateFilterOption={dateFilterOption as DateFilter}
-                        setDateFilterOption={(df) => setDateFilterOption(df)}
-                    />
-                </DrawerContent>
             </div>
+            <DrawerContent>
+                <DrawerHeader className={"mb-4 pt-0"}>
+                    <DrawerTitle asChild>
+                        <div className="flex gap-x-4">
+                            <DrawerClose asChild>
+                                <div>
+                                    <X />
+                                </div>
+                            </DrawerClose>
+                            Datum
+                        </div>
+                    </DrawerTitle>
+                    <DrawerDescription></DrawerDescription>
+                </DrawerHeader>
+                <DateFilterDrawerContent
+                    closeDrawer={() => void setIsDrawerOpen(false)}
+                    dateFilterOption={dateFilterOption as DateFilter}
+                    setDateFilterOption={(df) => setDateFilterOption(df)}
+                />
+            </DrawerContent>
         </Drawer>
     );
 }
