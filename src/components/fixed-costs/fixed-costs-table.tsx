@@ -166,7 +166,7 @@ export function FixedCostsTable() {
                 </TableBody>
             </Table>
 
-            <div className="flex justify-end border-t pt-3 pr-4 text-sm">
+            <div className="flex justify-end border-t py-3 pr-3 text-sm">
                 <span className="text-muted-foreground mr-2">
                     Monatlich gesamt:
                 </span>
