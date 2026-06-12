@@ -97,7 +97,7 @@ function Chart({ data, monthName }: ChartProps) {
                 {monthName}
             </div>
             <ChartContainer className={"w-full"} config={{}}>
-                <BarChart accessibilityLayer data={data}>
+                <BarChart accessibilityLayer data={data} margin={{ top: 40 }}>
                     <CartesianGrid
                         vertical={false}
                         stroke={"var(--color-surface-variant)"}
