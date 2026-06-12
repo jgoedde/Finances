@@ -54,6 +54,10 @@ export function FixedCostsTable() {
     }
 
     async function remove(id: number) {
+        if (!confirm("Möchtest Du diese Fixkostenstelle wirklich löschen?")) {
+            return;
+        }
+
         try {
             await fixedCostRepository.remove(id);
             toast.success("Die Fixkostenstelle wurde gelöscht");
