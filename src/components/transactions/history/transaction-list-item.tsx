@@ -54,16 +54,14 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
 
     return (
         <div
-            className={
-                "ripple-container flex w-full flex-row items-center gap-x-3 rounded-md py-1.5"
-            }
+            className={`ripple-container flex w-full flex-row items-center
+                gap-x-3 rounded-md py-1.5`}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
         >
             <div
-                className={
-                    "text-on-surface-variant flex size-10 min-w-8 shrink-0 items-center justify-center rounded-full"
-                }
+                className={`text-on-surface-variant flex size-10 min-w-8
+                    shrink-0 items-center justify-center rounded-full`}
                 style={{
                     backgroundColor,
                 }}
@@ -97,9 +95,8 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     </button>
                 </div>
                 <div
-                    className={
-                        "text-on-surface-variant line-clamp-2 text-sm/5 break-all"
-                    }
+                    className={`text-on-surface-variant line-clamp-2 text-sm/5
+                        break-all`}
                 >
                     {getSupportingText()}
                 </div>

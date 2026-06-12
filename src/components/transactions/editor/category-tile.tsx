@@ -32,9 +32,8 @@ export function CategoryTile({ category, onClick, selectedCategoryId }: Props) {
                     }),
                 backgroundColor,
             }}
-            className={
-                "ripple-container relative flex aspect-square size-1/4 flex-col border-none text-left transition-opacity duration-150"
-            }
+            className={`ripple-container relative flex aspect-square size-1/4
+                flex-col border-none text-left transition-opacity duration-150`}
             data-ripple-color={"bg-on-surface/20"}
             {...ripple}
             onClick={(e) => {
@@ -54,9 +53,8 @@ export function CategoryTile({ category, onClick, selectedCategoryId }: Props) {
                 {category.name}
             </div>
             <div
-                className={
-                    "absolute right-1 bottom-1 size-10 transition-colors duration-75"
-                }
+                className={`absolute right-1 bottom-1 size-10 transition-colors
+                    duration-75`}
                 style={{
                     color: textColor,
                 }}

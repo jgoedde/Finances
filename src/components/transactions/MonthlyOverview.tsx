@@ -94,7 +94,8 @@ export function MonthlyOverview() {
                             <LabelList
                                 position="insideStart"
                                 dataKey="categoryName"
-                                className="fill-surface capitalize mix-blend-luminosity"
+                                className="fill-surface capitalize
+                                    mix-blend-luminosity"
                                 fontSize={11}
                             />
                         </RadialBar>
@@ -109,7 +110,10 @@ export function MonthlyOverview() {
                     <AccordionItem value={"item-1"}>
                         <AccordionTrigger>Mehr</AccordionTrigger>
                         <AccordionContent>
-                            <div className="divide-outline-variant flex flex-col space-y-2 divide-y">
+                            <div
+                                className="divide-outline-variant flex flex-col
+                                    space-y-2 divide-y"
+                            >
                                 {chartData.map((payload) => {
                                     return (
                                         <MyLegend
@@ -155,7 +159,10 @@ export function MonthlyOverview() {
                                 {hasBackedUp ? <Check /> : <FileLock />}
                                 Backup
                                 {shouldBackup && (
-                                    <div className="bg-error absolute -end-0.5 -top-0.5 size-3 rounded-full"></div>
+                                    <div
+                                        className="bg-error absolute -end-0.5
+                                            -top-0.5 size-3 rounded-full"
+                                    ></div>
                                 )}
                             </Button>
                         </TooltipTrigger>

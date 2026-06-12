@@ -134,7 +134,10 @@ export function FixedCostsTable() {
                                     {INTERVAL_LABELS[row.interval]}
                                 </span>
                             </TableCell>
-                            <TableCell className="text-muted-foreground text-right text-sm">
+                            <TableCell
+                                className="text-muted-foreground text-right
+                                    text-sm"
+                            >
                                 {toMonthlyLabel(
                                     row.monthlyAmount,
                                     row.currency,
@@ -148,7 +151,8 @@ export function FixedCostsTable() {
                                 <Button
                                     size="icon"
                                     variant="filledTonal"
-                                    className="text-error bg-error-container h-7 w-7"
+                                    className="text-error bg-error-container h-7
+                                        w-7"
                                     onClick={() => remove(row.id)}
                                 >
                                     <Trash2 className="h-4 w-4" />

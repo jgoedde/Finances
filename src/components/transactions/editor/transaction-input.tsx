@@ -125,9 +125,10 @@ export function TransactionInput({
                             key={`suggestion-${e}`}
                             tabIndex={-1}
                             aria-hidden="true"
-                            className={
-                                "border-outline-variant bg-surface-container-low text-on-surface-variant ripple-container cursor-pointer rounded-md border-1 px-2 py-1"
-                            }
+                            className={`border-outline-variant
+                            bg-surface-container-low text-on-surface-variant
+                            ripple-container cursor-pointer rounded-md border-1
+                            px-2 py-1`}
                             data-ripple-color={"bg-on-surface/50"}
                             {...ripple}
                             type={"button"}
@@ -159,9 +160,8 @@ export function TransactionInput({
                         value={transactionLocal}
                         onChange={onInputChange}
                         type={"text"}
-                        className={
-                            "rounded-none border-none shadow-none focus-visible:ring-0"
-                        }
+                        className={`rounded-none border-none shadow-none
+                            focus-visible:ring-0`}
                     />
                 </div>
                 <div className={"flex items-center gap-x-4"}>

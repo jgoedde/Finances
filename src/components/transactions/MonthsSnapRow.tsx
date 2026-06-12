@@ -33,9 +33,8 @@ export function MonthsSnapRow() {
 
     return (
         <div
-            className={
-                "bg-surface-container-high flex flex-col space-y-2 rounded-xl p-4 shadow-lg"
-            }
+            className={`bg-surface-container-high flex flex-col space-y-2
+                rounded-xl p-4 shadow-lg`}
         >
             <div className={"flex flex-col"}>
                 <div className={"font-poppins text-lg font-medium"}>
@@ -46,7 +45,10 @@ export function MonthsSnapRow() {
                 </div>
             </div>
             {/* Scrollable Snap Container */}
-            <div className="flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-xl">
+            <div
+                className="flex w-full snap-x snap-mandatory overflow-x-auto
+                    scroll-smooth rounded-xl"
+            >
                 {pastMonths.map((date) => (
                     <Chart
                         key={`${date.year}-${date.monthIndex}`}
@@ -80,14 +82,12 @@ interface ChartProps {
 function Chart({ data, monthName }: ChartProps) {
     return (
         <div
-            className={
-                "flex w-full shrink-0 snap-center flex-col items-center justify-center"
-            }
+            className={`flex w-full shrink-0 snap-center flex-col items-center
+                justify-center`}
         >
             <div
-                className={
-                    "text-primary font-poppins self-center text-lg font-extrabold"
-                }
+                className={`text-primary font-poppins self-center text-lg
+                    font-extrabold`}
             >
                 {formatEuro(
                     data.reduce((acc, item) => acc + item.totalSpent, 0),

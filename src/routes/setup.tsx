@@ -54,15 +54,20 @@ function RouteComponent() {
 
     return (
         <div className={"bg-scrim/80 flex h-dvh items-center justify-center"}>
-            <div className="bg-surface-container-high w-full max-w-sm rounded-2xl p-6 shadow-xl">
-                <h2 className="font-poppins mb-6 text-center text-2xl font-semibold">
+            <div
+                className="bg-surface-container-high w-full max-w-sm rounded-2xl
+                    p-6 shadow-xl"
+            >
+                <h2
+                    className="font-poppins mb-6 text-center text-2xl
+                        font-semibold"
+                >
                     Entschlüsselung
                 </h2>
 
                 <div
-                    className={
-                        "text-on-surface-variant mb-6 flex flex-col gap-y-2 text-sm"
-                    }
+                    className={`text-on-surface-variant mb-6 flex flex-col
+                        gap-y-2 text-sm`}
                 >
                     <div>
                         {transactionCount === 0 ? (
@@ -176,7 +181,8 @@ function RouteComponent() {
                     <div className={"mt-6 flex w-full justify-center"}>
                         <button
                             type="submit"
-                            className="bg-primary text-on-primary flex gap-x-2 rounded-full px-4 py-2 font-medium"
+                            className="bg-primary text-on-primary flex gap-x-2
+                                rounded-full px-4 py-2 font-medium"
                         >
                             <div>
                                 <Check />

@@ -140,9 +140,8 @@ export function TransactionForm({
 
                     <button
                         type={"submit"}
-                        className={
-                            "ripple-container bg-primary text-on-primary cursor-pointer rounded-full px-3 py-1"
-                        }
+                        className={`ripple-container bg-primary text-on-primary
+                            cursor-pointer rounded-full px-3 py-1`}
                     >
                         <Check className={"size"} />
                     </button>
@@ -184,9 +183,8 @@ export function TransactionForm({
                 </div>
 
                 <div
-                    className={
-                        "divide-outline-variant mt-2 flex w-full flex-col divide-y px-2"
-                    }
+                    className={`divide-outline-variant mt-2 flex w-full flex-col
+                        divide-y px-2`}
                 >
                     <div
                         className={"flex items-center justify-between gap-x-2"}
@@ -207,7 +205,8 @@ export function TransactionForm({
                             }}
                             required
                             allowNegativeValue={false}
-                            className={`h-8 w-full rounded-none border-none px-3 shadow-none outline-none focus-visible:ring-0`}
+                            className={`h-8 w-full rounded-none border-none px-3
+                                shadow-none outline-none focus-visible:ring-0`}
                             onValueChange={onAmountInputChange}
                             decimalsLimit={2}
                             value={amountStr}
@@ -253,9 +252,8 @@ export function TransactionForm({
                                 setDescription(e.target.value);
                             }}
                             type={"text"}
-                            className={
-                                "rounded-none border-none shadow-none focus-visible:ring-0"
-                            }
+                            className={`rounded-none border-none shadow-none
+                                focus-visible:ring-0`}
                         />
                     </div>
                     {selectedCategory !== undefined && (

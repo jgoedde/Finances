@@ -12,7 +12,8 @@ export function NewTransactionFAB() {
         <button
             type={"button"}
             className={cn(
-                "ripple-container bg-primary-container text-on-primary-container size-16 shrink-0 -translate-x-1/5 rounded-2xl shadow-lg",
+                `ripple-container bg-primary-container text-on-primary-container
+                size-16 shrink-0 -translate-x-1/5 rounded-2xl shadow-lg`,
             )}
             style={{
                 position: "sticky",

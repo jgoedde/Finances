@@ -74,9 +74,8 @@ export function TransactionList() {
 
     return (
         <div
-            className={
-                "bg-surface-container-lowest m-2 mt-4 flex flex-col rounded-md p-4"
-            }
+            className={`bg-surface-container-lowest m-2 mt-4 flex flex-col
+                rounded-md p-4`}
         >
             <Badge
                 variant={"md3"}

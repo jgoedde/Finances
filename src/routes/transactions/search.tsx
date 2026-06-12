@@ -59,9 +59,8 @@ function SearchPage() {
 
     return (
         <div
-            className={
-                "bg-surface-container-high relative container mx-auto flex h-dvh flex-col overflow-y-scroll"
-            }
+            className={`bg-surface-container-high relative container mx-auto
+                flex h-dvh flex-col overflow-y-scroll`}
         >
             <Drawer
                 open={isDrawerOpen.isOpen}
@@ -84,9 +83,8 @@ function SearchPage() {
                     )}
                 </DrawerContent>
                 <div
-                    className={
-                        "border-outline bg-surface-container-high flex h-16 w-dvw shrink-0 items-center border-b py-2"
-                    }
+                    className={`border-outline bg-surface-container-high flex
+                        h-16 w-dvw shrink-0 items-center border-b py-2`}
                 >
                     <BackArrowButton />
                     <input
@@ -102,9 +100,8 @@ function SearchPage() {
                             setSearch("");
                             inputRef.current?.focus();
                         }}
-                        className={
-                            "text-on-surface-variant ml-auto cursor-pointer px-4"
-                        }
+                        className={`text-on-surface-variant ml-auto
+                            cursor-pointer px-4`}
                     >
                         <X className={"size-6"} />
                     </button>
@@ -119,7 +116,8 @@ function SearchPage() {
                         className={cn(
                             "ml-2 flex gap-x-1",
                             dateFilterOption !== "any" &&
-                                "bg-secondary-container text-on-secondary-container outline-outline",
+                                `bg-secondary-container
+                                text-on-secondary-container outline-outline`,
                         )}
                         onClick={() => {
                             setIsDrawerOpen({ type: "date", isOpen: true });

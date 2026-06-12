@@ -298,7 +298,10 @@ function RouteComponent() {
 
             <main className="flex flex-1 items-center justify-center">
                 <div className="w-full">
-                    <div className="text-muted-foreground mb-6 text-center text-sm">
+                    <div
+                        className="text-muted-foreground mb-6 text-center
+                            text-sm"
+                    >
                         {STEPS[step].title}
                     </div>
                     {renderStep()}

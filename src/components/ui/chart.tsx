@@ -53,7 +53,19 @@ function ChartContainer({
                 data-slot="chart"
                 data-chart={chartId}
                 className={cn(
-                    "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-surface [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+                    `[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground
+                    [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50
+                    [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border
+                    [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border
+                    [&_.recharts-radial-bar-background-sector]:fill-surface
+                    [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted
+                    [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border
+                    flex aspect-video justify-center text-xs
+                    [&_.recharts-dot[stroke='#fff']]:stroke-transparent
+                    [&_.recharts-layer]:outline-hidden
+                    [&_.recharts-sector]:outline-hidden
+                    [&_.recharts-sector[stroke='#fff']]:stroke-transparent
+                    [&_.recharts-surface]:outline-hidden`,
                     className,
                 )}
                 {...props}
@@ -171,7 +183,8 @@ function ChartTooltipContent({
     return (
         <div
             className={cn(
-                "bg-inverse-surface grid min-w-[8rem] items-start gap-1.5 rounded-xs px-2.5 py-1.5 text-xs shadow-xl",
+                `bg-inverse-surface grid min-w-[8rem] items-start gap-1.5
+                rounded-xs px-2.5 py-1.5 text-xs shadow-xl`,
                 className,
             )}
         >
@@ -193,7 +206,9 @@ function ChartTooltipContent({
                             <div
                                 key={item.dataKey}
                                 className={cn(
-                                    "[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5",
+                                    `[&>svg]:text-muted-foreground flex w-full
+                                    flex-wrap items-stretch gap-2 [&>svg]:h-2.5
+                                    [&>svg]:w-2.5`,
                                     indicator === "dot" && "items-center",
                                 )}
                             >
@@ -215,7 +230,9 @@ function ChartTooltipContent({
                                             !hideIndicator && (
                                                 <div
                                                     className={cn(
-                                                        "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
+                                                        `shrink-0 rounded-[2px]
+                                                            border-(--color-border)
+                                                            bg-(--color-bg)`,
                                                         {
                                                             "h-2.5 w-2.5":
                                                                 indicator ===
@@ -223,7 +240,9 @@ function ChartTooltipContent({
                                                             "w-1":
                                                                 indicator ===
                                                                 "line",
-                                                            "w-0 border-[1.5px] border-dashed bg-transparent":
+                                                            [`w-0 border-[1.5px]
+                                                                border-dashed
+                                                                bg-transparent`]:
                                                                 indicator ===
                                                                 "dashed",
                                                             "my-0.5":
@@ -245,7 +264,8 @@ function ChartTooltipContent({
                                         )}
                                         <div
                                             className={cn(
-                                                "flex flex-1 justify-between leading-none",
+                                                `flex flex-1 justify-between
+                                                    leading-none`,
                                                 nestLabel
                                                     ? "items-end"
                                                     : "items-center",
@@ -261,7 +281,11 @@ function ChartTooltipContent({
                                                 </span>
                                             </div>
                                             {item.value && (
-                                                <span className="text-inverse-on-surface font-mono font-medium tabular-nums">
+                                                <span
+                                                    className="text-inverse-on-surface
+                                                        font-mono font-medium
+                                                        tabular-nums"
+                                                >
                                                     {item.value.toLocaleString()}
                                                 </span>
                                             )}
@@ -317,7 +341,8 @@ function ChartLegendContent({
                         <div
                             key={item.value}
                             className={cn(
-                                "[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3",
+                                `[&>svg]:text-muted-foreground flex items-center
+                                gap-1.5 [&>svg]:h-3 [&>svg]:w-3`,
                             )}
                         >
                             {itemConfig?.icon && !hideIcon ? (

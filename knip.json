@@ -13,6 +13,9 @@
         "src/components/ui/chart.tsx",
         "src/components/ui/drawer.tsx",
         "src/components/ui/popover.tsx",
-        "src/components/ui/tooltip.tsx"
+        "src/components/ui/tooltip.tsx",
+        "src/components/ui/button-group.tsx",
+        "src/components/ui/select.tsx",
+        "src/components/ui/table.tsx"
     ]
 }

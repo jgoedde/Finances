@@ -27,9 +27,8 @@ function TransactionsPage() {
 
             <footer>
                 <div
-                    className={
-                        "bg-surface-container-lowest text-surface-variant flex flex-col items-center px-4 py-2"
-                    }
+                    className={`bg-surface-container-lowest text-surface-variant
+                        flex flex-col items-center px-4 py-2`}
                 >
                     <span>
                         Ausgabentracker{" "}

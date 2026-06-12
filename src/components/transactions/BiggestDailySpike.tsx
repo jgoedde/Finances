@@ -19,9 +19,8 @@ export function BiggestDailySpike() {
 
     return (
         <div
-            className={
-                "bg-surface-container-high flex flex-col space-y-2 rounded-xl p-4 shadow-lg"
-            }
+            className={`bg-surface-container-high flex flex-col space-y-2
+                rounded-xl p-4 shadow-lg`}
         >
             <div className={"flex flex-col"}>
                 <div className={"font-poppins text-lg font-medium"}>
