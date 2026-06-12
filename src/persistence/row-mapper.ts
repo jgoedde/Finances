@@ -1,8 +1,8 @@
 import type { Database } from "sql.js";
 import type { FixedCostRecord } from "@/persistence/repositories/fixed-costs-repository.ts";
 import type {
-    Category,
     FixedCost,
+    FixedCostCategory,
     TransactionWithCategory,
 } from "@/persistence/types.ts";
 
@@ -10,7 +10,7 @@ import type {
 export function rowsFromResult<T = any>(
     result: ReturnType<Database["exec"]>,
 ): T[] {
-    if (result.length === 0) return [];
+    if (result.length === 0 || !result[0]) return [];
     const { columns, values } = result[0];
     return values.map((row) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,7 +30,7 @@ const INTERVAL_DIVISOR: Record<FixedCost["interval"], number> = {
 
 export function toFixedCost(
     row: FixedCostRecord,
-    category: Category,
+    category: FixedCostCategory,
 ): FixedCost {
     const startDate = new Date(row.start_date);
     const endDate = row.end_date ? new Date(row.end_date) : null;

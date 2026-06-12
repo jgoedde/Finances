@@ -157,7 +157,7 @@ function RouteComponent() {
                                     onValueChange={([v]) => {
                                         // very right = 12, very left = 60
                                         // so we need to invert the value
-                                        const int = 60 - v + 12;
+                                        const int = 60 - (v ?? 0) + 12;
 
                                         if (int === 60) {
                                             setBackupConfig({

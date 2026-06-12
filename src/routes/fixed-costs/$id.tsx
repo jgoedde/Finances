@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { type KeyboardEvent, useMemo, useState } from "react";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -7,13 +7,11 @@ import { fixedCostRepository } from "@/persistence/repositories/fixed-costs-repo
 import type { FixedCost } from "@/persistence/types.ts";
 import { toast } from "sonner";
 import { z } from "zod";
-import { CurrencyInput } from "react-currency-input-field";
 import {
     ButtonGroup,
     ButtonGroupSeparator,
 } from "@/components/ui/button-group.tsx";
 import { Calendar } from "@/components/ui/calendar";
-import { useCategories } from "@/components/transactions/use-categories.ts";
 import {
     Select,
     SelectContent,
@@ -23,6 +21,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select.tsx";
+import { useFixedCostCategories } from "@/components/fixed-costs/use-fixed-cost-categories.ts";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field.tsx";
+import { CurrencyInputWrapper } from "@/components/ui/currency-input-wrapper.tsx";
+import { cn } from "@/lib/utils.ts";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDownIcon } from "lucide-react";
 
 class FixedCostNotFoundError extends Error {
     constructor(message: string) {
@@ -85,7 +93,9 @@ function RouteComponent() {
     const [step, setStep] = useState<number>(0);
 
     const [name, setName] = useState(fixedCost.name);
-    const [amountStr, setAmountStr] = useState(fixedCost.amount.toFixed(2));
+    const [amountStr, setAmountStr] = useState(() =>
+        fixedCost.amount === 0 ? "" : fixedCost.amount.toFixed(2),
+    );
     const [interval, setInterval] = useState<FixedCost["interval"]>(
         fixedCost.interval,
     );
@@ -93,11 +103,11 @@ function RouteComponent() {
     const [endDate, setEndDate] = useState<Date | undefined>(
         fixedCost.endDate ?? undefined,
     );
-    const [category, setCategory] = useState(fixedCost.category.id);
+    const [categoryId, setCategoryId] = useState(fixedCost.category.id);
 
-    const categories = useCategories();
+    const categories = useFixedCostCategories();
 
-    const stepId = STEPS[step].id;
+    const stepId = STEPS[step]?.id;
 
     const canNext = useMemo(() => {
         if (stepId === "name") {
@@ -127,7 +137,7 @@ function RouteComponent() {
                 interval,
                 start_date: startDate.toISOString(),
                 end_date: endDate === undefined ? null : endDate.toISOString(),
-                category_id: category,
+                category_id: categoryId,
             });
             toast.success("Fixkosten aktualisiert");
             void navigate({ to: "/" });
@@ -143,25 +153,26 @@ function RouteComponent() {
         switch (stepId) {
             case "name":
                 return (
-                    <div className="mx-auto w-full max-w-md px-6">
-                        <label className="text-muted-foreground mb-2 block text-sm">
-                            Bezeichnung
-                        </label>
+                    <Field>
+                        <FieldLabel htmlFor={"name"}>Bezeichnung</FieldLabel>
                         <Input
+                            id={"name"}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="z.B. Spotify"
                             autoFocus
+                            autoComplete={"off"}
+                            enterKeyHint={"next"}
+                            onKeyDown={goNextOnKeyDown}
                         />
-                    </div>
+                    </Field>
                 );
             case "amount":
                 return (
-                    <div className="mx-auto w-full max-w-md px-6">
-                        <label className="text-muted-foreground mb-2 block text-sm">
-                            Betrag (EUR)
-                        </label>
-                        <CurrencyInput
+                    <Field>
+                        <FieldLabel htmlFor={"amount"}>Betrag (EUR)</FieldLabel>
+                        <CurrencyInputWrapper
+                            id={"amount"}
                             intlConfig={{
                                 locale: "de-DE",
                                 currency: "EUR",
@@ -171,15 +182,19 @@ function RouteComponent() {
                             onValueChange={(e) => setAmountStr(e ?? "")}
                             decimalsLimit={2}
                             value={amountStr}
-                            step={1}
+                            step={0.01}
                             autoFocus
+                            autoComplete={"off"}
+                            enterKeyHint={"next"}
+                            onKeyDown={goNextOnKeyDown}
                         />
-                    </div>
+                    </Field>
                 );
             case "interval":
                 return (
-                    <div className={"flex w-full justify-center"}>
-                        <ButtonGroup className={""}>
+                    <Field>
+                        <FieldLabel htmlFor={"interval"}>Turnus</FieldLabel>
+                        <ButtonGroup id={"interval"}>
                             <Button
                                 variant={
                                     interval === "monthly"
@@ -214,52 +229,95 @@ function RouteComponent() {
                                 Jährlich
                             </Button>
                         </ButtonGroup>
-                    </div>
+                    </Field>
                 );
             case "startDate":
                 return (
-                    <div className="mx-auto w-full max-w-md px-6">
-                        <label className="text-muted-foreground mb-2 block text-sm">
+                    <Field>
+                        <FieldLabel htmlFor={"start-date"}>
                             Startdatum
-                        </label>
-                        <Calendar
-                            mode="single"
-                            selected={startDate}
-                            onSelect={(d) => setStartDate(d ?? new Date())}
-                            className="rounded-lg"
-                            captionLayout="dropdown"
-                        />
-                    </div>
+                        </FieldLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id={"start-date"}
+                                    variant="outline"
+                                    className="justify-between rounded-none text-left font-normal"
+                                >
+                                    {startDate ? (
+                                        startDate.toLocaleDateString("de", {
+                                            dateStyle: "long",
+                                        })
+                                    ) : (
+                                        <span>Startdatum auswählen</span>
+                                    )}
+                                    <ChevronDownIcon />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                            >
+                                <Calendar
+                                    mode="single"
+                                    selected={startDate}
+                                    onSelect={(d) =>
+                                        setStartDate(d ?? new Date())
+                                    }
+                                    defaultMonth={startDate}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </Field>
                 );
             case "endDate":
                 return (
-                    <div className="mx-auto w-full max-w-md px-6">
-                        <label className="text-muted-foreground mb-2 block text-sm">
-                            Enddatum (optional)
-                        </label>
-                        <Calendar
-                            mode="single"
-                            selected={endDate}
-                            onSelect={setEndDate}
-                            className="rounded-lg border"
-                            captionLayout="dropdown"
-                        />
-                        <div className="text-muted-foreground mt-3 text-sm">
+                    <Field>
+                        <FieldLabel htmlFor={"end-date"}>Enddatum</FieldLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id={"end-date"}
+                                    variant="outline"
+                                    data-empty={!endDate}
+                                    className="data-[empty=true]:text-outline-variant justify-between rounded-none text-left font-normal"
+                                >
+                                    {endDate ? (
+                                        endDate.toLocaleDateString("de", {
+                                            dateStyle: "long",
+                                        })
+                                    ) : (
+                                        <span>Enddatum (optional)</span>
+                                    )}
+                                    <ChevronDownIcon />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                            >
+                                <Calendar
+                                    mode="single"
+                                    selected={endDate}
+                                    onSelect={setEndDate}
+                                    defaultMonth={endDate}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <FieldDescription>
                             Lass leer für unbefristet
-                        </div>
-                    </div>
+                        </FieldDescription>
+                    </Field>
                 );
             case "category":
                 return (
-                    <div className="mx-auto w-full max-w-md px-6">
-                        <label className="text-muted-foreground mb-2 block text-sm">
-                            Kategorie
-                        </label>
+                    <Field>
+                        <FieldLabel>Kategorie</FieldLabel>
                         <Select
-                            value={String(category)}
-                            onValueChange={(c) => setCategory(Number(c))}
+                            value={String(categoryId)}
+                            onValueChange={(c) => setCategoryId(Number(c))}
                         >
-                            <SelectTrigger className="w-full max-w-48">
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Wähle eine Kategorie" />
                             </SelectTrigger>
                             <SelectContent>
@@ -275,14 +333,27 @@ function RouteComponent() {
                                     ))}
                                 </SelectGroup>
                             </SelectContent>
-                        </Select>{" "}
-                    </div>
+                        </Select>
+                        <FieldDescription>
+                            {
+                                categories.find((it) => it.id === categoryId)
+                                    ?.description
+                            }
+                        </FieldDescription>
+                    </Field>
                 );
 
             default:
                 return null;
         }
     }
+
+    const goNextOnKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            goNext();
+        }
+    };
 
     return (
         // Mobile-only full screen wizard. Hidden on medium+ screens.
@@ -297,13 +368,13 @@ function RouteComponent() {
             </header>
 
             <main className="flex flex-1 items-center justify-center">
-                <div className="w-full">
-                    <div
-                        className="text-muted-foreground mb-6 text-center
-                            text-sm"
-                    >
-                        {STEPS[step].title}
-                    </div>
+                <div
+                    className={cn(
+                        stepId === "interval"
+                            ? "mx-auto max-w-md"
+                            : "mx-auto w-62",
+                    )}
+                >
                     {renderStep()}
                 </div>
             </main>

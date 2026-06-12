@@ -1,5 +1,5 @@
 // Raw DB row — 1:1 mapping to SQLite columns
-import type { Category, FixedCost } from "@/persistence/types.ts";
+import type { FixedCost, FixedCostCategory } from "@/persistence/types.ts";
 import {
     type FixedCostPayload,
     rowsFromResult,
@@ -23,27 +23,24 @@ export interface FixedCostRecord {
 
 type FixedCostRow = FixedCostRecord & {
     category_name: string;
-    category_icon_name: string;
-    category_color: string;
+    category_description: string | null;
 };
 
 function mapRow(row: FixedCostRow): FixedCost {
-    const category: Category = {
+    const category = {
         id: row.category_id,
         name: row.category_name,
-        color: row.category_color,
-        icon_name: row.category_icon_name,
-    };
+        description: row.category_description ?? undefined,
+    } satisfies FixedCostCategory;
     return toFixedCost(row, category);
 }
 
 const JOIN_CATEGORIES = `
     SELECT fc.*,
            c.name       AS category_name,
-           c.icon_name  AS category_icon_name,
-           c.color      AS category_color
+           c.description       AS category_description
     FROM fixed_costs fc
-             JOIN categories c ON c.id = fc.category_id`;
+             JOIN fixed_cost_categories c ON c.id = fc.category_id`;
 
 export const fixedCostRepository = {
     async add(entity: FixedCostPayload): Promise<void> {
@@ -144,8 +141,8 @@ export const fixedCostRepository = {
         const result = PersistentDatabase.get().exec(
             `SELECT COUNT(*) AS count FROM fixed_costs`,
         );
-        if (result.length === 0 || result[0].values.length === 0) return 0;
-        const count = result[0].values[0][0];
+        if (result.length === 0 || result[0]?.values.length === 0) return 0;
+        const count = result[0]?.values[0]?.[0];
         return typeof count === "number" ? count : 0;
     },
 
@@ -163,7 +160,7 @@ export const fixedCostRepository = {
               AND start_date <= date('now')
               AND (end_date IS NULL OR end_date >= date('now'))
         `);
-        const val = result[0]?.values[0][0];
+        const val = result[0]?.values[0]?.[0];
         return typeof val === "number" ? val : 0;
     },
 };

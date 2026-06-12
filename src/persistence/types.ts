@@ -5,6 +5,12 @@ export interface Category {
     icon_name: string;
 }
 
+export interface FixedCostCategory {
+    id: number;
+    name: string;
+    description?: string;
+}
+
 export interface Transaction {
     id: string;
     /**
@@ -37,7 +43,7 @@ export interface FixedCost {
     amount: number;
     currency: string;
     interval: "monthly" | "quarterly" | "yearly";
-    category: Category;
+    category: FixedCostCategory;
     active: boolean;
     startDate: Date;
     endDate: Date | null;

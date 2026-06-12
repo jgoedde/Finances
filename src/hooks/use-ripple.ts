@@ -41,8 +41,12 @@ export const useRipple = () => {
         const size = Math.max(rect.width, rect.height);
         ripple.style.width = ripple.style.height = `${size}px`;
 
-        const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-        const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+        const touch = "touches" in e ? e.touches[0] : undefined;
+
+        if (!touch) return;
+
+        const clientX = "touches" in e ? touch.clientX : e.clientX;
+        const clientY = "touches" in e ? touch.clientY : e.clientY;
 
         ripple.style.left = `${clientX - rect.left - size / 2}px`;
         ripple.style.top = `${clientY - rect.top - size / 2}px`;

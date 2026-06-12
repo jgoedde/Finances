@@ -103,7 +103,7 @@ export function TransactionList() {
                           <TransactionGroup
                               key={day}
                               day={day}
-                              transactions={grouped[day]}
+                              transactions={grouped[day] ?? []}
                           />
                       ))
                     : transactions.map((it) => (

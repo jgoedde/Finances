@@ -38,10 +38,10 @@ export const transactionRepository = {
             FROM expenses`;
 
         const result = PersistentDatabase.get().exec(query);
-        if (result.length === 0 || result[0].values.length === 0) {
+        if (result.length === 0 || result[0]?.values.length === 0) {
             return 0;
         }
-        const count = result[0].values[0][0];
+        const count = result[0]?.values[0]?.[0];
         return typeof count === "number" ? count : 0;
     },
 
@@ -69,7 +69,13 @@ export const transactionRepository = {
             category_icon_name: string;
             category_color: string;
         }>(PersistentDatabase.get().exec(query, params));
-        return mapExpenseWithCategory(rows[0]);
+        const row = rows[0];
+
+        if (!row) {
+            return undefined;
+        }
+
+        return mapExpenseWithCategory(row);
     },
 
     getSpentAmountByTimeRange(
@@ -95,11 +101,11 @@ export const transactionRepository = {
 
         const result = PersistentDatabase.get().exec(query, params);
 
-        if (result.length === 0 || result[0].values.length === 0) {
+        if (result.length === 0 || result[0]?.values.length === 0) {
             return 0;
         }
 
-        const total = result[0].values[0][0];
+        const total = result[0]?.values?.[0]?.[0];
         return typeof total === "number" ? total : 0;
     },
 

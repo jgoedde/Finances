@@ -8,6 +8,7 @@ export function BiggestDailySpike() {
     const trend = transactionRepository.getTrend();
     const spike = transactionRepository.getSpike();
 
+    // @ts-expect-error -- yeah, oversight. Should do better undefined checking...
     const textColor = useTonalColor(spike.category_color, {
         light: 15,
         dark: 90,

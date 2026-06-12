@@ -16,6 +16,7 @@
         "src/components/ui/tooltip.tsx",
         "src/components/ui/button-group.tsx",
         "src/components/ui/select.tsx",
-        "src/components/ui/table.tsx"
+        "src/components/ui/table.tsx",
+        "src/components/ui/field.tsx"
     ]
 }

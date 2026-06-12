@@ -1,7 +1,8 @@
 export type DBEventName =
     | "expenses:changed"
     | "categories:changed"
-    | "fixedCosts:changed";
+    | "fixedCosts:changed"
+    | "fixedCostCategories:changed";
 
 type DBEventHandler = () => void;
 
