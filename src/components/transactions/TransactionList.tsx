@@ -1,5 +1,13 @@
 import { useMemo } from "react";
-import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer.tsx";
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer.tsx";
 import { Calendar, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
@@ -73,54 +81,73 @@ export function TransactionList() {
     );
 
     return (
-        <div
-            className={`bg-surface-container-lowest m-2 mt-4 flex flex-col
-                rounded-md p-4`}
-        >
-            <Badge
-                variant={"md3"}
-                className={"flex gap-x-2"}
-                onClick={() => {
-                    setIsDrawerOpen(true);
-                }}
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <div
+                className={`bg-surface-container-lowest m-2 mt-4 flex flex-col
+                    rounded-md p-4`}
             >
-                <div>
-                    <Calendar className={"text-primary size-4"} />
-                </div>
-                <div className={"text-on-surface font-medium"}>
-                    {getActiveDateFilter()}
-                </div>
-            </Badge>
+                <DrawerTrigger asChild>
+                    <Badge
+                        variant={"md3"}
+                        className={"flex gap-x-2"}
+                        onClick={() => {
+                            setIsDrawerOpen(true);
+                        }}
+                    >
+                        <div>
+                            <Calendar className={"text-primary size-4"} />
+                        </div>
+                        <div className={"text-on-surface font-medium"}>
+                            {getActiveDateFilter()}
+                        </div>
+                    </Badge>
+                </DrawerTrigger>
 
-            <div className={"mt-4 flex w-full flex-col"}>
-                {transactions.length === 0 && (
-                    <div className={"text-outline mt-2 text-center"}>
-                        Keine Geldbewegungen für {getActiveDateFilter()}
-                    </div>
-                )}
-                {dateFilterOption === "last-7-days"
-                    ? Object.keys(grouped).map((day) => (
-                          <TransactionGroup
-                              key={day}
-                              day={day}
-                              transactions={grouped[day] ?? []}
-                          />
-                      ))
-                    : transactions.map((it) => (
-                          <TransactionListItem key={it.id} transaction={it} />
-                      ))}
-            </div>
+                <div className={"mt-4 flex w-full flex-col"}>
+                    {transactions.length === 0 && (
+                        <div className={"text-outline mt-2 text-center"}>
+                            Keine Geldbewegungen für {getActiveDateFilter()}
+                        </div>
+                    )}
+                    {dateFilterOption === "last-7-days"
+                        ? Object.keys(grouped).map((day) => (
+                              <TransactionGroup
+                                  key={day}
+                                  day={day}
+                                  transactions={grouped[day] ?? []}
+                              />
+                          ))
+                        : transactions.map((it) => (
+                              <TransactionListItem
+                                  key={it.id}
+                                  transaction={it}
+                              />
+                          ))}
+                </div>
 
-            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                 <DrawerContent>
+                    <DrawerHeader className={"mb-4 pt-0"}>
+                        <DrawerTitle asChild>
+                            <div className="flex gap-x-4">
+                                <DrawerClose asChild>
+                                    <div>
+                                        <X />
+                                    </div>
+                                </DrawerClose>
+                                Datum
+                            </div>
+                        </DrawerTitle>
+                        <DrawerDescription></DrawerDescription>
+                    </DrawerHeader>
+                    {/*<div className={"mb-8 flex gap-x-4"}></div>*/}
                     <DateFilterDrawerContent
                         closeDrawer={() => setIsDrawerOpen(false)}
                         dateFilterOption={dateFilterOption as DateFilter}
                         setDateFilterOption={(df) => setDateFilterOption(df)}
                     />
                 </DrawerContent>
-            </Drawer>
-        </div>
+            </div>
+        </Drawer>
     );
 }
 
@@ -137,14 +164,6 @@ function DateFilterDrawerContent({
 }: Props) {
     return (
         <div className={"mx-4"}>
-            <div className={"mb-8 flex gap-x-4"}>
-                <DrawerClose asChild>
-                    <div>
-                        <X />
-                    </div>
-                </DrawerClose>
-                <div className={"font-medium"}>Datum</div>
-            </div>
             <RadioGroup
                 defaultValue={dateFilterOption}
                 onValueChange={(e) => {
