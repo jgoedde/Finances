@@ -24,7 +24,7 @@ create table if not exists expenses
     category_id INTEGER                           not null
         references categories
             on update cascade on delete restrict,
-    exceptional INTEGER default 0                 not null
+    exceptional INTEGER default 0
 );
 
 INSERT INTO categories ("id", "name", "color", "icon_name")
@@ -40,25 +40,7 @@ VALUES ('1', 'Auswärts essen', '#00202e', 'utensils'),
        ('10', 'Wohnung', '#ff6361', 'sofa')
 ON CONFLICT DO NOTHING;
 
-CREATE TABLE IF NOT EXISTS fixed_costs
-(
-    id          INTEGER                       NOT NULL
-        PRIMARY KEY AUTOINCREMENT,
-    name        TEXT                          NOT NULL,
-    description TEXT    DEFAULT NULL,
-    amount      NUMERIC                       NOT NULL,
-    currency    TEXT    DEFAULT 'EUR'         NOT NULL,
-    interval    TEXT    DEFAULT 'monthly'     NOT NULL
-        CHECK (interval IN ('monthly', 'quarterly', 'yearly')),
-    category_id INTEGER                       NOT NULL
-        REFERENCES categories ON UPDATE CASCADE ON DELETE RESTRICT,
-    active      INTEGER DEFAULT 1             NOT NULL
-        CHECK (active IN (0, 1)),
-    start_date  TEXT    DEFAULT (date('now')) NOT NULL,
-    end_date    TEXT    DEFAULT NULL
-);
-
-create table IF NOT EXISTS fixed_cost_categories
+create table if not exists fixed_cost_categories
 (
     id          integer not null
         constraint fixed_cost_categories_pk
@@ -84,7 +66,7 @@ VALUES (1, 'Miete / Wohnung', 'inkl. Nebenkosten'),
        (12, 'Sonstige wiederkehrende Verträge', 'z. B. Wartungsverträge, Sicherheitsdienste')
 ON CONFLICT DO NOTHING;
 
-create table if not exists fixed_costs_dg_tmp
+create table if not exists fixed_costs
 (
     id          INTEGER                       not null
         primary key autoincrement,
@@ -103,23 +85,3 @@ create table if not exists fixed_costs_dg_tmp
     check (active IN (0, 1)),
     check (interval IN ('monthly', 'quarterly', 'yearly'))
 );
-
-insert into fixed_costs_dg_tmp(id, name, description, amount, currency, interval, category_id, active, start_date,
-                               end_date)
-select id,
-       name,
-       description,
-       amount,
-       currency,
-       interval,
-       category_id,
-       active,
-       start_date,
-       end_date
-from fixed_costs;
-
-drop table fixed_costs;
-
-alter table fixed_costs_dg_tmp
-    rename to fixed_costs;
-
