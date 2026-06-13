@@ -18,7 +18,7 @@ class TransactionNotFoundError extends Error {
 }
 
 export const Route = createFileRoute("/edit/$id")({
-    component: EditTransactionPage,
+    component: RouteComponent,
     loader: (a) => {
         const t = transactionRepository.findByIdWithCategory(a.params.id);
         if (t === undefined) {
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/edit/$id")({
     },
 });
 
-function EditTransactionPage() {
+function RouteComponent() {
     const { id } = Route.useParams();
 
     const navigate = useNavigate();

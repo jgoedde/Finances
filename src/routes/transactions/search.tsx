@@ -16,12 +16,12 @@ import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 import { cn } from "@/lib/cn.ts";
 
 export const Route = createFileRoute("/transactions/search")({
-    component: SearchPage,
+    component: RouteComponent,
 });
 
 const now = new Date();
 
-function SearchPage() {
+function RouteComponent() {
     const [search, setSearch] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<{

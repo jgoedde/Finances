@@ -16,13 +16,13 @@ const prefilledSchema = z.object({
 });
 
 export const Route = createFileRoute("/new")({
-    component: NewTransactionPage,
+    component: RouteComponent,
     validateSearch: prefilledSchema,
 });
 
 const now = new Date();
 
-function NewTransactionPage() {
+function RouteComponent() {
     const { vendor, amount } = Route.useSearch();
     const navigate = useNavigate();
 
