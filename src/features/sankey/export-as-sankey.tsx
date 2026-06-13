@@ -23,14 +23,9 @@ import {
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 import { categoryRepository } from "@/features/transactions/category-repository.ts";
+import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
 
 interface IncomeSource {
-    id: string;
-    name: string;
-    amount: string;
-}
-
-interface FixedCost {
     id: string;
     name: string;
     amount: string;
@@ -58,10 +53,6 @@ export function ExportSankeyDialog() {
     });
     const [incomeSources, setIncomeSources] = useLocalStorage<IncomeSource[]>({
         key: "sankey-export-income-sources",
-        defaultValue: [{ id: crypto.randomUUID(), name: "", amount: "" }],
-    });
-    const [fixedCosts, setFixedCosts] = useLocalStorage<FixedCost[]>({
-        key: "sankey-export-fixed-costs",
         defaultValue: [{ id: crypto.randomUUID(), name: "", amount: "" }],
     });
     const [savingsTargets, setSavingsTargets] = useLocalStorage<
@@ -93,29 +84,6 @@ export function ExportSankeyDialog() {
             incomeSources.map((s) =>
                 s.id === id ? { ...s, [field]: value } : s,
             ),
-        );
-    }
-
-    function addFixedCost() {
-        setFixedCosts([
-            ...fixedCosts,
-            { id: crypto.randomUUID(), name: "", amount: "" },
-        ]);
-    }
-
-    function removeFixedCost(id: string) {
-        if (fixedCosts.length > 1) {
-            setFixedCosts(fixedCosts.filter((c) => c.id !== id));
-        }
-    }
-
-    function updateFixedCost(
-        id: string,
-        field: "name" | "amount",
-        value: string,
-    ) {
-        setFixedCosts(
-            fixedCosts.map((c) => (c.id === id ? { ...c, [field]: value } : c)),
         );
     }
 
@@ -173,10 +141,7 @@ export function ExportSankeyDialog() {
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            fixedCosts: fixedCosts.map((c) => ({
-                name: c.name,
-                amount: parseFloat(c.amount) || 0,
-            })),
+            fixedCosts: fixedCostRepository.findAllActive(endDate),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
@@ -294,60 +259,6 @@ export function ExportSankeyDialog() {
                                             removeIncomeSource(source.id)
                                         }
                                         disabled={incomeSources.length === 1}
-                                    >
-                                        <Trash2 />
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="mb-2 flex items-center justify-between">
-                            <Label>Fixed Costs</Label>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={addFixedCost}
-                            >
-                                <Plus />
-                                Add
-                            </Button>
-                        </div>
-                        <div className="space-y-2">
-                            {fixedCosts.map((cost) => (
-                                <div
-                                    key={cost.id}
-                                    className="flex items-center gap-2"
-                                >
-                                    <Input
-                                        placeholder="Name (e.g., internet)"
-                                        value={cost.name}
-                                        onChange={(e) =>
-                                            updateFixedCost(
-                                                cost.id,
-                                                "name",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <Input
-                                        type="number"
-                                        placeholder="Amount"
-                                        value={cost.amount}
-                                        onChange={(e) =>
-                                            updateFixedCost(
-                                                cost.id,
-                                                "amount",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => removeFixedCost(cost.id)}
-                                        disabled={fixedCosts.length === 1}
                                     >
                                         <Trash2 />
                                     </Button>

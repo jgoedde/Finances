@@ -124,15 +124,18 @@ export const fixedCostRepository = {
         return rows.map(mapRow);
     },
 
-    findAllActive(): FixedCost[] {
+    findAllActive(referenceDate: Date = new Date()): FixedCost[] {
+        const isoDate = referenceDate.toISOString().slice(0, 10); // "YYYY-MM-DD"
         const rows = rowsFromResult<FixedCostRow>(
-            PersistentDatabase.get().exec(`
+            PersistentDatabase.get().exec(
+                `
                 ${JOIN_CATEGORIES}
                 WHERE fc.active = 1
-                  AND fc.start_date <= date('now')
-                  AND (fc.end_date IS NULL OR fc.end_date >= date('now'))
-                ORDER BY fc.name
-            `),
+                  AND fc.start_date <= :referenceDate
+                  AND (fc.end_date IS NULL OR fc.end_date >= :referenceDate)
+                ORDER BY fc.name`,
+                { ":referenceDate": isoDate },
+            ),
         );
         return rows.map(mapRow);
     },
