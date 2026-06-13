@@ -1,7 +1,7 @@
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { cva } from "class-variance-authority";
-import type { ReactNode } from "react";
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import type { ComponentProps, ReactNode } from "react";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { cn } from "@/lib/cn.ts";
 
 const segmentedButton = cva(
@@ -27,7 +27,7 @@ const segmentedButton = cva(
 interface SegmentedButtonOption {
     label: ReactNode;
     value: string;
-    icon: IconName;
+    icon: ComponentProps<typeof DynamicIcon>["name"];
 }
 
 export function SegmentedButton({

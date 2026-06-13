@@ -1,8 +1,9 @@
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { convertHexToTonal } from "@/utils/color.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useColorScheme } from "@mantine/hooks";
 import type { Category } from "@/persistence/types.ts";
+import type { ComponentProps } from "react";
 
 interface Props {
     selectedCategoryId: number | undefined;
@@ -60,7 +61,11 @@ export function CategoryTile({ category, onClick, selectedCategoryId }: Props) {
                 }}
             >
                 <DynamicIcon
-                    name={category.icon_name as IconName}
+                    name={
+                        category.icon_name as ComponentProps<
+                            typeof DynamicIcon
+                        >["name"]
+                    }
                     className={"size-full"}
                 />
             </div>

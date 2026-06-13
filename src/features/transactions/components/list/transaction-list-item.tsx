@@ -1,4 +1,4 @@
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { ChevronRight, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/utils/color.ts";
@@ -8,6 +8,7 @@ import type { Transaction } from "@/persistence/types.ts";
 import { useCategories } from "@/features/transactions/use-categories.ts";
 import { formatEuro } from "@/utils/currency.ts";
 import { cn } from "@/lib/cn.ts";
+import type { ComponentProps } from "react";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
@@ -68,7 +69,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
             >
                 {category != null ? (
                     <DynamicIcon
-                        name={category.icon_name as IconName}
+                        name={
+                            category.icon_name as ComponentProps<
+                                typeof DynamicIcon
+                            >["name"]
+                        }
                         className={"size-7"}
                         style={{
                             color: textColor,

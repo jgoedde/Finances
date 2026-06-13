@@ -2,9 +2,10 @@ import { ChartContainer } from "@/components/ui/chart.tsx";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts";
 import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import { formatEuro } from "@/utils/currency.ts";
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { startOfMonth } from "date-fns";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import type { ComponentProps } from "react";
 
 const now = new Date();
 
@@ -127,7 +128,11 @@ function Chart({ data, monthName }: ChartProps) {
                                             12
                                         }
                                         y={(props.y as number) - 28}
-                                        name={iconName as IconName}
+                                        name={
+                                            iconName as ComponentProps<
+                                                typeof DynamicIcon
+                                            >["name"]
+                                        }
                                         stroke={"var(--color-secondary"}
                                     />
                                 );
