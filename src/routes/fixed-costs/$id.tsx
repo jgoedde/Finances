@@ -173,6 +173,7 @@ function RouteComponent() {
                         <FieldLabel htmlFor={"amount"}>Betrag (EUR)</FieldLabel>
                         <CurrencyInputWrapper
                             id={"amount"}
+                            inputMode={"decimal"}
                             intlConfig={{
                                 locale: "de-DE",
                                 currency: "EUR",
