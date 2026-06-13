@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label.tsx";
 import {
     type DateFilterOption,
     getDateFilterStr,
-} from "@/components/search/filters/date/date-filter.ts";
+} from "@/features/search/filters/date/date-filter.ts";
 
 interface Props {
     dateFilterOption: DateFilterOption;

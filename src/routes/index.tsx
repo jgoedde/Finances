@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchBar } from "@/components/transactions/SearchBar.tsx";
-import { LazyRow } from "@/components/transactions/LazyRow.tsx";
-import { MonthlyOverview } from "@/components/transactions/MonthlyOverview.tsx";
-import { TransactionList } from "@/components/transactions/TransactionList.tsx";
-import { NewTransactionFAB } from "@/components/transactions/new-transaction-fab.tsx";
-import { Insights } from "@/components/transactions/Insights.tsx";
+import { SearchBar } from "@/features/transactions/components/search-bar.tsx";
+import { LazyRow } from "@/features/transactions/components/lazy-row.tsx";
+import { MonthlyOverview } from "@/features/transactions/components/charts/monthly-overview.tsx";
+import { TransactionList } from "@/features/transactions/components/list/transaction-list.tsx";
+import { NewTransactionFAB } from "@/features/transactions/components/new-transaction-fab.tsx";
+import { Insights } from "@/features/transactions/components/insights.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
-import { FixedCostsTable } from "@/components/fixed-costs/fixed-costs-table.tsx";
+import { FixedCostsTable } from "@/features/fixed-costs/fixed-costs-table.tsx";
 
 export const Route = createFileRoute("/")({
     component: RouteComponent,

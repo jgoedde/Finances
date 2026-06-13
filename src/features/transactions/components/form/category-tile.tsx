@@ -1,5 +1,5 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import { convertHexToTonal } from "@/lib/color-utils.ts";
+import { convertHexToTonal } from "@/utils/color.ts";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { useColorScheme } from "@mantine/hooks";
 import type { Category } from "@/persistence/types.ts";

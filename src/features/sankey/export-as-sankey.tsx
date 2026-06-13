@@ -9,17 +9,20 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/alert-dialog.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
 import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { buildSankeyCSV, downloadSankeyCSV } from "@/lib/sankey-csv-utils.ts";
+import {
+    buildSankeyCSV,
+    downloadSankeyCSV,
+} from "@/features/sankey/csv-formatter.ts";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
-import { categoryRepository } from "@/persistence/repositories/category-repository.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import { categoryRepository } from "@/features/transactions/category-repository.ts";
 
 interface IncomeSource {
     id: string;

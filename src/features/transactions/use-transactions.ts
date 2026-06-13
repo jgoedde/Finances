@@ -1,6 +1,5 @@
-import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 
 export function useTransactions({
     start,

@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
-import { useTransactionCount } from "@/components/transactions/use-transactions.ts";
+import { useTransactionCount } from "@/features/transactions/use-transactions.ts";
 import {
     MAX_BACKUP_INTERVAL_IN_HOURS,
     MIN_BACKUP_INTERVAL_IN_HOURS,

@@ -1,8 +1,8 @@
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { cn } from "@/lib/utils.ts";
 import { cva } from "class-variance-authority";
 import type { ReactNode } from "react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { cn } from "@/lib/cn.ts";
 
 const segmentedButton = cva(
     "ripple-container border-outline border py-2 outline-none flex items-center gap-x-2",

@@ -3,17 +3,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
     getDateFilterStr,
     isMatchingDateFilter,
-} from "@/components/search/filters/date/date-filter.ts";
-import { isMatchingSearchFilter } from "@/components/search/filters/text/text-filter.ts";
-import { cn } from "@/lib/utils.ts";
+} from "@/features/search/filters/date/date-filter.ts";
+import { isMatchingSearchFilter } from "@/features/search/filters/text/text-filter.ts";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { DateFilterDrawerContent } from "@/components/search/filters/date/date-filter-drawer-content";
+import { DateFilterDrawerContent } from "@/features/search/filters/date/date-filter-drawer-content";
 import { ChevronDown, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useTransactions } from "@/components/transactions/use-transactions.ts";
+import { useTransactions } from "@/features/transactions/use-transactions.ts";
 import { addYears, endOfYear } from "date-fns";
-import { TransactionListItem } from "@/components/transactions/history/transaction-list-item.tsx";
+import { TransactionListItem } from "@/features/transactions/components/list/transaction-list-item.tsx";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
+import { cn } from "@/lib/cn.ts";
 
 export const Route = createFileRoute("/transactions/search")({
     component: SearchPage,

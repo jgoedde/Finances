@@ -1,13 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck -- AI slop. probably fine. Should probably use library for these things.
 
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
-
 function levenshtein(a: string, b: string): number {
     const dp: number[][] = Array.from({ length: a.length + 1 }, () =>
         Array(b.length + 1).fill(0),

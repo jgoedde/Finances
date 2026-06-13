@@ -1,5 +1,5 @@
 import { useColorScheme } from "@mantine/hooks";
-import { convertHexToTonal } from "@/lib/color-utils.ts";
+import { convertHexToTonal } from "@/utils/color.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import type { Category } from "@/persistence/types.ts";
 import { XIcon } from "lucide-react";

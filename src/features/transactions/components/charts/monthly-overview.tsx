@@ -1,5 +1,4 @@
-import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { cn } from "@/lib/utils.ts";
+import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import { Check, CircleSlash2, FileLock } from "lucide-react";
 import {
     ChartContainer,
@@ -8,14 +7,14 @@ import {
 } from "@/components/ui/chart.tsx";
 import { LabelList, RadialBar, RadialBarChart } from "recharts";
 import { useMemo, useState } from "react";
-import { formatEuro } from "@/lib/currency-utils.ts";
+import { formatEuro } from "@/utils/currency.ts";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion.tsx";
-import { ExportSankeyDialog } from "@/components/export-as-sankey.tsx";
+import { ExportSankeyDialog } from "@/features/sankey/export-as-sankey.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { isBackupOverdue, useBackupConfig } from "@/hooks/use-backup-config.ts";
 import { PersistentDatabase } from "@/persistence/persistent-database.ts";
@@ -24,7 +23,8 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import { cn } from "@/lib/cn.ts";
 
 const now = new Date();
 

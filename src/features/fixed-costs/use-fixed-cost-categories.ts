@@ -1,6 +1,6 @@
-import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
+import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import type { FixedCostCategory } from "@/persistence/types.ts";
-import { fixedCostCategoryRepository } from "@/persistence/repositories/fixed-cost-category-repository.ts";
+import { fixedCostCategoryRepository } from "@/features/fixed-costs/fixed-cost-category-repository.ts";
 
 export function useFixedCostCategories(): FixedCostCategory[] {
     return useTableSubscription(

@@ -1,8 +1,8 @@
-import { useTonalColor } from "@/lib/color-utils.ts";
-import { formatEuro } from "@/lib/currency-utils.ts";
+import { useTonalColor } from "@/utils/color.ts";
+import { formatEuro } from "@/utils/currency.ts";
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 
 export function BiggestDailySpike() {
     const trend = transactionRepository.getTrend();

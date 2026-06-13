@@ -6,13 +6,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/table.tsx";
+import { Button } from "@/components/ui/button.tsx";
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
-import { fixedCostRepository } from "@/persistence/repositories/fixed-costs-repository";
+import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
 import { Link } from "@tanstack/react-router";
-import type { FixedCost } from "@/persistence/types";
-import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
+import type { FixedCost } from "@/persistence/types.ts";
+import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch.tsx";
 

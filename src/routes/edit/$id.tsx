@@ -2,13 +2,13 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
     TransactionForm,
     type TransactionFormSubmitData,
-} from "@/components/transactions/editor/transaction-form.tsx";
+} from "@/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
 import {
     getTransactionType,
     getTransactionTypeLabel,
-} from "@/lib/transaction-utils.ts";
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+} from "@/features/transactions/utils/transaction-utils.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 
 class TransactionNotFoundError extends Error {
     constructor(message: string) {

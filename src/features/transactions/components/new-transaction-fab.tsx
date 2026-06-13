@@ -1,7 +1,7 @@
 import { Banknote } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { cn } from "@/lib/utils.ts";
 import { useNavigate } from "@tanstack/react-router";
+import { cn } from "@/lib/cn.ts";
 
 export function NewTransactionFAB() {
     const ripple = useRipple();

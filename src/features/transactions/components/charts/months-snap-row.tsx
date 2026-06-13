@@ -1,10 +1,10 @@
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts";
-import { useTableSubscription } from "@/hooks/use-table-subscription.ts";
-import { formatEuro } from "@/lib/currency-utils.ts";
+import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
+import { formatEuro } from "@/utils/currency.ts";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { startOfMonth } from "date-fns";
-import { transactionRepository } from "@/persistence/repositories/transaction-repository.ts";
+import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 
 const now = new Date();
 

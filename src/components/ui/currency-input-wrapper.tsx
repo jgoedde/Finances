@@ -1,6 +1,6 @@
 import { CurrencyInput } from "react-currency-input-field";
-import { cn } from "@/lib/utils.ts";
 import type { ComponentProps } from "react";
+import { cn } from "@/lib/cn.ts";
 
 export function CurrencyInputWrapper({
     className,

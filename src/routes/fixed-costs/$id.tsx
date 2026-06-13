@@ -3,7 +3,7 @@ import { type KeyboardEvent, useMemo, useState } from "react";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
-import { fixedCostRepository } from "@/persistence/repositories/fixed-costs-repository.ts";
+import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
 import type { FixedCost } from "@/persistence/types.ts";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,16 +21,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select.tsx";
-import { useFixedCostCategories } from "@/components/fixed-costs/use-fixed-cost-categories.ts";
+import { useFixedCostCategories } from "@/features/fixed-costs/use-fixed-cost-categories.ts";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field.tsx";
 import { CurrencyInputWrapper } from "@/components/ui/currency-input-wrapper.tsx";
-import { cn } from "@/lib/utils.ts";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
+import { cn } from "@/lib/cn.ts";
 
 class FixedCostNotFoundError extends Error {
     constructor(message: string) {

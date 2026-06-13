@@ -1,5 +1,5 @@
 import type { Database } from "sql.js";
-import type { FixedCostRecord } from "@/persistence/repositories/fixed-costs-repository.ts";
+import type { FixedCostRecord } from "@/features/fixed-costs/fixed-costs-repository.ts";
 import type {
     FixedCost,
     FixedCostCategory,

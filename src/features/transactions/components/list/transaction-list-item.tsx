@@ -1,13 +1,13 @@
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import { ChevronRight, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { convertHexToTonal } from "@/lib/color-utils.ts";
+import { convertHexToTonal } from "@/utils/color.ts";
 import { useColorScheme } from "@mantine/hooks";
-import { cn } from "@/lib/utils.ts";
 import { useNavigate } from "@tanstack/react-router";
 import type { Transaction } from "@/persistence/types.ts";
-import { useCategories } from "@/components/transactions/use-categories.ts";
-import { formatEuro } from "@/lib/currency-utils.ts";
+import { useCategories } from "@/features/transactions/use-categories.ts";
+import { formatEuro } from "@/utils/currency.ts";
+import { cn } from "@/lib/cn.ts";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 

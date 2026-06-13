@@ -1,17 +1,17 @@
 import { Check } from "lucide-react";
 import { type SubmitEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
-import { CategoryTile } from "@/components/transactions/editor/category-tile.tsx";
-import { DeleteButtonWithConfirmDialog } from "@/components/transactions/editor/delete-button-with-confirm-dialog.tsx";
-import { DateChooserPopover } from "@/components/transactions/editor/date-chooser-popover.tsx";
-import { TransactionInput } from "@/components/transactions/editor/transaction-input.tsx";
+import { CategoryTile } from "@/features/transactions/components/form/category-tile.tsx";
+import { DeleteButtonWithConfirmDialog } from "@/features/transactions/components/form/delete-button-with-confirm-dialog.tsx";
+import { DateChooserPopover } from "@/features/transactions/components/form/date-chooser-popover.tsx";
+import { TransactionInput } from "@/features/transactions/components/form/transaction-input.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { type Category, TransactionType } from "@/persistence/types.ts";
-import { useCategories } from "@/components/transactions/use-categories.ts";
+import { useCategories } from "@/features/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
-import { SelectedCategoryBadge } from "@/components/transactions/editor/selected-category-badge.tsx";
+import { SelectedCategoryBadge } from "@/features/transactions/components/form/selected-category-badge.tsx";
 
 export interface TransactionFormSubmitData {
     categoryId: number;

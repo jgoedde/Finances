@@ -1,7 +1,7 @@
 import { type ComponentProps } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useCanGoBack, useNavigate, useRouter } from "@tanstack/react-router";
-import { cn } from "@/lib/utils.ts";
+import { cn } from "@/lib/cn.ts";
 
 export function BackArrowButton({
     className,
