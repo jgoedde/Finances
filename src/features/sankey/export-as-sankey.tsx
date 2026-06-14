@@ -141,7 +141,9 @@ export function ExportSankeyDialog() {
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            fixedCosts: fixedCostRepository.findAllActive(endDate),
+            fixedCosts: fixedCostRepository
+                .findAllActive(endDate)
+                .map((it) => ({ name: it.name, amount: it.monthlyAmount })),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
