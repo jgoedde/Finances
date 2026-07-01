@@ -32,8 +32,7 @@ export class PersistentDatabase {
     private static async loadFromIndexedDB(): Promise<Uint8Array | undefined> {
         const idb = await this.openIndexedDB();
         return (await idb.get(this.DB_STORE, this.DB_KEY)) as
-            | Uint8Array
-            | undefined;
+            Uint8Array | undefined;
     }
 
     private static async saveToIndexedDB(db: Database): Promise<void> {

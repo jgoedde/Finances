@@ -68,12 +68,7 @@ export const Route = createFileRoute("/fixed-costs/$id")({
 });
 
 type StepId =
-    | "name"
-    | "amount"
-    | "interval"
-    | "startDate"
-    | "endDate"
-    | "category";
+    "name" | "amount" | "interval" | "startDate" | "endDate" | "category";
 
 const STEPS: { id: StepId; title: string }[] = [
     { id: "name", title: "Bezeichnung" },
