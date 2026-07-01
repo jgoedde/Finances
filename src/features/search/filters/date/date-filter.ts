@@ -2,11 +2,7 @@ import { addMonths, addWeeks, addYears, isBefore } from "date-fns";
 import type { Transaction } from "@/persistence/types.ts";
 
 export type DateFilterOption =
-    | "any"
-    | "oneWeek"
-    | "oneMonth"
-    | "halfYear"
-    | "oneYear";
+    "any" | "oneWeek" | "oneMonth" | "halfYear" | "oneYear";
 
 export function isMatchingDateFilter(
     transaction: Transaction,
