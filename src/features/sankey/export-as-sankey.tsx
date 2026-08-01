@@ -24,6 +24,7 @@ import { parseAsBoolean, useQueryState } from "nuqs";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 import { categoryRepository } from "@/features/transactions/category-repository.ts";
 import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
+import { nanoid } from "nanoid";
 
 interface IncomeSource {
     id: string;
@@ -53,19 +54,19 @@ export function ExportSankeyDialog() {
     });
     const [incomeSources, setIncomeSources] = useLocalStorage<IncomeSource[]>({
         key: "sankey-export-income-sources",
-        defaultValue: [{ id: crypto.randomUUID(), name: "", amount: "" }],
+        defaultValue: [{ id: nanoid(12), name: "", amount: "" }],
     });
     const [savingsTargets, setSavingsTargets] = useLocalStorage<
         SavingsTarget[]
     >({
         key: "sankey-export-savings-targets",
-        defaultValue: [{ id: crypto.randomUUID(), name: "", amount: "" }],
+        defaultValue: [{ id: nanoid(12), name: "", amount: "" }],
     });
 
     function addIncomeSource() {
         setIncomeSources([
             ...incomeSources,
-            { id: crypto.randomUUID(), name: "", amount: "" },
+            { id: nanoid(12), name: "", amount: "" },
         ]);
     }
 
@@ -90,7 +91,7 @@ export function ExportSankeyDialog() {
     function addSavingsTarget() {
         setSavingsTargets([
             ...savingsTargets,
-            { id: crypto.randomUUID(), name: "", amount: "" },
+            { id: nanoid(12), name: "", amount: "" },
         ]);
     }
 
