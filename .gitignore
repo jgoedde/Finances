@@ -25,7 +25,3 @@ dev-dist
 *.njsproj
 *.sln
 *.sw?
-
-.vercel
-.env*.local
-.env*
