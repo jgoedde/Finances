@@ -3,7 +3,7 @@ updates:
     - package-ecosystem: "npm"
       directory: "/"
       schedule:
-          interval: "daily"
+          interval: "weekly"
       groups:
           minor-and-patch:
               applies-to: version-updates
@@ -16,4 +16,4 @@ updates:
     - package-ecosystem: "github-actions"
       directory: "/"
       schedule:
-          interval: "daily"
+          interval: "weekly"
