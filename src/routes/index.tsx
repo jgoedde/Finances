@@ -5,7 +5,6 @@ import { MonthlyOverview } from "@/features/transactions/components/charts/month
 import { TransactionList } from "@/features/transactions/components/list/transaction-list.tsx";
 import { NewTransactionFAB } from "@/features/transactions/components/new-transaction-fab.tsx";
 import { Insights } from "@/features/transactions/components/insights.tsx";
-import { Toaster } from "@/components/ui/sonner.tsx";
 import { FixedCostsTable } from "@/features/fixed-costs/fixed-costs-table.tsx";
 
 export const Route = createFileRoute("/")({
@@ -41,7 +40,6 @@ function RouteComponent() {
             </footer>
 
             <NewTransactionFAB />
-            <Toaster />
         </div>
     );
 }
