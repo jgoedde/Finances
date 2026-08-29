@@ -5,6 +5,7 @@ type UpdateHandlers = {
     onOfflineReady: () => void;
 };
 
+// TODO: Add logger interface to allow for custom logging, e.g. to a toast notification system
 export function initPWA(handlers: UpdateHandlers) {
     return registerSW({
         immediate: true,
@@ -18,17 +19,6 @@ export function initPWA(handlers: UpdateHandlers) {
         },
         onRegisteredSW(swUrl, registration) {
             console.log("[PWA] SW registered:", swUrl, registration);
-
-            // Poll for updates periodically (e.g. every hour) since users
-            // may leave the tab open for days on a self-hosted app
-            if (registration) {
-                setInterval(
-                    () => {
-                        void registration.update();
-                    },
-                    60 * 60 * 1000,
-                );
-            }
         },
         onRegisterError(error) {
             console.error("[PWA] SW registration error:", error);

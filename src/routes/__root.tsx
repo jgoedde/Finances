@@ -15,20 +15,22 @@ function RootComponent() {
     useEffect(() => {
         const updateSW = initPWA({
             onNeedRefresh() {
-                toast("New version available", {
-                    id: UPDATE_TOAST_ID,
-                    description: "Reload to update.",
-                    duration: Infinity,
-                    action: {
-                        label: "Reload",
-                        onClick: () => {
-                            void updateSW(true);
+                toast(
+                    "Neue Version verfügbar. Seite neu laden zum Aktualisieren.",
+                    {
+                        id: UPDATE_TOAST_ID,
+                        duration: Infinity,
+                        action: {
+                            label: "Neu laden",
+                            onClick: () => {
+                                void updateSW(true);
+                            },
                         },
                     },
-                });
+                );
             },
             onOfflineReady() {
-                toast.success("Ready for offline use");
+                toast.success("Bereit für Offline-Nutzung");
             },
         });
     }, []);

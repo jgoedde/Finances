@@ -15,8 +15,8 @@ export default defineConfig({
         react(),
         tailwindcss(),
         VitePWA({
-            registerType: "prompt", // you control when the update activates
-            manifest: false, // you already ship site.webmanifest manually
+            registerType: "prompt",
+            manifest: false, // Manifest is shipped separately.
             includeAssets: [
                 "favicon-16x16.png",
                 "favicon-32x32.png",
@@ -28,12 +28,7 @@ export default defineConfig({
                 ],
                 cleanupOutdatedCaches: true,
                 clientsClaim: true,
-                // Bump if you ever have large chunks/fonts that exceed the 2MB default
-                maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
                 navigateFallback: "/index.html",
-            },
-            devOptions: {
-                enabled: true, // lets you test the SW in `vite dev` too
             },
         }),
     ],
