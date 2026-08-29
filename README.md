@@ -44,5 +44,5 @@ The frontend will be available at http://localhost (or whatever host/port you ma
 
 Notes:
 
-- `docker/Dockerfile` performs a production build (`npm run build`) and serves the `dist` output with nginx.
+- `Dockerfile` performs a production build (`npm run build`) and serves the `dist` output with nginx.
 - The provided nginx config includes an SPA fallback so client-side routes work.
