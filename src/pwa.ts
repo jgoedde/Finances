@@ -8,9 +8,17 @@ type UpdateHandlers = {
 export function initPWA(handlers: UpdateHandlers) {
     return registerSW({
         immediate: true,
-        onNeedRefresh: handlers.onNeedRefresh,
-        onOfflineReady: handlers.onOfflineReady,
-        onRegisteredSW(_, registration) {
+        onNeedRefresh: () => {
+            console.log("[PWA] New content is available; please refresh.");
+            handlers.onNeedRefresh();
+        },
+        onOfflineReady: () => {
+            console.log("[PWA] onOfflineReady fired");
+            handlers.onOfflineReady();
+        },
+        onRegisteredSW(swUrl, registration) {
+            console.log("[PWA] SW registered:", swUrl, registration);
+
             // Poll for updates periodically (e.g. every hour) since users
             // may leave the tab open for days on a self-hosted app
             if (registration) {
@@ -21,6 +29,9 @@ export function initPWA(handlers: UpdateHandlers) {
                     60 * 60 * 1000,
                 );
             }
+        },
+        onRegisterError(error) {
+            console.error("[PWA] SW registration error:", error);
         },
     });
 }
