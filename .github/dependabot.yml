@@ -5,6 +5,8 @@ updates:
       directory: "/"
       schedule:
           interval: "weekly"
+      assignees:
+          - "jgoedde"
       groups:
           minor-and-patch:
               applies-to: version-updates
@@ -16,5 +18,7 @@ updates:
 
     - package-ecosystem: "github-actions"
       directory: "/"
+      assignees:
+          - "jgoedde"
       schedule:
           interval: "weekly"
