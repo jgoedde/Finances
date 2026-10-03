@@ -1,6 +1,7 @@
 import { useTonalColor } from "@/utils/color.ts";
 import { formatEuro } from "@/utils/currency.ts";
 import { ChartContainer } from "@/components/ui/chart.tsx";
+import { Card } from "@/components/ui/card.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 
@@ -19,15 +20,10 @@ export function BiggestDailySpike() {
     }
 
     return (
-        <div
-            className={`bg-surface-container-high flex flex-col space-y-2
-                rounded-xl p-4 shadow-lg`}
-        >
+        <Card className={"gap-2 p-4"}>
             <div className={"flex flex-col"}>
-                <div className={"font-poppins text-lg font-medium"}>
-                    30-Tage Trend
-                </div>
-                <div className={"text-md text-on-surface-variant"}>
+                <h2 className={"font-brand text-title-large"}>30-Tage Trend</h2>
+                <div className={"text-body-medium text-on-surface-variant"}>
                     Teuerste Ausgaben für{" "}
                     <span
                         className={"font-semibold"}
@@ -44,7 +40,7 @@ export function BiggestDailySpike() {
             </div>
             <div className={"flex space-x-2"}>
                 <div
-                    className={"font-poppins text-lg font-extrabold"}
+                    className={"font-brand text-title-large font-semibold"}
                     style={{
                         color: textColor,
                     }}
@@ -88,6 +84,6 @@ export function BiggestDailySpike() {
                     </ChartContainer>
                 </div>
             </div>
-        </div>
+        </Card>
     );
 }

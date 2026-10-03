@@ -1,15 +1,33 @@
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn.ts";
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+// MD3 cards (https://m3.material.io/components/cards/specs).
+const cardVariants = cva(
+    "text-on-surface flex flex-col gap-6 rounded-md py-6",
+    {
+        variants: {
+            variant: {
+                elevated: "bg-surface-container-low shadow-elevation-1",
+                filled: "bg-surface-container-highest",
+                outlined: "bg-surface border border-outline-variant",
+            },
+        },
+        defaultVariants: {
+            variant: "filled",
+        },
+    },
+);
+
+function Card({
+    className,
+    variant,
+    ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
     return (
         <div
             data-slot="card"
-            className={cn(
-                `bg-surface-container-highest text-on-surface flex flex-col
-                gap-6 rounded-xl border py-6 shadow-sm`,
-                className,
-            )}
+            className={cn(cardVariants({ variant }), className)}
             {...props}
         />
     );
@@ -35,7 +53,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
     return (
         <div
             data-slot="card-title"
-            className={cn("leading-none font-semibold", className)}
+            className={cn("text-title-large", className)}
             {...props}
         />
     );
@@ -45,7 +63,10 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
     return (
         <div
             data-slot="card-description"
-            className={cn("text-muted-foreground text-sm", className)}
+            className={cn(
+                "text-on-surface-variant text-body-medium",
+                className,
+            )}
             {...props}
         />
     );

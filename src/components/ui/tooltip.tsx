@@ -33,7 +33,7 @@ function TooltipTrigger({
 
 function TooltipContent({
     className,
-    sideOffset = 0,
+    sideOffset = 4,
     children,
     ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Content>) {
@@ -50,19 +50,15 @@ function TooltipContent({
                     data-[side=bottom]:slide-in-from-top-2
                     data-[side=left]:slide-in-from-right-2
                     data-[side=right]:slide-in-from-left-2
-                    data-[side=top]:slide-in-from-bottom-2 z-50 w-fit
-                    origin-(--radix-tooltip-content-transform-origin) rounded-md
-                    px-3 py-1.5 text-xs text-balance`,
+                    data-[side=top]:slide-in-from-bottom-2 text-body-small z-50
+                    flex min-h-6 w-fit
+                    origin-(--radix-tooltip-content-transform-origin)
+                    items-center rounded-xs px-2 py-1 text-balance`,
                     className,
                 )}
                 {...props}
             >
                 {children}
-                <TooltipPrimitive.Arrow
-                    className="bg-inverse-surface fill-inverse-surface z-50
-                        size-2.5 translate-y-[calc(-50%-2px)] rotate-45
-                        rounded-xs"
-                />
             </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
     );

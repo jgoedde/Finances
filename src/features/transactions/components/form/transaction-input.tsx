@@ -126,9 +126,9 @@ export function TransactionInput({
                             tabIndex={-1}
                             aria-hidden="true"
                             className={`border-outline-variant
-                            bg-surface-container-low text-on-surface-variant
-                            ripple-container cursor-pointer rounded-md border-1
-                            px-2 py-1`}
+                            text-on-surface-variant ripple-container state-layer
+                            text-label-large h-8 cursor-pointer rounded-sm
+                            border px-4`}
                             data-ripple-color={"bg-on-surface/50"}
                             {...ripple}
                             type={"button"}
@@ -147,7 +147,9 @@ export function TransactionInput({
                 <div className={"flex items-center"}>
                     <Label
                         htmlFor="transaction"
-                        className={"text-on-surface-variant"}
+                        className={
+                            "text-on-surface-variant text-body-large shrink-0"
+                        }
                     >
                         {transactionType === TransactionType.expense
                             ? "Ausgabe"
@@ -160,8 +162,8 @@ export function TransactionInput({
                         value={transactionLocal}
                         onChange={onInputChange}
                         type={"text"}
-                        className={`rounded-none border-none shadow-none
-                            focus-visible:ring-0`}
+                        className={`h-12 rounded-none border-none px-3
+                            focus:border-none focus:px-3`}
                     />
                 </div>
                 <div className={"flex items-center gap-x-4"}>
@@ -171,7 +173,10 @@ export function TransactionInput({
                         checked={isExceptional}
                         onCheckedChange={onExceptionalCheckBoxClick}
                     />
-                    <Label htmlFor={"exceptional"} className={"text-md"}>
+                    <Label
+                        htmlFor={"exceptional"}
+                        className={"text-body-medium text-on-surface"}
+                    >
                         Außerordentlich
                     </Label>
                 </div>

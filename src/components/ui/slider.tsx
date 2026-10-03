@@ -29,7 +29,7 @@ function Slider({
             max={max}
             className={cn(
                 `relative flex w-full touch-none items-center select-none
-                data-[disabled]:opacity-50 data-[orientation=vertical]:h-full
+                data-[disabled]:opacity-38 data-[orientation=vertical]:h-full
                 data-[orientation=vertical]:min-h-44
                 data-[orientation=vertical]:w-auto
                 data-[orientation=vertical]:flex-col`,
@@ -41,7 +41,7 @@ function Slider({
                 data-slot="slider-track"
                 className={cn(
                     `bg-secondary-container relative grow overflow-hidden
-                    rounded-sm data-[orientation=horizontal]:h-6
+                    rounded-full data-[orientation=horizontal]:h-4
                     data-[orientation=horizontal]:w-full
                     data-[orientation=vertical]:h-full
                     data-[orientation=vertical]:w-1.5`,
@@ -60,12 +60,12 @@ function Slider({
                 <SliderPrimitive.Thumb
                     data-slot="slider-thumb"
                     key={index}
-                    className="bg-surface-container-high flex h-8 w-3 shrink-0
-                        justify-center rounded-sm transition-[color,box-shadow]
-                        focus-visible:outline-hidden
-                        disabled:pointer-events-none disabled:opacity-50"
+                    className="focus-ring bg-surface-container-high flex h-11
+                        w-3 shrink-0 cursor-grab justify-center rounded-sm
+                        outline-none active:cursor-grabbing
+                        disabled:pointer-events-none disabled:opacity-38"
                 >
-                    <div className={"bg-primary h-full w-1 rounded-xs"}></div>
+                    <div className={"bg-primary h-full w-1 rounded-full"}></div>
                 </SliderPrimitive.Thumb>
             ))}
         </SliderPrimitive.Root>

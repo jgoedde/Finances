@@ -7,6 +7,8 @@ import { startOfMonth } from "date-fns";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
 import { type ComponentProps, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
+import { Card } from "@/components/ui/card.tsx";
 
 const now = new Date();
 
@@ -44,48 +46,41 @@ export function MonthsSnapRow() {
     }
 
     return (
-        <div
-            className={`bg-surface-container-high flex flex-col space-y-2
-                rounded-xl p-4 shadow-lg`}
-        >
+        <Card className={"gap-2 p-4"}>
             <div className={"flex items-start"}>
                 <div className={"flex flex-col"}>
-                    <div className={"font-poppins text-lg font-medium"}>
+                    <h2 className={"font-brand text-title-large"}>
                         Ausgabenverteilung
-                    </div>
-                    <div className={"text-md text-on-surface-variant"}>
+                    </h2>
+                    <div className={"text-body-medium text-on-surface-variant"}>
                         Pro Monat
                     </div>
                 </div>
                 {/* Mouse users can't swipe, so offer explicit navigation on larger screens. */}
                 <div className={"ml-auto hidden gap-x-1 md:flex"}>
-                    <button
-                        type={"button"}
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
                         aria-label={"Neuerer Monat"}
-                        className={`text-on-surface-variant
-                            hover:bg-on-surface/10 cursor-pointer rounded-full
-                            p-2`}
                         onClick={() => scrollByPage(-1)}
                     >
-                        <ChevronLeft className={"size-5"} />
-                    </button>
-                    <button
-                        type={"button"}
+                        <ChevronLeft />
+                    </Button>
+                    <Button
+                        variant={"ghost"}
+                        size={"icon"}
                         aria-label={"Älterer Monat"}
-                        className={`text-on-surface-variant
-                            hover:bg-on-surface/10 cursor-pointer rounded-full
-                            p-2`}
                         onClick={() => scrollByPage(1)}
                     >
-                        <ChevronRight className={"size-5"} />
-                    </button>
+                        <ChevronRight />
+                    </Button>
                 </div>
             </div>
             {/* Scrollable Snap Container */}
             <div
                 ref={scrollContainerRef}
                 className="flex w-full snap-x snap-mandatory overflow-x-auto
-                    scroll-smooth rounded-xl"
+                    scroll-smooth"
             >
                 {pastMonths.map((date) => (
                     <Chart
@@ -95,7 +90,7 @@ export function MonthsSnapRow() {
                     />
                 ))}
             </div>
-        </div>
+        </Card>
     );
 }
 
@@ -124,14 +119,18 @@ function Chart({ data, monthName }: ChartProps) {
                 justify-center`}
         >
             <div
-                className={`text-primary font-poppins self-center text-lg
-                    font-extrabold`}
+                className={`text-primary font-brand text-title-large self-center
+                    font-semibold`}
             >
                 {formatEuro(
                     data.reduce((acc, item) => acc + item.totalSpent, 0),
                 )}
             </div>
-            <div className={"text-on-surface-variant self-center text-sm"}>
+            <div
+                className={
+                    "text-on-surface-variant text-body-medium self-center"
+                }
+            >
                 {monthName}
             </div>
             <ChartContainer className={"w-full"} config={{}}>
@@ -145,7 +144,7 @@ function Chart({ data, monthName }: ChartProps) {
                         <LabelList
                             dataKey="totalSpent"
                             position="inside"
-                            className="fill-(--color-on-secondary)"
+                            className="fill-on-secondary text-label-small"
                         />
                         <LabelList
                             position="top"
@@ -170,7 +169,7 @@ function Chart({ data, monthName }: ChartProps) {
                                                 typeof DynamicIcon
                                             >["name"]
                                         }
-                                        stroke={"var(--color-secondary"}
+                                        stroke={"var(--color-secondary)"}
                                     />
                                 );
                             }}

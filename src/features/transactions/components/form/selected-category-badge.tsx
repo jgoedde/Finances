@@ -25,8 +25,13 @@ export function SelectedCategoryBadge({
     return (
         <Badge variant={"input"} style={{ backgroundColor, color: textColor }}>
             <span>{category.name}</span>
-            <button type={"button"} onClick={() => onClear()}>
-                <XIcon className={"size-4"} />
+            <button
+                type={"button"}
+                aria-label={"Kategorie entfernen"}
+                className={"state-layer focus-ring -mr-1 rounded-full p-1"}
+                onClick={() => onClear()}
+            >
+                <XIcon className={"size-[18px]"} />
             </button>
         </Badge>
     );

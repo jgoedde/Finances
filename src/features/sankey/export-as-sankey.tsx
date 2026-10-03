@@ -183,7 +183,11 @@ export function ExportSankeyDialog() {
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label className={"block"} htmlFor="month">
+                            <Label
+                                className={`text-body-small
+                                    text-on-surface-variant mb-1 block`}
+                                htmlFor="month"
+                            >
                                 Month (1-12)
                             </Label>
                             <Input
@@ -198,7 +202,11 @@ export function ExportSankeyDialog() {
                             />
                         </div>
                         <div>
-                            <Label className={"block"} htmlFor="year">
+                            <Label
+                                className={`text-body-small
+                                    text-on-surface-variant mb-1 block`}
+                                htmlFor="year"
+                            >
                                 Year
                             </Label>
                             <Input
@@ -216,9 +224,11 @@ export function ExportSankeyDialog() {
 
                     <div>
                         <div className="mb-2 flex items-center justify-between">
-                            <Label>Income Sources</Label>
+                            <Label className={"text-title-small"}>
+                                Income Sources
+                            </Label>
                             <Button
-                                variant="ghost"
+                                variant="text"
                                 size="sm"
                                 onClick={addIncomeSource}
                             >
@@ -258,6 +268,7 @@ export function ExportSankeyDialog() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        aria-label="Remove"
                                         onClick={() =>
                                             removeIncomeSource(source.id)
                                         }
@@ -272,9 +283,11 @@ export function ExportSankeyDialog() {
 
                     <div>
                         <div className="mb-2 flex items-center justify-between">
-                            <Label>Savings Targets</Label>
+                            <Label className={"text-title-small"}>
+                                Savings Targets
+                            </Label>
                             <Button
-                                variant="ghost"
+                                variant="text"
                                 size="sm"
                                 onClick={addSavingsTarget}
                             >
@@ -314,6 +327,7 @@ export function ExportSankeyDialog() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        aria-label="Remove"
                                         onClick={() =>
                                             removeSavingsTarget(target.id)
                                         }

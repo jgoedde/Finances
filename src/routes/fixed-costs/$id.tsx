@@ -1,16 +1,13 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { type KeyboardEvent, useMemo, useState } from "react";
-import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
+import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
+import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
 import type { FixedCost } from "@/persistence/types.ts";
 import { toast } from "sonner";
 import { z } from "zod";
-import {
-    ButtonGroup,
-    ButtonGroupSeparator,
-} from "@/components/ui/button-group.tsx";
 import { Calendar } from "@/components/ui/calendar";
 import {
     Select,
@@ -66,6 +63,11 @@ export const Route = createFileRoute("/fixed-costs/$id")({
         throw redirect({ to: "/" });
     },
 });
+
+// Popover triggers styled like an MD3 outlined text field.
+const dateTriggerClassName = `border-outline text-on-surface text-body-large
+    hover:border-on-surface h-14 w-full justify-between rounded-xs border px-4
+    text-left [&_svg]:text-on-surface-variant`;
 
 type StepId =
     "name" | "amount" | "interval" | "startDate" | "endDate" | "category";
@@ -189,42 +191,18 @@ function RouteComponent() {
             case "interval":
                 return (
                     <Field>
-                        <FieldLabel htmlFor={"interval"}>Turnus</FieldLabel>
-                        <ButtonGroup id={"interval"}>
-                            <Button
-                                variant={
-                                    interval === "monthly"
-                                        ? "filled"
-                                        : "filledTonal"
-                                }
-                                onClick={() => setInterval("monthly")}
-                            >
-                                Monatlich
-                            </Button>
-                            <ButtonGroupSeparator />
-                            <Button
-                                variant={
-                                    interval === "quarterly"
-                                        ? "filled"
-                                        : "filledTonal"
-                                }
-                                onClick={() => setInterval("quarterly")}
-                            >
-                                Quartalsweise
-                            </Button>
-                            <ButtonGroupSeparator />
-
-                            <Button
-                                variant={
-                                    interval === "yearly"
-                                        ? "filled"
-                                        : "filledTonal"
-                                }
-                                onClick={() => setInterval("yearly")}
-                            >
-                                Jährlich
-                            </Button>
-                        </ButtonGroup>
+                        <FieldLabel>Turnus</FieldLabel>
+                        <SegmentedButton
+                            options={[
+                                { label: "Monatlich", value: "monthly" },
+                                { label: "Quartalsweise", value: "quarterly" },
+                                { label: "Jährlich", value: "yearly" },
+                            ]}
+                            value={interval}
+                            onChange={(v) =>
+                                setInterval(v as FixedCost["interval"])
+                            }
+                        />
                     </Field>
                 );
             case "startDate":
@@ -237,8 +215,9 @@ function RouteComponent() {
                             <PopoverTrigger asChild>
                                 <Button
                                     id={"start-date"}
-                                    variant="outline"
-                                    className="justify-between rounded-none text-left font-normal"
+                                    variant="ghost"
+                                    shape="square"
+                                    className={dateTriggerClassName}
                                 >
                                     {startDate ? (
                                         startDate.toLocaleDateString("de", {
@@ -274,9 +253,13 @@ function RouteComponent() {
                             <PopoverTrigger asChild>
                                 <Button
                                     id={"end-date"}
-                                    variant="outline"
+                                    variant="ghost"
+                                    shape="square"
                                     data-empty={!endDate}
-                                    className="data-[empty=true]:text-outline-variant justify-between rounded-none text-left font-normal"
+                                    className={cn(
+                                        dateTriggerClassName,
+                                        "data-[empty=true]:text-on-surface-variant",
+                                    )}
                                 >
                                     {endDate ? (
                                         endDate.toLocaleDateString("de", {
@@ -353,28 +336,20 @@ function RouteComponent() {
 
     return (
         <div className="flex min-h-screen flex-col">
-            <header
-                className={
-                    "bg-surface-container flex h-16 w-full items-center py-2"
-                }
-            >
-                <BackArrowButton />
-                <div className={"text-lg"}>Fixkosten bearbeiten</div>
-            </header>
+            <TopAppBar title={"Fixkosten bearbeiten"} />
 
             <main className="flex flex-1 items-center justify-center">
                 <div
                     className={cn(
-                        stepId === "interval"
-                            ? "mx-auto max-w-md"
-                            : "mx-auto w-62",
+                        "mx-auto w-full px-4",
+                        stepId === "interval" ? "max-w-md" : "max-w-xs",
                     )}
                 >
                     {renderStep()}
                 </div>
             </main>
 
-            <footer className="border-t p-4">
+            <footer className="border-outline-variant border-t p-4">
                 <div className="mx-auto flex w-full max-w-md gap-2">
                     {step > 0 && (
                         <Button
@@ -386,6 +361,7 @@ function RouteComponent() {
                         </Button>
                     )}
                     <Button
+                        variant="filled"
                         onClick={goNext}
                         className="flex-1"
                         disabled={!canNext}

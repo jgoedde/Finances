@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { CircleIcon } from "lucide-react";
 import { cn } from "@/lib/cn.ts";
 
 function RadioGroup({
@@ -16,6 +15,8 @@ function RadioGroup({
     );
 }
 
+// MD3 radio button (https://m3.material.io/components/radio-button/specs):
+// 20dp ring with 2dp on-surface-variant border, primary with 10dp dot when selected.
 function RadioGroupItem({
     className,
     ...props
@@ -24,26 +25,20 @@ function RadioGroupItem({
         <RadioGroupPrimitive.Item
             data-slot="radio-group-item"
             className={cn(
-                `border-input text-primary focus-visible:border-ring
-                focus-visible:ring-ring/50 aria-invalid:ring-destructive/20
-                dark:aria-invalid:ring-destructive/40
-                aria-invalid:border-destructive dark:bg-input/30 aspect-square
-                size-4 shrink-0 rounded-full border shadow-xs
-                transition-[color,box-shadow] outline-none
-                focus-visible:ring-[3px] disabled:cursor-not-allowed
-                disabled:opacity-50`,
+                `focus-ring border-on-surface-variant ease-standard
+                disabled:border-on-surface/38 aria-invalid:border-error
+                data-[state=checked]:border-primary aspect-square size-5
+                shrink-0 cursor-pointer rounded-full border-2 transition-colors
+                duration-150 outline-none disabled:cursor-not-allowed`,
                 className,
             )}
             {...props}
         >
             <RadioGroupPrimitive.Indicator
                 data-slot="radio-group-indicator"
-                className="relative flex items-center justify-center"
+                className="flex size-full items-center justify-center"
             >
-                <CircleIcon
-                    className="fill-primary absolute top-1/2 left-1/2 size-2
-                        -translate-x-1/2 -translate-y-1/2"
-                />
+                <span className="bg-primary size-2.5 rounded-full" />
             </RadioGroupPrimitive.Indicator>
         </RadioGroupPrimitive.Item>
     );

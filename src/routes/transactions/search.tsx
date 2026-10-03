@@ -14,6 +14,7 @@ import { addYears, endOfYear } from "date-fns";
 import { TransactionListItem } from "@/features/transactions/components/list/transaction-list-item.tsx";
 import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
 import { cn } from "@/lib/cn.ts";
+import { Button } from "@/components/ui/button.tsx";
 
 export const Route = createFileRoute("/transactions/search")({
     component: RouteComponent,
@@ -68,7 +69,7 @@ function RouteComponent() {
                     setIsDrawerOpen((prev) => ({ ...prev, isOpen: e }))
                 }
             >
-                <DrawerContent className={"text-on-surface"}>
+                <DrawerContent>
                     {isDrawerOpen.type === "date" && (
                         <DateFilterDrawerContent
                             closeDrawer={() =>
@@ -83,63 +84,73 @@ function RouteComponent() {
                     )}
                 </DrawerContent>
                 <div
-                    className={`border-outline bg-surface-container-high flex
-                        h-16 w-full shrink-0 items-center border-b py-2`}
+                    className={`border-outline bg-surface-container-high sticky
+                        top-0 z-10 flex h-[72px] w-full shrink-0 items-center
+                        gap-1 border-b pr-1`}
                 >
                     <BackArrowButton />
                     <input
                         ref={inputRef}
+                        type={"search"}
+                        aria-label={"Suche"}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className={"border-none text-lg outline-none"}
+                        className={`text-body-large text-on-surface
+                            placeholder:text-on-surface-variant caret-primary
+                            min-w-0 grow bg-transparent outline-none
+                            [&::-webkit-search-cancel-button]:hidden`}
                         placeholder={"Buchung/Transaktion suchen"}
                     />
-                    <button
-                        type={"button"}
-                        onClick={() => {
-                            setSearch("");
-                            inputRef.current?.focus();
-                        }}
-                        className={`text-on-surface-variant ml-auto
-                            cursor-pointer px-4`}
-                    >
-                        <X className={"size-6"} />
-                    </button>
+                    {search !== "" && (
+                        <Button
+                            variant={"ghost"}
+                            size={"icon"}
+                            aria-label={"Suche leeren"}
+                            onClick={() => {
+                                setSearch("");
+                                inputRef.current?.focus();
+                            }}
+                        >
+                            <X />
+                        </Button>
+                    )}
                 </div>
                 <div
-                    className={`mx-auto my-2 flex h-8 w-full max-w-3xl shrink-0
-                        gap-x-2 overflow-x-auto`}
+                    className={`mx-auto my-2 flex w-full max-w-3xl shrink-0
+                        gap-x-2 overflow-x-auto px-4 py-1`}
                 >
                     <Badge
+                        asChild
                         variant={"md3"}
                         className={cn(
-                            "ml-2 flex gap-x-1",
                             dateFilterOption !== "any" &&
                                 `bg-secondary-container
-                                text-on-secondary-container outline-outline`,
+                                text-on-secondary-container border-transparent`,
                         )}
                         onClick={() => {
                             setIsDrawerOpen({ type: "date", isOpen: true });
                         }}
                     >
-                        <div className={"text-on-surface font-medium"}>
+                        <button type={"button"}>
                             {dateFilterOption === "any"
                                 ? "Zeitraum"
                                 : getDateFilterStr(dateFilterOption)}
-                        </div>
-                        <div>
-                            <ChevronDown className={"size-4"} strokeWidth={2} />
-                        </div>
+                            <ChevronDown />
+                        </button>
                     </Badge>
                 </div>
                 {filteredTransactions.length === 0 && search !== "" && (
                     <div className={"my-auto text-center"}>
-                        <h3 className={"text-outline text-xl"}>
+                        <h3
+                            className={
+                                "text-on-surface-variant text-title-large"
+                            }
+                        >
                             Keine Ergebnisse
                         </h3>
                     </div>
                 )}
-                <div className={"mx-auto flex w-full max-w-3xl flex-col px-4"}>
+                <div className={"mx-auto flex w-full max-w-3xl flex-col px-2"}>
                     {filteredTransactions.length > 0 &&
                         filteredTransactions.map((it) => (
                             <TransactionListItem key={it.id} transaction={it} />

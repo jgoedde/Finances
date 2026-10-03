@@ -39,12 +39,16 @@ function RouteComponent() {
 
             <footer>
                 <div
-                    className={`bg-surface-container-lowest text-surface-variant
-                        flex flex-col items-center px-4 py-2`}
+                    className={`text-on-surface-variant text-body-small flex
+                        flex-col items-center px-4 py-4`}
                 >
                     <span>
                         Ausgabentracker{" "}
-                        <a href="https://github.com/jgoedde/Finances/releases">
+                        <a
+                            className={`text-primary underline-offset-4
+                                hover:underline`}
+                            href="https://github.com/jgoedde/Finances/releases"
+                        >
                             v{__APP_VERSION__}
                         </a>
                     </span>

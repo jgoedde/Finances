@@ -14,6 +14,7 @@ import type { FixedCost } from "@/persistence/types.ts";
 import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch.tsx";
+import { Card } from "@/components/ui/card.tsx";
 
 const INTERVAL_LABELS: Record<FixedCost["interval"], string> = {
     monthly: "Monatlich",
@@ -70,27 +71,31 @@ export function FixedCostsTable() {
     const monthlyTotal = fixedCostRepository.monthlyTotal();
 
     return (
-        <div className="space-y-4">
-            <Button
-                variant={"filledTonal"}
-                className={"ml-2"}
-                onClick={async () => {
-                    await fixedCostRepository.add({
-                        active: 1,
-                        amount: 0,
-                        start_date: new Date().toISOString(),
-                        category_id: 1,
-                        currency: "EUR",
-                        end_date: null,
-                        name: "Leer",
-                        description: null,
-                        interval: "monthly",
-                    });
-                }}
-            >
-                <Plus />
-                Fixkosten erfassen
-            </Button>
+        <Card className={"m-2 gap-4 px-2 py-4"}>
+            <div className={"flex flex-wrap items-center gap-2 px-2"}>
+                <h2 className={"font-brand text-title-large grow"}>
+                    Fixkosten
+                </h2>
+                <Button
+                    variant={"filledTonal"}
+                    onClick={async () => {
+                        await fixedCostRepository.add({
+                            active: 1,
+                            amount: 0,
+                            start_date: new Date().toISOString(),
+                            category_id: 1,
+                            currency: "EUR",
+                            end_date: null,
+                            name: "Leer",
+                            description: null,
+                            interval: "monthly",
+                        });
+                    }}
+                >
+                    <Plus />
+                    Fixkosten erfassen
+                </Button>
+            </div>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -107,25 +112,27 @@ export function FixedCostsTable() {
                         <TableRow
                             key={row.id}
                             className={
-                                !row.isRunning ? "opacity-50" : undefined
+                                !row.isRunning ? "opacity-38" : undefined
                             }
                         >
-                            <TableCell className="font-medium">
+                            <TableCell className="text-body-large">
                                 <Link
-                                    className={
-                                        "inline-flex items-center gap-x-1"
-                                    }
+                                    className={`text-on-surface focus-ring
+                                    inline-flex items-center gap-x-1 rounded-xs
+                                    underline-offset-4 hover:underline`}
                                     to={`/fixed-costs/$id`}
                                     params={{ id: row.id }}
                                 >
                                     {row.name}{" "}
                                     <ChevronRight
-                                        className={"text-outline size-4"}
+                                        className={
+                                            "text-on-surface-variant size-4"
+                                        }
                                     />
                                 </Link>
                             </TableCell>
                             <TableCell>
-                                <span className="text-muted-foreground text-sm">
+                                <span className="text-on-surface-variant">
                                     {row.category.name}
                                 </span>
                             </TableCell>
@@ -133,47 +140,53 @@ export function FixedCostsTable() {
                                 {toMonthlyLabel(row.amount, row.currency)}
                             </TableCell>
                             <TableCell>
-                                <span className="text-muted-foreground text-xs">
+                                <span className="text-on-surface-variant">
                                     {INTERVAL_LABELS[row.interval]}
                                 </span>
                             </TableCell>
                             <TableCell
-                                className="text-muted-foreground text-right
-                                    text-sm"
+                                className="text-on-surface-variant text-right"
                             >
                                 {toMonthlyLabel(
                                     row.monthlyAmount,
                                     row.currency,
                                 )}
                             </TableCell>
-                            <TableCell className="flex items-center gap-1">
-                                <Switch
-                                    checked={row.active}
-                                    onCheckedChange={() => toggleActive(row)}
-                                />
-                                <Button
-                                    size="icon"
-                                    variant="filledTonal"
-                                    className="text-error bg-error-container h-7
-                                        w-7"
-                                    onClick={() => remove(row.id)}
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
+                            <TableCell>
+                                <div className="flex items-center gap-2">
+                                    <Switch
+                                        aria-label={"Aktiv"}
+                                        checked={row.active}
+                                        onCheckedChange={() =>
+                                            toggleActive(row)
+                                        }
+                                    />
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        aria-label={"Löschen"}
+                                        onClick={() => remove(row.id)}
+                                    >
+                                        <Trash2 />
+                                    </Button>
+                                </div>
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
 
-            <div className="flex justify-end border-t py-3 pr-3 text-sm">
-                <span className="text-muted-foreground mr-2">
+            <div
+                className={`border-outline-variant text-body-medium flex
+                    justify-end border-t px-4 pt-4`}
+            >
+                <span className="text-on-surface-variant mr-2">
                     Monatlich gesamt:
                 </span>
-                <span className="font-medium">
+                <span className="text-title-small">
                     {toMonthlyLabel(monthlyTotal, "EUR")}
                 </span>
             </div>
-        </div>
+        </Card>
     );
 }

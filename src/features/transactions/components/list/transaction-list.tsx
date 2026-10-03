@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer.tsx";
-import { Calendar, X } from "lucide-react";
+import { Calendar, ChevronDown } from "lucide-react";
+import { Card } from "@/components/ui/card.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { addDays, endOfDay, startOfDay } from "date-fns";
@@ -85,30 +85,32 @@ export function TransactionList() {
             open={isDrawerOpen}
             onOpenChange={(o) => void setIsDrawerOpen(o)}
         >
-            <div
-                className={`bg-surface-container-lowest m-2 mt-4 flex flex-col
-                    rounded-md p-4`}
-            >
+            <Card className={"m-2 mt-4 gap-0 px-2 py-4"}>
                 <DrawerTrigger asChild>
                     <Badge
+                        asChild
                         variant={"md3"}
-                        className={"flex gap-x-2"}
+                        className={"ml-2"}
                         onClick={() => {
                             void setIsDrawerOpen(true);
                         }}
                     >
-                        <div>
-                            <Calendar className={"text-primary size-4"} />
-                        </div>
-                        <div className={"text-on-surface font-medium"}>
-                            {getActiveDateFilter()}
-                        </div>
+                        <button type={"button"}>
+                            <Calendar className={"text-primary"} />
+                            <span className={"text-on-surface"}>
+                                {getActiveDateFilter()}
+                            </span>
+                            <ChevronDown />
+                        </button>
                     </Badge>
                 </DrawerTrigger>
 
                 <div className={"mt-4 flex w-full flex-col"}>
                     {transactions.length === 0 && (
-                        <div className={"text-outline mt-2 text-center"}>
+                        <div
+                            className={`text-on-surface-variant text-body-medium
+                            mt-2 text-center`}
+                        >
                             Keine Geldbewegungen für {getActiveDateFilter()}
                         </div>
                     )}
@@ -127,20 +129,13 @@ export function TransactionList() {
                               />
                           ))}
                 </div>
-            </div>
+            </Card>
             <DrawerContent>
-                <DrawerHeader className={"mb-4 pt-0"}>
-                    <DrawerTitle asChild>
-                        <div className="flex gap-x-4">
-                            <DrawerClose asChild>
-                                <div>
-                                    <X />
-                                </div>
-                            </DrawerClose>
-                            Datum
-                        </div>
-                    </DrawerTitle>
-                    <DrawerDescription></DrawerDescription>
+                <DrawerHeader className={"pt-0 text-left"}>
+                    <DrawerTitle>Zeitraum</DrawerTitle>
+                    <DrawerDescription className={"sr-only"}>
+                        Zeitraum der angezeigten Geldbewegungen wählen
+                    </DrawerDescription>
                 </DrawerHeader>
                 <DateFilterDrawerContent
                     closeDrawer={() => void setIsDrawerOpen(false)}
@@ -164,30 +159,32 @@ function DateFilterDrawerContent({
     closeDrawer,
 }: Props) {
     return (
-        <div className={"mx-4"}>
-            <RadioGroup
-                defaultValue={dateFilterOption}
-                onValueChange={(e) => {
-                    setDateFilterOption(e as typeof dateFilterOption);
-                    closeDrawer();
-                }}
-                className={"mb-6"}
-            >
-                <div className="mb-3 flex items-center gap-5">
-                    <RadioGroupItem value="today" id="today" />
-                    <Label htmlFor="today">Heute</Label>
-                </div>
-                <div className="mb-3 flex items-center gap-5">
-                    <RadioGroupItem value="yesterday" id="yesterday" />
-                    <Label htmlFor="yesterday">Gestern</Label>
-                </div>
-
-                <div className="mb-3 flex items-center gap-5">
-                    <RadioGroupItem value="last-7-days" id="last-7-days" />
-                    <Label htmlFor="last-7-days">Letzte 7 Tage</Label>
-                </div>
-            </RadioGroup>
-        </div>
+        <RadioGroup
+            defaultValue={dateFilterOption}
+            onValueChange={(e) => {
+                setDateFilterOption(e as typeof dateFilterOption);
+                closeDrawer();
+            }}
+            className={"mb-6 gap-0"}
+        >
+            {(
+                [
+                    ["today", "Heute"],
+                    ["yesterday", "Gestern"],
+                    ["last-7-days", "Letzte 7 Tage"],
+                ] as const
+            ).map(([value, label]) => (
+                <Label
+                    key={value}
+                    htmlFor={value}
+                    className={`state-layer text-body-large text-on-surface flex
+                    min-h-14 cursor-pointer items-center gap-4 px-4`}
+                >
+                    <RadioGroupItem value={value} id={value} />
+                    {label}
+                </Label>
+            ))}
+        </RadioGroup>
     );
 }
 
@@ -201,9 +198,7 @@ function TransactionGroup({
     return (
         <div className={"mb-3 flex flex-col py-1"}>
             <div
-                className={
-                    "text-on-surface-variant/80 mb-1 px-4 text-sm font-medium"
-                }
+                className={"text-on-surface-variant text-title-small mb-1 px-2"}
             >
                 {day}
             </div>
