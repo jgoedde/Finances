@@ -71,7 +71,7 @@ export function MonthlyOverview() {
             <div className={"flex w-full flex-col"}>
                 <ChartContainer
                     config={chartConfig}
-                    className="aspect-square w-full"
+                    className="mx-auto aspect-square w-full max-w-md"
                 >
                     <RadialBarChart
                         data={chartData}

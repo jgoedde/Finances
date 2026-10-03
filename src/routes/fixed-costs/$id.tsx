@@ -352,11 +352,10 @@ function RouteComponent() {
     };
 
     return (
-        // Mobile-only full screen wizard. Hidden on medium+ screens.
-        <div className="flex min-h-screen flex-col md:hidden">
+        <div className="flex min-h-screen flex-col">
             <header
                 className={
-                    "bg-surface-container flex h-16 w-dvw items-center py-2"
+                    "bg-surface-container flex h-16 w-full items-center py-2"
                 }
             >
                 <BackArrowButton />
@@ -376,7 +375,7 @@ function RouteComponent() {
             </main>
 
             <footer className="border-t p-4">
-                <div className="flex gap-2">
+                <div className="mx-auto flex w-full max-w-md gap-2">
                     {step > 0 && (
                         <Button
                             variant="outline"
