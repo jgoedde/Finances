@@ -23,15 +23,19 @@ export function SelectedCategoryBadge({
         theme === "dark" ? tonal.dark.onContainer : tonal.light.onContainer;
 
     return (
-        <Badge variant={"input"} style={{ backgroundColor, color: textColor }}>
-            <span>{category.name}</span>
+        <Badge
+            asChild
+            variant={"input"}
+            className={"state-layer cursor-pointer"}
+            style={{ backgroundColor, color: textColor }}
+        >
             <button
                 type={"button"}
-                aria-label={"Kategorie entfernen"}
-                className={"state-layer focus-ring -mr-1 rounded-full p-1"}
+                aria-label={`Kategorie ${category.name} entfernen`}
                 onClick={() => onClear()}
             >
-                <XIcon className={"size-[18px]"} />
+                {category.name}
+                <XIcon aria-hidden />
             </button>
         </Badge>
     );
