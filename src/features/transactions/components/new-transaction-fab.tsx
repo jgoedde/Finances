@@ -12,14 +12,18 @@ export function NewTransactionFAB() {
         <button
             type={"button"}
             className={cn(
-                `ripple-container bg-primary-container text-on-primary-container
-                size-16 shrink-0 -translate-x-1/5 rounded-2xl shadow-lg`,
+                `ripple-container state-layer focus-ring bg-primary-container
+                text-on-primary-container shadow-elevation-3
+                hover:shadow-elevation-4 ease-standard size-14 shrink-0
+                -translate-x-1/4 cursor-pointer rounded-lg transition-shadow
+                duration-200`,
             )}
             style={{
                 position: "sticky",
                 left: "100%",
                 bottom: "calc(var(--spacing) * 4)",
             }}
+            aria-label={"Neue Geldbewegung"}
             data-ripple-color="bg-on-surface/10"
             {...ripple}
             onClick={(e) => {
@@ -30,7 +34,7 @@ export function NewTransactionFAB() {
                 }, 100);
             }}
         >
-            <Banknote className={"mx-auto size-10 h-full"} />
+            <Banknote className={"mx-auto size-6"} />
         </button>
     );
 }

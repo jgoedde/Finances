@@ -2,42 +2,38 @@ import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
 import { cn } from "@/lib/cn.ts";
 
+// MD3 switch (https://m3.material.io/components/switch/specs): 52x32dp track,
+// thumb grows from 16dp (off) to 24dp (on) and 28dp while pressed.
 function Switch({
     className,
-    size = "default",
     ...props
-}: React.ComponentProps<typeof SwitchPrimitive.Root> & {
-    size?: "sm" | "default";
-}) {
+}: React.ComponentProps<typeof SwitchPrimitive.Root>) {
     return (
         <SwitchPrimitive.Root
             data-slot="switch"
-            data-size={size}
             className={cn(
-                `peer group/switch focus-visible:border-ring
-                focus-visible:ring-ring/50 data-[state=checked]:bg-primary
-                data-[state=unchecked]:bg-surface-container-highest
-                dark:data-[state=unchecked]:bg-surface-container-highest/80
-                inline-flex shrink-0 items-center rounded-full border
-                border-transparent shadow-xs transition-all outline-none
-                focus-visible:ring-[3px] disabled:cursor-not-allowed
-                disabled:opacity-50 data-[size=default]:h-[1.15rem]
-                data-[size=default]:w-8 data-[size=sm]:h-3.5 data-[size=sm]:w-6`,
+                `peer group/switch focus-ring ease-standard
+                data-[state=checked]:border-primary
+                data-[state=checked]:bg-primary
+                data-[state=unchecked]:border-outline
+                data-[state=unchecked]:bg-surface-container-highest inline-flex
+                h-8 w-[52px] shrink-0 cursor-pointer items-center rounded-full
+                border-2 transition-colors duration-200 outline-none
+                disabled:cursor-not-allowed disabled:opacity-38`,
                 className,
             )}
             {...props}
         >
             <SwitchPrimitive.Thumb
                 data-slot="switch-thumb"
-                className={cn(
-                    `data-[state=checked]:bg-on-primary
+                className={`ease-standard data-[state=checked]:bg-on-primary
                     data-[state=unchecked]:bg-outline pointer-events-none block
-                    rounded-full ring-0 transition-transform
-                    group-data-[size=default]/switch:size-4
-                    group-data-[size=sm]/switch:size-3
-                    data-[state=checked]:translate-x-[calc(100%-2px)]
-                    data-[state=unchecked]:translate-x-0`,
-                )}
+                    size-4 rounded-full transition-all duration-200
+                    group-active/switch:size-7 data-[state=checked]:size-6
+                    data-[state=checked]:translate-x-[22px]
+                    group-active/switch:data-[state=checked]:translate-x-5
+                    data-[state=unchecked]:translate-x-[6px]
+                    group-active/switch:data-[state=unchecked]:translate-x-0`}
             />
         </SwitchPrimitive.Root>
     );

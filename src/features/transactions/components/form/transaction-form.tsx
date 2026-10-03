@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import { type SubmitEvent, useRef, useState } from "react";
 import { Input } from "@/components/ui/input.tsx";
 import { CategoryTile } from "@/features/transactions/components/form/category-tile.tsx";
@@ -10,7 +9,8 @@ import { type Category, TransactionType } from "@/persistence/types.ts";
 import { useCategories } from "@/features/transactions/use-categories.ts";
 import { Label } from "@/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
-import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
+import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
+import { Button } from "@/components/ui/button.tsx";
 import { SelectedCategoryBadge } from "@/features/transactions/components/form/selected-category-badge.tsx";
 
 export interface TransactionFormSubmitData {
@@ -121,32 +121,27 @@ export function TransactionForm({
 
     return (
         <form onSubmit={handleFormSubmit}>
-            <div
-                className={
-                    "bg-surface-container flex h-16 w-full items-center py-2"
+            <TopAppBar
+                title={title}
+                actions={
+                    <>
+                        <DateChooserPopover
+                            selected={date}
+                            onSelect={(a) => setDate(a ?? new Date())}
+                        />
+
+                        {typeof onDelete === "function" && (
+                            <DeleteButtonWithConfirmDialog
+                                onDelete={onDelete}
+                            />
+                        )}
+
+                        <Button type={"submit"} variant={"text"}>
+                            Speichern
+                        </Button>
+                    </>
                 }
-            >
-                <BackArrowButton />
-                <div className={"text-lg"}>{title}</div>
-                <div className={"ml-auto flex items-center gap-x-4 pr-4"}>
-                    <DateChooserPopover
-                        selected={date}
-                        onSelect={(a) => setDate(a ?? new Date())}
-                    />
-
-                    {typeof onDelete === "function" && (
-                        <DeleteButtonWithConfirmDialog onDelete={onDelete} />
-                    )}
-
-                    <button
-                        type={"submit"}
-                        className={`ripple-container bg-primary text-on-primary
-                            cursor-pointer rounded-full px-3 py-1`}
-                    >
-                        <Check className={"size"} />
-                    </button>
-                </div>
-            </div>
+            />
 
             <div className={"my-4 flex w-full justify-center"}>
                 <SegmentedButton
@@ -191,7 +186,8 @@ export function TransactionForm({
                     >
                         <Label
                             htmlFor="amount"
-                            className={"text-on-surface-variant"}
+                            className={`text-on-surface-variant text-body-large
+                                shrink-0`}
                         >
                             Preis
                         </Label>
@@ -205,8 +201,8 @@ export function TransactionForm({
                             }}
                             required
                             allowNegativeValue={false}
-                            className={`h-8 w-full rounded-none border-none px-3
-                                shadow-none outline-none focus-visible:ring-0`}
+                            className={`text-body-large text-on-surface h-12
+                                w-full bg-transparent px-3 outline-none`}
                             onValueChange={onAmountInputChange}
                             decimalsLimit={2}
                             value={amountStr}
@@ -240,7 +236,8 @@ export function TransactionForm({
                     <div className={"flex items-center gap-x-2"}>
                         <Label
                             htmlFor="description"
-                            className={"text-on-surface-variant"}
+                            className={`text-on-surface-variant text-body-large
+                                shrink-0`}
                         >
                             Beschreibung
                         </Label>
@@ -252,8 +249,8 @@ export function TransactionForm({
                                 setDescription(e.target.value);
                             }}
                             type={"text"}
-                            className={`rounded-none border-none shadow-none
-                                focus-visible:ring-0`}
+                            className={`h-12 rounded-none border-none px-3
+                                focus:border-none focus:px-3`}
                         />
                     </div>
                     {selectedCategory !== undefined && (

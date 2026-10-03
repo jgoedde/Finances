@@ -24,7 +24,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
-import { cn } from "@/lib/cn.ts";
+import { Card } from "@/components/ui/card.tsx";
 
 const now = new Date();
 
@@ -67,7 +67,7 @@ export function MonthlyOverview() {
     const shouldBackup = isBackupOverdue(new Date(), backupConfig);
 
     return (
-        <div className={"bg-surface-container-lowest m-2 flex rounded-md p-4"}>
+        <Card className={"m-2 gap-0 p-4"}>
             <div className={"flex w-full flex-col"}>
                 <ChartContainer
                     config={chartConfig}
@@ -112,7 +112,7 @@ export function MonthlyOverview() {
                         <AccordionContent>
                             <div
                                 className="divide-outline-variant flex flex-col
-                                    space-y-2 divide-y"
+                                    divide-y"
                             >
                                 {chartData.map((payload) => {
                                     return (
@@ -140,10 +140,7 @@ export function MonthlyOverview() {
                                 variant={
                                     shouldBackup ? "filled" : "filledTonal"
                                 }
-                                className={cn(
-                                    shouldBackup && "rounded-sm",
-                                    "relative",
-                                )}
+                                className={"relative overflow-visible"}
                                 onClick={async () => {
                                     try {
                                         await PersistentDatabase.exportFile();
@@ -159,10 +156,12 @@ export function MonthlyOverview() {
                                 {hasBackedUp ? <Check /> : <FileLock />}
                                 Backup
                                 {shouldBackup && (
-                                    <div
-                                        className="bg-error absolute -end-0.5
-                                            -top-0.5 size-3 rounded-full"
-                                    ></div>
+                                    <span
+                                        role={"img"}
+                                        aria-label={"Backup überfällig"}
+                                        className="bg-error absolute end-1 top-1
+                                            size-1.5 rounded-full"
+                                    />
                                 )}
                             </Button>
                         </TooltipTrigger>
@@ -177,7 +176,7 @@ export function MonthlyOverview() {
                     <ExportSankeyDialog />
                 </div>
             </div>
-        </div>
+        </Card>
     );
 }
 
@@ -195,28 +194,28 @@ function MyLegend({
     return (
         <div
             key={categoryName}
-            className={cn("text-on-surface m-0 flex items-center gap-x-4 py-2")}
+            className={
+                "text-on-surface flex min-h-14 items-center gap-x-4 py-2"
+            }
         >
             {
                 <div
-                    className="size-8 shrink-0 rounded-md"
+                    className="size-10 shrink-0 rounded-full"
                     style={{
                         backgroundColor: fill,
                     }}
                 />
             }
             <div className={"flex flex-col"}>
-                <div className={"text"}>{categoryName}</div>
+                <div className={"text-body-large"}>{categoryName}</div>
                 <div
-                    className={
-                        "text-on-surface-variant flex items-center text-sm"
-                    }
+                    className={`text-on-surface-variant text-body-medium flex
+                        items-center`}
                 >
                     {expensesCount} Ausgaben,{" "}
                     <CircleSlash2 className={"mx-1 size-3"} />
                     {formatEuro(averageExpenseAmount)} pro Ausgabe
                 </div>
-                <div className={"ml-auto"}></div>
             </div>
         </div>
     );

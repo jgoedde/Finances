@@ -53,21 +53,21 @@ function RouteComponent() {
     }
 
     return (
-        <div className={"bg-scrim/80 flex h-dvh items-center justify-center"}>
+        <div
+            className={`bg-surface-container flex min-h-dvh items-center
+                justify-center p-6`}
+        >
             <div
-                className="bg-surface-container-high w-full max-w-sm rounded-2xl
-                    p-6 shadow-xl"
+                className="bg-surface-container-high text-on-surface
+                    shadow-elevation-3 w-full max-w-sm rounded-xl p-6"
             >
-                <h2
-                    className="font-poppins mb-6 text-center text-2xl
-                        font-semibold"
-                >
+                <h2 className="font-brand text-headline-small mb-4 text-center">
                     Entschlüsselung
                 </h2>
 
                 <div
-                    className={`text-on-surface-variant mb-6 flex flex-col
-                        gap-y-2 text-sm`}
+                    className={`text-on-surface-variant text-body-medium mb-6
+                        flex flex-col gap-y-2`}
                 >
                     <div>
                         {transactionCount === 0 ? (
@@ -91,19 +91,10 @@ function RouteComponent() {
                             }}
                         >
                             {!importStatus.isInitial &&
-                                importStatus.successful && (
-                                    <Check
-                                        className={
-                                            "text-on-surface-variant size-5"
-                                        }
-                                    />
-                                )}
-                            <div>
-                                {!importStatus.isInitial &&
-                                importStatus.successful
-                                    ? "Importiert"
-                                    : "Importieren"}
-                            </div>
+                                importStatus.successful && <Check />}
+                            {!importStatus.isInitial && importStatus.successful
+                                ? "Importiert"
+                                : "Importieren"}
                         </Button>
                         <Input
                             type={"file"}
@@ -125,13 +116,15 @@ function RouteComponent() {
                     <div className={"flex flex-col space-y-2"}>
                         <div className={"my-3"}>
                             <div className={"flex flex-col"}>
-                                <div className={"text-sm"}>
-                                    Automatisches Backup-Interval
-                                </div>
+                                <label
+                                    htmlFor={"backup-interval-slider"}
+                                    className={"text-title-small"}
+                                >
+                                    Automatisches Backup-Intervall
+                                </label>
                                 <div
-                                    className={
-                                        "text-on-surface-variant text-sm"
-                                    }
+                                    className={`text-on-surface-variant
+                                        text-body-medium`}
                                 >
                                     {backupConfig.interval === -1 ? (
                                         <>Keine automatischen Backups</>
@@ -179,16 +172,10 @@ function RouteComponent() {
 
                     {/* Submit Button */}
                     <div className={"mt-6 flex w-full justify-center"}>
-                        <button
-                            type="submit"
-                            className="bg-primary text-on-primary flex gap-x-2
-                                rounded-full px-4 py-2 font-medium"
-                        >
-                            <div>
-                                <Check />
-                            </div>
-                            <div>Loslegen</div>
-                        </button>
+                        <Button type="submit" variant={"filled"}>
+                            <Check />
+                            Loslegen
+                        </Button>
                     </div>
                 </form>
             </div>

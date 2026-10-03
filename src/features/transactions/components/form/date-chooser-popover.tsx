@@ -6,6 +6,7 @@ import {
 import { ClockFading } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import { de } from "date-fns/locale";
+import { Button } from "@/components/ui/button.tsx";
 
 type Props = {
     selected: Date;
@@ -16,11 +17,16 @@ export function DateChooserPopover({ onSelect, selected }: Props) {
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <button className={"cursor-pointer"}>
-                    <ClockFading className={"size-5"} />
-                </button>
+                <Button
+                    type={"button"}
+                    variant={"ghost"}
+                    size={"icon"}
+                    aria-label={"Datum wählen"}
+                >
+                    <ClockFading />
+                </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto border-none p-0 shadow-lg">
+            <PopoverContent className="w-auto p-0">
                 <Calendar
                     locale={de}
                     mode="single"

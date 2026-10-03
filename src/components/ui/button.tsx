@@ -3,28 +3,43 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn.ts";
 
+// MD3 common buttons (https://m3.material.io/components/buttons/specs)
+// and icon buttons (size="icon").
 const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-2 text-sm whitespace-nowrap [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0",
+    "state-layer focus-ring inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-label-large whitespace-nowrap outline-none transition-shadow duration-200 ease-standard disabled:pointer-events-none disabled:text-on-surface/38 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-[18px]",
     {
         variants: {
             variant: {
-                outline: "outline-variant outline text-on-surface-variant",
-                filled: "bg-primary text-on-primary outline-none",
+                filled: "bg-primary text-on-primary hover:shadow-elevation-1 disabled:bg-on-surface/12 disabled:shadow-none",
                 filledTonal:
-                    "bg-secondary-container text-on-secondary-container outline-none",
-                ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 outline-none",
+                    "bg-secondary-container text-on-secondary-container hover:shadow-elevation-1 disabled:bg-on-surface/12 disabled:shadow-none",
+                elevated:
+                    "bg-surface-container-low text-primary shadow-elevation-1 hover:shadow-elevation-2 disabled:bg-on-surface/12 disabled:shadow-none",
+                outline:
+                    "border border-outline text-primary disabled:border-on-surface/12",
+                text: "text-primary",
+                // Standard icon button / neutral action without container.
+                ghost: "text-on-surface-variant",
             },
             size: {
-                default: "h-9 px-4 py-2 has-[>svg]:px-3",
-                sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-                lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-                icon: "size-9",
+                default: "h-10 px-6 has-[>svg]:pr-6 has-[>svg]:pl-4",
+                sm: "h-8 gap-1.5 px-4 has-[>svg]:pr-4 has-[>svg]:pl-3",
+                lg: "h-12 px-8 has-[>svg]:pr-8 has-[>svg]:pl-6",
+                icon: "size-10 [&_svg:not([class*='size-'])]:size-6",
             },
             shape: {
                 round: "rounded-full",
                 square: "rounded-md",
             },
         },
+        compoundVariants: [
+            // Text buttons use tighter padding per spec.
+            {
+                variant: "text",
+                size: "default",
+                className: "px-3 has-[>svg]:pr-4 has-[>svg]:pl-3",
+            },
+        ],
         defaultVariants: {
             variant: "filledTonal",
             size: "default",
@@ -37,6 +52,7 @@ function Button({
     className,
     variant,
     size,
+    shape,
     asChild = false,
     ...props
 }: React.ComponentProps<"button"> &
@@ -48,7 +64,7 @@ function Button({
     return (
         <Comp
             data-slot="button"
-            className={cn(buttonVariants({ variant, size, className }))}
+            className={cn(buttonVariants({ variant, size, shape, className }))}
             {...props}
         />
     );

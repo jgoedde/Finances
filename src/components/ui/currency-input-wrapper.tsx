@@ -1,6 +1,7 @@
 import { CurrencyInput } from "react-currency-input-field";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn.ts";
+import { outlinedTextFieldClassName } from "@/components/ui/input.tsx";
 
 export function CurrencyInputWrapper({
     className,
@@ -10,13 +11,7 @@ export function CurrencyInputWrapper({
 }) {
     return (
         <CurrencyInput
-            className={cn(
-                `border-outline focus:border-primary mt-1 block h-10 w-full
-                rounded-xs border px-4 py-2 text-sm shadow-sm focus:border-2
-                focus:ring-0 focus:outline-none disabled:pointer-events-none
-                disabled:cursor-not-allowed disabled:opacity-50`,
-                className,
-            )}
+            className={cn(outlinedTextFieldClassName, className)}
             {...props}
         />
     );

@@ -41,8 +41,8 @@ function AlertDialogOverlay({
             data-slot="alert-dialog-overlay"
             className={cn(
                 `data-[state=open]:animate-in data-[state=closed]:animate-out
-                data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed
-                inset-0 z-50 bg-black/50`,
+                data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+                bg-scrim/32 fixed inset-0 z-50`,
                 className,
             )}
             {...props}
@@ -63,10 +63,11 @@ function AlertDialogContent({
                     `bg-surface-container-high data-[state=open]:animate-in
                     data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95
                     data-[state=open]:zoom-in-95 data-[state=closed]:fade-out-0
-                    data-[state=closed]:animate-out fixed top-[50%] left-[50%]
-                    z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%]
-                    translate-y-[-50%] gap-4 rounded-3xl p-6 shadow-lg
-                    duration-200 sm:max-w-lg`,
+                    data-[state=closed]:animate-out text-on-surface
+                    shadow-elevation-3 fixed top-[50%] left-[50%] z-50 grid
+                    w-full max-w-[min(calc(100%-3rem),560px)] min-w-[280px]
+                    translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl p-6
+                    duration-200`,
                     className,
                 )}
                 {...props}
@@ -95,7 +96,7 @@ function AlertDialogFooter({
     return (
         <div
             data-slot="alert-dialog-footer"
-            className={cn("flex justify-end", className)}
+            className={cn("flex justify-end gap-2 pt-2", className)}
             {...props}
         />
     );
@@ -108,7 +109,7 @@ function AlertDialogTitle({
     return (
         <AlertDialogPrimitive.Title
             data-slot="alert-dialog-title"
-            className={cn("text-on-surface text-lg", className)}
+            className={cn("text-on-surface text-headline-small", className)}
             {...props}
         />
     );
@@ -121,7 +122,10 @@ function AlertDialogDescription({
     return (
         <AlertDialogPrimitive.Description
             data-slot="alert-dialog-description"
-            className={cn("text-on-surface-variant text-sm", className)}
+            className={cn(
+                "text-on-surface-variant text-body-medium",
+                className,
+            )}
             {...props}
         />
     );
@@ -133,7 +137,7 @@ function AlertDialogAction({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
     return (
         <AlertDialogPrimitive.Action
-            className={cn(buttonVariants({ variant: "ghost" }), className)}
+            className={cn(buttonVariants({ variant: "text" }), className)}
             {...props}
         />
     );
@@ -145,7 +149,7 @@ function AlertDialogCancel({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
     return (
         <AlertDialogPrimitive.Cancel
-            className={cn(buttonVariants({ variant: "ghost" }), className)}
+            className={cn(buttonVariants({ variant: "text" }), className)}
             {...props}
         />
     );

@@ -54,15 +54,21 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
         theme === "dark" ? tonal.dark.onContainer : tonal.light.onContainer;
 
     return (
-        <div
-            className={`ripple-container flex w-full flex-row items-center
-                gap-x-3 rounded-md py-1.5`}
+        <button
+            type={"button"}
+            className={`ripple-container state-layer focus-ring flex min-h-14
+                w-full cursor-pointer flex-row items-center gap-x-4 rounded-md
+                px-2 py-2 text-left`}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
+            onClick={(e) => {
+                rippleHandlers.onClick(e);
+                onEditButtonClick();
+            }}
         >
             <div
-                className={`text-on-surface-variant flex size-10 min-w-8
-                    shrink-0 items-center justify-center rounded-full`}
+                className={`flex size-10 shrink-0 items-center justify-center
+                    rounded-full`}
                 style={{
                     backgroundColor,
                 }}
@@ -74,42 +80,42 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                                 typeof DynamicIcon
                             >["name"]
                         }
-                        className={"size-7"}
+                        className={"size-6"}
                         style={{
                             color: textColor,
                         }}
                     />
                 ) : (
                     <MessageCircleQuestion
-                        className={"size-7"}
+                        className={"size-6"}
                         style={{
                             color: textColor,
                         }}
                     />
                 )}
             </div>
-            <div className={"flex flex-1 flex-col"}>
-                <div className={"text-on-surface font-medium"}>
-                    <button
-                        type={"button"}
-                        onClick={() => onEditButtonClick()}
-                        className={"inline-flex items-center gap-x-1"}
-                    >
-                        {transaction.name}{" "}
-                        <ChevronRight className={"text-outline size-4"} />
-                    </button>
+            <div className={"flex min-w-0 flex-1 flex-col"}>
+                <div
+                    className={`text-on-surface text-body-large inline-flex
+                        items-center gap-x-1`}
+                >
+                    {transaction.name}
+                    <ChevronRight
+                        className={"text-on-surface-variant size-4 shrink-0"}
+                    />
                 </div>
                 <div
-                    className={`text-on-surface-variant line-clamp-2 text-sm/5
-                        break-all`}
+                    className={`text-on-surface-variant text-body-medium
+                        line-clamp-2 break-all`}
                 >
                     {getSupportingText()}
                 </div>
             </div>
             <div
                 className={cn(
-                    "flex items-center gap-x-2 justify-self-end font-medium",
-                    transaction.amount < 0 && "text-[#3FFF68]",
+                    `text-label-large text-on-surface flex shrink-0 items-center
+                    gap-x-2`,
+                    transaction.amount < 0 && "text-income",
                 )}
             >
                 {transaction.amount < 0 ? (
@@ -118,6 +124,6 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     <div>{formatEuro(transaction.amount)}</div>
                 )}
             </div>
-        </div>
+        </button>
     );
 }
