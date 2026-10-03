@@ -5,12 +5,23 @@ import { formatEuro } from "@/utils/currency.ts";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { startOfMonth } from "date-fns";
 import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
-import type { ComponentProps } from "react";
+import { type ComponentProps, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const now = new Date();
 
 export function MonthsSnapRow() {
     const pastMonths = getPastMonths(now, 12);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    function scrollByPage(direction: 1 | -1) {
+        const container = scrollContainerRef.current;
+        if (!container) {
+            return;
+        }
+
+        container.scrollBy({ left: direction * container.clientWidth });
+    }
 
     const res = useTableSubscription(
         () => transactionRepository.getMonths(),
@@ -37,16 +48,42 @@ export function MonthsSnapRow() {
             className={`bg-surface-container-high flex flex-col space-y-2
                 rounded-xl p-4 shadow-lg`}
         >
-            <div className={"flex flex-col"}>
-                <div className={"font-poppins text-lg font-medium"}>
-                    Ausgabenverteilung
+            <div className={"flex items-start"}>
+                <div className={"flex flex-col"}>
+                    <div className={"font-poppins text-lg font-medium"}>
+                        Ausgabenverteilung
+                    </div>
+                    <div className={"text-md text-on-surface-variant"}>
+                        Pro Monat
+                    </div>
                 </div>
-                <div className={"text-md text-on-surface-variant"}>
-                    Pro Monat
+                {/* Mouse users can't swipe, so offer explicit navigation on larger screens. */}
+                <div className={"ml-auto hidden gap-x-1 md:flex"}>
+                    <button
+                        type={"button"}
+                        aria-label={"Neuerer Monat"}
+                        className={`text-on-surface-variant
+                            hover:bg-on-surface/10 cursor-pointer rounded-full
+                            p-2`}
+                        onClick={() => scrollByPage(-1)}
+                    >
+                        <ChevronLeft className={"size-5"} />
+                    </button>
+                    <button
+                        type={"button"}
+                        aria-label={"Älterer Monat"}
+                        className={`text-on-surface-variant
+                            hover:bg-on-surface/10 cursor-pointer rounded-full
+                            p-2`}
+                        onClick={() => scrollByPage(1)}
+                    >
+                        <ChevronRight className={"size-5"} />
+                    </button>
                 </div>
             </div>
             {/* Scrollable Snap Container */}
             <div
+                ref={scrollContainerRef}
                 className="flex w-full snap-x snap-mandatory overflow-x-auto
                     scroll-smooth rounded-xl"
             >

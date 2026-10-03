@@ -123,7 +123,7 @@ export function TransactionForm({
         <form onSubmit={handleFormSubmit}>
             <div
                 className={
-                    "bg-surface-container flex h-16 w-dvw items-center py-2"
+                    "bg-surface-container flex h-16 w-full items-center py-2"
                 }
             >
                 <BackArrowButton />
@@ -169,7 +169,7 @@ export function TransactionForm({
                 />
             </div>
 
-            <div className={"container flex max-w-md flex-col"}>
+            <div className={"mx-auto flex w-full max-w-md flex-col"}>
                 <div className={"flex flex-wrap"}>
                     {selectedCategory === undefined &&
                         categories.map((c) => (

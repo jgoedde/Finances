@@ -84,7 +84,7 @@ function RouteComponent() {
                 </DrawerContent>
                 <div
                     className={`border-outline bg-surface-container-high flex
-                        h-16 w-dvw shrink-0 items-center border-b py-2`}
+                        h-16 w-full shrink-0 items-center border-b py-2`}
                 >
                     <BackArrowButton />
                     <input
@@ -107,9 +107,8 @@ function RouteComponent() {
                     </button>
                 </div>
                 <div
-                    className={
-                        "my-2 flex h-8 shrink-0 gap-x-2 overflow-x-scroll"
-                    }
+                    className={`mx-auto my-2 flex h-8 w-full max-w-3xl shrink-0
+                        gap-x-2 overflow-x-auto`}
                 >
                     <Badge
                         variant={"md3"}
@@ -140,7 +139,7 @@ function RouteComponent() {
                         </h3>
                     </div>
                 )}
-                <div className={"flex w-full flex-col px-4"}>
+                <div className={"mx-auto flex w-full max-w-3xl flex-col px-4"}>
                     {filteredTransactions.length > 0 &&
                         filteredTransactions.map((it) => (
                             <TransactionListItem key={it.id} transaction={it} />

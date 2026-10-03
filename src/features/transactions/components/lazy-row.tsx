@@ -34,13 +34,12 @@ export function LazyRow() {
 
     return (
         <div
-            className={
-                "mt-6 flex w-full shrink-0 gap-x-6 overflow-x-auto px-4 pb-4"
-            }
+            className={`mt-6 flex w-full shrink-0 gap-x-6 overflow-x-auto px-4
+                pb-4 md:grid md:grid-cols-3`}
         >
             <Card
                 className={`ripple-container bg-surface-container-low w-[150px]
-                    shrink-0 rounded-md border-none drop-shadow-lg`}
+                    shrink-0 rounded-md border-none drop-shadow-lg md:w-auto`}
                 data-ripple-color="bg-on-surface/10"
                 {...ripple}
             >
@@ -65,7 +64,7 @@ export function LazyRow() {
 
             <Card
                 className={`ripple-container bg-surface-container-low w-[150px]
-                    shrink-0 rounded-md border-none drop-shadow-lg`}
+                    shrink-0 rounded-md border-none drop-shadow-lg md:w-auto`}
                 data-ripple-color="bg-on-surface/10"
                 {...ripple}
             >
@@ -90,7 +89,7 @@ export function LazyRow() {
 
             <Card
                 className={`ripple-container bg-surface-container-low w-[150px]
-                    shrink-0 rounded-md border-none drop-shadow-lg`}
+                    shrink-0 rounded-md border-none drop-shadow-lg md:w-auto`}
                 data-ripple-color="bg-on-surface/10"
                 {...ripple}
             >

@@ -18,10 +18,23 @@ function RouteComponent() {
             <LazyRow />
             <main className={"grow"}>
                 <div className={"my-4 px-4"}></div>
-                <MonthlyOverview />
-                <Insights />
-                <TransactionList />
-                <FixedCostsTable />
+                <div
+                    className={`lg:grid lg:grid-cols-2 lg:items-start
+                        lg:gap-x-2`}
+                >
+                    <div className={"min-w-0"}>
+                        <MonthlyOverview />
+                    </div>
+                    <div className={"min-w-0 lg:col-span-2 lg:row-start-2"}>
+                        <Insights />
+                    </div>
+                    <div className={"min-w-0 lg:col-start-2 lg:row-start-1"}>
+                        <TransactionList />
+                    </div>
+                    <div className={"min-w-0 lg:col-span-2"}>
+                        <FixedCostsTable />
+                    </div>
+                </div>
             </main>
 
             <footer>
