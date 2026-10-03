@@ -28,8 +28,14 @@ services:
         image: ghcr.io/jgoedde/finances:latest
         ports:
             - "80:80"
+        volumes:
+            # optional: the in-app "Backup" button writes the database here
+            - ./backups:/backups
         restart: unless-stopped
 ```
+
+The backup directory must be writable by nginx (uid 101): `mkdir backups && sudo chown 101:101 backups`.
+Without the mount, the "Backup" button falls back to downloading the file in the browser.
 
 Pin to a specific version instead of `latest` if you want reproducible deploys, e.g. `ghcr.io/jgoedde/finances:1.5.0`.
 

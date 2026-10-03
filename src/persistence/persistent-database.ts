@@ -76,21 +76,46 @@ export class PersistentDatabase {
         await this.saveToIndexedDB(this.dbInstance);
     }
 
-    public static async exportFile() {
+    /**
+     * Uploads the database to the server's `/backups` mount (see
+     * `docker/nginx.conf`). Falls back to a browser download if the server
+     * doesn't accept it (e.g. dev server or no mount configured).
+     *
+     * @returns where the backup ended up
+     */
+    public static async exportFile(): Promise<"server" | "download"> {
         const data = await this.loadFromIndexedDB();
-        if (!data) throw new Error("No database found");
+        if (!data) {
+            throw new Error("No database found");
+        }
 
         // @ts-expect-error -- TODO: Find out why TS is unhappy here
         const blob = new Blob([data], { type: "application/octet-stream" });
+        const fileName = `${new Date().toISOString().replace(/:/g, "-")}-finance.db`;
+
+        try {
+            const response = await fetch(`/backups/${fileName}`, {
+                method: "PUT",
+                body: blob,
+            });
+            if (response.ok) {
+                return "server";
+            }
+        } catch {
+            // offline or server unreachable: fall through to download
+        }
+
         const url = URL.createObjectURL(blob);
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${new Date().toISOString()}-finance.db`;
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+
+        return "download";
     }
 
     public static async importFile(file: File) {
