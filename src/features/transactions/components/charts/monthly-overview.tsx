@@ -167,8 +167,8 @@ export function MonthlyOverview() {
                         </TooltipTrigger>
                         <TooltipContent className={"max-w-48"}>
                             <p>
-                                Download a copy of the database as a backup. It
-                                can be used to import it later.
+                                Save a copy of the database to the server (or
+                                download it). It can be used to import it later.
                             </p>
                         </TooltipContent>
                     </Tooltip>
