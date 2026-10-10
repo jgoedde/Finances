@@ -1,6 +1,5 @@
 {
     "name": "finances-client",
-    "private": true,
     "version": "1.16.0",
     "type": "module",
     "scripts": {
