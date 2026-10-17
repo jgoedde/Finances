@@ -13,10 +13,8 @@ import type { FixedCost } from "#/features/fixed-costs/fixed-cost.ts";
 import {
     useDeleteFixedCost,
     useFixedCosts,
-    useMonthlyFixedCostTotal,
     useUpdateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { toast } from "sonner";
 import { Switch } from "#/components/ui/switch.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
@@ -37,42 +35,22 @@ function toMonthlyLabel(amount: number, currency: string) {
 
 export function FixedCostsTable() {
     const fixedCosts = useFixedCosts();
-    const monthlyTotal = useMonthlyFixedCostTotal();
+    const monthlyTotal = fixedCosts
+        .filter((fixedCost) => fixedCost.isRunning)
+        .reduce((total, fixedCost) => total + fixedCost.monthlyAmount, 0);
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
     // Fixed costs are read-only offline.
     const isOnline = useIsOnline();
 
-    async function toggleActive(row: FixedCost) {
-        try {
-            await updateFixedCost.mutateAsync({
-                id: row.id,
-                patch: { active: !row.active },
-            });
-            toast.success(
-                "Die Fixkostenstelle ist nun " +
-                    (row.active ? "deaktiviert" : "aktiv") +
-                    ".",
-            );
-        } catch {
-            toast.error(
-                "Die Fixkostenstelle konnte nicht aktualisiert werden. Bitte versuche es erneut.",
-            );
-        }
+    // Optimistic: the hooks update the list and roll back with a toast.
+    function toggleActive(row: FixedCost) {
+        updateFixedCost.mutate({ id: row.id, patch: { active: !row.active } });
     }
 
-    async function remove(id: string) {
-        if (!confirm("Möchtest Du diese Fixkostenstelle wirklich löschen?")) {
-            return;
-        }
-
-        try {
-            await deleteFixedCost.mutateAsync(id);
-            toast.success("Die Fixkostenstelle wurde gelöscht");
-        } catch {
-            toast.error(
-                "Die Fixkostenstelle konnte nicht gelöscht werden. Bitte versuche es erneut",
-            );
+    function remove(id: string) {
+        if (confirm("Möchtest Du diese Fixkostenstelle wirklich löschen?")) {
+            deleteFixedCost.mutate(id);
         }
     }
 

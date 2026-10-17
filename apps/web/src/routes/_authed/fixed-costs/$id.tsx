@@ -47,16 +47,10 @@ function RouteComponent() {
     const fixedCost = toFixedCost(record, categories);
     const updateFixedCost = useUpdateFixedCost();
 
-    async function save(values: FixedCostWizardValues) {
-        try {
-            await updateFixedCost.mutateAsync({ id, patch: values });
-            toast.success("Fixkosten aktualisiert");
-            void navigate({ to: "/" });
-        } catch {
-            toast.error(
-                "Die Fixkosten konnten nicht gespeichert werden. Bitte versuche es erneut.",
-            );
-        }
+    function save(values: FixedCostWizardValues) {
+        updateFixedCost.mutate({ id, patch: values });
+        toast.success("Fixkosten aktualisiert");
+        void navigate({ to: "/" });
     }
 
     return (
