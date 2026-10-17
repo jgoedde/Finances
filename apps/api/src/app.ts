@@ -5,6 +5,7 @@ import {
     categoryRoutes,
     fixedCostCategoryRoutes,
 } from "./features/categories.ts";
+import { dataTransferRoutes } from "./features/data-transfer/data-transfer.ts";
 import { fixedCostRoutes } from "./features/fixed-costs.ts";
 import { insightRoutes } from "./features/insights.ts";
 import { adminLinkRoutes, linkRoutes } from "./features/links.ts";
@@ -25,6 +26,7 @@ export function createApp(db: DB, auth: Auth) {
         "/fixed-cost-categories": fixedCostCategoryRoutes(db),
         "/fixed-costs": fixedCostRoutes(db),
         "/insights": insightRoutes(db),
+        "/data": dataTransferRoutes(db),
     };
     for (const [path, routes] of Object.entries(protectedRoutes)) {
         app.use(path, userOnly);

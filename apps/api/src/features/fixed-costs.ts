@@ -13,7 +13,7 @@ import type { FixedCostsTable } from "../db/schema.ts";
 import type { AppEnv } from "../http/session.ts";
 import { validate } from "../http/validate.ts";
 
-function toFixedCost(row: FixedCostsTable): FixedCost {
+export function toFixedCost(row: FixedCostsTable): FixedCost {
     return {
         id: row.id,
         name: row.name,

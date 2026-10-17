@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SearchBar } from "@/features/transactions/components/search-bar.tsx";
 import { LazyRow } from "@/features/transactions/components/lazy-row.tsx";
 import { MonthlyOverview } from "@/features/transactions/components/charts/monthly-overview.tsx";
@@ -57,7 +57,15 @@ function RouteComponent() {
                     </span>
                     <span>{import.meta.env.MODE}</span>
                     <span>
-                        Angemeldet als {user.username} · <SignOutLink />
+                        Angemeldet als {user.username} ·{" "}
+                        <Link
+                            to={"/settings"}
+                            className={`text-primary focus-ring rounded-xs
+                                underline-offset-4 hover:underline`}
+                        >
+                            Einstellungen
+                        </Link>{" "}
+                        · <SignOutLink />
                     </span>
                 </div>
             </footer>
