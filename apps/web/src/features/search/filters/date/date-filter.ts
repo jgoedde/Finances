@@ -1,30 +1,28 @@
-import { addMonths, addWeeks, addYears, isBefore } from "date-fns";
-import type { Transaction } from "@finances/shared";
+import { addMonths, addWeeks, addYears } from "date-fns";
 
-export type DateFilterOption =
-    "any" | "oneWeek" | "oneMonth" | "halfYear" | "oneYear";
+export const DATE_FILTER_OPTIONS = [
+    "any",
+    "oneWeek",
+    "oneMonth",
+    "halfYear",
+    "oneYear",
+] as const;
+export type DateFilterOption = (typeof DATE_FILTER_OPTIONS)[number];
 
-export function isMatchingDateFilter(
-    transaction: Transaction,
-    dateFilterOption: DateFilterOption,
-) {
-    if (dateFilterOption === "any") {
-        return true;
-    }
-
-    const transactionDate = new Date(transaction.date);
+/** Upper bound (Unix ms) for the option, or `undefined` for any date. */
+export function getOlderThan(option: DateFilterOption): number | undefined {
     const now = new Date();
-    switch (dateFilterOption) {
+    switch (option) {
+        case "any":
+            return undefined;
         case "oneWeek":
-            return isBefore(transactionDate, addWeeks(now, -1));
+            return addWeeks(now, -1).getTime();
         case "oneMonth":
-            return isBefore(transactionDate, addMonths(now, -1));
+            return addMonths(now, -1).getTime();
         case "halfYear":
-            return isBefore(transactionDate, addMonths(now, -6));
+            return addMonths(now, -6).getTime();
         case "oneYear":
-            return isBefore(transactionDate, addYears(now, -1));
-        default:
-            return true;
+            return addYears(now, -1).getTime();
     }
 }
 

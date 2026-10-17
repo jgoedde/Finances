@@ -51,3 +51,37 @@ export interface TransactionListQuery {
     kind?: TransactionKind;
     excludeExceptional?: boolean;
 }
+
+/** Position after the last result of a page: `<date>:<id>`. */
+const searchCursorSchema = z
+    .string()
+    .regex(/^-?\d+:[A-Za-z0-9_-]+$/)
+    .transform((value) => {
+        const separator = value.indexOf(":");
+        return {
+            date: Number(value.slice(0, separator)),
+            id: value.slice(separator + 1),
+        };
+    });
+
+export const transactionSearchQuerySchema = z.object({
+    /** Matched against name and description (case-insensitive for ASCII). */
+    q: z.string().max(200).optional(),
+    /** Only transactions before this Unix timestamp in milliseconds. */
+    olderThan: z.coerce.number().int().optional(),
+    cursor: searchCursorSchema.optional(),
+    limit: z.coerce.number().int().min(1).max(100).default(50),
+});
+export interface TransactionSearchQuery {
+    q?: string;
+    olderThan?: number;
+    cursor?: string;
+    limit?: number;
+}
+
+/** One page of search results, newest first. */
+export interface TransactionSearchPage {
+    items: Transaction[];
+    /** `null` on the last page. */
+    nextCursor: string | null;
+}

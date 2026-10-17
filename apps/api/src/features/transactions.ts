@@ -1,10 +1,13 @@
 import { Hono } from "hono";
+import { sql } from "kysely";
 import { z } from "zod";
 import {
     type Transaction,
+    type TransactionSearchPage,
     transactionIdSchema,
     transactionInputSchema,
     transactionListQuerySchema,
+    transactionSearchQuerySchema,
 } from "@finances/shared";
 import type { DB } from "../db/database.ts";
 import type { TransactionsTable } from "../db/schema.ts";
@@ -25,6 +28,11 @@ export function toTransaction(row: TransactionsTable): Transaction {
         categoryId: row.category_id,
         exceptional: row.exceptional === 1,
     };
+}
+
+/** Wraps a search term in `%` and escapes `%`, `_` and the backslash. */
+function toLikePattern(term: string): string {
+    return `%${term.replace(/[\\%_]/g, "\\$&")}%`;
 }
 
 export function transactionRoutes(db: DB) {
@@ -56,6 +64,60 @@ export function transactionRoutes(db: DB) {
                     }
                     const rows = await select.orderBy("date", "desc").execute();
                     return c.json(rows.map(toTransaction));
+                },
+            )
+            // Newest first, paginated by a `(date, id)` cursor. LIKE folds
+            // case for ASCII only, so umlauts match case-sensitively.
+            .get(
+                "/search",
+                validate("query", transactionSearchQuerySchema),
+                async (c) => {
+                    const { q, olderThan, cursor, limit } =
+                        c.req.valid("query");
+                    let select = db
+                        .selectFrom("transactions")
+                        .selectAll()
+                        .where("user_id", "=", c.get("userId"));
+                    const term = q?.trim();
+                    if (term) {
+                        const pattern = toLikePattern(term);
+                        select = select.where((eb) =>
+                            eb.or([
+                                sql<boolean>`name LIKE ${pattern} ESCAPE '\\'`,
+                                sql<boolean>`description LIKE ${pattern} ESCAPE '\\'`,
+                            ]),
+                        );
+                    }
+                    if (olderThan !== undefined) {
+                        select = select.where("date", "<", olderThan);
+                    }
+                    if (cursor) {
+                        select = select.where((eb) =>
+                            eb.or([
+                                eb("date", "<", cursor.date),
+                                eb.and([
+                                    eb("date", "=", cursor.date),
+                                    eb("id", "<", cursor.id),
+                                ]),
+                            ]),
+                        );
+                    }
+                    // One extra row tells whether there is another page.
+                    const rows = await select
+                        .orderBy("date", "desc")
+                        .orderBy("id", "desc")
+                        .limit(limit + 1)
+                        .execute();
+                    const items = rows.slice(0, limit).map(toTransaction);
+                    const last = items.at(-1);
+                    const page: TransactionSearchPage = {
+                        items,
+                        nextCursor:
+                            rows.length > limit && last
+                                ? `${last.date}:${last.id}`
+                                : null,
+                    };
+                    return c.json(page);
                 },
             )
             .get("/:id", validate("param", idParam), async (c) => {

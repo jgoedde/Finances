@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { Transaction } from "@finances/shared";
+import type { Transaction, TransactionSearchPage } from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -119,5 +119,70 @@ describe("transactions", () => {
         expect(await spent()).toEqual({ total: -70 });
         expect(await spent("expense")).toEqual({ total: 30 });
         expect(await spent("income")).toEqual({ total: 100 });
+    });
+
+    describe("search", () => {
+        function search(query: string, client: Client = alice) {
+            return json<TransactionSearchPage>(
+                client(`/api/transactions/search?${query}`),
+            );
+        }
+
+        async function put(id: string, overrides: Record<string, unknown>) {
+            await alice(`/api/transactions/${id}`, {
+                method: "PUT",
+                body: transactionBody(overrides),
+            });
+        }
+
+        it("pages newest first with a (date, id) cursor", async () => {
+            await put("a", { date: 1000 });
+            await put("b", { date: 2000 });
+            await put("c", { date: 2000 });
+            await put("d", { date: 3000 });
+
+            const first = await search("limit=2");
+            expect(first.items.map((t) => t.id)).toEqual(["d", "c"]);
+            expect(first.nextCursor).toBe("2000:c");
+
+            const second = await search(`limit=2&cursor=${first.nextCursor}`);
+            expect(second.items.map((t) => t.id)).toEqual(["b", "a"]);
+            expect(second.nextCursor).toBeNull();
+        });
+
+        it("matches name and description, ignoring ASCII case", async () => {
+            await put("name", { name: "Brotladen" });
+            await put("desc", { name: "Markt", description: "frisches BROT" });
+            await put("other", { name: "Tanken" });
+
+            const page = await search(`q=${encodeURIComponent("brot")}`);
+            expect(page.items.map((t) => t.id).sort()).toEqual([
+                "desc",
+                "name",
+            ]);
+        });
+
+        it("treats LIKE wildcards literally", async () => {
+            await put("percent", { name: "50% Rabatt" });
+            await put("plain", { name: "500 Rabatt" });
+
+            const page = await search(`q=${encodeURIComponent("0%")}`);
+            expect(page.items.map((t) => t.id)).toEqual(["percent"]);
+        });
+
+        it("filters by olderThan and by user", async () => {
+            await put("old", { date: 1000 });
+            await put("new", { date: 5000 });
+
+            const page = await search("olderThan=5000");
+            expect(page.items.map((t) => t.id)).toEqual(["old"]);
+            expect((await search("", bob)).items).toEqual([]);
+        });
+
+        it("rejects a malformed cursor", async () => {
+            expect(
+                (await alice("/api/transactions/search?cursor=nope")).status,
+            ).toBe(400);
+        });
     });
 });

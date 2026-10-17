@@ -1,62 +1,83 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { z } from "zod";
 import {
+    DATE_FILTER_OPTIONS,
+    type DateFilterOption,
     getDateFilterStr,
-    isMatchingDateFilter,
 } from "#/features/search/filters/date/date-filter.ts";
-import { isMatchingSearchFilter } from "#/features/search/filters/text/text-filter.ts";
 import { Drawer, DrawerContent } from "#/components/ui/drawer.tsx";
 import { DateFilterDrawerContent } from "#/features/search/filters/date/date-filter-drawer-content.tsx";
 import { ChevronDown, X } from "lucide-react";
 import { Badge } from "#/components/ui/badge.tsx";
-import { useTransactions } from "#/features/transactions/transaction-queries.ts";
-import { addYears, endOfYear } from "date-fns";
 import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
 import { BackArrowButton } from "#/components/ui/back-arrow-button.tsx";
 import { cn } from "#/lib/cn.ts";
 import { Button } from "#/components/ui/button.tsx";
+import { useTransactionSearch } from "#/features/search/search-queries.ts";
+import { useIsOnline } from "#/features/sync/connectivity.ts";
+import { OfflineHint } from "#/features/sync/offline-hint.tsx";
+
+const searchSchema = z.object({
+    q: z.string().optional().catch(undefined),
+    older: z.enum(DATE_FILTER_OPTIONS).optional().catch(undefined),
+});
 
 export const Route = createFileRoute("/_authed/transactions/search")({
     component: RouteComponent,
+    validateSearch: searchSchema,
 });
 
-const now = new Date();
+/** Delay before a typed term goes to the URL and runs the search. */
+const SEARCH_DEBOUNCE_MS = 300;
 
 function RouteComponent() {
-    const [search, setSearch] = useState("");
+    const { q = "", older: dateFilterOption = "any" } = Route.useSearch();
+    const navigate = Route.useNavigate();
+    const [search, setSearch] = useState(q);
     const inputRef = useRef<HTMLInputElement>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<{
         type?: "date";
         isOpen: boolean;
     }>({ isOpen: false });
+    const isOnline = useIsOnline();
 
-    const query = useMemo(
-        () => ({ start: addYears(now, -10), end: endOfYear(now) }),
-        [],
-    );
-
-    const transactions = useTransactions(query);
+    const {
+        data,
+        isSuccess,
+        isPlaceholderData,
+        hasNextPage,
+        fetchNextPage,
+        isFetchingNextPage,
+    } = useTransactionSearch({ q: q.trim(), older: dateFilterOption });
+    const transactions = data?.pages.flatMap((page) => page.items) ?? [];
 
     useEffect(() => {
         inputRef.current?.focus();
     }, [inputRef]);
 
-    const [dateFilterOption, setDateFilterOption] = useState<
-        "any" | "oneWeek" | "oneMonth" | "halfYear" | "oneYear"
-    >("any");
-
-    const filteredTransactions = useMemo(() => {
-        if (search.trim() === "") {
-            return transactions.filter((e) =>
-                isMatchingDateFilter(e, dateFilterOption),
-            );
+    useEffect(() => {
+        if (search === q) {
+            return;
         }
+        const timeout = setTimeout(() => {
+            void navigate({
+                search: (prev) => ({ ...prev, q: search || undefined }),
+                replace: true,
+            });
+        }, SEARCH_DEBOUNCE_MS);
+        return () => clearTimeout(timeout);
+    }, [search, q, navigate]);
 
-        const searchLower = search.toLowerCase();
-        return transactions
-            .filter((e) => isMatchingDateFilter(e, dateFilterOption))
-            .filter((e) => isMatchingSearchFilter(e, searchLower));
-    }, [dateFilterOption, transactions, search]);
+    function setDateFilterOption(option: DateFilterOption) {
+        void navigate({
+            search: (prev) => ({
+                ...prev,
+                older: option === "any" ? undefined : option,
+            }),
+            replace: true,
+        });
+    }
 
     return (
         <div
@@ -139,23 +160,45 @@ function RouteComponent() {
                         </button>
                     </Badge>
                 </div>
-                {filteredTransactions.length === 0 && search !== "" && (
-                    <div className={"my-auto text-center"}>
-                        <h3
-                            className={
-                                "text-title-large text-on-surface-variant"
-                            }
-                        >
-                            Keine Ergebnisse
-                        </h3>
+                {!isOnline && !data && (
+                    <p
+                        className={`my-auto text-center text-body-large
+                        text-on-surface-variant`}
+                    >
+                        Die Suche ist offline nicht verfügbar.
+                    </p>
+                )}
+                {isSuccess &&
+                    !isPlaceholderData &&
+                    transactions.length === 0 && (
+                        <div className={"my-auto text-center"}>
+                            <h3
+                                className={
+                                    "text-title-large text-on-surface-variant"
+                                }
+                            >
+                                Keine Ergebnisse
+                            </h3>
+                        </div>
+                    )}
+                <div className={"mx-auto flex w-full max-w-3xl flex-col px-2"}>
+                    {transactions.map((it) => (
+                        <TransactionListItem key={it.id} transaction={it} />
+                    ))}
+                </div>
+                {hasNextPage && (
+                    <div className={"my-4 flex justify-center"}>
+                        <OfflineHint active={!isOnline}>
+                            <Button
+                                variant={"outline"}
+                                disabled={!isOnline || isFetchingNextPage}
+                                onClick={() => void fetchNextPage()}
+                            >
+                                Mehr laden
+                            </Button>
+                        </OfflineHint>
                     </div>
                 )}
-                <div className={"mx-auto flex w-full max-w-3xl flex-col px-2"}>
-                    {filteredTransactions.length > 0 &&
-                        filteredTransactions.map((it) => (
-                            <TransactionListItem key={it.id} transaction={it} />
-                        ))}
-                </div>
             </Drawer>
         </div>
     );
