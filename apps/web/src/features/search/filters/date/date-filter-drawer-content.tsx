@@ -7,17 +7,10 @@ import { Button } from "#/components/ui/button.tsx";
 import { RadioGroup, RadioGroupItem } from "#/components/ui/radio-group.tsx";
 import { Label } from "#/components/ui/label.tsx";
 import {
+    DATE_FILTER_OPTIONS,
     type DateFilterOption,
     getDateFilterStr,
 } from "#/features/search/filters/date/date-filter.ts";
-
-const OPTIONS: DateFilterOption[] = [
-    "any",
-    "oneWeek",
-    "oneMonth",
-    "halfYear",
-    "oneYear",
-];
 
 interface Props {
     dateFilterOption: DateFilterOption;
@@ -46,7 +39,7 @@ export function DateFilterDrawerContent({
                 }}
                 className={"gap-0"}
             >
-                {OPTIONS.map((option) => (
+                {DATE_FILTER_OPTIONS.map((option) => (
                     <Label
                         key={option}
                         htmlFor={option}
