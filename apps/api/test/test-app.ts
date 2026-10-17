@@ -1,7 +1,7 @@
-import { createApp } from "@/app.ts";
-import { authOptions, createAuth, createUser } from "@/auth/auth.ts";
-import { openDatabase } from "@/db/database.ts";
-import { migrate } from "@/db/migrate.ts";
+import { createApp } from "#/app.ts";
+import { authOptions, createAuth, createUser } from "#/auth/auth.ts";
+import { openDatabase } from "#/db/database.ts";
+import { migrate } from "#/db/migrate.ts";
 
 const BASE_URL = "http://localhost:3000";
 const PASSWORD = "password123";
