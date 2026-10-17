@@ -3,17 +3,17 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import {
     TransactionForm,
     type TransactionFormSubmitData,
-} from "@/features/transactions/components/form/transaction-form.tsx";
+} from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
-import { getTransactionKindLabel } from "@/features/transactions/utils/transaction-utils.ts";
-import { transactionQuery } from "@/features/transactions/transaction-queries.ts";
+import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
+import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
 import {
     useDeleteTransaction,
     useSaveTransaction,
-} from "@/features/transactions/transaction-mutations.ts";
-import { findCachedTransaction } from "@/features/transactions/pending-changes.ts";
-import { syncLaterHint } from "@/features/sync/connectivity.ts";
-import { ApiError } from "@/api/api-client.ts";
+} from "#/features/transactions/transaction-mutations.ts";
+import { findCachedTransaction } from "#/features/transactions/pending-changes.ts";
+import { syncLaterHint } from "#/features/sync/connectivity.ts";
+import { ApiError } from "#/api/api-client.ts";
 import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/_authed/edit/$id")({

@@ -11,11 +11,11 @@ import type {
     FixedCostPatch,
     MonthlyTotal,
 } from "@finances/shared";
-import { apiFetch } from "@/api/api-client.ts";
+import { apiFetch } from "#/api/api-client.ts";
 import {
     type FixedCost,
     toFixedCost,
-} from "@/features/fixed-costs/fixed-cost.ts";
+} from "#/features/fixed-costs/fixed-cost.ts";
 
 const EMPTY: never[] = [];
 

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { sessionQuery } from "@/auth/auth-client.ts";
+import { sessionQuery } from "#/auth/auth-client.ts";
 
 // Every route below requires a signed-in user.
 export const Route = createFileRoute("/_authed")({

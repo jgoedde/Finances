@@ -1,9 +1,9 @@
-import { useTonalColor } from "@/utils/color.ts";
-import { formatEuro } from "@/utils/currency.ts";
-import { ChartContainer } from "@/components/ui/chart.tsx";
-import { Card } from "@/components/ui/card.tsx";
+import { useTonalColor } from "#/utils/color.ts";
+import { formatEuro } from "#/utils/currency.ts";
+import { ChartContainer } from "#/components/ui/chart.tsx";
+import { Card } from "#/components/ui/card.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { useSpike, useTrend } from "@/features/transactions/insight-queries.ts";
+import { useSpike, useTrend } from "#/features/transactions/insight-queries.ts";
 
 export function BiggestDailySpike() {
     const trend = useTrend();

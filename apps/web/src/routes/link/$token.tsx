@@ -4,12 +4,12 @@ import { type FormEvent, useState } from "react";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
-import { ApiError, apiFetch } from "@/api/api-client.ts";
-import { authClient, completeSignIn } from "@/auth/auth-client.ts";
-import { AuthCard } from "@/features/auth/auth-card.tsx";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { ApiError, apiFetch } from "#/api/api-client.ts";
+import { authClient, completeSignIn } from "#/auth/auth-client.ts";
+import { AuthCard } from "#/features/auth/auth-card.tsx";
+import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
+import { Input } from "#/components/ui/input.tsx";
+import { Button } from "#/components/ui/button.tsx";
 
 export const Route = createFileRoute("/link/$token")({
     component: RouteComponent,

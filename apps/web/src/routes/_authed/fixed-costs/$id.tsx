@@ -1,22 +1,22 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { type KeyboardEvent, useMemo, useState } from "react";
-import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
-import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { Input } from "@/components/ui/input.tsx";
+import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { Input } from "#/components/ui/input.tsx";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { FixedCostInterval } from "@finances/shared";
 import {
     fixedCostCategoriesQuery,
     fixedCostQuery,
     useUpdateFixedCost,
-} from "@/features/fixed-costs/fixed-cost-queries.ts";
-import { toFixedCost, toIsoDate } from "@/features/fixed-costs/fixed-cost.ts";
-import { ApiError } from "@/api/api-client.ts";
+} from "#/features/fixed-costs/fixed-cost-queries.ts";
+import { toFixedCost, toIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
+import { ApiError } from "#/api/api-client.ts";
 import { toast } from "sonner";
-import { useIsOnline } from "@/features/sync/connectivity.ts";
-import { OfflineHint } from "@/features/sync/offline-hint.tsx";
-import { Calendar } from "@/components/ui/calendar";
+import { useIsOnline } from "#/features/sync/connectivity.ts";
+import { OfflineHint } from "#/features/sync/offline-hint.tsx";
+import { Calendar } from "#/components/ui/calendar.tsx";
 import {
     Select,
     SelectContent,
@@ -25,16 +25,16 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select.tsx";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field.tsx";
-import { CurrencyInputWrapper } from "@/components/ui/currency-input-wrapper.tsx";
+} from "#/components/ui/select.tsx";
+import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
+import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
+} from "#/components/ui/popover.tsx";
 import { ChevronDownIcon } from "lucide-react";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 export const Route = createFileRoute("/_authed/fixed-costs/$id")({
     component: RouteComponent,

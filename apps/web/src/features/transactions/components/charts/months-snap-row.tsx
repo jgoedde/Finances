@@ -1,13 +1,13 @@
-import { ChartContainer } from "@/components/ui/chart.tsx";
+import { ChartContainer } from "#/components/ui/chart.tsx";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts";
-import { formatEuro } from "@/utils/currency.ts";
+import { formatEuro } from "#/utils/currency.ts";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { startOfMonth } from "date-fns";
-import { useMonthlyCategoryTotals } from "@/features/transactions/insight-queries.ts";
+import { useMonthlyCategoryTotals } from "#/features/transactions/insight-queries.ts";
 import { type ComponentProps, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
-import { Card } from "@/components/ui/card.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { Card } from "#/components/ui/card.tsx";
 
 const now = new Date();
 

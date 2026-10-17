@@ -5,8 +5,8 @@ import {
     type ImportResult,
     dataExportSchema,
 } from "@finances/shared";
-import type { DB } from "../../db/database.ts";
-import type { AppEnv } from "../../http/session.ts";
+import type { DB } from "#/db/database.ts";
+import type { AppEnv } from "#/http/session.ts";
 import { toFixedCost } from "../fixed-costs.ts";
 import { toTransaction } from "../transactions.ts";
 import { isSqliteFile, readLegacyDatabase } from "./legacy-database.ts";

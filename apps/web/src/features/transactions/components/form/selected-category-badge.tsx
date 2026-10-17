@@ -1,6 +1,6 @@
 import { useColorScheme } from "@mantine/hooks";
-import { convertHexToTonal } from "@/utils/color.ts";
-import { Badge } from "@/components/ui/badge.tsx";
+import { convertHexToTonal } from "#/utils/color.ts";
+import { Badge } from "#/components/ui/badge.tsx";
 import type { Category } from "@finances/shared";
 import { XIcon } from "lucide-react";
 

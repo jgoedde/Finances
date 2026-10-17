@@ -5,26 +5,26 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table.tsx";
-import { Button } from "@/components/ui/button.tsx";
+} from "#/components/ui/table.tsx";
+import { Button } from "#/components/ui/button.tsx";
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import {
     type FixedCost,
     toIsoDate,
-} from "@/features/fixed-costs/fixed-cost.ts";
+} from "#/features/fixed-costs/fixed-cost.ts";
 import {
     useCreateFixedCost,
     useDeleteFixedCost,
     useFixedCosts,
     useMonthlyFixedCostTotal,
     useUpdateFixedCost,
-} from "@/features/fixed-costs/fixed-cost-queries.ts";
+} from "#/features/fixed-costs/fixed-cost-queries.ts";
 import { toast } from "sonner";
-import { Switch } from "@/components/ui/switch.tsx";
-import { Card } from "@/components/ui/card.tsx";
-import { useIsOnline } from "@/features/sync/connectivity.ts";
-import { OfflineHint } from "@/features/sync/offline-hint.tsx";
+import { Switch } from "#/components/ui/switch.tsx";
+import { Card } from "#/components/ui/card.tsx";
+import { useIsOnline } from "#/features/sync/connectivity.ts";
+import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 
 const INTERVAL_LABELS: Record<FixedCost["interval"], string> = {
     monthly: "Monatlich",

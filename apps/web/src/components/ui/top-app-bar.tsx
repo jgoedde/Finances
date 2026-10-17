@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useWindowScroll } from "@mantine/hooks";
-import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
-import { cn } from "@/lib/cn.ts";
+import { BackArrowButton } from "#/components/ui/back-arrow-button.tsx";
+import { cn } from "#/lib/cn.ts";
 
 interface Props {
     title: ReactNode;

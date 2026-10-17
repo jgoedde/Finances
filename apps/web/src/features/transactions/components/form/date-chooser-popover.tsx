@@ -2,11 +2,11 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover.tsx";
+} from "#/components/ui/popover.tsx";
 import { ClockFading } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar.tsx";
+import { Calendar } from "#/components/ui/calendar.tsx";
 import { de } from "date-fns/locale";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "#/components/ui/button.tsx";
 
 type Props = {
     selected: Date;

@@ -3,7 +3,7 @@ import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
-} from "@/components/ui/tooltip.tsx";
+} from "#/components/ui/tooltip.tsx";
 
 interface OfflineHintProps {
     /**

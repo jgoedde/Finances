@@ -56,7 +56,7 @@ Data conventions: a transaction is an expense or an income (`kind`), and `amount
 
 Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
-- Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses relative imports (no `@/` alias) and only erasable TS syntax. `tsc -b` is a type check only.
+- Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses only erasable TS syntax. `tsc -b` is a type check only.
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.
 - `db/migrate.ts` first lets better-auth migrate its own tables, then runs our Kysely migrations from `db/migrations/`. Append new migrations; never edit applied ones.
 - Every app table is keyed by `(user_id, id)`, and every query must filter by the session's `userId`. Transactions are written with an idempotent `PUT /api/transactions/:id` (create or replace). Deletes leave a tombstone so late replays of a deleted id are ignored.
@@ -65,6 +65,6 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 ### Conventions
 
-- Imports use the `@/` alias (pointing at `src/`) and include the explicit `.ts`/`.tsx` extension.
+- Imports use the `#/` alias (pointing at the workspace's `src/`) and include the explicit `.ts`/`.tsx` extension. The alias is Node's subpath import, defined by `imports` in each app's `package.json` (not tsconfig `paths`, which Node and Vitest ignore), so it works in Node, Vite, Vitest and TypeScript alike.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
 - Knip is strict (`includeEntryExports`, no ignore list): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.

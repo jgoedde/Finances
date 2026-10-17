@@ -1,8 +1,8 @@
 import { type ComponentProps } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useCanGoBack, useNavigate, useRouter } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button.tsx";
-import { cn } from "@/lib/cn.ts";
+import { Button } from "#/components/ui/button.tsx";
+import { cn } from "#/lib/cn.ts";
 
 // Leading navigation icon of an MD3 top app bar.
 export function BackArrowButton({

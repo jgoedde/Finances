@@ -1,8 +1,8 @@
 import * as React from "react";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Select as SelectPrimitive } from "radix-ui";
-import { cn } from "@/lib/cn.ts";
-import { outlinedTextFieldClassName } from "@/components/ui/input.tsx";
+import { cn } from "#/lib/cn.ts";
+import { outlinedTextFieldClassName } from "#/components/ui/input.tsx";
 
 function Select({
     ...props

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // MD3 common buttons (https://m3.material.io/components/buttons/specs)
 // and icon buttons (size="icon").

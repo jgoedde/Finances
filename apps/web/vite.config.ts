@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import tanstackRouter from "@tanstack/router-plugin/vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -35,11 +34,6 @@ export default defineConfig({
             },
         }),
     ],
-    resolve: {
-        alias: {
-            "@": path.resolve(import.meta.dirname, "./src"),
-        },
-    },
     define: {
         __APP_VERSION__: JSON.stringify(rootPackage.version),
     },

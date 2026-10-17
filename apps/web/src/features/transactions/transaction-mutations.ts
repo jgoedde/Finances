@@ -1,13 +1,13 @@
 import { type QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import type { Transaction, TransactionInput } from "@finances/shared";
-import { ApiError, apiFetch, isUnauthorized } from "@/api/api-client.ts";
-import { sessionQuery } from "@/auth/auth-client.ts";
-import { syncFailures } from "@/features/sync/sync-failures.ts";
+import { ApiError, apiFetch, isUnauthorized } from "#/api/api-client.ts";
+import { sessionQuery } from "#/auth/auth-client.ts";
+import { syncFailures } from "#/features/sync/sync-failures.ts";
 import {
     applyToCache,
     type PendingChange,
     TRANSACTION_MUTATION_KEY,
-} from "@/features/transactions/pending-changes.ts";
+} from "#/features/transactions/pending-changes.ts";
 
 // Transaction changes are queued mutations: they work offline, survive
 // reloads (see features/sync/persistence.ts) and run one after another. Their

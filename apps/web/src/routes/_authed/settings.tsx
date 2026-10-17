@@ -3,9 +3,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type ChangeEvent, useRef, useState } from "react";
 import { Download, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
-import { Card } from "@/components/ui/card.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import { Card } from "#/components/ui/card.tsx";
+import { Button } from "#/components/ui/button.tsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -15,12 +15,12 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog.tsx";
-import { ApiError } from "@/api/api-client.ts";
+} from "#/components/ui/alert-dialog.tsx";
+import { ApiError } from "#/api/api-client.ts";
 import {
     downloadExport,
     importFile,
-} from "@/features/data-transfer/data-transfer-api.ts";
+} from "#/features/data-transfer/data-transfer-api.ts";
 
 export const Route = createFileRoute("/_authed/settings")({
     component: RouteComponent,

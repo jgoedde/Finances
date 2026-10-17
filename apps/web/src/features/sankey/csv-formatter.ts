@@ -1,4 +1,4 @@
-import { formatEuro } from "@/utils/currency.ts";
+import { formatEuro } from "#/utils/currency.ts";
 import type { Category } from "@finances/shared";
 
 interface IncomeSource {

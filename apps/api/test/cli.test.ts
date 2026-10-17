@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { LinkInfo } from "@finances/shared";
-import type { CommandContext } from "../src/cli/command.ts";
-import { invite } from "../src/cli/commands/invite.ts";
-import { resetPassword } from "../src/cli/commands/reset-password.ts";
-import { users } from "../src/cli/commands/users.ts";
+import type { CommandContext } from "#/cli/command.ts";
+import { invite } from "#/cli/commands/invite.ts";
+import { resetPassword } from "#/cli/commands/reset-password.ts";
+import { users } from "#/cli/commands/users.ts";
 import { createTestApp, json } from "./test-app.ts";
 
 const BASE_URL = "https://finances.example.com";

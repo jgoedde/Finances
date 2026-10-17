@@ -2,6 +2,9 @@
     "name": "@finances/web",
     "private": true,
     "type": "module",
+    "imports": {
+        "#/*": "./src/*"
+    },
     "scripts": {
         "dev": "vite",
         "dev:host": "vite --host",

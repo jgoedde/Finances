@@ -1,17 +1,17 @@
 import { type SubmitEvent, useRef, useState } from "react";
-import { Input } from "@/components/ui/input.tsx";
-import { CategoryTile } from "@/features/transactions/components/form/category-tile.tsx";
-import { DeleteButtonWithConfirmDialog } from "@/features/transactions/components/form/delete-button-with-confirm-dialog.tsx";
-import { DateChooserPopover } from "@/features/transactions/components/form/date-chooser-popover.tsx";
-import { TransactionInput } from "@/features/transactions/components/form/transaction-input.tsx";
-import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
+import { Input } from "#/components/ui/input.tsx";
+import { CategoryTile } from "#/features/transactions/components/form/category-tile.tsx";
+import { DeleteButtonWithConfirmDialog } from "#/features/transactions/components/form/delete-button-with-confirm-dialog.tsx";
+import { DateChooserPopover } from "#/features/transactions/components/form/date-chooser-popover.tsx";
+import { TransactionInput } from "#/features/transactions/components/form/transaction-input.tsx";
+import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import type { Category, TransactionKind } from "@finances/shared";
-import { useCategories } from "@/features/transactions/transaction-queries.ts";
-import { Label } from "@/components/ui/label.tsx";
+import { useCategories } from "#/features/transactions/transaction-queries.ts";
+import { Label } from "#/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
-import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { SelectedCategoryBadge } from "@/features/transactions/components/form/selected-category-badge.tsx";
+import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { SelectedCategoryBadge } from "#/features/transactions/components/form/selected-category-badge.tsx";
 
 export interface TransactionFormSubmitData {
     categoryId: string;

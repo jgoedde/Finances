@@ -1,8 +1,8 @@
-import { useRipple } from "@/hooks/use-ripple.ts";
+import { useRipple } from "#/hooks/use-ripple.ts";
 import { cva } from "class-variance-authority";
 import type { ComponentProps, ReactNode } from "react";
 import { DynamicIcon } from "lucide-react/dynamic";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // MD3 segmented button (https://m3.material.io/components/segmented-buttons/specs).
 const segmentedButton = cva(
