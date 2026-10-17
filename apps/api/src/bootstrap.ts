@@ -23,10 +23,11 @@ function readAuthConfig(): AuthConfig {
 
 /** Opens and migrates the database. */
 export async function openMigratedDatabase() {
-    const db = openDatabase(process.env.DATABASE_PATH ?? "/data/finances.db");
+    const databasePath = process.env.DATABASE_PATH ?? "/data/finances.db";
+    const db = openDatabase(databasePath);
     const authConfig = readAuthConfig();
     await migrate(db, authOptions(db, authConfig));
-    return { db, authConfig };
+    return { db, databasePath, authConfig };
 }
 
 /** Opens and migrates the database, then creates the auth instance. */

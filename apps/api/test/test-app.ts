@@ -16,9 +16,15 @@ export async function json<T>(response: Response | Promise<Response>) {
 
 export type Client = (path: string, init?: RequestInit) => Promise<Response>;
 
-/** A fresh app on an in-memory database; logs requests to `logger` if given. */
-export async function createTestApp(logger?: Logger) {
-    const db = openDatabase(":memory:");
+/**
+ * A fresh app on an in-memory database (or `filename`); logs requests to
+ * `logger` if given.
+ */
+export async function createTestApp({
+    logger,
+    filename = ":memory:",
+}: { logger?: Logger; filename?: string } = {}) {
+    const db = openDatabase(filename);
     const config = {
         secret: "test-secret-that-is-long-enough-123",
         baseURL: BASE_URL,

@@ -10,6 +10,9 @@ const migrations: Record<string, Migration> = {
     "0001-app-tables": { up: appTables },
 };
 
+/** Our migrations known to this version, in order. */
+export const migrationNames = Object.keys(migrations);
+
 /**
  * Brings the schema up to date: first better-auth's own tables (diffed by
  * better-auth), then our versioned migrations.
