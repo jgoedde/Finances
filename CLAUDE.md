@@ -31,6 +31,7 @@ Paths below are relative to `apps/web` unless they start with `.github/`, `docke
 
 - `src/api/api-client.ts`: `apiFetch` calls `/api/...` on the same origin with the session cookie and throws `ApiError` for non-2xx responses. Request and response types come from `@finances/shared`.
 - Each feature has a `*-queries.ts` module (for example `features/transactions/transaction-queries.ts`) with TanStack Query `queryOptions`, read hooks and mutation hooks. Mutations invalidate the affected query keys (`["transactions"]`, `["insights"]`, `["fixed-costs"]`) in `onSettled`. Read hooks return `[]`/`0`/`null` while loading so components render without loading branches.
+- Offline (`features/sync/`, `features/transactions/transaction-mutations.ts`): transaction create/edit/delete are queued TanStack mutations. Their logic (request, optimistic cache update, retry, sync-failure handling) lives in `setMutationDefaults`, never in components, so mutations restored after a reload still run; components only call `useSaveTransaction()`/`useDeleteTransaction()` and never await them. `persistence.ts` restores the cache and the queue from IndexedDB before the app renders and never busts it (no `buster`, `maxAge: Infinity`). List/detail query functions merge pending changes (`pending-changes.ts`), so refetches don't hide them. Network errors and `5xx`/`401` retry forever; other `4xx` become sync failures (`sync-failures.ts`, localStorage). `connectivity.ts` drives TanStack's `onlineManager`, also from failed requests. Fixed costs are online-only.
 - Route loaders that need data up front use `context.queryClient.ensureQueryData(...)` and the component reads it with `useSuspenseQuery`.
 - Auth: `src/auth/auth-client.ts` wraps the better-auth client; `sessionQuery` holds the signed-in user. The pathless `routes/_authed.tsx` layout redirects to `/login` without a session, so every app route lives under `routes/_authed/`. A 401 from any query or mutation (see `api/query-client.ts`) clears the session and redirects to the login. `/link/$token` redeems invites and password reset links.
 
@@ -53,7 +54,7 @@ Data conventions: a transaction is an expense or an income (`kind`), and `amount
 
 ### API (`apps/api`)
 
-Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`. Offline capture (slice 4) is not built yet.
+Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 - Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses relative imports (no `@/` alias) and only erasable TS syntax. `tsc -b` is a type check only.
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.

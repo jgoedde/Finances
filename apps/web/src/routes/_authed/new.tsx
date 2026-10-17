@@ -7,7 +7,8 @@ import { z } from "zod";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { getTransactionKindLabel } from "@/features/transactions/utils/transaction-utils.ts";
-import { useSaveTransaction } from "@/features/transactions/transaction-queries.ts";
+import { useSaveTransaction } from "@/features/transactions/transaction-mutations.ts";
+import { syncLaterHint } from "@/features/sync/connectivity.ts";
 
 const prefilledSchema = z.object({
     vendor: z.string().nonempty().optional().catch(undefined),
@@ -26,34 +27,29 @@ function RouteComponent() {
     const navigate = useNavigate();
     const saveTransaction = useSaveTransaction();
 
-    const onTransactionFormSubmit = async (data: TransactionFormSubmitData) => {
-        try {
-            await saveTransaction.mutateAsync({
-                id: nanoid(8),
-                date: data.date.getTime(),
-                categoryId: data.categoryId,
-                kind: data.kind,
-                amount: data.amount,
-                currency: "EUR",
-                name: data.name,
-                description: data.description,
-                exceptional: data.isExceptional,
-            });
+    const onTransactionFormSubmit = (data: TransactionFormSubmitData) => {
+        // Saved locally right away; sent now or once back online.
+        saveTransaction.mutate({
+            id: nanoid(8),
+            date: data.date.getTime(),
+            categoryId: data.categoryId,
+            kind: data.kind,
+            amount: data.amount,
+            currency: "EUR",
+            name: data.name,
+            description: data.description,
+            exceptional: data.isExceptional,
+        });
 
-            await navigate({ to: "/" });
-            toast.success(
-                `${getTransactionKindLabel(data.kind)} bei ${data.name} gespeichert`,
-            );
-        } catch {
-            toast.error(
-                `Die ${getTransactionKindLabel(data.kind)} konnte leider nicht gespeichert werden.`,
-            );
-        }
+        void navigate({ to: "/" });
+        toast.success(
+            `${getTransactionKindLabel(data.kind)} bei ${data.name} gespeichert${syncLaterHint()}`,
+        );
     };
 
     return (
         <TransactionForm
-            onSubmit={(data) => void onTransactionFormSubmit(data)}
+            onSubmit={onTransactionFormSubmit}
             title={"Neue Geldbewegung"}
             initialValues={{
                 name: vendor ?? "",

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SearchBar } from "@/features/transactions/components/search-bar.tsx";
 import { LazyRow } from "@/features/transactions/components/lazy-row.tsx";
 import { MonthlyOverview } from "@/features/transactions/components/charts/monthly-overview.tsx";
@@ -6,15 +6,12 @@ import { TransactionList } from "@/features/transactions/components/list/transac
 import { NewTransactionFAB } from "@/features/transactions/components/new-transaction-fab.tsx";
 import { Insights } from "@/features/transactions/components/insights.tsx";
 import { FixedCostsTable } from "@/features/fixed-costs/fixed-costs-table.tsx";
-import { SignOutLink } from "@/features/auth/sign-out-link.tsx";
 
 export const Route = createFileRoute("/_authed/")({
     component: RouteComponent,
 });
 
 function RouteComponent() {
-    const { user } = Route.useRouteContext();
-
     return (
         <div className={"relative container mx-auto flex h-dvh flex-col"}>
             <SearchBar />
@@ -56,17 +53,6 @@ function RouteComponent() {
                         </a>
                     </span>
                     <span>{import.meta.env.MODE}</span>
-                    <span>
-                        Angemeldet als {user.username} ·{" "}
-                        <Link
-                            to={"/settings"}
-                            className={`text-primary focus-ring rounded-xs
-                                underline-offset-4 hover:underline`}
-                        >
-                            Einstellungen
-                        </Link>{" "}
-                        · <SignOutLink />
-                    </span>
                 </div>
             </footer>
 

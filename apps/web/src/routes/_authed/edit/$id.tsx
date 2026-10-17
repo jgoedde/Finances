@@ -6,18 +6,29 @@ import {
 } from "@/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
 import { getTransactionKindLabel } from "@/features/transactions/utils/transaction-utils.ts";
+import { transactionQuery } from "@/features/transactions/transaction-queries.ts";
 import {
-    transactionQuery,
     useDeleteTransaction,
     useSaveTransaction,
-} from "@/features/transactions/transaction-queries.ts";
+} from "@/features/transactions/transaction-mutations.ts";
+import { findCachedTransaction } from "@/features/transactions/pending-changes.ts";
+import { syncLaterHint } from "@/features/sync/connectivity.ts";
 import { ApiError } from "@/api/api-client.ts";
 import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/_authed/edit/$id")({
     component: RouteComponent,
-    loader: ({ context, params }) =>
-        context.queryClient.ensureQueryData(transactionQuery(params.id)),
+    loader: ({ context: { queryClient }, params }) => {
+        // Offline, a transaction only seen in a list can still be edited.
+        const query = transactionQuery(params.id);
+        if (!queryClient.getQueryData(query.queryKey)) {
+            const cached = findCachedTransaction(queryClient, params.id);
+            if (cached) {
+                queryClient.setQueryData(query.queryKey, cached);
+            }
+        }
+        return queryClient.ensureQueryData(query);
+    },
     onError: (error) => {
         if (error instanceof ApiError && error.status === 404) {
             toast.error("Geldbewegung nicht gefunden.");
@@ -39,40 +50,34 @@ function RouteComponent() {
     const saveTransaction = useSaveTransaction();
     const deleteTransaction = useDeleteTransaction();
 
-    const onTransactionFormSubmit = async (
-        updated: TransactionFormSubmitData,
-    ) => {
-        try {
-            await saveTransaction.mutateAsync({
-                id,
-                categoryId: updated.categoryId,
-                kind: updated.kind,
-                amount: updated.amount,
-                name: updated.name,
-                description: updated.description,
-                date: updated.date.getTime(),
-                exceptional: updated.isExceptional,
-                currency: "EUR",
-            });
-            await navigate({ to: "/" });
-            toast.success("Geldbewegung aktualisiert", {
-                action: {
-                    label: "Rückgängig",
-                    onClick: () => saveTransaction.mutate(transaction),
-                },
-            });
-        } catch {
-            toast.error("Geldbewegung konnte nicht aktualisiert werden.");
-        }
+    const onTransactionFormSubmit = (updated: TransactionFormSubmitData) => {
+        saveTransaction.mutate({
+            id,
+            categoryId: updated.categoryId,
+            kind: updated.kind,
+            amount: updated.amount,
+            name: updated.name,
+            description: updated.description,
+            date: updated.date.getTime(),
+            exceptional: updated.isExceptional,
+            currency: "EUR",
+        });
+        void navigate({ to: "/" });
+        toast.success(`Geldbewegung aktualisiert${syncLaterHint()}`, {
+            action: {
+                label: "Rückgängig",
+                onClick: () => saveTransaction.mutate(transaction),
+            },
+        });
     };
 
-    const onTransactionFormDelete = async () => {
-        const label = getTransactionKindLabel(transaction.kind);
-        try {
-            await deleteTransaction.mutateAsync(id);
-            await navigate({ to: "/" });
-            // Deleted ids can't be reused, so restoring saves a copy.
-            toast.success(`Die ${label} wurde gelöscht.`, {
+    const onTransactionFormDelete = () => {
+        deleteTransaction.mutate(transaction);
+        void navigate({ to: "/" });
+        // Deleted ids can't be reused, so restoring saves a copy.
+        toast.success(
+            `Die ${getTransactionKindLabel(transaction.kind)} wurde gelöscht.${syncLaterHint()}`,
+            {
                 action: {
                     label: "Wiederherstellen",
                     onClick: () =>
@@ -81,10 +86,8 @@ function RouteComponent() {
                             id: nanoid(8),
                         }),
                 },
-            });
-        } catch {
-            toast.error(`Die ${label} konnte nicht gelöscht werden.`);
-        }
+            },
+        );
     };
 
     return (
@@ -100,7 +103,7 @@ function RouteComponent() {
                 kind: transaction.kind,
             }}
             onDelete={onTransactionFormDelete}
-            onSubmit={(data) => void onTransactionFormSubmit(data)}
+            onSubmit={onTransactionFormSubmit}
             title={"Geldbewegung bearbeiten"}
         />
     );
