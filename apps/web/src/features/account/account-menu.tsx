@@ -79,6 +79,7 @@ export function AccountMenu() {
     const user = useQuery(sessionQuery).data;
     const status = useSyncStatus();
     const signOut = useSignOut();
+
     const [isSyncDrawerOpen, setIsSyncDrawerOpen] = useState(false);
     const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
 

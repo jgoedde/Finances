@@ -23,33 +23,33 @@ import {
 } from "@/features/transactions/transaction-mutations.ts";
 import type { PendingChange } from "@/features/transactions/pending-changes.ts";
 
-const STATUS_TEXT: Record<SyncStatus["state"], string> = {
+const STATUS_TEXT = {
     failed: "Einige Änderungen wurden abgelehnt.",
     offline: "Offline – Änderungen werden später übertragen.",
     pending: "Wird synchronisiert …",
     synced: "Alles synchronisiert.",
-};
+} as const satisfies Record<SyncStatus["state"], string>;
 
-const ACTION_LABEL: Record<PendingChange["action"], string> = {
+const ACTION_LABEL = {
     save: "Gespeichert",
     delete: "Gelöscht",
-};
+} as const satisfies Record<PendingChange["action"], string>;
 
 function describe(transaction: Transaction): string {
     const sign = transaction.kind === "income" ? "+" : "";
     return `${transaction.name} · ${sign}${formatEuro(transaction.amount)}`;
 }
 
-export function SyncDrawer({
-    open,
-    onOpenChange,
-}: {
+interface SyncDrawerProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-}) {
+}
+
+export function SyncDrawer({ open, onOpenChange }: SyncDrawerProps) {
     const status = useSyncStatus();
     const saveTransaction = useSaveTransaction();
     const deleteTransaction = useDeleteTransaction();
+
     const [isChecking, setIsChecking] = useState(false);
 
     async function syncNow() {
