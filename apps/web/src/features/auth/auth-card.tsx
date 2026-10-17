@@ -1,13 +1,14 @@
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
+
+interface AuthCardProps {
+    title: string;
+}
 
 /** Centered card for the signed-out pages (login, invites). */
 export function AuthCard({
     title,
     children,
-}: {
-    title: string;
-    children: ReactNode;
-}) {
+}: PropsWithChildren<AuthCardProps>) {
     return (
         <div
             className={`flex min-h-dvh items-center justify-center
