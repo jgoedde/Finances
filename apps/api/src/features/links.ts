@@ -10,6 +10,7 @@ import {
 import { type Auth, createUser, resetPassword } from "../auth/auth.ts";
 import type { DB } from "../db/database.ts";
 import type { InvitesTable } from "../db/schema.ts";
+import { logger } from "../log.ts";
 import type { AppEnv } from "../http/session.ts";
 import { validate } from "../http/validate.ts";
 
@@ -83,21 +84,35 @@ export async function createPasswordResetLink(
 /** Admin-only: issue invites and password reset links. */
 export function adminLinkRoutes(db: DB) {
     return new Hono<AppEnv>()
-        .post("/invites", async (c) =>
-            c.json(await createInvite(db, c.get("userId")), 201),
-        )
+        .post("/invites", async (c) => {
+            const created = await createInvite(db, c.get("userId"));
+            logger.info(
+                { userId: c.get("userId"), expiresAt: created.expiresAt },
+                "Invite created",
+            );
+            return c.json(created, 201);
+        })
         .post(
             "/password-reset-links",
             validate("json", createPasswordResetLinkSchema),
             async (c) => {
+                const targetUserId = c.req.valid("json").userId;
                 const created = await createPasswordResetLink(
                     db,
-                    c.req.valid("json").userId,
+                    targetUserId,
                     c.get("userId"),
                 );
                 if (!created) {
                     return c.json({ error: "unknown_user" }, 422);
                 }
+                logger.info(
+                    {
+                        userId: c.get("userId"),
+                        targetUserId,
+                        expiresAt: created.expiresAt,
+                    },
+                    "Password reset link created",
+                );
                 return c.json(created, 201);
             },
         );
@@ -182,6 +197,10 @@ export function linkRoutes(db: DB, auth: Auth) {
                     }
                 } catch (error) {
                     await release(token);
+                    logger.warn(
+                        { err: error, kind: link.kind },
+                        "Redeeming link failed, link released",
+                    );
                     if (link.kind === "signup") {
                         // The placeholder email is derived from the username,
                         // so a duplicate username fails as a duplicate user.
@@ -189,6 +208,10 @@ export function linkRoutes(db: DB, auth: Auth) {
                     }
                     throw error;
                 }
+                logger.info(
+                    { kind: link.kind, targetUserId: link.user_id },
+                    "Link redeemed",
+                );
                 return c.body(null, 204);
             },
         );

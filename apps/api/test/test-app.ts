@@ -1,7 +1,10 @@
+import { Hono } from "hono";
+import type { Logger } from "pino";
 import { createApp } from "#/app.ts";
 import { authOptions, createAuth, createUser } from "#/auth/auth.ts";
 import { openDatabase } from "#/db/database.ts";
 import { migrate } from "#/db/migrate.ts";
+import { requestLogger } from "#/http/request-logger.ts";
 
 const BASE_URL = "http://localhost:3000";
 const PASSWORD = "password123";
@@ -13,8 +16,8 @@ export async function json<T>(response: Response | Promise<Response>) {
 
 export type Client = (path: string, init?: RequestInit) => Promise<Response>;
 
-/** A fresh app on an in-memory database. */
-export async function createTestApp() {
+/** A fresh app on an in-memory database; logs requests to `logger` if given. */
+export async function createTestApp(logger?: Logger) {
     const db = openDatabase(":memory:");
     const config = {
         secret: "test-secret-that-is-long-enough-123",
@@ -22,7 +25,11 @@ export async function createTestApp() {
     };
     await migrate(db, authOptions(db, config));
     const auth = createAuth(db, config);
-    const app = createApp(db, auth);
+    const app = new Hono();
+    if (logger) {
+        app.use("/api/*", requestLogger(logger));
+    }
+    app.route("/", createApp(db, auth));
 
     async function request(path: string, init: RequestInit = {}) {
         const headers = new Headers(init.headers);

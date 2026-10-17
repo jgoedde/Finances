@@ -26,6 +26,8 @@ services:
             ADMIN_PASSWORD: change-me-too
             # Optional, comma-separated extra origins allowed to sign in.
             # TRUSTED_ORIGINS: http://192.168.1.10:3000
+            # Optional: trace, debug, info (default), warn, error, fatal or silent.
+            # LOG_LEVEL: info
         volumes:
             - ./data:/data
         restart: unless-stopped

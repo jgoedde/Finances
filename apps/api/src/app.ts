@@ -16,6 +16,10 @@ export function createApp(db: DB, auth: Auth) {
     const app = new Hono<AppEnv>().basePath("/api");
     const userOnly = requireUser(auth);
 
+    // Replaces Hono's default handler, which writes to `console.error`; the
+    // request logger logs the error (`c.error`) with the request line.
+    app.onError((_error, c) => c.text("Internal Server Error", 500));
+
     app.get("/health", (c) => c.json({ ok: true }));
     app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
     app.route("/links", linkRoutes(db, auth));

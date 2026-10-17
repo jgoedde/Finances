@@ -3,7 +3,18 @@ import { Hono } from "hono";
 import { createApp } from "./app.ts";
 import { createUser } from "./auth/auth.ts";
 import { bootstrap } from "./bootstrap.ts";
+import { requestLogger } from "./http/request-logger.ts";
 import { staticRoutes } from "./http/static.ts";
+import { logger } from "./log.ts";
+
+process.on("uncaughtException", (error) => {
+    logger.fatal({ err: error }, "Uncaught exception");
+    process.exit(1);
+});
+process.on("unhandledRejection", (reason) => {
+    logger.fatal({ err: reason }, "Unhandled rejection");
+    process.exit(1);
+});
 
 const { db, auth } = await bootstrap();
 
@@ -21,15 +32,16 @@ if (count === 0) {
             password,
             role: "admin",
         });
-        console.log(`Created admin user "${username}"`);
+        logger.info({ username }, "Created admin user");
     } else {
-        console.warn(
+        logger.warn(
             "No users exist. Set ADMIN_USERNAME and ADMIN_PASSWORD to create the first admin.",
         );
     }
 }
 
 const server = new Hono()
+    .use("/api/*", requestLogger(logger))
     .route("/", createApp(db, auth))
     .all("/api/*", (c) => c.json({ error: "not_found" }, 404));
 
@@ -37,9 +49,10 @@ const server = new Hono()
 const staticDir = process.env.STATIC_DIR;
 if (staticDir) {
     server.route("/", staticRoutes(staticDir));
+    logger.info({ staticDir }, "Serving the client");
 }
 
 const port = Number(process.env.PORT ?? 3000);
 serve({ fetch: server.fetch, port }, () => {
-    console.log(`Listening on http://localhost:${port}`);
+    logger.info(`Listening on http://localhost:${port}`);
 });
