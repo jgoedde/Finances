@@ -8,7 +8,7 @@ Personal expense tracker (offline-first PWA) built with React 19, TypeScript, Vi
 
 ## Commands
 
-Node version is pinned in `.nvmrc`.
+Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the client lives in `apps/web` (`@finances/web`). Run the commands below from the repo root; root scripts delegate to the workspaces. Formatting (Prettier) and knip are configured once at the root.
 
 - `npm run dev`: start the Vite dev server (`npm run dev:host` exposes it on the LAN for testing on a phone)
 - `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check.
@@ -18,9 +18,11 @@ Node version is pinned in `.nvmrc`.
 
 CI (`.github/workflows/ci.yml`) runs `knip:check`, `build` and `format:check`. Run all three before considering a change done. There is no test suite.
 
-Releases: pushing a `vX.Y.Z` tag builds the Docker image (nginx serving `dist`, see `Dockerfile` and `docker/nginx.conf`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in `package.json` first; it is injected as `__APP_VERSION__`.
+Releases: pushing a `vX.Y.Z` tag builds the Docker image (nginx serving `dist`, see `Dockerfile` and `docker/nginx.conf`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
 ## Architecture
+
+Paths below are relative to `apps/web` unless they start with `.github/`, `docker/` or name a root file.
 
 ### Persistence: SQLite in the browser
 
