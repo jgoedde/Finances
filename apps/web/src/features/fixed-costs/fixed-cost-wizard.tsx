@@ -69,8 +69,8 @@ interface FixedCostWizardProps {
         categoryId: string | undefined;
     };
     categories: FixedCostCategory[];
-    /** Saves the fixed cost; errors are the caller's to report. */
-    onSubmit: (values: FixedCostWizardValues) => Promise<void>;
+    /** Saves the fixed cost optimistically; errors are the caller's to report. */
+    onSubmit: (values: FixedCostWizardValues) => void;
 }
 
 /** Step-by-step form for creating or editing a fixed cost. */
@@ -120,18 +120,18 @@ export function FixedCostWizard({
             setStep((s) => s + 1);
             return;
         }
-        void submit();
+        submit();
     }
 
     function goPrev() {
         if (step > 0) setStep((s) => s - 1);
     }
 
-    async function submit() {
+    function submit() {
         if (categoryId === undefined) {
             return;
         }
-        await onSubmit({
+        onSubmit({
             name: name.trim(),
             amount: parseFloat(amountStr.replace(",", ".")) || 0,
             interval,

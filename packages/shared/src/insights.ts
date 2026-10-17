@@ -47,7 +47,3 @@ export interface MonthlyCategoryTotal {
     categoryIconName: string;
     total: number;
 }
-
-export interface MonthlyTotal {
-    total: number;
-}

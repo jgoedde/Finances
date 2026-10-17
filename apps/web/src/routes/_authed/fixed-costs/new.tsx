@@ -25,21 +25,15 @@ function RouteComponent() {
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
     const createFixedCost = useCreateFixedCost();
 
-    async function save(values: FixedCostWizardValues) {
-        try {
-            await createFixedCost.mutateAsync({
-                ...values,
-                description: null,
-                currency: "EUR",
-                active: true,
-            });
-            toast.success(`Fixkosten „${values.name}“ erfasst`);
-            void navigate({ to: "/" });
-        } catch {
-            toast.error(
-                "Die Fixkosten konnten nicht gespeichert werden. Bitte versuche es erneut.",
-            );
-        }
+    function save(values: FixedCostWizardValues) {
+        createFixedCost.mutate({
+            ...values,
+            description: null,
+            currency: "EUR",
+            active: true,
+        });
+        toast.success(`Fixkosten „${values.name}“ erfasst`);
+        void navigate({ to: "/" });
     }
 
     return (

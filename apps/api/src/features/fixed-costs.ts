@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { sql } from "kysely";
 import { nanoid } from "nanoid";
 import {
     type FixedCost,
@@ -66,24 +65,6 @@ export function fixedCostRoutes(db: DB) {
                 .orderBy("name")
                 .execute();
             return c.json(rows.map(toFixedCost));
-        })
-        .get("/monthly-total", async (c) => {
-            const { total } = await sql<{ total: number | null }>`
-                SELECT SUM(
-                    CASE interval
-                        WHEN 'monthly'   THEN amount
-                        WHEN 'quarterly' THEN amount / 3.0
-                        WHEN 'yearly'    THEN amount / 12.0
-                    END
-                ) AS total
-                FROM fixed_costs
-                WHERE user_id = ${c.get("userId")}
-                  AND active = 1
-                  AND start_date <= date('now')
-                  AND (end_date IS NULL OR end_date >= date('now'))`
-                .execute(db)
-                .then((result) => result.rows[0] ?? { total: null });
-            return c.json({ total: total ?? 0 });
         })
         .get("/:id", async (c) => {
             const row = await db
