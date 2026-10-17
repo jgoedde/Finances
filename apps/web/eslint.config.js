@@ -1,30 +1,26 @@
-import js from "@eslint/js";
 import globals from "globals";
+import { defineConfig } from "eslint/config";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
 import reactX from "eslint-plugin-react-x";
 import reactDom from "eslint-plugin-react-dom";
+import base from "../../eslint.config.js";
 
-export default tseslint.config(
-    { ignores: ["dist", "dev-dist", "src/routeTree.gen.ts"] },
-    {
-        extends: [js.configs.recommended, ...tseslint.configs.recommended],
-        files: ["**/*.{ts,tsx}"],
-        languageOptions: {
-            ecmaVersion: 2020,
-            globals: globals.browser,
-        },
-        plugins: {
-            "react-hooks": reactHooks,
-            "react-refresh": reactRefresh,
-            "react-x": reactX,
-            "react-dom": reactDom,
-        },
-        rules: {
-            ...reactHooks.configs.recommended.rules,
-            ...reactX.configs["recommended-typescript"].rules,
-            ...reactDom.configs.recommended.rules,
-        },
+export default defineConfig(base, {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+        ecmaVersion: 2020,
+        globals: globals.browser,
     },
-);
+    plugins: {
+        "react-hooks": reactHooks,
+        "react-refresh": reactRefresh,
+        "react-x": reactX,
+        "react-dom": reactDom,
+    },
+    rules: {
+        ...reactHooks.configs.recommended.rules,
+        ...reactX.configs["recommended-typescript"].rules,
+        ...reactDom.configs.recommended.rules,
+    },
+});

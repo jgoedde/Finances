@@ -17,10 +17,6 @@ export interface SpentTotal {
     total: number;
 }
 
-export interface TransactionCount {
-    count: number;
-}
-
 export interface DailyTotal {
     /** `YYYY-MM-DD` (UTC). */
     day: string;

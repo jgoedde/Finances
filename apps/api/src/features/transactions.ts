@@ -58,14 +58,6 @@ export function transactionRoutes(db: DB) {
                     return c.json(rows.map(toTransaction));
                 },
             )
-            .get("/count", async (c) => {
-                const { count } = await db
-                    .selectFrom("transactions")
-                    .select((eb) => eb.fn.countAll<number>().as("count"))
-                    .where("user_id", "=", c.get("userId"))
-                    .executeTakeFirstOrThrow();
-                return c.json({ count });
-            })
             .get("/:id", validate("param", idParam), async (c) => {
                 const row = await db
                     .selectFrom("transactions")

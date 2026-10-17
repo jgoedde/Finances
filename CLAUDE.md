@@ -12,14 +12,14 @@ Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the 
 
 - `npm run dev`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
 - `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check.
-- `npm run lint`: ESLint
+- `npm run lint`: ESLint in every workspace. The root `eslint.config.js` holds the shared defaults (`@eslint/js` + typescript-eslint recommended, ignores); each workspace's `eslint.config.js` extends it (web: React plugins and browser globals; api/shared: Node globals). Known violations are suppressed in `apps/web/eslint-suppressions.json`: don't add to it; after fixing one, run `npx eslint . --prune-suppressions` in that workspace.
 - `npm run format` / `npm run format:check`: Prettier (4-space indent, with Tailwind class sorting/wrapping plugins)
 - `npm run knip:check`: detect unused files and exports
 - `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev`.
 - `npm run cli -w @finances/api -- invite`: operator CLI (commander, `src/cli/`; one file per command in `src/cli/commands/`): `invite`, `reset-password <username>`, `users`. In Docker: `finances invite`.
 - `npm test`: Vitest (API only)
 
-CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check` and `test`. Run all four before considering a change done.
+CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check`, `lint` and `test`. Run all five before considering a change done.
 
 Releases: pushing a `vX.Y.Z` tag builds the Docker image (Node running the API, which also serves the built client from `STATIC_DIR`; see `Dockerfile`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
@@ -67,4 +67,4 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 - Imports use the `@/` alias (pointing at `src/`) and include the explicit `.ts`/`.tsx` extension.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
-- Knip ignores a few unused shadcn components (see `knip.json`). When adding another unused shadcn component, add it there or knip will fail CI.
+- Knip is strict (`includeEntryExports`, no ignore list): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.

@@ -5,9 +5,6 @@ export const linkKindSchema = z.enum(["invite", "password-reset"]);
 export type LinkKind = z.infer<typeof linkKindSchema>;
 
 export const createPasswordResetLinkSchema = z.object({ userId: z.string() });
-export type CreatePasswordResetLinkInput = z.infer<
-    typeof createPasswordResetLinkSchema
->;
 
 export interface CreatedLink {
     /** Shown once; only its hash is stored. */
@@ -21,7 +18,7 @@ export interface LinkInfo {
     username: string | null;
 }
 
-export const usernameSchema = z
+const usernameSchema = z
     .string()
     .trim()
     .min(3)
@@ -29,7 +26,7 @@ export const usernameSchema = z
     .regex(/^[a-zA-Z0-9_.]+$/)
     .transform((value) => value.toLowerCase());
 
-export const passwordSchema = z.string().min(8).max(128);
+const passwordSchema = z.string().min(8).max(128);
 
 export const redeemLinkSchema = z.object({
     /** Required for invites, ignored for password reset links. */

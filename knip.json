@@ -5,19 +5,5 @@
         "type": true
     },
     "tags": ["-lintignore"],
-    "ignore": [
-        "apps/web/src/components/ui/alert-dialog.tsx",
-        "apps/web/src/components/ui/badge.tsx",
-        "apps/web/src/components/ui/calendar.tsx",
-        "apps/web/src/components/ui/card.tsx",
-        "apps/web/src/components/ui/chart.tsx",
-        "apps/web/src/components/ui/drawer.tsx",
-        "apps/web/src/components/ui/popover.tsx",
-        "apps/web/src/components/ui/button-group.tsx",
-        "apps/web/src/components/ui/select.tsx",
-        "apps/web/src/components/ui/table.tsx",
-        "apps/web/src/components/ui/field.tsx",
-        "apps/web/src/components/ui/slider.tsx"
-    ],
-    "ignoreDependencies": ["@radix-ui/react-slider"]
+    "includeEntryExports": true
 }
