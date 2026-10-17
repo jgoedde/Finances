@@ -38,20 +38,20 @@ export const fixedCostSchema = fixedCostInputSchema.extend({
 });
 export type FixedCost = z.infer<typeof fixedCostSchema>;
 
-const MONTHS_PER_INTERVAL: Record<FixedCostInterval, number> = {
+const MONTHS_PER_INTERVAL = {
     monthly: 1,
     quarterly: 3,
     yearly: 12,
-};
+} as const satisfies Record<FixedCostInterval, number>;
 
 /** The amount spread evenly over the months of its interval, unrounded. */
-export function monthlyAmount(fixedCost: FixedCost): number {
+export function getMonthlyAmount(fixedCost: FixedCost): number {
     return fixedCost.amount / MONTHS_PER_INTERVAL[fixedCost.interval];
 }
 
 /** Twelve monthly amounts, unrounded. */
-export function yearlyAmount(fixedCost: FixedCost): number {
-    return monthlyAmount(fixedCost) * 12;
+export function getYearlyAmount(fixedCost: FixedCost): number {
+    return getMonthlyAmount(fixedCost) * 12;
 }
 
 /** Whether the fixed cost is active and `day` (`YYYY-MM-DD`) is in its range. */

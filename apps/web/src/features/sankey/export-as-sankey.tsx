@@ -27,7 +27,7 @@ import {
     transactionsQuery,
 } from "#/features/transactions/transaction-queries.ts";
 import { fixedCostsQuery } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { isRunningOn, monthlyAmount, netSpending } from "@finances/shared";
+import { getMonthlyAmount, isRunningOn, netSpending } from "@finances/shared";
 import { toLocalIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
 import { nanoid } from "nanoid";
 
@@ -160,7 +160,7 @@ export function ExportSankeyDialog() {
                 .filter((it) => isRunningOn(it, toLocalIsoDate(endDate)))
                 .map((it) => ({
                     name: it.name,
-                    amount: monthlyAmount(it),
+                    amount: getMonthlyAmount(it),
                 })),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,

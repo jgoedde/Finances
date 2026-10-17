@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
     type FixedCost,
+    getMonthlyAmount,
+    getYearlyAmount,
     isRunningOn,
-    monthlyAmount,
     toIsoDate,
-    yearlyAmount,
 } from "../src/fixed-costs.ts";
 
 function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
@@ -23,19 +23,19 @@ function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
     };
 }
 
-describe("monthlyAmount", () => {
+describe("getMonthlyAmount", () => {
     it("spreads the amount over the months of its interval", () => {
-        expect(monthlyAmount(fixedCost({ interval: "monthly" }))).toBe(120);
-        expect(monthlyAmount(fixedCost({ interval: "quarterly" }))).toBe(40);
-        expect(monthlyAmount(fixedCost({ interval: "yearly" }))).toBe(10);
+        expect(getMonthlyAmount(fixedCost({ interval: "monthly" }))).toBe(120);
+        expect(getMonthlyAmount(fixedCost({ interval: "quarterly" }))).toBe(40);
+        expect(getMonthlyAmount(fixedCost({ interval: "yearly" }))).toBe(10);
     });
 });
 
-describe("yearlyAmount", () => {
+describe("getYearlyAmount", () => {
     it("is twelve monthly amounts", () => {
-        expect(yearlyAmount(fixedCost({ interval: "monthly" }))).toBe(1440);
-        expect(yearlyAmount(fixedCost({ interval: "quarterly" }))).toBe(480);
-        expect(yearlyAmount(fixedCost({ interval: "yearly" }))).toBe(120);
+        expect(getYearlyAmount(fixedCost({ interval: "monthly" }))).toBe(1440);
+        expect(getYearlyAmount(fixedCost({ interval: "quarterly" }))).toBe(480);
+        expect(getYearlyAmount(fixedCost({ interval: "yearly" }))).toBe(120);
     });
 });
 

@@ -2,10 +2,10 @@ import {
     type FixedCost as FixedCostRecord,
     type FixedCostCategory,
     type FixedCostInterval,
+    getMonthlyAmount,
+    getYearlyAmount,
     isRunningOn,
-    monthlyAmount,
     toIsoDate,
-    yearlyAmount,
 } from "@finances/shared";
 
 /** Fixed cost hydrated with its category and derived amounts, for the UI. */
@@ -50,8 +50,8 @@ export function toFixedCost(
         active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
-        monthlyAmount: monthlyAmount(record),
-        yearlyAmount: yearlyAmount(record),
+        monthlyAmount: getMonthlyAmount(record),
+        yearlyAmount: getYearlyAmount(record),
         isRunning: isRunningOn(record, toLocalIsoDate(new Date())),
     };
 }
