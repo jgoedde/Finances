@@ -1,6 +1,5 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import { ApiError, isUnauthorized } from "#/api/api-client.ts";
-import { QUERY_CACHE_MAX_AGE_MS } from "#/features/sync/persistence.ts";
 
 function isClientError(error: unknown): boolean {
     return error instanceof ApiError && error.status < 500;
@@ -22,8 +21,12 @@ export function createQueryClient(onUnauthorized: () => void) {
         defaultOptions: {
             queries: {
                 staleTime: 30 * 1000,
-                // Keep data for offline use; persistence drops it after this.
-                gcTime: QUERY_CACHE_MAX_AGE_MS,
+                // Keep data for offline use; persistence drops queries
+                // unused for 30 days (persistence.ts). Not a finite gcTime: GC
+                // runs on setTimeout, and delays above 2^31-1 ms (~24.8 days)
+                // overflow and fire immediately, evicting every query that
+                // has no observer (e.g. while a component suspends).
+                gcTime: Infinity,
                 // Client errors (401, 404, validation) won't fix themselves.
                 retry: (failureCount, error) =>
                     !isClientError(error) && failureCount < 2,
