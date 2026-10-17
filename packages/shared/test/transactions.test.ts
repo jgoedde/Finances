@@ -3,7 +3,7 @@ import {
     matchesListQuery,
     netSpending,
     type Transaction,
-} from "../src/transactions.ts";
+} from "#/transactions.ts";
 
 function transaction(overrides: Partial<Transaction> = {}): Transaction {
     return {

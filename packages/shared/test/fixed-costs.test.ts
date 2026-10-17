@@ -5,7 +5,7 @@ import {
     getYearlyAmount,
     isRunningOn,
     toIsoDate,
-} from "../src/fixed-costs.ts";
+} from "#/fixed-costs.ts";
 
 function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
     return {
