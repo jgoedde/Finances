@@ -68,3 +68,17 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 - Imports use the `#/` alias (pointing at the workspace's `src/`) and include the explicit `.ts`/`.tsx` extension. The alias is Node's subpath import, defined by `imports` in each app's `package.json` (not tsconfig `paths`, which Node and Vitest ignore), so it works in Node, Vite, Vitest and TypeScript alike.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
 - Knip is strict (`includeEntryExports`, no ignore list): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on jgoedde/Finances (`gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.
