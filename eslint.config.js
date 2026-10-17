@@ -15,6 +15,21 @@ export default defineConfig(
     },
     {
         files: ["**/*.{js,ts,tsx}"],
-        extends: [js.configs.recommended, tseslint.configs.recommended],
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.recommendedTypeChecked,
+        ],
+        languageOptions: {
+            parserOptions: {
+                // Tool config files in a workspace root are in no tsconfig.
+                projectService: {
+                    allowDefaultProject: [
+                        "apps/*/*.config.js",
+                        "packages/*/*.config.js",
+                    ],
+                },
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
     },
 );

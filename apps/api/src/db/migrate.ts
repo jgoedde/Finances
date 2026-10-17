@@ -36,7 +36,7 @@ export async function migrate(
 
     const migrator = new Migrator({
         db,
-        provider: { getMigrations: async () => migrations },
+        provider: { getMigrations: () => Promise.resolve(migrations) },
     });
     const { error, results = [] } = await migrator.migrateToLatest();
     for (const result of results) {
@@ -53,6 +53,8 @@ export async function migrate(
         }
     }
     if (error) {
-        throw error;
+        throw error instanceof Error
+            ? error
+            : new Error("Migration failed", { cause: error });
     }
 }

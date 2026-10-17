@@ -62,7 +62,7 @@ export function BiggestDailySpike() {
                                 dataKey="day"
                                 tickLine={false}
                                 axisLine={false}
-                                tickFormatter={(v) => {
+                                tickFormatter={(v: string) => {
                                     return new Date(v).toLocaleDateString(
                                         "de-DE",
                                         {

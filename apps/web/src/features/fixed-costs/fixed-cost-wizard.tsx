@@ -22,7 +22,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "#/components/ui/popover.tsx";
-import { toIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
+import { toLocalIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { cn } from "#/lib/cn.ts";
@@ -135,8 +135,8 @@ export function FixedCostWizard({
             name: name.trim(),
             amount: parseFloat(amountStr.replace(",", ".")) || 0,
             interval,
-            startDate: toIsoDate(startDate),
-            endDate: endDate === undefined ? null : toIsoDate(endDate),
+            startDate: toLocalIsoDate(startDate),
+            endDate: endDate === undefined ? null : toLocalIsoDate(endDate),
             categoryId,
         });
     }

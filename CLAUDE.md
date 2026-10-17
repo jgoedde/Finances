@@ -17,7 +17,7 @@ Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the 
 - `npm run knip:check`: detect unused files and exports
 - `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev`.
 - `npm run cli -w @finances/api -- invite`: operator CLI (commander, `src/cli/`; one file per command in `src/cli/commands/`): `invite`, `reset-password <username>`, `users`, `backup` (snapshot to stdout), `restore [--force]` (from stdin). In Docker: `finances invite`. The CLI logs to stderr (`cli/log-to-stderr.ts` must stay its first import) so stdout only carries command output.
-- `npm test`: Vitest (API only)
+- `npm test`: Vitest (API and `packages/shared`)
 
 CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check`, `lint` and `test`. Run all five before considering a change done.
 

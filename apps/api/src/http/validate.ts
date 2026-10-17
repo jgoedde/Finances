@@ -14,6 +14,6 @@ export function validate<T extends z.ZodType>(
                 400,
             );
         }
-        return result.data as z.output<T>;
+        return result.data;
     });
 }

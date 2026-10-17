@@ -140,7 +140,7 @@ export function TransactionList() {
                 <DateFilterDrawerContent
                     closeDrawer={() => void setIsDrawerOpen(false)}
                     dateFilterOption={dateFilterOption as DateFilter}
-                    setDateFilterOption={(df) => setDateFilterOption(df)}
+                    setDateFilterOption={(df) => void setDateFilterOption(df)}
                 />
             </DrawerContent>
         </Drawer>
