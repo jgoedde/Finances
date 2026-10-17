@@ -4,7 +4,7 @@ import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { del, get, set } from "idb-keyval";
 
 /** Cached server data unused for longer than this is dropped. */
-export const QUERY_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+const QUERY_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 /**
  * Restores the query cache and the queue of pending changes from IndexedDB,

@@ -40,8 +40,14 @@ export const Route = createFileRoute("/_authed/fixed-costs/$id")({
     component: RouteComponent,
     loader: ({ context, params }) =>
         Promise.all([
-            context.queryClient.ensureQueryData(fixedCostQuery(params.id)),
-            context.queryClient.ensureQueryData(fixedCostCategoriesQuery),
+            context.queryClient.query({
+                ...fixedCostQuery(params.id),
+                staleTime: "static",
+            }),
+            context.queryClient.query({
+                ...fixedCostCategoriesQuery,
+                staleTime: "static",
+            }),
         ]),
     onError: (error) => {
         if (error instanceof ApiError && error.status === 404) {

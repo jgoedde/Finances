@@ -15,6 +15,8 @@ export function BackArrowButton({
 
     return (
         <Button
+            // Not a submit button, even inside a form (e.g. the edit page).
+            type={"button"}
             variant={"ghost"}
             size={"icon"}
             aria-label={"Zurück"}

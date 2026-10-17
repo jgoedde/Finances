@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authed/edit/$id")({
                 queryClient.setQueryData(query.queryKey, cached);
             }
         }
-        return queryClient.ensureQueryData(query);
+        return queryClient.query({ ...query, staleTime: "static" });
     },
     onError: (error) => {
         if (error instanceof ApiError && error.status === 404) {
