@@ -1,7 +1,11 @@
-import type {
-    FixedCost as FixedCostRecord,
-    FixedCostCategory,
-    FixedCostInterval,
+import {
+    type FixedCost as FixedCostRecord,
+    type FixedCostCategory,
+    type FixedCostInterval,
+    isRunningOn,
+    monthlyAmount,
+    toIsoDate,
+    yearlyAmount,
 } from "@finances/shared";
 
 /** Fixed cost hydrated with its category and derived amounts, for the UI. */
@@ -23,33 +27,16 @@ export interface FixedCost {
     isRunning: boolean;
 }
 
-const INTERVAL_DIVISOR: Record<FixedCostInterval, number> = {
-    monthly: 1,
-    quarterly: 3,
-    yearly: 12,
-};
-
 const UNKNOWN_CATEGORY: FixedCostCategory = {
     id: "",
     name: "Unbekannt",
     description: null,
 };
 
-/** Whether the fixed cost is active and runs on the given day. */
-export function isRunningOn(fixedCost: FixedCostRecord, date: Date): boolean {
-    const day = toIsoDate(date);
-    return (
-        fixedCost.active &&
-        fixedCost.startDate <= day &&
-        (fixedCost.endDate === null || fixedCost.endDate >= day)
-    );
-}
-
 export function toFixedCost(
     record: FixedCostRecord,
     categories: FixedCostCategory[],
 ): FixedCost {
-    const monthlyAmount = record.amount / INTERVAL_DIVISOR[record.interval];
     return {
         id: record.id,
         name: record.name,
@@ -63,17 +50,18 @@ export function toFixedCost(
         active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
-        monthlyAmount,
-        yearlyAmount: monthlyAmount * 12,
-        isRunning: isRunningOn(record, new Date()),
+        monthlyAmount: monthlyAmount(record),
+        yearlyAmount: yearlyAmount(record),
+        isRunning: isRunningOn(record, toLocalIsoDate(new Date())),
     };
 }
 
-/** Local calendar date as `YYYY-MM-DD`. */
-export function toIsoDate(date: Date): string {
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${date.getFullYear()}-${month}-${day}`;
+/** The date's calendar day in the device's time zone, as `YYYY-MM-DD`. */
+export function toLocalIsoDate(date: Date): string {
+    return toIsoDate(
+        date.getTime(),
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+    );
 }
 
 /** Parses `YYYY-MM-DD` as a local date (not UTC midnight). */

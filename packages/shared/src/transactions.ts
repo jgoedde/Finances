@@ -33,6 +33,13 @@ export const transactionSchema = transactionInputSchema.extend({
 });
 export type Transaction = z.infer<typeof transactionSchema>;
 
+/** The transaction's share of net spending: expenses add, incomes subtract. */
+export function netSpending(transaction: Transaction): number {
+    return transaction.kind === "expense"
+        ? transaction.amount
+        : -transaction.amount;
+}
+
 const booleanQuery = z
     .enum(["true", "false"])
     .transform((value) => value === "true");
@@ -50,6 +57,21 @@ export interface TransactionListQuery {
     categoryId?: string;
     kind?: TransactionKind;
     excludeExceptional?: boolean;
+}
+
+/** Whether the transaction is part of the list the query asks for. */
+export function matchesListQuery(
+    transaction: Transaction,
+    query: TransactionListQuery,
+): boolean {
+    return (
+        transaction.date >= query.from &&
+        transaction.date <= query.to &&
+        (query.categoryId === undefined ||
+            transaction.categoryId === query.categoryId) &&
+        (query.kind === undefined || transaction.kind === query.kind) &&
+        (!query.excludeExceptional || !transaction.exceptional)
+    );
 }
 
 /** Position after the last result of a page: `<date>:<id>`. */

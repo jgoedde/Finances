@@ -27,7 +27,8 @@ import {
     transactionsQuery,
 } from "#/features/transactions/transaction-queries.ts";
 import { fixedCostsQuery } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { isRunningOn, toFixedCost } from "#/features/fixed-costs/fixed-cost.ts";
+import { isRunningOn, monthlyAmount, netSpending } from "@finances/shared";
+import { toLocalIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
 import { nanoid } from "nanoid";
 
 interface IncomeSource {
@@ -156,10 +157,10 @@ export function ExportSankeyDialog() {
                 amount: parseFloat(s.amount) || 0,
             })),
             fixedCosts: fixedCosts
-                .filter((it) => isRunningOn(it, endDate))
+                .filter((it) => isRunningOn(it, toLocalIsoDate(endDate)))
                 .map((it) => ({
                     name: it.name,
-                    amount: toFixedCost(it, []).monthlyAmount,
+                    amount: monthlyAmount(it),
                 })),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,
@@ -168,7 +169,7 @@ export function ExportSankeyDialog() {
             transactions: transactions.map((it) => ({
                 name: it.name,
                 category_id: it.categoryId,
-                amount: it.kind === "income" ? -it.amount : it.amount,
+                amount: netSpending(it),
             })),
             categories,
         });

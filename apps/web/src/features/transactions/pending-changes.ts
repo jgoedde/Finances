@@ -1,5 +1,9 @@
 import type { QueryClient } from "@tanstack/react-query";
-import type { Transaction, TransactionListQuery } from "@finances/shared";
+import {
+    matchesListQuery,
+    type Transaction,
+    type TransactionListQuery,
+} from "@finances/shared";
 
 /** A transaction change not yet accepted by the server. */
 export interface PendingChange {
@@ -21,17 +25,6 @@ export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
         }));
 }
 
-function belongsTo(params: TransactionListQuery, t: Transaction): boolean {
-    return (
-        t.date >= params.from &&
-        t.date <= params.to &&
-        (params.categoryId === undefined ||
-            t.categoryId === params.categoryId) &&
-        (params.kind === undefined || t.kind === params.kind) &&
-        (!params.excludeExceptional || !t.exceptional)
-    );
-}
-
 /** Applies changes to a list as the server will once it has them. */
 export function applyToList(
     list: Transaction[],
@@ -41,7 +34,7 @@ export function applyToList(
     let result = list;
     for (const { action, transaction } of changes) {
         result = result.filter((t) => t.id !== transaction.id);
-        if (action === "save" && belongsTo(params, transaction)) {
+        if (action === "save" && matchesListQuery(transaction, params)) {
             result = [...result, transaction].sort((a, b) => b.date - a.date);
         }
     }
