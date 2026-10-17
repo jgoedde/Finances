@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/client";
 import { usernameClient } from "better-auth/client/plugins";
 import { type QueryClient, queryOptions } from "@tanstack/react-query";
-import { syncFailures } from "@/features/sync/sync-failures.ts";
+import { syncFailures } from "#/features/sync/sync-failures.ts";
 
 export const authClient = createAuthClient({
     basePath: "/api/auth",

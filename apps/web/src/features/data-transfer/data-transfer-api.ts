@@ -1,5 +1,5 @@
 import type { ImportResult } from "@finances/shared";
-import { ApiError } from "@/api/api-client.ts";
+import { ApiError } from "#/api/api-client.ts";
 
 async function throwIfFailed(response: Response): Promise<void> {
     if (!response.ok) {

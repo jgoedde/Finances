@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { CheckIcon } from "lucide-react";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // MD3 checkbox (https://m3.material.io/components/checkbox/specs): 18dp box,
 // 2dp corner, 2dp on-surface-variant border; filled primary when checked.

@@ -3,19 +3,19 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-} from "@/components/ui/chart.tsx";
+} from "#/components/ui/chart.tsx";
 import { LabelList, RadialBar, RadialBarChart } from "recharts";
 import { useMemo } from "react";
-import { formatEuro } from "@/utils/currency.ts";
+import { formatEuro } from "#/utils/currency.ts";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion.tsx";
-import { ExportSankeyDialog } from "@/features/sankey/export-as-sankey.tsx";
-import { useSpendingPerCategory } from "@/features/transactions/insight-queries.ts";
-import { Card } from "@/components/ui/card.tsx";
+} from "#/components/ui/accordion.tsx";
+import { ExportSankeyDialog } from "#/features/sankey/export-as-sankey.tsx";
+import { useSpendingPerCategory } from "#/features/transactions/insight-queries.ts";
+import { Card } from "#/components/ui/card.tsx";
 
 export function MonthlyOverview() {
     const categories = useSpendingPerCategory();

@@ -7,7 +7,7 @@ import type {
     SpentQuery,
     SpentTotal,
 } from "@finances/shared";
-import { apiFetch, toQueryString } from "@/api/api-client.ts";
+import { apiFetch, toQueryString } from "#/api/api-client.ts";
 
 const EMPTY: never[] = [];
 

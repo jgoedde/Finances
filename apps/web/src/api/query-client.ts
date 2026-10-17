@@ -1,6 +1,6 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
-import { ApiError, isUnauthorized } from "@/api/api-client.ts";
-import { QUERY_CACHE_MAX_AGE_MS } from "@/features/sync/persistence.ts";
+import { ApiError, isUnauthorized } from "#/api/api-client.ts";
+import { QUERY_CACHE_MAX_AGE_MS } from "#/features/sync/persistence.ts";
 
 function isClientError(error: unknown): boolean {
     return error instanceof ApiError && error.status < 500;

@@ -1,5 +1,5 @@
-import { BiggestDailySpike } from "@/features/transactions/components/charts/biggest-daily-spike.tsx";
-import { MonthsSnapRow } from "@/features/transactions/components/charts/months-snap-row.tsx";
+import { BiggestDailySpike } from "#/features/transactions/components/charts/biggest-daily-spike.tsx";
+import { MonthsSnapRow } from "#/features/transactions/components/charts/months-snap-row.tsx";
 
 export function Insights() {
     return (

@@ -7,11 +7,11 @@ import {
     authClient,
     completeSignIn,
     sessionQuery,
-} from "@/auth/auth-client.ts";
-import { AuthCard } from "@/features/auth/auth-card.tsx";
-import { Field, FieldLabel } from "@/components/ui/field.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Button } from "@/components/ui/button.tsx";
+} from "#/auth/auth-client.ts";
+import { AuthCard } from "#/features/auth/auth-card.tsx";
+import { Field, FieldLabel } from "#/components/ui/field.tsx";
+import { Input } from "#/components/ui/input.tsx";
+import { Button } from "#/components/ui/button.tsx";
 
 export const Route = createFileRoute("/login")({
     validateSearch: z.object({

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // `md3` and `input` follow MD3 chips (https://m3.material.io/components/chips/specs),
 // the remaining variants are small status labels.

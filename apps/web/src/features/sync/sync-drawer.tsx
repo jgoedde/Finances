@@ -8,20 +8,20 @@ import {
     DrawerDescription,
     DrawerHeader,
     DrawerTitle,
-} from "@/components/ui/drawer.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { formatEuro } from "@/utils/currency.ts";
-import { checkConnection } from "@/features/sync/connectivity.ts";
-import { syncFailures } from "@/features/sync/sync-failures.ts";
+} from "#/components/ui/drawer.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { formatEuro } from "#/utils/currency.ts";
+import { checkConnection } from "#/features/sync/connectivity.ts";
+import { syncFailures } from "#/features/sync/sync-failures.ts";
 import {
     type SyncStatus,
     useSyncStatus,
-} from "@/features/sync/use-sync-status.ts";
+} from "#/features/sync/use-sync-status.ts";
 import {
     useDeleteTransaction,
     useSaveTransaction,
-} from "@/features/transactions/transaction-mutations.ts";
-import type { PendingChange } from "@/features/transactions/pending-changes.ts";
+} from "#/features/transactions/transaction-mutations.ts";
+import type { PendingChange } from "#/features/transactions/pending-changes.ts";
 
 const STATUS_TEXT = {
     failed: "Einige Änderungen wurden abgelehnt.",

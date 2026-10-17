@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SearchBar } from "@/features/transactions/components/search-bar.tsx";
-import { LazyRow } from "@/features/transactions/components/lazy-row.tsx";
-import { MonthlyOverview } from "@/features/transactions/components/charts/monthly-overview.tsx";
-import { TransactionList } from "@/features/transactions/components/list/transaction-list.tsx";
-import { NewTransactionFAB } from "@/features/transactions/components/new-transaction-fab.tsx";
-import { Insights } from "@/features/transactions/components/insights.tsx";
-import { FixedCostsTable } from "@/features/fixed-costs/fixed-costs-table.tsx";
+import { SearchBar } from "#/features/transactions/components/search-bar.tsx";
+import { LazyRow } from "#/features/transactions/components/lazy-row.tsx";
+import { MonthlyOverview } from "#/features/transactions/components/charts/monthly-overview.tsx";
+import { TransactionList } from "#/features/transactions/components/list/transaction-list.tsx";
+import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
+import { Insights } from "#/features/transactions/components/insights.tsx";
+import { FixedCostsTable } from "#/features/fixed-costs/fixed-costs-table.tsx";
 
 export const Route = createFileRoute("/_authed/")({
     component: RouteComponent,

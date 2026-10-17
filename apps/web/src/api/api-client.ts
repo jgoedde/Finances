@@ -1,4 +1,4 @@
-import { reportNetworkFailure } from "@/features/sync/connectivity.ts";
+import { reportNetworkFailure } from "#/features/sync/connectivity.ts";
 
 export class ApiError extends Error {
     readonly status: number;

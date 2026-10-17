@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // MD3 switch (https://m3.material.io/components/switch/specs): 52x32dp track,
 // thumb grows from 16dp (off) to 24dp (on) and 28dp while pressed.

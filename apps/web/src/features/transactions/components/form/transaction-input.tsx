@@ -1,13 +1,13 @@
-import { Input } from "@/components/ui/input.tsx";
+import { Input } from "#/components/ui/input.tsx";
 import { addMonths, endOfDay, startOfMonth } from "date-fns";
 import * as React from "react";
 import { useMemo } from "react";
-import { mergeSimilarKeys, mergeSimilarStrings } from "@/utils/similarity.ts";
+import { mergeSimilarKeys, mergeSimilarStrings } from "#/utils/similarity.ts";
 import { groupBy, uniq } from "lodash";
-import { useRipple } from "@/hooks/use-ripple.ts";
-import { useTransactions } from "@/features/transactions/transaction-queries.ts";
-import { Checkbox } from "@/components/ui/checkbox.tsx";
-import { Label } from "@/components/ui/label.tsx";
+import { useRipple } from "#/hooks/use-ripple.ts";
+import { useTransactions } from "#/features/transactions/transaction-queries.ts";
+import { Checkbox } from "#/components/ui/checkbox.tsx";
+import { Label } from "#/components/ui/label.tsx";
 import Fuse from "fuse.js";
 import type { TransactionKind } from "@finances/shared";
 

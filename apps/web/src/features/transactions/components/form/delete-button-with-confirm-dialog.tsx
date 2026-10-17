@@ -8,9 +8,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.tsx";
+} from "#/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "#/components/ui/button.tsx";
 
 type Props = {
     onDelete: VoidFunction;

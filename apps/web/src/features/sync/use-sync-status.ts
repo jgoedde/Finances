@@ -1,14 +1,14 @@
 import { useMutationState } from "@tanstack/react-query";
 import type { Transaction } from "@finances/shared";
-import { useIsOnline } from "@/features/sync/connectivity.ts";
+import { useIsOnline } from "#/features/sync/connectivity.ts";
 import {
     type SyncFailure,
     useSyncFailures,
-} from "@/features/sync/sync-failures.ts";
+} from "#/features/sync/sync-failures.ts";
 import {
     type PendingChange,
     TRANSACTION_MUTATION_KEY,
-} from "@/features/transactions/pending-changes.ts";
+} from "#/features/transactions/pending-changes.ts";
 
 export type SyncState = "failed" | "offline" | "pending" | "synced";
 

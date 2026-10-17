@@ -9,25 +9,25 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
+} from "#/components/ui/alert-dialog.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { Input } from "#/components/ui/input.tsx";
+import { Label } from "#/components/ui/label.tsx";
 import { Plus, TableOfContents, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { endOfMonth, startOfMonth } from "date-fns";
 import {
     buildSankeyCSV,
     downloadSankeyCSV,
-} from "@/features/sankey/csv-formatter.ts";
+} from "#/features/sankey/csv-formatter.ts";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useQueryClient } from "@tanstack/react-query";
 import {
     categoriesQuery,
     transactionsQuery,
-} from "@/features/transactions/transaction-queries.ts";
-import { fixedCostsQuery } from "@/features/fixed-costs/fixed-cost-queries.ts";
-import { isRunningOn, toFixedCost } from "@/features/fixed-costs/fixed-cost.ts";
+} from "#/features/transactions/transaction-queries.ts";
+import { fixedCostsQuery } from "#/features/fixed-costs/fixed-cost-queries.ts";
+import { isRunningOn, toFixedCost } from "#/features/fixed-costs/fixed-cost.ts";
 import { nanoid } from "nanoid";
 
 interface IncomeSource {

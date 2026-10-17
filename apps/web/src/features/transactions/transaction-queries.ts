@@ -4,11 +4,11 @@ import type {
     Transaction,
     TransactionListQuery,
 } from "@finances/shared";
-import { apiFetch, toQueryString } from "@/api/api-client.ts";
+import { apiFetch, toQueryString } from "#/api/api-client.ts";
 import {
     applyToList,
     getPendingChanges,
-} from "@/features/transactions/pending-changes.ts";
+} from "#/features/transactions/pending-changes.ts";
 
 const EMPTY: never[] = [];
 

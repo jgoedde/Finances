@@ -16,8 +16,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar.tsx";
+} from "#/components/ui/dropdown-menu.tsx";
+import { Avatar, AvatarFallback } from "#/components/ui/avatar.tsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -27,16 +27,16 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog.tsx";
-import { sessionQuery } from "@/auth/auth-client.ts";
-import { useSignOut } from "@/features/auth/use-sign-out.ts";
-import { SyncDrawer } from "@/features/sync/sync-drawer.tsx";
+} from "#/components/ui/alert-dialog.tsx";
+import { sessionQuery } from "#/auth/auth-client.ts";
+import { useSignOut } from "#/features/auth/use-sign-out.ts";
+import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
 import {
     type SyncState,
     type SyncStatus,
     useSyncStatus,
-} from "@/features/sync/use-sync-status.ts";
-import { cn } from "@/lib/cn.ts";
+} from "#/features/sync/use-sync-status.ts";
+import { cn } from "#/lib/cn.ts";
 
 const BADGE_CLASS = {
     failed: "bg-error",

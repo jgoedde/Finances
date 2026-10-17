@@ -3,18 +3,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
     getDateFilterStr,
     isMatchingDateFilter,
-} from "@/features/search/filters/date/date-filter.ts";
-import { isMatchingSearchFilter } from "@/features/search/filters/text/text-filter.ts";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { DateFilterDrawerContent } from "@/features/search/filters/date/date-filter-drawer-content";
+} from "#/features/search/filters/date/date-filter.ts";
+import { isMatchingSearchFilter } from "#/features/search/filters/text/text-filter.ts";
+import { Drawer, DrawerContent } from "#/components/ui/drawer.tsx";
+import { DateFilterDrawerContent } from "#/features/search/filters/date/date-filter-drawer-content.tsx";
 import { ChevronDown, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { useTransactions } from "@/features/transactions/transaction-queries.ts";
+import { Badge } from "#/components/ui/badge.tsx";
+import { useTransactions } from "#/features/transactions/transaction-queries.ts";
 import { addYears, endOfYear } from "date-fns";
-import { TransactionListItem } from "@/features/transactions/components/list/transaction-list-item.tsx";
-import { BackArrowButton } from "@/components/ui/back-arrow-button.tsx";
-import { cn } from "@/lib/cn.ts";
-import { Button } from "@/components/ui/button.tsx";
+import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
+import { BackArrowButton } from "#/components/ui/back-arrow-button.tsx";
+import { cn } from "#/lib/cn.ts";
+import { Button } from "#/components/ui/button.tsx";
 
 export const Route = createFileRoute("/_authed/transactions/search")({
     component: RouteComponent,

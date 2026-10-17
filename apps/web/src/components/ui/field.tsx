@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/cn.ts";
+import { Label } from "#/components/ui/label.tsx";
+import { cn } from "#/lib/cn.ts";
 
 const fieldVariants = cva(
     "group/field flex w-full gap-3 data-[invalid=true]:text-error",

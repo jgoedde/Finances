@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { AccountMenu } from "@/features/account/account-menu.tsx";
+import { AccountMenu } from "#/features/account/account-menu.tsx";
 
 // MD3 search bar (https://m3.material.io/components/search/specs) with a
 // trailing avatar; the bar opens the search view.

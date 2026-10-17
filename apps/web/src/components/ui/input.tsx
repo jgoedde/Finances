@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/cn.ts";
+import { cn } from "#/lib/cn.ts";
 
 // MD3 outlined text field container (https://m3.material.io/components/text-fields/specs).
 // The 2dp focus border is compensated via padding so the text doesn't shift.
