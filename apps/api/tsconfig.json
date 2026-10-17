@@ -20,7 +20,11 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
-        "noUncheckedIndexedAccess": true
+        "noUncheckedIndexedAccess": true,
+
+        "paths": {
+            "@/*": ["./src/*"]
+        }
     },
     "include": ["src", "test", "../../packages/shared/src"]
 }
