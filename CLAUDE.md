@@ -4,44 +4,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Personal expense tracker (offline-first PWA) built with React 19, TypeScript, Vite, TanStack Router, Tailwind v4 and shadcn/ui, styled after Material Design 3. There is no backend: all data lives in the browser. The UI text is German.
+Personal expense tracker (PWA) built with React 19, TypeScript, Vite, TanStack Router, TanStack Query, Tailwind v4 and shadcn/ui, styled after Material Design 3. The client talks to a small API (`apps/api`) that stores each user's data in SQLite. The UI text is German.
 
 ## Commands
 
-Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the client lives in `apps/web` (`@finances/web`). Run the commands below from the repo root; root scripts delegate to the workspaces. Formatting (Prettier) and knip are configured once at the root.
+Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the client lives in `apps/web` (`@finances/web`), the API in `apps/api` (`@finances/api`) and shared zod schemas in `packages/shared`. Run the commands below from the repo root; root scripts delegate to the workspaces. Formatting (Prettier) and knip are configured once at the root.
 
-- `npm run dev`: start the Vite dev server (`npm run dev:host` exposes it on the LAN for testing on a phone)
+- `npm run dev`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
 - `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check.
 - `npm run lint`: ESLint
 - `npm run format` / `npm run format:check`: Prettier (4-space indent, with Tailwind class sorting/wrapping plugins)
 - `npm run knip:check`: detect unused files and exports
-- `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first)
+- `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev`.
+- `npm run cli -w @finances/api -- invite`: operator CLI (commander, `src/cli/`; one file per command in `src/cli/commands/`): `invite`, `reset-password <username>`, `users`. In Docker: `finances invite`.
 - `npm test`: Vitest (API only)
 
 CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check` and `test`. Run all four before considering a change done.
 
-Releases: pushing a `vX.Y.Z` tag builds the Docker image (nginx serving `dist`, see `Dockerfile` and `docker/nginx.conf`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
+Releases: pushing a `vX.Y.Z` tag builds the Docker image (Node running the API, which also serves the built client from `STATIC_DIR`; see `Dockerfile`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
 ## Architecture
 
 Paths below are relative to `apps/web` unless they start with `.github/`, `docker/` or name a root file.
 
-### Persistence: SQLite in the browser
+### Data flow (client)
 
-- `src/persistence/persistent-database.ts`: `PersistentDatabase` loads sql.js (WASM fetched from sql.js.org), restores the database bytes from IndexedDB (`finances` / `sqlite-db` / `main`), runs `public/schema.sql`, and saves back. `main.tsx` awaits `PersistentDatabase.init()` (top-level await) before rendering, so the rest of the app can call `PersistentDatabase.get()` synchronously.
-- `public/schema.sql` runs on **every** startup. It must stay idempotent (`create table if not exists`, `INSERT ... ON CONFLICT DO NOTHING`). There is no migration system, so schema changes to existing tables need care because users have persisted databases.
-- Changes are persisted by exporting the whole DB to IndexedDB after each write. Backup and restore means exporting or importing the raw `.db` file (`/setup` route, `use-backup-config.ts`).
+- `src/api/api-client.ts`: `apiFetch` calls `/api/...` on the same origin with the session cookie and throws `ApiError` for non-2xx responses. Request and response types come from `@finances/shared`.
+- Each feature has a `*-queries.ts` module (for example `features/transactions/transaction-queries.ts`) with TanStack Query `queryOptions`, read hooks and mutation hooks. Mutations invalidate the affected query keys (`["transactions"]`, `["insights"]`, `["fixed-costs"]`) in `onSettled`. Read hooks return `[]`/`0`/`null` while loading so components render without loading branches.
+- Route loaders that need data up front use `context.queryClient.ensureQueryData(...)` and the component reads it with `useSuspenseQuery`.
+- Auth: `src/auth/auth-client.ts` wraps the better-auth client; `sessionQuery` holds the signed-in user. The pathless `routes/_authed.tsx` layout redirects to `/login` without a session, so every app route lives under `routes/_authed/`. A 401 from any query or mutation (see `api/query-client.ts`) clears the session and redirects to the login. `/link/$token` redeems invites and password reset links.
 
-### Repository + event pattern (data flow)
-
-1. Each feature has a `*-repository.ts` object (for example `features/transactions/transaction-repository.ts`) that holds raw SQL using named `:param` bindings.
-2. Reads are synchronous `exec` calls mapped with `rowsFromResult` / mappers in `persistence/row-mapper.ts`.
-3. Writes do `run(...)`, then `await PersistentDatabase.persist()`, then `dbEventEmitter.emit("<table>:changed")`.
-4. Hooks (`use-transactions.ts`, `use-categories.ts`, …) wrap repository reads in `useTableSubscription(queryFn, deps, eventName)`, which re-queries whenever the matching event fires.
-
-A new table needs a new `DBEventName` in `persistence/db-event-emitter.ts`, and its writes must emit that event, or else the UI won't update.
-
-Data conventions: the `expenses` table holds both expenses and income, and the sign of `amount` decides which it is (positive means spent). Transaction `date` is a Unix timestamp in **milliseconds**, so SQL date functions divide it by 1000. `exceptional` transactions (one-off large purchases) are excluded from the insights and trend queries. SQLite booleans are 0/1 integers and get converted in the mappers. Domain types are in `persistence/types.ts`. `FixedCost` is a hydrated domain object with derived fields, built by `toFixedCost` from `FixedCostRecord`.
+Data conventions: a transaction is an expense or an income (`kind`), and `amount` is always non-negative. Transaction `date` is a Unix timestamp in **milliseconds**. `exceptional` transactions (one-off large purchases) are excluded from the insights. Transaction ids are client-generated (`nanoid(8)`) and saved with an idempotent `PUT`; a deleted id can never be written again, so "restore" saves a copy under a new id. Fixed-cost dates are `YYYY-MM-DD` strings in the API; `features/fixed-costs/fixed-cost.ts` hydrates them into the `FixedCost` UI type with derived amounts.
 
 ### Routing and UI
 
@@ -58,15 +51,15 @@ Data conventions: the `expenses` table holds both expenses and income, and the s
 - `src/utils/color.ts` uses `@material/material-color-utilities` to derive tonal container colors from category colors.
 - PWA: `vite-plugin-pwa` uses `registerType: "prompt"`. The update toast is wired in `routes/__root.tsx` via `src/pwa.ts`.
 
-### API (`apps/api`, work in progress)
+### API (`apps/api`)
 
-The app is moving to a server-authoritative design (see `docs/adr/` and `GLOSSARY.md`). The client does not use the API yet.
+Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`. Offline capture (slice 4) is not built yet.
 
 - Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses relative imports (no `@/` alias) and only erasable TS syntax. `tsc -b` is a type check only.
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.
 - `db/migrate.ts` first lets better-auth migrate its own tables, then runs our Kysely migrations from `db/migrations/`. Append new migrations; never edit applied ones.
 - Every app table is keyed by `(user_id, id)`, and every query must filter by the session's `userId`. Transactions are written with an idempotent `PUT /api/transactions/:id` (create or replace). Deletes leave a tombstone so late replays of a deleted id are ignored.
-- Users are created only server-side (invites, admin bootstrap from `ADMIN_USERNAME`/`ADMIN_PASSWORD`); public sign-up is disabled. New users get the default categories via a better-auth `databaseHooks` hook.
+- Users are created only server-side (invites via the operator CLI, admin bootstrap from `ADMIN_USERNAME`/`ADMIN_PASSWORD`); public sign-up is disabled. In production `main.ts` also serves the built client from `STATIC_DIR` (`http/static.ts`). New users get the default categories via a better-auth `databaseHooks` hook.
 
 ### Conventions
 

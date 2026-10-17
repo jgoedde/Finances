@@ -4,11 +4,23 @@ import { ThemeProvider } from "@/components/theme-provider.tsx";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import { routeTree } from "./routeTree.gen";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
-import { PersistentDatabase } from "@/persistence/persistent-database.ts";
+import { createQueryClient } from "@/api/query-client.ts";
+
+const queryClient = createQueryClient(() => {
+    // The session expired or was revoked: forget it and go to the login.
+    queryClient.setQueryData(["session"], null);
+    if (router.state.location.pathname !== "/login") {
+        void router.navigate({
+            to: "/login",
+            search: { redirect: router.state.location.href },
+        });
+    }
+});
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, context: { queryClient } });
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -17,14 +29,14 @@ declare module "@tanstack/react-router" {
     }
 }
 
-await PersistentDatabase.init();
-
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <ThemeProvider>
-            <NuqsAdapter>
-                <RouterProvider router={router} />
-            </NuqsAdapter>
+            <QueryClientProvider client={queryClient}>
+                <NuqsAdapter>
+                    <RouterProvider router={router} />
+                </NuqsAdapter>
+            </QueryClientProvider>
         </ThemeProvider>
     </StrictMode>,
 );

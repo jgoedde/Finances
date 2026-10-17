@@ -1,25 +1,11 @@
 import { serve } from "@hono/node-server";
+import { Hono } from "hono";
 import { createApp } from "./app.ts";
-import { authOptions, createAuth, createUser } from "./auth/auth.ts";
-import { openDatabase } from "./db/database.ts";
-import { migrate } from "./db/migrate.ts";
+import { createUser } from "./auth/auth.ts";
+import { bootstrap } from "./bootstrap.ts";
+import { staticRoutes } from "./http/static.ts";
 
-function requireEnv(name: string): string {
-    const value = process.env[name];
-    if (!value) {
-        throw new Error(`Missing required environment variable ${name}`);
-    }
-    return value;
-}
-
-const db = openDatabase(process.env.DATABASE_PATH ?? "/data/finances.db");
-const authConfig = {
-    secret: requireEnv("BETTER_AUTH_SECRET"),
-    baseURL: requireEnv("BASE_URL"),
-};
-
-await migrate(db, authOptions(db, authConfig));
-const auth = createAuth(db, authConfig);
+const { db, auth } = await bootstrap();
 
 // First start: create the initial admin from the environment.
 const { count } = await db
@@ -43,7 +29,17 @@ if (count === 0) {
     }
 }
 
+const server = new Hono()
+    .route("/", createApp(db, auth))
+    .all("/api/*", (c) => c.json({ error: "not_found" }, 404));
+
+// In production the API also serves the built client (same origin).
+const staticDir = process.env.STATIC_DIR;
+if (staticDir) {
+    server.route("/", staticRoutes(staticDir));
+}
+
 const port = Number(process.env.PORT ?? 3000);
-serve({ fetch: createApp(db, auth).fetch, port }, () => {
-    console.log(`API listening on http://localhost:${port}`);
+serve({ fetch: server.fetch, port }, () => {
+    console.log(`Listening on http://localhost:${port}`);
 });

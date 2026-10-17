@@ -9,159 +9,206 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as NewRouteImport } from './routes/new'
-import { Route as SetupRouteImport } from './routes/setup'
-import { Route as EditIdRouteImport } from './routes/edit/$id'
-import { Route as FixedCostsIdRouteImport } from './routes/fixed-costs/$id'
-import { Route as TransactionsSearchRouteImport } from './routes/transactions/search'
+import { Route as AuthedRouteImport } from './routes/_authed'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedNewRouteImport } from './routes/_authed/new'
+import { Route as LinkTokenRouteImport } from './routes/link/$token'
+import { Route as AuthedEditIdRouteImport } from './routes/_authed/edit/$id'
+import { Route as AuthedFixedCostsIdRouteImport } from './routes/_authed/fixed-costs/$id'
+import { Route as AuthedTransactionsSearchRouteImport } from './routes/_authed/transactions/search'
 
-const IndexRoute = IndexRouteImport.update({
+const AuthedRoute = AuthedRouteImport.update({
+  id: '/_authed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedIndexRoute = AuthedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthedRoute,
 } as any)
-const NewRoute = NewRouteImport.update({
+const AuthedNewRoute = AuthedNewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const LinkTokenRoute = LinkTokenRouteImport.update({
+  id: '/link/$token',
+  path: '/link/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SetupRoute = SetupRouteImport.update({
-  id: '/setup',
-  path: '/setup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EditIdRoute = EditIdRouteImport.update({
+const AuthedEditIdRoute = AuthedEditIdRouteImport.update({
   id: '/edit/$id',
   path: '/edit/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthedRoute,
 } as any)
-const FixedCostsIdRoute = FixedCostsIdRouteImport.update({
+const AuthedFixedCostsIdRoute = AuthedFixedCostsIdRouteImport.update({
   id: '/fixed-costs/$id',
   path: '/fixed-costs/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthedRoute,
 } as any)
-const TransactionsSearchRoute = TransactionsSearchRouteImport.update({
-  id: '/transactions/search',
-  path: '/transactions/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthedTransactionsSearchRoute =
+  AuthedTransactionsSearchRouteImport.update({
+    id: '/transactions/search',
+    path: '/transactions/search',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/new': typeof NewRoute
-  '/setup': typeof SetupRoute
-  '/edit/$id': typeof EditIdRoute
-  '/fixed-costs/$id': typeof FixedCostsIdRoute
-  '/transactions/search': typeof TransactionsSearchRoute
+  '/': typeof AuthedIndexRoute
+  '/login': typeof LoginRoute
+  '/new': typeof AuthedNewRoute
+  '/link/$token': typeof LinkTokenRoute
+  '/edit/$id': typeof AuthedEditIdRoute
+  '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/new': typeof NewRoute
-  '/setup': typeof SetupRoute
-  '/edit/$id': typeof EditIdRoute
-  '/fixed-costs/$id': typeof FixedCostsIdRoute
-  '/transactions/search': typeof TransactionsSearchRoute
+  '/login': typeof LoginRoute
+  '/new': typeof AuthedNewRoute
+  '/link/$token': typeof LinkTokenRoute
+  '/': typeof AuthedIndexRoute
+  '/edit/$id': typeof AuthedEditIdRoute
+  '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/new': typeof NewRoute
-  '/setup': typeof SetupRoute
-  '/edit/$id': typeof EditIdRoute
-  '/fixed-costs/$id': typeof FixedCostsIdRoute
-  '/transactions/search': typeof TransactionsSearchRoute
+  '/_authed': typeof AuthedRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_authed/new': typeof AuthedNewRoute
+  '/link/$token': typeof LinkTokenRoute
+  '/_authed/': typeof AuthedIndexRoute
+  '/_authed/edit/$id': typeof AuthedEditIdRoute
+  '/_authed/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/_authed/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/new'
-    | '/setup'
+    | '/link/$token'
     | '/edit/$id'
     | '/fixed-costs/$id'
     | '/transactions/search'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/login'
     | '/new'
-    | '/setup'
+    | '/link/$token'
+    | '/'
     | '/edit/$id'
     | '/fixed-costs/$id'
     | '/transactions/search'
   id:
     | '__root__'
-    | '/'
-    | '/new'
-    | '/setup'
-    | '/edit/$id'
-    | '/fixed-costs/$id'
-    | '/transactions/search'
+    | '/_authed'
+    | '/login'
+    | '/_authed/new'
+    | '/link/$token'
+    | '/_authed/'
+    | '/_authed/edit/$id'
+    | '/_authed/fixed-costs/$id'
+    | '/_authed/transactions/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  NewRoute: typeof NewRoute
-  SetupRoute: typeof SetupRoute
-  EditIdRoute: typeof EditIdRoute
-  FixedCostsIdRoute: typeof FixedCostsIdRoute
-  TransactionsSearchRoute: typeof TransactionsSearchRoute
+  AuthedRoute: typeof AuthedRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  LinkTokenRoute: typeof LinkTokenRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authed': {
+      id: '/_authed'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/': {
+      id: '/_authed/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/new': {
-      id: '/new'
+    '/_authed/new': {
+      id: '/_authed/new'
       path: '/new'
       fullPath: '/new'
-      preLoaderRoute: typeof NewRouteImport
+      preLoaderRoute: typeof AuthedNewRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/link/$token': {
+      id: '/link/$token'
+      path: '/link/$token'
+      fullPath: '/link/$token'
+      preLoaderRoute: typeof LinkTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/setup': {
-      id: '/setup'
-      path: '/setup'
-      fullPath: '/setup'
-      preLoaderRoute: typeof SetupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/edit/$id': {
-      id: '/edit/$id'
+    '/_authed/edit/$id': {
+      id: '/_authed/edit/$id'
       path: '/edit/$id'
       fullPath: '/edit/$id'
-      preLoaderRoute: typeof EditIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedEditIdRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/fixed-costs/$id': {
-      id: '/fixed-costs/$id'
+    '/_authed/fixed-costs/$id': {
+      id: '/_authed/fixed-costs/$id'
       path: '/fixed-costs/$id'
       fullPath: '/fixed-costs/$id'
-      preLoaderRoute: typeof FixedCostsIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedFixedCostsIdRouteImport
+      parentRoute: typeof AuthedRoute
     }
-    '/transactions/search': {
-      id: '/transactions/search'
+    '/_authed/transactions/search': {
+      id: '/_authed/transactions/search'
       path: '/transactions/search'
       fullPath: '/transactions/search'
-      preLoaderRoute: typeof TransactionsSearchRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthedTransactionsSearchRouteImport
+      parentRoute: typeof AuthedRoute
     }
   }
 }
 
+interface AuthedRouteChildren {
+  AuthedNewRoute: typeof AuthedNewRoute
+  AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedEditIdRoute: typeof AuthedEditIdRoute
+  AuthedFixedCostsIdRoute: typeof AuthedFixedCostsIdRoute
+  AuthedTransactionsSearchRoute: typeof AuthedTransactionsSearchRoute
+}
+
+const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedNewRoute: AuthedNewRoute,
+  AuthedIndexRoute: AuthedIndexRoute,
+  AuthedEditIdRoute: AuthedEditIdRoute,
+  AuthedFixedCostsIdRoute: AuthedFixedCostsIdRoute,
+  AuthedTransactionsSearchRoute: AuthedTransactionsSearchRoute,
+}
+
+const AuthedRouteWithChildren =
+  AuthedRoute._addFileChildren(AuthedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  NewRoute: NewRoute,
-  SetupRoute: SetupRoute,
-  EditIdRoute: EditIdRoute,
-  FixedCostsIdRoute: FixedCostsIdRoute,
-  TransactionsSearchRoute: TransactionsSearchRoute,
+  AuthedRoute: AuthedRouteWithChildren,
+  LoginRoute: LoginRoute,
+  LinkTokenRoute: LinkTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

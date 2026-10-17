@@ -1,5 +1,5 @@
 import { formatEuro } from "@/utils/currency.ts";
-import type { Category } from "@/persistence/types.ts";
+import type { Category } from "@finances/shared";
 
 interface IncomeSource {
     name: string;
@@ -18,7 +18,8 @@ interface SavingsTarget {
 
 interface Transaction {
     name: string;
-    category_id: number;
+    category_id: string;
+    /** Signed: negative is income. */
     amount: number;
 }
 
@@ -46,7 +47,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     const incomes = transactions.filter((e) => e.amount < 0);
     const expenses = transactions.filter((e) => e.amount >= 0);
 
-    const categoryTotals = new Map<number, { name: string; amount: number }>();
+    const categoryTotals = new Map<string, { name: string; amount: number }>();
     expenses.forEach((expense) => {
         const existing = categoryTotals.get(expense.category_id);
         if (existing) {

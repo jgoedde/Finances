@@ -5,23 +5,23 @@ import { useMemo } from "react";
 import { mergeSimilarKeys, mergeSimilarStrings } from "@/utils/similarity.ts";
 import { groupBy, uniq } from "lodash";
 import { useRipple } from "@/hooks/use-ripple.ts";
-import { useTransactions } from "@/features/transactions/use-transactions.ts";
+import { useTransactions } from "@/features/transactions/transaction-queries.ts";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import Fuse from "fuse.js";
-import { TransactionType } from "@/persistence/types.ts";
+import type { TransactionKind } from "@finances/shared";
 
 const now = new Date();
 
 interface TransactionInputProps {
     transactionLocal: string;
-    selectedCategoryId: number | undefined;
+    selectedCategoryId: string | undefined;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
     isExceptional: boolean;
     onExceptionalCheckBoxClick: (val: boolean) => void;
-    transactionType: TransactionType;
+    transactionType: TransactionKind;
 }
 
 export function TransactionInput({
@@ -151,9 +151,7 @@ export function TransactionInput({
                             "text-on-surface-variant text-body-large shrink-0"
                         }
                     >
-                        {transactionType === TransactionType.expense
-                            ? "Ausgabe"
-                            : "Einnahme"}
+                        {transactionType === "expense" ? "Ausgabe" : "Einnahme"}
                     </Label>
                     <Input
                         id={"transaction"}

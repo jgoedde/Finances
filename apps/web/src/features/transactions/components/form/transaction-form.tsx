@@ -5,8 +5,8 @@ import { DeleteButtonWithConfirmDialog } from "@/features/transactions/component
 import { DateChooserPopover } from "@/features/transactions/components/form/date-chooser-popover.tsx";
 import { TransactionInput } from "@/features/transactions/components/form/transaction-input.tsx";
 import { SegmentedButton } from "@/components/ui/segmented-button.tsx";
-import { type Category, TransactionType } from "@/persistence/types.ts";
-import { useCategories } from "@/features/transactions/use-categories.ts";
+import type { Category, TransactionKind } from "@finances/shared";
+import { useCategories } from "@/features/transactions/transaction-queries.ts";
 import { Label } from "@/components/ui/label.tsx";
 import { CurrencyInput } from "react-currency-input-field";
 import { TopAppBar } from "@/components/ui/top-app-bar.tsx";
@@ -14,24 +14,25 @@ import { Button } from "@/components/ui/button.tsx";
 import { SelectedCategoryBadge } from "@/features/transactions/components/form/selected-category-badge.tsx";
 
 export interface TransactionFormSubmitData {
-    categoryId: number;
+    categoryId: string;
     name: string;
+    /** Always positive; `kind` decides the direction. */
     amount: number;
     date: Date;
-    type: TransactionType;
+    kind: TransactionKind;
     isExceptional: boolean;
-    description?: string;
+    description: string | null;
 }
 
 interface InitialFormValues {
     name: string;
     description: string;
     date: Date;
-    type: TransactionType;
+    kind: TransactionKind;
     isExceptional: boolean;
     showSuggestions: boolean;
     amount?: number;
-    categoryId?: number;
+    categoryId?: string;
 }
 
 interface Props {
@@ -59,8 +60,8 @@ export function TransactionForm({
     const [amountStr, setAmountStr] = useState(
         initialValues.amount?.toFixed(2) ?? "",
     );
-    const [transactionType, setTransactionType] = useState<TransactionType>(
-        initialValues.type,
+    const [transactionType, setTransactionType] = useState<TransactionKind>(
+        initialValues.kind,
     );
     const [shouldShowSuggestions, setShouldShowSuggestions] = useState(
         initialValues.showSuggestions,
@@ -80,15 +81,9 @@ export function TransactionForm({
     function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const positiveAmount = parseFloat(
-            (amountStr as string).replace(",", "."),
-        );
-        const amount =
-            transactionType === TransactionType.expense
-                ? positiveAmount
-                : positiveAmount * -1;
+        const amount = parseFloat((amountStr as string).replace(",", "."));
 
-        if (!selectedCategory || isNaN(positiveAmount) || !name) {
+        if (!selectedCategory || isNaN(amount) || !name) {
             alert("Please select a category, specify an amount and a name.");
             return;
         }
@@ -96,11 +91,10 @@ export function TransactionForm({
         onSubmit({
             isExceptional,
             date,
-            description:
-                description.trim() === "" ? undefined : description.trim(),
+            description: description.trim() === "" ? null : description.trim(),
             amount,
             categoryId: selectedCategory.id,
-            type: transactionType,
+            kind: transactionType,
             name,
         });
     }
@@ -148,18 +142,18 @@ export function TransactionForm({
                     options={[
                         {
                             label: "Einnahme",
-                            value: TransactionType.income,
+                            value: "income",
                             icon: "banknote-arrow-up",
                         },
                         {
                             label: "Ausgabe",
-                            value: TransactionType.expense,
+                            value: "expense",
                             icon: "banknote-arrow-down",
                         },
                     ]}
                     value={transactionType}
                     onChange={(e) => {
-                        setTransactionType(e as TransactionType);
+                        setTransactionType(e as TransactionKind);
                     }}
                 />
             </div>

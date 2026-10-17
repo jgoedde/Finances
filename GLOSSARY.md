@@ -12,9 +12,17 @@ _Avoid_: Account, member, household
 A user who can also manage other users of the instance. An admin's own financial data is just as private as anyone else's.
 _Avoid_: Owner, superuser
 
+**Operator**:
+The person running an instance, with shell access to where it runs. Not necessarily a user of the app.
+_Avoid_: Host, sysadmin, owner
+
 **Invite**:
-A one-time, expiring permission created by an admin that lets one person become a user.
+A one-time, expiring permission, created by an admin or the operator, that lets one person become a user.
 _Avoid_: Signup code, registration link
+
+**Password reset link**:
+A one-time, expiring permission, created by an admin or the operator, that lets an existing user set a new password.
+_Avoid_: Reset invite, reset token
 
 **Transaction**:
 A single recorded movement of money, either an expense or an income.

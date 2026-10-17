@@ -7,7 +7,7 @@ import {
 } from "./features/categories.ts";
 import { fixedCostRoutes } from "./features/fixed-costs.ts";
 import { insightRoutes } from "./features/insights.ts";
-import { adminInviteRoutes, inviteRoutes } from "./features/invites.ts";
+import { adminLinkRoutes, linkRoutes } from "./features/links.ts";
 import { transactionRoutes } from "./features/transactions.ts";
 import { type AppEnv, requireAdmin, requireUser } from "./http/session.ts";
 
@@ -17,7 +17,7 @@ export function createApp(db: DB, auth: Auth) {
 
     app.get("/health", (c) => c.json({ ok: true }));
     app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
-    app.route("/invites", inviteRoutes(db, auth));
+    app.route("/links", linkRoutes(db, auth));
 
     const protectedRoutes = {
         "/transactions": transactionRoutes(db),
@@ -33,7 +33,7 @@ export function createApp(db: DB, auth: Auth) {
     }
 
     app.use("/admin/*", userOnly, requireAdmin);
-    app.route("/admin/invites", adminInviteRoutes(db));
+    app.route("/admin", adminLinkRoutes(db));
 
     return app;
 }

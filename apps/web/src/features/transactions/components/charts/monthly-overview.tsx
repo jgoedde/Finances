@@ -1,12 +1,11 @@
-import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
-import { Check, CircleSlash2, FileLock } from "lucide-react";
+import { CircleSlash2 } from "lucide-react";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart.tsx";
 import { LabelList, RadialBar, RadialBarChart } from "recharts";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { formatEuro } from "@/utils/currency.ts";
 import {
     Accordion,
@@ -15,34 +14,17 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion.tsx";
 import { ExportSankeyDialog } from "@/features/sankey/export-as-sankey.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { isBackupOverdue, useBackupConfig } from "@/hooks/use-backup-config.ts";
-import { PersistentDatabase } from "@/persistence/persistent-database.ts";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip.tsx";
-import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import { useSpendingPerCategory } from "@/features/transactions/insight-queries.ts";
 import { Card } from "@/components/ui/card.tsx";
 
-const now = new Date();
-
 export function MonthlyOverview() {
-    const categories = useTableSubscription(
-        () => transactionRepository.getSpentPerCategory(),
-        [],
-        "expenses:changed",
-    );
-
-    const [backupConfig, setBackupConfig] = useBackupConfig();
-    const [hasBackedUp, setHasBackedUp] = useState(false);
+    const categories = useSpendingPerCategory();
 
     const chartData = categories.map((c) => ({
-        categoryName: c.category_name,
-        expensesCount: c.expenses_count,
-        averageExpenseAmount: c.avg_expense_amount,
-        fill: c.category_color,
+        categoryName: c.categoryName,
+        expensesCount: c.expenseCount,
+        averageExpenseAmount: c.averageExpense,
+        fill: c.categoryColor,
         spent: c.total,
     }));
 
@@ -63,8 +45,6 @@ export function MonthlyOverview() {
 
         return target;
     }, [chartData]);
-
-    const shouldBackup = isBackupOverdue(new Date(), backupConfig);
 
     return (
         <Card className={"m-2 gap-0 p-4"}>
@@ -134,45 +114,6 @@ export function MonthlyOverview() {
                     </AccordionItem>
                 </Accordion>
                 <div className={"flex items-center gap-x-2"}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant={
-                                    shouldBackup ? "filled" : "filledTonal"
-                                }
-                                className={"relative overflow-visible"}
-                                onClick={async () => {
-                                    try {
-                                        await PersistentDatabase.exportFile();
-                                        setHasBackedUp(true);
-                                    } finally {
-                                        setBackupConfig((prev) => ({
-                                            ...prev,
-                                            lastBackup: now.toISOString(),
-                                        }));
-                                    }
-                                }}
-                            >
-                                {hasBackedUp ? <Check /> : <FileLock />}
-                                Backup
-                                {shouldBackup && (
-                                    <span
-                                        role={"img"}
-                                        aria-label={"Backup überfällig"}
-                                        className="bg-error absolute end-1 top-1
-                                            size-1.5 rounded-full"
-                                    />
-                                )}
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent className={"max-w-48"}>
-                            <p>
-                                Save a copy of the database to the server (or
-                                download it). It can be used to import it later.
-                            </p>
-                        </TooltipContent>
-                    </Tooltip>
-
                     <ExportSankeyDialog />
                 </div>
             </div>

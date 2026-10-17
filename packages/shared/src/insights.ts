@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { transactionKindSchema } from "./transactions.ts";
+import { type TransactionKind, transactionKindSchema } from "./transactions.ts";
 
 export const spentQuerySchema = z.object({
     from: z.coerce.number().int(),
@@ -7,7 +7,11 @@ export const spentQuerySchema = z.object({
     /** Omitted: net total (expenses minus income). */
     kind: transactionKindSchema.optional(),
 });
-export type SpentQuery = z.input<typeof spentQuerySchema>;
+export interface SpentQuery {
+    from: number;
+    to: number;
+    kind?: TransactionKind;
+}
 
 export interface SpentTotal {
     total: number;
