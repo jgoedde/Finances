@@ -4,6 +4,7 @@ import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import tanstackRouter from "@tanstack/router-plugin/vite";
 import { VitePWA } from "vite-plugin-pwa";
+import rootPackage from "../../package.json" with { type: "json" };
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -38,7 +39,7 @@ export default defineConfig({
         },
     },
     define: {
-        __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+        __APP_VERSION__: JSON.stringify(rootPackage.version),
     },
     build: {
         sourcemap: true,
