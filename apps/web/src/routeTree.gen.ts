@@ -17,6 +17,7 @@ import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as LinkTokenRouteImport } from './routes/link/$token'
 import { Route as AuthedEditIdRouteImport } from './routes/_authed/edit/$id'
 import { Route as AuthedFixedCostsIdRouteImport } from './routes/_authed/fixed-costs/$id'
+import { Route as AuthedFixedCostsNewRouteImport } from './routes/_authed/fixed-costs/new'
 import { Route as AuthedTransactionsSearchRouteImport } from './routes/_authed/transactions/search'
 
 const AuthedRoute = AuthedRouteImport.update({
@@ -58,6 +59,11 @@ const AuthedFixedCostsIdRoute = AuthedFixedCostsIdRouteImport.update({
   path: '/fixed-costs/$id',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedFixedCostsNewRoute = AuthedFixedCostsNewRouteImport.update({
+  id: '/fixed-costs/new',
+  path: '/fixed-costs/new',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedTransactionsSearchRoute =
   AuthedTransactionsSearchRouteImport.update({
     id: '/transactions/search',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/link/$token': typeof LinkTokenRoute
   '/edit/$id': typeof AuthedEditIdRoute
   '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRoutesByTo {
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthedIndexRoute
   '/edit/$id': typeof AuthedEditIdRoute
   '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRoutesById {
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/_authed/': typeof AuthedIndexRoute
   '/_authed/edit/$id': typeof AuthedEditIdRoute
   '/_authed/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
+  '/_authed/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/_authed/transactions/search': typeof AuthedTransactionsSearchRoute
 }
 export interface FileRouteTypes {
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/link/$token'
     | '/edit/$id'
     | '/fixed-costs/$id'
+    | '/fixed-costs/new'
     | '/transactions/search'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/edit/$id'
     | '/fixed-costs/$id'
+    | '/fixed-costs/new'
     | '/transactions/search'
   id:
     | '__root__'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/_authed/'
     | '/_authed/edit/$id'
     | '/_authed/fixed-costs/$id'
+    | '/_authed/fixed-costs/new'
     | '/_authed/transactions/search'
   fileRoutesById: FileRoutesById
 }
@@ -195,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedFixedCostsIdRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/fixed-costs/new': {
+      id: '/_authed/fixed-costs/new'
+      path: '/fixed-costs/new'
+      fullPath: '/fixed-costs/new'
+      preLoaderRoute: typeof AuthedFixedCostsNewRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/transactions/search': {
       id: '/_authed/transactions/search'
       path: '/transactions/search'
@@ -211,6 +230,7 @@ interface AuthedRouteChildren {
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedEditIdRoute: typeof AuthedEditIdRoute
   AuthedFixedCostsIdRoute: typeof AuthedFixedCostsIdRoute
+  AuthedFixedCostsNewRoute: typeof AuthedFixedCostsNewRoute
   AuthedTransactionsSearchRoute: typeof AuthedTransactionsSearchRoute
 }
 
@@ -220,6 +240,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedEditIdRoute: AuthedEditIdRoute,
   AuthedFixedCostsIdRoute: AuthedFixedCostsIdRoute,
+  AuthedFixedCostsNewRoute: AuthedFixedCostsNewRoute,
   AuthedTransactionsSearchRoute: AuthedTransactionsSearchRoute,
 }
 
