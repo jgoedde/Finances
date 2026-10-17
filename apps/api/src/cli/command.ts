@@ -8,6 +8,8 @@ export interface Output {
 /** What every command action gets: injected so actions are testable. */
 export interface CommandContext {
     db: DB;
+    /** SQLite file behind `db`. */
+    databasePath: string;
     /** Public URL of the instance, used to build links. */
     baseURL: string;
     out: Output;

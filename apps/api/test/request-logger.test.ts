@@ -12,7 +12,7 @@ describe("request logging", () => {
                 callback();
             },
         });
-        const app = await createTestApp(pino(stream));
+        const app = await createTestApp({ logger: pino(stream) });
         return { app, lines };
     }
 
