@@ -134,15 +134,15 @@ export function ExportSankeyDialog() {
         let transactions, categories, fixedCosts;
         try {
             [transactions, categories, fixedCosts] = await Promise.all([
-                queryClient.fetchQuery(
+                queryClient.query(
                     transactionsQuery({
                         from: startDate.getTime(),
                         to: endDate.getTime(),
                         excludeExceptional: true,
                     }),
                 ),
-                queryClient.fetchQuery(categoriesQuery),
-                queryClient.fetchQuery(fixedCostsQuery),
+                queryClient.query(categoriesQuery),
+                queryClient.query(fixedCostsQuery),
             ]);
         } catch {
             toast.error("Could not load the data for the export");

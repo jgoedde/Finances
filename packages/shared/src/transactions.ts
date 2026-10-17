@@ -20,7 +20,7 @@ export const transactionInputSchema = z.object({
     description: z.string().max(2000).nullable(),
     kind: transactionKindSchema,
     /** Always non-negative; `kind` decides the direction. */
-    amount: z.number().nonnegative().finite(),
+    amount: z.number().nonnegative(),
     currency: z.string().length(3),
     categoryId: z.string().min(1),
     /** One-off large transaction, excluded from insights. */
