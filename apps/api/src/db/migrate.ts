@@ -2,6 +2,7 @@ import { type Migration, Migrator } from "kysely/migration";
 import { getMigrations } from "better-auth/db/migration";
 import type { DB } from "./database.ts";
 import type { BetterAuthOptions } from "better-auth";
+import { logger } from "../log.ts";
 import { up as appTables } from "./migrations/0001-app-tables.ts";
 
 // Append new migrations here. Never edit or reorder applied ones.
@@ -17,14 +18,37 @@ export async function migrate(
     db: DB,
     authOptions: BetterAuthOptions,
 ): Promise<void> {
-    const { runMigrations } = await getMigrations(authOptions);
+    const { toBeCreated, toBeAdded, runMigrations } =
+        await getMigrations(authOptions);
+    if (toBeCreated.length > 0 || toBeAdded.length > 0) {
+        logger.info(
+            {
+                created: toBeCreated.map((t) => t.table),
+                altered: toBeAdded.map((t) => t.table),
+            },
+            "Migrating better-auth tables",
+        );
+    }
     await runMigrations();
 
     const migrator = new Migrator({
         db,
         provider: { getMigrations: async () => migrations },
     });
-    const { error } = await migrator.migrateToLatest();
+    const { error, results = [] } = await migrator.migrateToLatest();
+    for (const result of results) {
+        if (result.status === "Success") {
+            logger.info(
+                { migration: result.migrationName },
+                "Applied migration",
+            );
+        } else {
+            logger.error(
+                { migration: result.migrationName, status: result.status },
+                "Migration not applied",
+            );
+        }
+    }
     if (error) {
         throw error;
     }

@@ -13,6 +13,7 @@ import type { DB } from "../db/database.ts";
 import type { TransactionsTable } from "../db/schema.ts";
 import type { AppEnv } from "../http/session.ts";
 import { validate } from "../http/validate.ts";
+import { logger } from "../log.ts";
 
 const idParam = z.object({ id: transactionIdSchema });
 
@@ -151,6 +152,10 @@ export function transactionRoutes(db: DB) {
                             .where("id", "=", id)
                             .executeTakeFirst();
                         if (tombstone) {
+                            logger.debug(
+                                { userId, transactionId: id },
+                                "Ignored write to a deleted transaction",
+                            );
                             return c.body(null, 204);
                         }
 

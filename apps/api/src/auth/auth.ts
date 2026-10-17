@@ -2,6 +2,7 @@ import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { admin, username } from "better-auth/plugins";
 import type { DB } from "../db/database.ts";
 import { seedUserData } from "../db/seed.ts";
+import { logger } from "../log.ts";
 
 const DAY_SECONDS = 60 * 60 * 24;
 
@@ -36,11 +37,27 @@ export function authOptions(db: DB, config: AuthConfig) {
             defaultCookieAttributes: { sameSite: "strict" },
         },
         plugins: [username(), admin()],
+        // Only the message and an error: other arguments may carry request
+        // data such as credentials.
+        logger: {
+            log: (level, message, ...args) => {
+                const err = args.find((arg) => arg instanceof Error);
+                logger[level]({ component: "better-auth", err }, message);
+            },
+        },
         databaseHooks: {
             user: {
                 create: {
                     after: async (user) => {
                         await seedUserData(db, user.id);
+                        logger.info({ userId: user.id }, "User created");
+                    },
+                },
+            },
+            session: {
+                create: {
+                    after: async (session) => {
+                        logger.info({ userId: session.userId }, "Signed in");
                     },
                 },
             },
@@ -85,4 +102,5 @@ export async function resetPassword(
     const hash = await ctx.password.hash(password);
     await ctx.internalAdapter.updatePassword(userId, hash);
     await ctx.internalAdapter.deleteUserSessions(userId);
+    logger.info({ userId }, "Password reset, sessions revoked");
 }

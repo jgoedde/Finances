@@ -7,6 +7,7 @@ import {
 } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
 import type { AppEnv } from "#/http/session.ts";
+import { logger } from "#/log.ts";
 import { toFixedCost } from "../fixed-costs.ts";
 import { toTransaction } from "../transactions.ts";
 import { isSqliteFile, readLegacyDatabase } from "./legacy-database.ts";
@@ -222,6 +223,14 @@ export function dataTransferRoutes(db: DB) {
         new Hono<AppEnv>()
             .get("/export", async (c) => {
                 const data = await exportData(db, c.get("userId"));
+                logger.info(
+                    {
+                        userId: c.get("userId"),
+                        transactions: data.transactions.length,
+                        fixedCosts: data.fixedCosts.length,
+                    },
+                    "Data exported",
+                );
                 const date = data.exportedAt.slice(0, 10);
                 c.header(
                     "Content-Disposition",
@@ -249,12 +258,23 @@ export function dataTransferRoutes(db: DB) {
                         upload = parseUpload(
                             new Uint8Array(await c.req.arrayBuffer()),
                         );
-                    } catch {
+                    } catch (error) {
+                        logger.warn(
+                            { userId, err: error },
+                            "Import rejected: unreadable file",
+                        );
                         return c.json({ error: "unreadable_file" }, 422);
                     }
 
                     const parsed = dataExportSchema.safeParse(upload);
                     if (!parsed.success) {
+                        logger.warn(
+                            {
+                                userId,
+                                issues: parsed.error.issues.length,
+                            },
+                            "Import rejected: invalid file",
+                        );
                         return c.json(
                             {
                                 error: "invalid_file",
@@ -265,11 +285,22 @@ export function dataTransferRoutes(db: DB) {
                     }
 
                     try {
-                        return c.json(
-                            await importData(db, userId, parsed.data),
+                        const result = await importData(
+                            db,
+                            userId,
+                            parsed.data,
                         );
+                        logger.info(
+                            { userId, replace, ...result },
+                            "Data imported",
+                        );
+                        return c.json(result);
                     } catch (error) {
                         if (error instanceof InvalidReferenceError) {
+                            logger.warn(
+                                { userId },
+                                "Import rejected: unknown category",
+                            );
                             return c.json({ error: "unknown_category" }, 422);
                         }
                         throw error;
