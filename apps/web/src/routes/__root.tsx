@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner.tsx";
 import { initPWA } from "@/pwa.ts";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export interface RouterContext {
     queryClient: QueryClient;
@@ -44,6 +45,7 @@ function RootComponent() {
         <>
             <Outlet />
             <TanStackRouterDevtools />
+            <ReactQueryDevtools initialIsOpen={false} />
             <Toaster />
         </>
     );
