@@ -4,8 +4,8 @@ import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/utils/color.ts";
 import { useColorScheme } from "@mantine/hooks";
 import { useNavigate } from "@tanstack/react-router";
-import type { Transaction } from "@/persistence/types.ts";
-import { useCategories } from "@/features/transactions/use-categories.ts";
+import type { Transaction } from "@finances/shared";
+import { useCategories } from "@/features/transactions/transaction-queries.ts";
 import { formatEuro } from "@/utils/currency.ts";
 import { cn } from "@/lib/cn.ts";
 import type { ComponentProps } from "react";
@@ -23,7 +23,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
     const categories = useCategories();
 
     const category = categories.find(
-        (category) => category.id === transaction.category_id,
+        (category) => category.id === transaction.categoryId,
     );
 
     function getSupportingText() {
@@ -76,7 +76,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                 {category != null ? (
                     <DynamicIcon
                         name={
-                            category.icon_name as ComponentProps<
+                            category.iconName as ComponentProps<
                                 typeof DynamicIcon
                             >["name"]
                         }
@@ -115,11 +115,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                 className={cn(
                     `text-label-large text-on-surface flex shrink-0 items-center
                     gap-x-2`,
-                    transaction.amount < 0 && "text-income",
+                    transaction.kind === "income" && "text-income",
                 )}
             >
-                {transaction.amount < 0 ? (
-                    <div>+{formatEuro(transaction.amount).split("-")[1]}</div>
+                {transaction.kind === "income" ? (
+                    <div>+{formatEuro(transaction.amount)}</div>
                 ) : (
                     <div>{formatEuro(transaction.amount)}</div>
                 )}

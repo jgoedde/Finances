@@ -9,6 +9,8 @@ export interface AuthConfig {
     secret: string;
     /** Public URL of the app, e.g. `https://finances.example.com`. */
     baseURL: string;
+    /** Extra origins allowed to call auth endpoints, e.g. a LAN address. */
+    trustedOrigins?: string[];
 }
 
 export function authOptions(db: DB, config: AuthConfig) {
@@ -16,6 +18,7 @@ export function authOptions(db: DB, config: AuthConfig) {
         database: { db, type: "sqlite" },
         secret: config.secret,
         baseURL: config.baseURL,
+        trustedOrigins: config.trustedOrigins ?? [],
         basePath: "/api/auth",
         emailAndPassword: {
             enabled: true,

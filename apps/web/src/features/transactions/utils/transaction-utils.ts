@@ -1,14 +1,10 @@
-import { TransactionType } from "@/persistence/types.ts";
+import type { TransactionKind } from "@finances/shared";
 
-const typeToLabelMap = {
-    [TransactionType.expense]: "Ausgabe",
-    [TransactionType.income]: "Einnahme",
-} as const;
+const kindToLabelMap = {
+    expense: "Ausgabe",
+    income: "Einnahme",
+} as const satisfies Record<TransactionKind, string>;
 
-export function getTransactionTypeLabel(type: TransactionType) {
-    return typeToLabelMap[type];
-}
-
-export function getTransactionType(amount: number): TransactionType {
-    return amount < 0 ? TransactionType.income : TransactionType.expense;
+export function getTransactionKindLabel(kind: TransactionKind) {
+    return kindToLabelMap[kind];
 }

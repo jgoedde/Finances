@@ -1,32 +1,46 @@
-# Multi-stage Dockerfile for production builds
-#  - build the app with node
-#  - serve the generated static files with nginx
+# Multi-stage build:
+#  - build the client with node
+#  - install the API's production dependencies
+#  - run the API, which also serves the built client (same origin)
 
-FROM node:24-alpine AS builder
+FROM node:24-slim AS build
 WORKDIR /app
-
-# Install only production dependencies for build speed using the lockfile
 COPY package.json package-lock.json ./
 COPY apps/web/package.json apps/web/
-RUN npm ci --prefer-offline --no-audit --no-progress
-
-# Copy the rest of the sources and build
+COPY apps/api/package.json apps/api/
+COPY packages/shared/package.json packages/shared/
+RUN npm ci --no-audit --no-fund --no-progress
 COPY . .
-RUN npm run build
+RUN npm run build -w @finances/web
 
 
-FROM nginx:stable-alpine
+FROM node:24-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/
+COPY apps/api/package.json apps/api/
+COPY packages/shared/package.json packages/shared/
+RUN npm ci --omit=dev --workspace=@finances/api --no-audit --no-fund --no-progress
 
-# Remove default nginx html
-RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built frontend
-COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+FROM node:24-slim
+ENV NODE_ENV=production \
+    PORT=3000 \
+    DATABASE_PATH=/data/finances.db \
+    STATIC_DIR=/app/public
+WORKDIR /app
 
-# Use our nginx config which falls back to index.html for SPA routing
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=deps /app/node_modules node_modules
+COPY packages/shared packages/shared
+COPY apps/api/package.json apps/api/
+COPY apps/api/src apps/api/src
+COPY --from=build /app/apps/web/dist public
+COPY docker/finances /usr/local/bin/finances
 
-EXPOSE 80
+RUN mkdir /data && chown node:node /data
+VOLUME /data
+USER node
+EXPOSE 3000
 
-CMD ["nginx", "-g", "daemon off;"]
-
+# Node runs the TypeScript sources directly (type stripping).
+CMD ["node", "apps/api/src/main.ts"]

@@ -8,10 +8,18 @@ import {
 } from "@/components/ui/table.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
-import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
 import { Link } from "@tanstack/react-router";
-import type { FixedCost } from "@/persistence/types.ts";
-import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
+import {
+    type FixedCost,
+    toIsoDate,
+} from "@/features/fixed-costs/fixed-cost.ts";
+import {
+    useCreateFixedCost,
+    useDeleteFixedCost,
+    useFixedCosts,
+    useMonthlyFixedCostTotal,
+    useUpdateFixedCost,
+} from "@/features/fixed-costs/fixed-cost-queries.ts";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch.tsx";
 import { Card } from "@/components/ui/card.tsx";
@@ -30,16 +38,17 @@ function toMonthlyLabel(amount: number, currency: string) {
 }
 
 export function FixedCostsTable() {
-    const fixedCosts = useTableSubscription(
-        () => fixedCostRepository.findAll(),
-        [],
-        "fixedCosts:changed",
-    );
+    const fixedCosts = useFixedCosts();
+    const monthlyTotal = useMonthlyFixedCostTotal();
+    const createFixedCost = useCreateFixedCost();
+    const updateFixedCost = useUpdateFixedCost();
+    const deleteFixedCost = useDeleteFixedCost();
 
     async function toggleActive(row: FixedCost) {
         try {
-            await fixedCostRepository.update(row.id, {
-                active: row.active ? 0 : 1,
+            await updateFixedCost.mutateAsync({
+                id: row.id,
+                patch: { active: !row.active },
             });
             toast.success(
                 "Die Fixkostenstelle ist nun " +
@@ -53,13 +62,13 @@ export function FixedCostsTable() {
         }
     }
 
-    async function remove(id: number) {
+    async function remove(id: string) {
         if (!confirm("Möchtest Du diese Fixkostenstelle wirklich löschen?")) {
             return;
         }
 
         try {
-            await fixedCostRepository.remove(id);
+            await deleteFixedCost.mutateAsync(id);
             toast.success("Die Fixkostenstelle wurde gelöscht");
         } catch {
             toast.error(
@@ -67,8 +76,6 @@ export function FixedCostsTable() {
             );
         }
     }
-
-    const monthlyTotal = fixedCostRepository.monthlyTotal();
 
     return (
         <Card className={"m-2 gap-4 px-2 py-4"}>
@@ -79,13 +86,13 @@ export function FixedCostsTable() {
                 <Button
                     variant={"filledTonal"}
                     onClick={async () => {
-                        await fixedCostRepository.add({
-                            active: 1,
+                        await createFixedCost.mutateAsync({
+                            active: true,
                             amount: 0,
-                            start_date: new Date().toISOString(),
-                            category_id: 1,
+                            startDate: toIsoDate(new Date()),
+                            categoryId: "1",
                             currency: "EUR",
-                            end_date: null,
+                            endDate: null,
                             name: "Leer",
                             description: null,
                             interval: "monthly",

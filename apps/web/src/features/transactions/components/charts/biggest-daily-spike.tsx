@@ -3,19 +3,18 @@ import { formatEuro } from "@/utils/currency.ts";
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { Card } from "@/components/ui/card.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import { useSpike, useTrend } from "@/features/transactions/insight-queries.ts";
 
 export function BiggestDailySpike() {
-    const trend = transactionRepository.getTrend();
-    const spike = transactionRepository.getSpike();
+    const trend = useTrend();
+    const spike = useSpike();
 
-    // @ts-expect-error -- yeah, oversight. Should do better undefined checking...
-    const textColor = useTonalColor(spike.category_color, {
+    const textColor = useTonalColor(spike?.categoryColor ?? "#000000", {
         light: 15,
         dark: 90,
     });
 
-    if (!trend || !spike) {
+    if (!spike) {
         return null;
     }
 
@@ -29,7 +28,7 @@ export function BiggestDailySpike() {
                         className={"font-semibold"}
                         style={{ color: textColor }}
                     >
-                        {spike.category_name}
+                        {spike.categoryName}
                     </span>
                     , am{" "}
                     {new Date(spike.day).toLocaleDateString("de-DE", {
@@ -76,7 +75,7 @@ export function BiggestDailySpike() {
                             <Line
                                 dataKey="total"
                                 type="linear"
-                                stroke={spike.category_color}
+                                stroke={spike.categoryColor}
                                 strokeWidth={2}
                                 dot={false}
                             />

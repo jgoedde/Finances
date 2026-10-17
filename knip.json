@@ -17,6 +17,8 @@
         "apps/web/src/components/ui/button-group.tsx",
         "apps/web/src/components/ui/select.tsx",
         "apps/web/src/components/ui/table.tsx",
-        "apps/web/src/components/ui/field.tsx"
-    ]
+        "apps/web/src/components/ui/field.tsx",
+        "apps/web/src/components/ui/slider.tsx"
+    ],
+    "ignoreDependencies": ["@radix-ui/react-slider", "@radix-ui/react-tooltip"]
 }

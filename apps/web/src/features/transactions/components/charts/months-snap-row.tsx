@@ -1,10 +1,9 @@
 import { ChartContainer } from "@/components/ui/chart.tsx";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList } from "recharts";
-import { useTableSubscription } from "@/persistence/use-table-subscription.ts";
 import { formatEuro } from "@/utils/currency.ts";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { startOfMonth } from "date-fns";
-import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
+import { useMonthlyCategoryTotals } from "@/features/transactions/insight-queries.ts";
 import { type ComponentProps, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
@@ -25,11 +24,7 @@ export function MonthsSnapRow() {
         container.scrollBy({ left: direction * container.clientWidth });
     }
 
-    const res = useTableSubscription(
-        () => transactionRepository.getMonths(),
-        [],
-        "expenses:changed",
-    );
+    const res = useMonthlyCategoryTotals();
 
     function getChartDataAt(date: YearMonth): ChartData[] {
         const dataForMonth = res.filter(
@@ -39,9 +34,9 @@ export function MonthsSnapRow() {
         );
 
         return dataForMonth.map((it) => ({
-            category: it.category,
+            category: it.categoryName,
             totalSpent: it.total,
-            iconName: it.category_icon_name,
+            iconName: it.categoryIconName,
         }));
     }
 

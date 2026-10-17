@@ -14,9 +14,9 @@ import { Label } from "@/components/ui/label.tsx";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import { Badge } from "@/components/ui/badge.tsx";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { useTransactions } from "@/features/transactions/use-transactions.ts";
+import { useTransactions } from "@/features/transactions/transaction-queries.ts";
 import { groupBy } from "lodash";
-import type { Transaction } from "@/persistence/types.ts";
+import type { Transaction } from "@finances/shared";
 import { TransactionListItem } from "@/features/transactions/components/list/transaction-list-item.tsx";
 
 type DateFilter = "today" | "yesterday" | "last-7-days";

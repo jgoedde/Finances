@@ -21,9 +21,13 @@ import {
     downloadSankeyCSV,
 } from "@/features/sankey/csv-formatter.ts";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { transactionRepository } from "@/features/transactions/transaction-repository.ts";
-import { categoryRepository } from "@/features/transactions/category-repository.ts";
-import { fixedCostRepository } from "@/features/fixed-costs/fixed-costs-repository.ts";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+    categoriesQuery,
+    transactionsQuery,
+} from "@/features/transactions/transaction-queries.ts";
+import { fixedCostsQuery } from "@/features/fixed-costs/fixed-cost-queries.ts";
+import { isRunningOn, toFixedCost } from "@/features/fixed-costs/fixed-cost.ts";
 import { nanoid } from "nanoid";
 
 interface IncomeSource {
@@ -39,6 +43,7 @@ interface SavingsTarget {
 }
 
 export function ExportSankeyDialog() {
+    const queryClient = useQueryClient();
     const [open, setOpen] = useQueryState(
         "sankey-export",
         parseAsBoolean.withDefault(false).withOptions({ history: "push" }),
@@ -113,7 +118,7 @@ export function ExportSankeyDialog() {
         );
     }
 
-    function generateSankeyCSV() {
+    async function generateSankeyCSV() {
         const monthNum = parseInt(month);
         const yearNum = parseInt(year);
 
@@ -125,15 +130,23 @@ export function ExportSankeyDialog() {
         const startDate = startOfMonth(new Date(yearNum, monthNum - 1));
         const endDate = endOfMonth(startDate);
 
-        const transactions = transactionRepository.getByTimeRange(
-            startDate.getTime(),
-            endDate.getTime(),
-            undefined,
-            false,
-            true,
-        );
-
-        const categories = categoryRepository.getAll();
+        let transactions, categories, fixedCosts;
+        try {
+            [transactions, categories, fixedCosts] = await Promise.all([
+                queryClient.fetchQuery(
+                    transactionsQuery({
+                        from: startDate.getTime(),
+                        to: endDate.getTime(),
+                        excludeExceptional: true,
+                    }),
+                ),
+                queryClient.fetchQuery(categoriesQuery),
+                queryClient.fetchQuery(fixedCostsQuery),
+            ]);
+        } catch {
+            toast.error("Could not load the data for the export");
+            return;
+        }
 
         const csv = buildSankeyCSV({
             monthIndex: parseInt(month) - 1,
@@ -142,14 +155,21 @@ export function ExportSankeyDialog() {
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            fixedCosts: fixedCostRepository
-                .findAllActive(endDate)
-                .map((it) => ({ name: it.name, amount: it.monthlyAmount })),
+            fixedCosts: fixedCosts
+                .filter((it) => isRunningOn(it, endDate))
+                .map((it) => ({
+                    name: it.name,
+                    amount: toFixedCost(it, []).monthlyAmount,
+                })),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,
                 amount: parseFloat(s.amount) || 0,
             })),
-            transactions,
+            transactions: transactions.map((it) => ({
+                name: it.name,
+                category_id: it.categoryId,
+                amount: it.kind === "income" ? -it.amount : it.amount,
+            })),
             categories,
         });
 
@@ -343,7 +363,7 @@ export function ExportSankeyDialog() {
 
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={generateSankeyCSV}>
+                    <AlertDialogAction onClick={() => void generateSankeyCSV()}>
                         Export
                     </AlertDialogAction>
                 </AlertDialogFooter>

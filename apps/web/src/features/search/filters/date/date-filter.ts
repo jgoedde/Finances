@@ -1,5 +1,5 @@
 import { addMonths, addWeeks, addYears, isBefore } from "date-fns";
-import type { Transaction } from "@/persistence/types.ts";
+import type { Transaction } from "@finances/shared";
 
 export type DateFilterOption =
     "any" | "oneWeek" | "oneMonth" | "halfYear" | "oneYear";

@@ -70,6 +70,8 @@ export interface UserTable {
     id: string;
     username: string | null;
     role: string | null;
+    /** ISO timestamp, written by better-auth. */
+    createdAt: string;
 }
 
 export interface Database {

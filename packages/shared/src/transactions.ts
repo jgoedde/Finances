@@ -44,4 +44,10 @@ export const transactionListQuerySchema = z.object({
     kind: transactionKindSchema.optional(),
     excludeExceptional: booleanQuery.optional(),
 });
-export type TransactionListQuery = z.input<typeof transactionListQuerySchema>;
+export interface TransactionListQuery {
+    from: number;
+    to: number;
+    categoryId?: string;
+    kind?: TransactionKind;
+    excludeExceptional?: boolean;
+}

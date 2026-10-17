@@ -25,11 +25,13 @@ export default defineConfig({
             ],
             workbox: {
                 globPatterns: [
-                    "**/*.{js,css,html,ico,png,svg,webp,woff,woff2,json,wasm}",
+                    "**/*.{js,css,html,ico,png,svg,webp,woff,woff2,json}",
                 ],
                 cleanupOutdatedCaches: true,
                 clientsClaim: true,
                 navigateFallback: "/index.html",
+                // API requests must reach the server, never the SPA shell.
+                navigateFallbackDenylist: [/^\/api\//],
             },
         }),
     ],
@@ -40,6 +42,10 @@ export default defineConfig({
     },
     define: {
         __APP_VERSION__: JSON.stringify(rootPackage.version),
+    },
+    server: {
+        // `npm run dev:api` serves the API; same origin as in production.
+        proxy: { "/api": "http://localhost:3000" },
     },
     build: {
         sourcemap: true,

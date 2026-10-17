@@ -1,4 +1,4 @@
-import type { Transaction } from "@/persistence/types.ts";
+import type { Transaction } from "@finances/shared";
 
 export function isMatchingSearchFilter(
     transaction: Transaction,
