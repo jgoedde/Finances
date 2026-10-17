@@ -4,7 +4,10 @@ import { sessionQuery } from "#/auth/auth-client.ts";
 // Every route below requires a signed-in user.
 export const Route = createFileRoute("/_authed")({
     beforeLoad: async ({ context, location }) => {
-        const user = await context.queryClient.ensureQueryData(sessionQuery);
+        const user = await context.queryClient.query({
+            ...sessionQuery,
+            staleTime: "static",
+        });
         if (!user) {
             throw redirect({
                 to: "/login",

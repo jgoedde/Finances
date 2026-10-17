@@ -18,7 +18,12 @@ export const Route = createFileRoute("/login")({
         redirect: z.string().optional().catch(undefined),
     }),
     beforeLoad: async ({ context }) => {
-        if (await context.queryClient.ensureQueryData(sessionQuery)) {
+        if (
+            await context.queryClient.query({
+                ...sessionQuery,
+                staleTime: "static",
+            })
+        ) {
             throw redirect({ to: "/" });
         }
     },
