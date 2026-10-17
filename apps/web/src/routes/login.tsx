@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { z } from "zod";
 import { LogIn } from "lucide-react";
 import {
@@ -40,7 +40,7 @@ function RouteComponent() {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    async function handleSubmit(event: FormEvent) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setIsSubmitting(true);
         setError(null);

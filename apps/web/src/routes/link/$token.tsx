@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
@@ -53,7 +53,7 @@ function RouteComponent() {
     const linkInfo = link.data;
     const isSignup = linkInfo.kind === "invite";
 
-    async function handleSubmit(event: FormEvent) {
+    async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         if (password !== passwordRepeat) {
             setError("Die Passwörter stimmen nicht überein.");
