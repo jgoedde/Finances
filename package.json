@@ -3,7 +3,8 @@
     "version": "1.17.0",
     "type": "module",
     "workspaces": [
-        "apps/*"
+        "apps/*",
+        "packages/*"
     ],
     "scripts": {
         "dev": "npm run dev -w @finances/web",
@@ -12,7 +13,9 @@
         "lint": "npm run lint --workspaces --if-present",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "knip:check": "knip"
+        "knip:check": "knip",
+        "dev:api": "npm run dev -w @finances/api",
+        "test": "npm run test --workspaces --if-present"
     },
     "prettier": {
         "tabWidth": 4,

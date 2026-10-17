@@ -25,3 +25,9 @@ dev-dist
 *.njsproj
 *.sln
 *.sw?
+
+# API
+.env
+*.db
+*.db-shm
+*.db-wal
