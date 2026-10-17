@@ -29,7 +29,8 @@ jobs:
                   tags: |
                       type=semver,pattern={{version}}
                       type=semver,pattern={{major}}.{{minor}}
-                      type=raw,value=latest
+                      # Pre-releases (e.g. v2.0.0-beta.1) never move `latest`.
+                      type=raw,value=latest,enable=${{ !contains(github.ref_name, '-') }}
 
             - name: Build and push image
               uses: docker/build-push-action@v7
@@ -43,3 +44,4 @@ jobs:
               uses: softprops/action-gh-release@v3
               with:
                   generate_release_notes: true
+                  prerelease: ${{ contains(github.ref_name, '-') }}
