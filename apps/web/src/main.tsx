@@ -10,6 +10,7 @@ import { createQueryClient } from "@/api/query-client.ts";
 import { sessionQuery } from "@/auth/auth-client.ts";
 import { registerTransactionMutations } from "@/features/transactions/transaction-mutations.ts";
 import { restoreQueryClient } from "@/features/sync/persistence.ts";
+import { TooltipProvider } from "@/components/ui/tooltip.tsx";
 
 function onUnauthorized() {
     // The session expired or was revoked: forget it and go to the login.
@@ -42,11 +43,13 @@ await restoreQueryClient(queryClient);
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
         <ThemeProvider>
-            <QueryClientProvider client={queryClient}>
-                <NuqsAdapter>
-                    <RouterProvider router={router} />
-                </NuqsAdapter>
-            </QueryClientProvider>
+            <TooltipProvider>
+                <QueryClientProvider client={queryClient}>
+                    <NuqsAdapter>
+                        <RouterProvider router={router} />
+                    </NuqsAdapter>
+                </QueryClientProvider>
+            </TooltipProvider>
         </ThemeProvider>
     </StrictMode>,
 );

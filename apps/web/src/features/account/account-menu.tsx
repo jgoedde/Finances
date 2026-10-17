@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
     CircleAlert,
@@ -38,12 +38,12 @@ import {
 } from "@/features/sync/use-sync-status.ts";
 import { cn } from "@/lib/cn.ts";
 
-const BADGE_CLASS: Record<SyncState, string | null> = {
+const BADGE_CLASS = {
     failed: "bg-error",
     offline: "bg-outline",
     pending: "bg-primary",
     synced: null,
-};
+} as const satisfies Record<SyncState, string | null>;
 
 function syncMenuItem(status: SyncStatus) {
     switch (status.state) {
@@ -67,12 +67,15 @@ function syncMenuItem(status: SyncStatus) {
             };
         case "synced":
             return { icon: <CloudCheck />, label: "Alles synchronisiert" };
+        default:
+            throw new Error(
+                `Not implemented sync status "${status.state satisfies never}".`,
+            );
     }
 }
 
 /** Avatar with the sync indicator; opens the account menu. */
 export function AccountMenu() {
-    const navigate = useNavigate();
     const user = useQuery(sessionQuery).data;
     const status = useSyncStatus();
     const signOut = useSignOut();
@@ -119,11 +122,11 @@ export function AccountMenu() {
                         {syncItem.label}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                        onSelect={() => void navigate({ to: "/settings" })}
-                    >
-                        <Settings />
-                        Einstellungen
+                    <DropdownMenuItem asChild>
+                        <Link to={"/settings"}>
+                            <Settings />
+                            Einstellungen
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onSelect={() => {

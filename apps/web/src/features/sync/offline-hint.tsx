@@ -1,9 +1,16 @@
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+
+interface OfflineHintProps {
+    /**
+     * Usually `!isOnline`.
+     */
+    active: boolean;
+}
 
 /**
  * Explains why a control is disabled while offline. Wraps it in a focusable
@@ -12,14 +19,11 @@ import {
 export function OfflineHint({
     active,
     children,
-}: {
-    /** Usually `!isOnline`. */
-    active: boolean;
-    children: ReactNode;
-}) {
+}: PropsWithChildren<OfflineHintProps>) {
     if (!active) {
         return children;
     }
+
     return (
         <Tooltip>
             <TooltipTrigger asChild>

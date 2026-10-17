@@ -8,26 +8,34 @@ export const authClient = createAuthClient({
     plugins: [usernameClient()],
 });
 
-export interface SessionUser {
+interface SessionUser {
     id: string;
     username: string;
 }
 
-/** The last user signed in on this device, to tell whose data is cached. */
+/**
+ * The last user signed in on this device, to tell whose data is cached.
+ */
 const LAST_USER_KEY = "finances-last-user-id";
 
-/** The signed-in user, or null. */
+/**
+ * The signed-in user, or null.
+ */
 export const sessionQuery = queryOptions({
     queryKey: ["session"],
     queryFn: async (): Promise<SessionUser | null> => {
         const { data, error } = await authClient.getSession();
+
         if (error) {
             throw error;
         }
+
         if (!data) {
             return null;
         }
+
         localStorage.setItem(LAST_USER_KEY, data.user.id);
+
         return {
             id: data.user.id,
             username: data.user.username ?? data.user.name,
