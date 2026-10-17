@@ -43,7 +43,7 @@ export const sessionQuery = queryOptions({
  */
 export async function completeSignIn(queryClient: QueryClient): Promise<void> {
     const previousUserId = localStorage.getItem(LAST_USER_KEY);
-    const user = await queryClient.fetchQuery({
+    const user = await queryClient.query({
         ...sessionQuery,
         staleTime: 0,
     });
