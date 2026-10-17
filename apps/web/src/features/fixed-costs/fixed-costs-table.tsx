@@ -9,12 +9,8 @@ import {
 import { Button } from "#/components/ui/button.tsx";
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import type { FixedCost } from "#/features/fixed-costs/fixed-cost.ts";
 import {
-    type FixedCost,
-    toIsoDate,
-} from "#/features/fixed-costs/fixed-cost.ts";
-import {
-    useCreateFixedCost,
     useDeleteFixedCost,
     useFixedCosts,
     useMonthlyFixedCostTotal,
@@ -42,7 +38,6 @@ function toMonthlyLabel(amount: number, currency: string) {
 export function FixedCostsTable() {
     const fixedCosts = useFixedCosts();
     const monthlyTotal = useMonthlyFixedCostTotal();
-    const createFixedCost = useCreateFixedCost();
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
     // Fixed costs are read-only offline.
@@ -88,26 +83,19 @@ export function FixedCostsTable() {
                     Fixkosten
                 </h2>
                 <OfflineHint active={!isOnline}>
-                    <Button
-                        variant={"filledTonal"}
-                        disabled={!isOnline}
-                        onClick={async () => {
-                            await createFixedCost.mutateAsync({
-                                active: true,
-                                amount: 0,
-                                startDate: toIsoDate(new Date()),
-                                categoryId: "1",
-                                currency: "EUR",
-                                endDate: null,
-                                name: "Leer",
-                                description: null,
-                                interval: "monthly",
-                            });
-                        }}
-                    >
-                        <Plus />
-                        Fixkosten erfassen
-                    </Button>
+                    {isOnline ? (
+                        <Button variant={"filledTonal"} asChild>
+                            <Link to={"/fixed-costs/new"}>
+                                <Plus />
+                                Fixkosten erfassen
+                            </Link>
+                        </Button>
+                    ) : (
+                        <Button variant={"filledTonal"} disabled>
+                            <Plus />
+                            Fixkosten erfassen
+                        </Button>
+                    )}
                 </OfflineHint>
             </div>
             <Table>
