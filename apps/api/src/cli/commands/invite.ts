@@ -1,5 +1,5 @@
 import type { Command } from "commander";
-import { createInvite } from "../../features/links.ts";
+import { createInvite } from "@/features/links.ts";
 import { type CommandContext, linkUrl, type RunCommand } from "../command.ts";
 
 export async function invite({
