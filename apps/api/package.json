@@ -7,7 +7,8 @@
         "dev": "node --watch --env-file-if-exists=.env src/main.ts",
         "build": "tsc -b",
         "test": "vitest run",
-        "cli": "node --env-file-if-exists=.env src/cli/index.ts"
+        "cli": "node --env-file-if-exists=.env src/cli/index.ts",
+        "lint": "eslint ."
     },
     "dependencies": {
         "@finances/shared": "*",

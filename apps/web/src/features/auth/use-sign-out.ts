@@ -2,29 +2,21 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authClient } from "@/auth/auth-client.ts";
+import { syncFailures } from "@/features/sync/sync-failures.ts";
 
-export function SignOutLink() {
+/** Signs out and forgets everything cached, including unsent changes. */
+export function useSignOut() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    async function signOut() {
+    return async function signOut() {
         const { error } = await authClient.signOut();
         if (error) {
             toast.error("Abmelden fehlgeschlagen. Bitte versuche es erneut.");
             return;
         }
         queryClient.clear();
+        syncFailures.clear();
         await navigate({ to: "/login" });
-    }
-
-    return (
-        <button
-            type={"button"}
-            className={`text-primary focus-ring cursor-pointer rounded-xs
-                underline-offset-4 hover:underline`}
-            onClick={() => void signOut()}
-        >
-            Abmelden
-        </button>
-    );
+    };
 }

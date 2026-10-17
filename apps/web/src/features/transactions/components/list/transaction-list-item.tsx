@@ -1,5 +1,5 @@
 import { DynamicIcon } from "lucide-react/dynamic";
-import { ChevronRight, MessageCircleQuestion } from "lucide-react";
+import { ChevronRight, CloudUpload, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "@/hooks/use-ripple.ts";
 import { convertHexToTonal } from "@/utils/color.ts";
 import { useColorScheme } from "@mantine/hooks";
@@ -7,6 +7,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
 import { useCategories } from "@/features/transactions/transaction-queries.ts";
 import { formatEuro } from "@/utils/currency.ts";
+import { usePendingChanges } from "@/features/sync/use-sync-status.ts";
 import { cn } from "@/lib/cn.ts";
 import type { ComponentProps } from "react";
 
@@ -21,6 +22,9 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
     const theme = useColorScheme();
 
     const categories = useCategories();
+    const isPending = usePendingChanges().some(
+        (change) => change.transaction.id === transaction.id,
+    );
 
     const category = categories.find(
         (category) => category.id === transaction.categoryId,
@@ -118,6 +122,13 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     transaction.kind === "income" && "text-income",
                 )}
             >
+                {isPending && (
+                    <CloudUpload
+                        role={"img"}
+                        aria-label={"Noch nicht synchronisiert"}
+                        className={"text-on-surface-variant size-4"}
+                    />
+                )}
                 {transaction.kind === "income" ? (
                     <div>+{formatEuro(transaction.amount)}</div>
                 ) : (

@@ -1,3 +1,5 @@
+import { reportNetworkFailure } from "@/features/sync/connectivity.ts";
+
 export class ApiError extends Error {
     readonly status: number;
     readonly body: unknown;
@@ -29,12 +31,19 @@ export async function apiFetch<T>(
         body = JSON.stringify(init.body);
     }
 
-    const response = await fetch(`/api${path}`, {
-        ...init,
-        headers,
-        body,
-        credentials: "same-origin",
-    });
+    let response: Response;
+    try {
+        response = await fetch(`/api${path}`, {
+            ...init,
+            headers,
+            body,
+            credentials: "same-origin",
+        });
+    } catch (error) {
+        // The request never reached the server.
+        reportNetworkFailure();
+        throw error;
+    }
 
     const text = await response.text();
     const data: unknown = text ? JSON.parse(text) : undefined;

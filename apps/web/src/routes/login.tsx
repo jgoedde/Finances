@@ -3,7 +3,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
 import { z } from "zod";
 import { LogIn } from "lucide-react";
-import { authClient, sessionQuery } from "@/auth/auth-client.ts";
+import {
+    authClient,
+    completeSignIn,
+    sessionQuery,
+} from "@/auth/auth-client.ts";
 import { AuthCard } from "@/features/auth/auth-card.tsx";
 import { Field, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -51,9 +55,7 @@ function RouteComponent() {
             return;
         }
 
-        // Drop anything cached for a previous user.
-        queryClient.clear();
-        await queryClient.fetchQuery(sessionQuery);
+        await completeSignIn(queryClient);
         // Only follow same-app redirects.
         await navigate({
             href: redirectTo?.startsWith("/") ? redirectTo : "/",

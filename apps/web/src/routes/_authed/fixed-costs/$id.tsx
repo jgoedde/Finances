@@ -14,6 +14,8 @@ import {
 import { toFixedCost, toIsoDate } from "@/features/fixed-costs/fixed-cost.ts";
 import { ApiError } from "@/api/api-client.ts";
 import { toast } from "sonner";
+import { useIsOnline } from "@/features/sync/connectivity.ts";
+import { OfflineHint } from "@/features/sync/offline-hint.tsx";
 import { Calendar } from "@/components/ui/calendar";
 import {
     Select,
@@ -96,6 +98,10 @@ function RouteComponent() {
     const [categoryId, setCategoryId] = useState(record.categoryId);
 
     const stepId = STEPS[step]?.id;
+    const isLastStep = step === STEPS.length - 1;
+    // Fixed costs are read-only offline; only saving needs the server.
+    const isOnline = useIsOnline();
+    const isSaveBlocked = isLastStep && !isOnline;
 
     const canNext = useMemo(() => {
         if (stepId === "name") {
@@ -105,7 +111,7 @@ function RouteComponent() {
     }, [name, stepId]);
 
     function goNext() {
-        if (!canNext) return;
+        if (!canNext || isSaveBlocked) return;
         if (step < STEPS.length - 1) {
             setStep((s) => s + 1);
             return;
@@ -351,14 +357,16 @@ function RouteComponent() {
                             Zurück
                         </Button>
                     )}
-                    <Button
-                        variant="filled"
-                        onClick={goNext}
-                        className="flex-1"
-                        disabled={!canNext}
-                    >
-                        {step < STEPS.length - 1 ? "Weiter" : "Aktualisieren"}
-                    </Button>
+                    <OfflineHint active={isSaveBlocked}>
+                        <Button
+                            variant="filled"
+                            onClick={goNext}
+                            className="flex-1"
+                            disabled={!canNext || isSaveBlocked}
+                        >
+                            {isLastStep ? "Aktualisieren" : "Weiter"}
+                        </Button>
+                    </OfflineHint>
                 </div>
             </footer>
         </div>

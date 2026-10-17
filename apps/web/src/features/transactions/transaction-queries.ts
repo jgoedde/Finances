@@ -1,16 +1,14 @@
-import {
-    queryOptions,
-    useMutation,
-    useQuery,
-    useQueryClient,
-} from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import type {
     Category,
     Transaction,
-    TransactionInput,
     TransactionListQuery,
 } from "@finances/shared";
 import { apiFetch, toQueryString } from "@/api/api-client.ts";
+import {
+    applyToList,
+    getPendingChanges,
+} from "@/features/transactions/pending-changes.ts";
 
 const EMPTY: never[] = [];
 
@@ -27,8 +25,15 @@ export function useCategories(): Category[] {
 export function transactionsQuery(params: TransactionListQuery) {
     return queryOptions({
         queryKey: ["transactions", "list", params],
-        queryFn: () =>
-            apiFetch<Transaction[]>(`/transactions?${toQueryString(params)}`),
+        // Pending changes are merged in, so a refetch never hides them.
+        queryFn: async ({ client }) =>
+            applyToList(
+                await apiFetch<Transaction[]>(
+                    `/transactions?${toQueryString(params)}`,
+                ),
+                params,
+                getPendingChanges(client),
+            ),
     });
 }
 
@@ -55,37 +60,14 @@ export function useTransactions({
 export function transactionQuery(id: string) {
     return queryOptions({
         queryKey: ["transactions", "detail", id],
-        queryFn: () => apiFetch<Transaction>(`/transactions/${id}`),
+        queryFn: async ({ client }) => {
+            const pending = getPendingChanges(client)
+                .reverse()
+                .find((change) => change.transaction.id === id);
+            if (pending?.action === "save") {
+                return pending.transaction;
+            }
+            return apiFetch<Transaction>(`/transactions/${id}`);
+        },
     });
-}
-
-/** Creates or replaces a transaction (idempotent). */
-export function useSaveTransaction() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: ({ id, ...input }: Transaction) =>
-            apiFetch<Transaction | undefined>(`/transactions/${id}`, {
-                method: "PUT",
-                body: input satisfies TransactionInput,
-            }),
-        onSettled: () => invalidateTransactionData(queryClient),
-    });
-}
-
-export function useDeleteTransaction() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id: string) =>
-            apiFetch<undefined>(`/transactions/${id}`, { method: "DELETE" }),
-        onSettled: () => invalidateTransactionData(queryClient),
-    });
-}
-
-function invalidateTransactionData(
-    queryClient: ReturnType<typeof useQueryClient>,
-) {
-    return Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["transactions"] }),
-        queryClient.invalidateQueries({ queryKey: ["insights"] }),
-    ]);
 }

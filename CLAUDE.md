@@ -12,14 +12,14 @@ Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the 
 
 - `npm run dev`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
 - `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check.
-- `npm run lint`: ESLint
+- `npm run lint`: ESLint in every workspace. The root `eslint.config.js` holds the shared defaults (`@eslint/js` + typescript-eslint recommended, ignores); each workspace's `eslint.config.js` extends it (web: React plugins and browser globals; api/shared: Node globals). Known violations are suppressed in `apps/web/eslint-suppressions.json`: don't add to it; after fixing one, run `npx eslint . --prune-suppressions` in that workspace.
 - `npm run format` / `npm run format:check`: Prettier (4-space indent, with Tailwind class sorting/wrapping plugins)
 - `npm run knip:check`: detect unused files and exports
 - `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev`.
 - `npm run cli -w @finances/api -- invite`: operator CLI (commander, `src/cli/`; one file per command in `src/cli/commands/`): `invite`, `reset-password <username>`, `users`. In Docker: `finances invite`.
 - `npm test`: Vitest (API only)
 
-CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check` and `test`. Run all four before considering a change done.
+CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check`, `lint` and `test`. Run all five before considering a change done.
 
 Releases: pushing a `vX.Y.Z` tag builds the Docker image (Node running the API, which also serves the built client from `STATIC_DIR`; see `Dockerfile`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
@@ -31,6 +31,7 @@ Paths below are relative to `apps/web` unless they start with `.github/`, `docke
 
 - `src/api/api-client.ts`: `apiFetch` calls `/api/...` on the same origin with the session cookie and throws `ApiError` for non-2xx responses. Request and response types come from `@finances/shared`.
 - Each feature has a `*-queries.ts` module (for example `features/transactions/transaction-queries.ts`) with TanStack Query `queryOptions`, read hooks and mutation hooks. Mutations invalidate the affected query keys (`["transactions"]`, `["insights"]`, `["fixed-costs"]`) in `onSettled`. Read hooks return `[]`/`0`/`null` while loading so components render without loading branches.
+- Offline (`features/sync/`, `features/transactions/transaction-mutations.ts`): transaction create/edit/delete are queued TanStack mutations. Their logic (request, optimistic cache update, retry, sync-failure handling) lives in `setMutationDefaults`, never in components, so mutations restored after a reload still run; components only call `useSaveTransaction()`/`useDeleteTransaction()` and never await them. `persistence.ts` restores the cache and the queue from IndexedDB before the app renders and never busts it (no `buster`, `maxAge: Infinity`). List/detail query functions merge pending changes (`pending-changes.ts`), so refetches don't hide them. Network errors and `5xx`/`401` retry forever; other `4xx` become sync failures (`sync-failures.ts`, localStorage). `connectivity.ts` drives TanStack's `onlineManager`, also from failed requests. Fixed costs are online-only.
 - Route loaders that need data up front use `context.queryClient.ensureQueryData(...)` and the component reads it with `useSuspenseQuery`.
 - Auth: `src/auth/auth-client.ts` wraps the better-auth client; `sessionQuery` holds the signed-in user. The pathless `routes/_authed.tsx` layout redirects to `/login` without a session, so every app route lives under `routes/_authed/`. A 401 from any query or mutation (see `api/query-client.ts`) clears the session and redirects to the login. `/link/$token` redeems invites and password reset links.
 
@@ -53,7 +54,7 @@ Data conventions: a transaction is an expense or an income (`kind`), and `amount
 
 ### API (`apps/api`)
 
-Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`. Offline capture (slice 4) is not built yet.
+Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 - Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses relative imports (no `@/` alias) and only erasable TS syntax. `tsc -b` is a type check only.
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.
@@ -66,4 +67,4 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`. Offline capture 
 
 - Imports use the `@/` alias (pointing at `src/`) and include the explicit `.ts`/`.tsx` extension.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
-- Knip ignores a few unused shadcn components (see `knip.json`). When adding another unused shadcn component, add it there or knip will fail CI.
+- Knip is strict (`includeEntryExports`, no ignore list): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.

@@ -38,9 +38,9 @@ _Avoid_: Revenue, earning
 
 ## Sync
 
-**Pending transaction**:
-A transaction captured on a device but not yet accepted by the server, typically because the device is offline.
-_Avoid_: Draft, queued transaction, offline transaction
+**Pending change**:
+A creation, edit or deletion of a transaction made on a device but not yet accepted by the server, typically because the device is offline.
+_Avoid_: Pending transaction, draft, queued transaction, offline transaction
 
 **Sync failure**:
 A pending change the server rejected, kept visible so the user can fix and retry or discard it. It is never silently lost.

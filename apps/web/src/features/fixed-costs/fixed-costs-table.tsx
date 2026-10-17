@@ -23,6 +23,8 @@ import {
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch.tsx";
 import { Card } from "@/components/ui/card.tsx";
+import { useIsOnline } from "@/features/sync/connectivity.ts";
+import { OfflineHint } from "@/features/sync/offline-hint.tsx";
 
 const INTERVAL_LABELS: Record<FixedCost["interval"], string> = {
     monthly: "Monatlich",
@@ -43,6 +45,8 @@ export function FixedCostsTable() {
     const createFixedCost = useCreateFixedCost();
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
+    // Fixed costs are read-only offline.
+    const isOnline = useIsOnline();
 
     async function toggleActive(row: FixedCost) {
         try {
@@ -83,25 +87,28 @@ export function FixedCostsTable() {
                 <h2 className={"font-brand text-title-large grow"}>
                     Fixkosten
                 </h2>
-                <Button
-                    variant={"filledTonal"}
-                    onClick={async () => {
-                        await createFixedCost.mutateAsync({
-                            active: true,
-                            amount: 0,
-                            startDate: toIsoDate(new Date()),
-                            categoryId: "1",
-                            currency: "EUR",
-                            endDate: null,
-                            name: "Leer",
-                            description: null,
-                            interval: "monthly",
-                        });
-                    }}
-                >
-                    <Plus />
-                    Fixkosten erfassen
-                </Button>
+                <OfflineHint active={!isOnline}>
+                    <Button
+                        variant={"filledTonal"}
+                        disabled={!isOnline}
+                        onClick={async () => {
+                            await createFixedCost.mutateAsync({
+                                active: true,
+                                amount: 0,
+                                startDate: toIsoDate(new Date()),
+                                categoryId: "1",
+                                currency: "EUR",
+                                endDate: null,
+                                name: "Leer",
+                                description: null,
+                                interval: "monthly",
+                            });
+                        }}
+                    >
+                        <Plus />
+                        Fixkosten erfassen
+                    </Button>
+                </OfflineHint>
             </div>
             <Table>
                 <TableHeader>
@@ -160,23 +167,27 @@ export function FixedCostsTable() {
                                 )}
                             </TableCell>
                             <TableCell>
-                                <div className="flex items-center gap-2">
-                                    <Switch
-                                        aria-label={"Aktiv"}
-                                        checked={row.active}
-                                        onCheckedChange={() =>
-                                            toggleActive(row)
-                                        }
-                                    />
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        aria-label={"Löschen"}
-                                        onClick={() => remove(row.id)}
-                                    >
-                                        <Trash2 />
-                                    </Button>
-                                </div>
+                                <OfflineHint active={!isOnline}>
+                                    <div className="flex items-center gap-2">
+                                        <Switch
+                                            aria-label={"Aktiv"}
+                                            checked={row.active}
+                                            disabled={!isOnline}
+                                            onCheckedChange={() =>
+                                                toggleActive(row)
+                                            }
+                                        />
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            aria-label={"Löschen"}
+                                            disabled={!isOnline}
+                                            onClick={() => remove(row.id)}
+                                        >
+                                            <Trash2 />
+                                        </Button>
+                                    </div>
+                                </OfflineHint>
                             </TableCell>
                         </TableRow>
                     ))}

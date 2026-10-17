@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import { toast } from "sonner";
 import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
 import { ApiError, apiFetch } from "@/api/api-client.ts";
-import { authClient, sessionQuery } from "@/auth/auth-client.ts";
+import { authClient, completeSignIn } from "@/auth/auth-client.ts";
 import { AuthCard } from "@/features/auth/auth-card.tsx";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -87,13 +87,12 @@ function RouteComponent() {
             username: loginName.trim(),
             password,
         });
-        queryClient.clear();
         if (result.error) {
             toast.success("Passwort gespeichert. Bitte melde Dich an.");
             await navigate({ to: "/login" });
             return;
         }
-        await queryClient.fetchQuery(sessionQuery);
+        await completeSignIn(queryClient);
         toast.success(isSignup ? "Willkommen!" : "Passwort geändert");
         await navigate({ to: "/" });
     }
