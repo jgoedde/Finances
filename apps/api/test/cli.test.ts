@@ -20,6 +20,7 @@ describe("cli", () => {
         errors = [];
         context = {
             db: app.db,
+            databasePath: ":memory:",
             baseURL: BASE_URL,
             out: {
                 info: (line) => info.push(line),

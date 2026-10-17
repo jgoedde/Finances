@@ -49,6 +49,33 @@ docker compose exec finances finances reset-password <username>
 docker compose exec finances finances users
 ```
 
+### Backup and restore
+
+`finances backup` writes a consistent snapshot of the whole database (all users, accounts and data) to stdout. It is safe while the server is running. `-T` keeps Docker from mangling the binary output:
+
+```bash
+docker compose exec -T finances finances backup > finances-$(date +%F).db
+```
+
+`finances restore` reads a snapshot from stdin and replaces the whole database. It only runs on an empty instance (no transactions or fixed costs yet). To replace an instance that has data, stop the server first and pass `--force`:
+
+```bash
+docker compose stop finances
+docker compose run --rm -T finances finances restore --force < backup.db
+docker compose start finances
+```
+
+To move to a new machine:
+
+1. Take a backup on the old machine (see above).
+2. On the new machine, set up `compose.yaml` and the data directory as described above. Keep the same `BETTER_AUTH_SECRET`, otherwise everyone has to sign in again.
+3. Restore before the first start, then start the server. It applies any pending migrations on startup.
+
+```bash
+docker compose run --rm -T finances finances restore < backup.db
+docker compose up -d
+```
+
 ### Build from source
 
 ```bash
