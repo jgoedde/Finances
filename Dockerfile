@@ -31,6 +31,9 @@ ENV NODE_ENV=production \
 WORKDIR /app
 
 COPY --from=deps /app/node_modules node_modules
+# npm nests a workspace's dependency there when the root holds another
+# version (commander: 15 for the CLI, 2 hoisted for something else).
+COPY --from=deps /app/apps/api/node_modules apps/api/node_modules
 COPY packages/shared packages/shared
 COPY apps/api/package.json apps/api/
 COPY apps/api/src apps/api/src
