@@ -1,4 +1,7 @@
 import initSqlJs, { type Database, type SqlJsStatic } from "sql.js";
+// Bundle the WASM matching the installed sql.js version. Loading it from a CDN
+// serves whatever release is latest, which breaks when the JS glue differs.
+import sqlWasmUrl from "sql.js/dist/sql-wasm.wasm?url";
 import { type IDBPDatabase, openDB } from "idb";
 import { dbEventEmitter } from "@/persistence/db-event-emitter.ts";
 
@@ -46,7 +49,7 @@ export class PersistentDatabase {
 
         if (!this.sql) {
             this.sql = await initSqlJs({
-                locateFile: (file) => `https://sql.js.org/dist/${file}`,
+                locateFile: () => sqlWasmUrl,
             });
         }
 
