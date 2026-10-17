@@ -6,17 +6,17 @@
     },
     "tags": ["-lintignore"],
     "ignore": [
-        "src/components/ui/alert-dialog.tsx",
-        "src/components/ui/badge.tsx",
-        "src/components/ui/calendar.tsx",
-        "src/components/ui/card.tsx",
-        "src/components/ui/chart.tsx",
-        "src/components/ui/drawer.tsx",
-        "src/components/ui/popover.tsx",
-        "src/components/ui/tooltip.tsx",
-        "src/components/ui/button-group.tsx",
-        "src/components/ui/select.tsx",
-        "src/components/ui/table.tsx",
-        "src/components/ui/field.tsx"
+        "apps/web/src/components/ui/alert-dialog.tsx",
+        "apps/web/src/components/ui/badge.tsx",
+        "apps/web/src/components/ui/calendar.tsx",
+        "apps/web/src/components/ui/card.tsx",
+        "apps/web/src/components/ui/chart.tsx",
+        "apps/web/src/components/ui/drawer.tsx",
+        "apps/web/src/components/ui/popover.tsx",
+        "apps/web/src/components/ui/tooltip.tsx",
+        "apps/web/src/components/ui/button-group.tsx",
+        "apps/web/src/components/ui/select.tsx",
+        "apps/web/src/components/ui/table.tsx",
+        "apps/web/src/components/ui/field.tsx"
     ]
 }

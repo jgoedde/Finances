@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Install only production dependencies for build speed using the lockfile
 COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/
 RUN npm ci --prefer-offline --no-audit --no-progress
 
 # Copy the rest of the sources and build
@@ -20,7 +21,7 @@ FROM nginx:stable-alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built frontend
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
 # Use our nginx config which falls back to index.html for SPA routing
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
