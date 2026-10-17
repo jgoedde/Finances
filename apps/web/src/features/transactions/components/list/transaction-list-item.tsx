@@ -60,9 +60,9 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
     return (
         <button
             type={"button"}
-            className={`ripple-container state-layer focus-ring flex min-h-14
-                w-full cursor-pointer flex-row items-center gap-x-4 rounded-md
-                px-2 py-2 text-left`}
+            className={`ripple-container state-layer flex min-h-14 w-full
+                cursor-pointer flex-row items-center gap-x-4 rounded-md px-2
+                py-2 text-left focus-ring`}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
             onClick={(e) => {
@@ -100,25 +100,25 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
             </div>
             <div className={"flex min-w-0 flex-1 flex-col"}>
                 <div
-                    className={`text-on-surface text-body-large inline-flex
-                        items-center gap-x-1`}
+                    className={`inline-flex items-center gap-x-1 text-body-large
+                        text-on-surface`}
                 >
                     {transaction.name}
                     <ChevronRight
-                        className={"text-on-surface-variant size-4 shrink-0"}
+                        className={"size-4 shrink-0 text-on-surface-variant"}
                     />
                 </div>
                 <div
-                    className={`text-on-surface-variant text-body-medium
-                        line-clamp-2 break-all`}
+                    className={`line-clamp-2 text-body-medium break-all
+                        text-on-surface-variant`}
                 >
                     {getSupportingText()}
                 </div>
             </div>
             <div
                 className={cn(
-                    `text-label-large text-on-surface flex shrink-0 items-center
-                    gap-x-2`,
+                    `flex shrink-0 items-center gap-x-2 text-label-large
+                    text-on-surface`,
                     transaction.kind === "income" && "text-income",
                 )}
             >
@@ -126,7 +126,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     <CloudUpload
                         role={"img"}
                         aria-label={"Noch nicht synchronisiert"}
-                        className={"text-on-surface-variant size-4"}
+                        className={"size-4 text-on-surface-variant"}
                     />
                 )}
                 {transaction.kind === "income" ? (

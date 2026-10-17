@@ -18,7 +18,7 @@ function AccordionItem({
         <AccordionPrimitive.Item
             data-slot="accordion-item"
             className={cn(
-                "border-outline-variant border-b last:border-b-0",
+                "border-b border-outline-variant last:border-b-0",
                 className,
             )}
             {...props}
@@ -36,9 +36,9 @@ function AccordionTrigger({
             <AccordionPrimitive.Trigger
                 data-slot="accordion-trigger"
                 className={cn(
-                    `state-layer focus-ring text-title-small text-on-surface
-                    flex min-h-12 flex-1 cursor-pointer items-center
-                    justify-between gap-4 rounded-xs text-left outline-none
+                    `state-layer flex min-h-12 flex-1 cursor-pointer
+                    items-center justify-between gap-4 rounded-xs text-left
+                    text-title-small text-on-surface focus-ring outline-none
                     disabled:pointer-events-none disabled:opacity-38
                     [&[data-state=open]>svg]:rotate-180`,
                     className,
@@ -47,9 +47,9 @@ function AccordionTrigger({
             >
                 {children}
                 <ChevronDownIcon
-                    className="text-on-surface-variant ease-emphasized
-                        pointer-events-none size-6 shrink-0 transition-transform
-                        duration-300"
+                    className="pointer-events-none size-6 shrink-0
+                        text-on-surface-variant transition-transform
+                        duration-300 ease-emphasized"
                 />
             </AccordionPrimitive.Trigger>
         </AccordionPrimitive.Header>
@@ -64,9 +64,9 @@ function AccordionContent({
     return (
         <AccordionPrimitive.Content
             data-slot="accordion-content"
-            className="data-[state=closed]:animate-accordion-up
-                data-[state=open]:animate-accordion-down text-body-medium
-                overflow-hidden"
+            className="overflow-hidden text-body-medium
+                data-[state=closed]:animate-accordion-up
+                data-[state=open]:animate-accordion-down"
             {...props}
         >
             <div className={cn("pt-0 pb-4", className)}>{children}</div>

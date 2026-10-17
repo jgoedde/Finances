@@ -60,8 +60,8 @@ function RouteComponent() {
 
     return (
         <div
-            className={`bg-surface-container-high relative container mx-auto
-                flex h-dvh flex-col overflow-y-scroll`}
+            className={`relative container mx-auto flex h-dvh flex-col
+                overflow-y-scroll bg-surface-container-high`}
         >
             <Drawer
                 open={isDrawerOpen.isOpen}
@@ -84,9 +84,9 @@ function RouteComponent() {
                     )}
                 </DrawerContent>
                 <div
-                    className={`border-outline bg-surface-container-high sticky
-                        top-0 z-10 flex h-[72px] w-full shrink-0 items-center
-                        gap-1 border-b pr-1`}
+                    className={`sticky top-0 z-10 flex h-[72px] w-full shrink-0
+                        items-center gap-1 border-b border-outline
+                        bg-surface-container-high pr-1`}
                 >
                     <BackArrowButton />
                     <input
@@ -95,9 +95,9 @@ function RouteComponent() {
                         aria-label={"Suche"}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className={`text-body-large text-on-surface
-                            placeholder:text-on-surface-variant caret-primary
-                            min-w-0 grow bg-transparent outline-none
+                        className={`min-w-0 grow bg-transparent text-body-large
+                            text-on-surface caret-primary outline-none
+                            placeholder:text-on-surface-variant
                             [&::-webkit-search-cancel-button]:hidden`}
                         placeholder={"Buchung/Transaktion suchen"}
                     />
@@ -124,8 +124,8 @@ function RouteComponent() {
                         variant={"md3"}
                         className={cn(
                             dateFilterOption !== "any" &&
-                                `bg-secondary-container
-                                text-on-secondary-container border-transparent`,
+                                `border-transparent bg-secondary-container
+                                text-on-secondary-container`,
                         )}
                         onClick={() => {
                             setIsDrawerOpen({ type: "date", isOpen: true });
@@ -143,7 +143,7 @@ function RouteComponent() {
                     <div className={"my-auto text-center"}>
                         <h3
                             className={
-                                "text-on-surface-variant text-title-large"
+                                "text-title-large text-on-surface-variant"
                             }
                         >
                             Keine Ergebnisse

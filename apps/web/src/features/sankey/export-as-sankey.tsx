@@ -204,8 +204,8 @@ export function ExportSankeyDialog() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label
-                                className={`text-body-small
-                                    text-on-surface-variant mb-1 block`}
+                                className={`mb-1 block text-body-small
+                                    text-on-surface-variant`}
                                 htmlFor="month"
                             >
                                 Month (1-12)
@@ -223,8 +223,8 @@ export function ExportSankeyDialog() {
                         </div>
                         <div>
                             <Label
-                                className={`text-body-small
-                                    text-on-surface-variant mb-1 block`}
+                                className={`mb-1 block text-body-small
+                                    text-on-surface-variant`}
                                 htmlFor="year"
                             >
                                 Year

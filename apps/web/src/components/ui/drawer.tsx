@@ -28,9 +28,9 @@ function DrawerOverlay({
         <DrawerPrimitive.Overlay
             data-slot="drawer-overlay"
             className={cn(
-                `data-[state=open]:animate-in data-[state=closed]:animate-out
-                data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
-                bg-scrim/32 fixed inset-0 z-50`,
+                `fixed inset-0 z-50 bg-scrim/32 data-[state=closed]:animate-out
+                data-[state=closed]:fade-out-0 data-[state=open]:animate-in
+                data-[state=open]:fade-in-0`,
                 className,
             )}
             {...props}
@@ -49,9 +49,8 @@ function DrawerContent({
             <DrawerPrimitive.Content
                 data-slot="drawer-content"
                 className={cn(
-                    `group/drawer-content bg-surface-container-low
-                    text-on-surface shadow-elevation-1 fixed z-50 flex h-auto
-                    flex-col`,
+                    `group/drawer-content fixed z-50 flex h-auto flex-col
+                    bg-surface-container-low text-on-surface shadow-elevation-1`,
                     `data-[vaul-drawer-direction=top]:inset-x-0
                     data-[vaul-drawer-direction=top]:top-0
                     data-[vaul-drawer-direction=top]:mb-24
@@ -79,8 +78,8 @@ function DrawerContent({
                 {...props}
             >
                 <div
-                    className="bg-on-surface-variant/40 mx-auto my-[22px] hidden
-                        h-1 w-8 shrink-0 rounded-full
+                    className="mx-auto my-[22px] hidden h-1 w-8 shrink-0
+                        rounded-full bg-on-surface-variant/40
                         group-data-[vaul-drawer-direction=bottom]/drawer-content:block"
                 />
                 {children}
@@ -112,7 +111,7 @@ function DrawerTitle({
     return (
         <DrawerPrimitive.Title
             data-slot="drawer-title"
-            className={cn("text-on-surface text-title-large", className)}
+            className={cn("text-title-large text-on-surface", className)}
             {...props}
         />
     );
@@ -126,7 +125,7 @@ function DrawerDescription({
         <DrawerPrimitive.Description
             data-slot="drawer-description"
             className={cn(
-                "text-on-surface-variant text-body-medium",
+                "text-body-medium text-on-surface-variant",
                 className,
             )}
             {...props}

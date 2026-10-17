@@ -346,7 +346,7 @@ function RouteComponent() {
                 </div>
             </main>
 
-            <footer className="border-outline-variant border-t p-4">
+            <footer className="border-t border-outline-variant p-4">
                 <div className="mx-auto flex w-full max-w-md gap-2">
                     {step > 0 && (
                         <Button

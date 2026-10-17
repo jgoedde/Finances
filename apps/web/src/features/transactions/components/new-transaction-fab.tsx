@@ -12,11 +12,11 @@ export function NewTransactionFAB() {
         <button
             type={"button"}
             className={cn(
-                `ripple-container state-layer focus-ring bg-primary-container
-                text-on-primary-container shadow-elevation-3
-                hover:shadow-elevation-4 ease-standard size-14 shrink-0
-                -translate-x-1/4 cursor-pointer rounded-lg transition-shadow
-                duration-200`,
+                `ripple-container state-layer size-14 shrink-0 -translate-x-1/4
+                cursor-pointer rounded-lg bg-primary-container
+                text-on-primary-container shadow-elevation-3 focus-ring
+                transition-shadow duration-200 ease-standard
+                hover:shadow-elevation-4`,
             )}
             style={{
                 position: "sticky",

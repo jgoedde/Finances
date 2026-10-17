@@ -50,8 +50,8 @@ export function DateFilterDrawerContent({
                     <Label
                         key={option}
                         htmlFor={option}
-                        className={`state-layer text-body-large text-on-surface
-                        flex min-h-14 cursor-pointer items-center gap-4 px-4`}
+                        className={`state-layer flex min-h-14 cursor-pointer
+                        items-center gap-4 px-4 text-body-large text-on-surface`}
                     >
                         <RadioGroupItem value={option} id={option} />
                         {getDateFilterStr(option)}

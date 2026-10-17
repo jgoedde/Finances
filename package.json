@@ -17,14 +17,6 @@
         "dev:api": "npm run dev -w @finances/api",
         "test": "npm run test --workspaces --if-present"
     },
-    "prettier": {
-        "tabWidth": 4,
-        "plugins": [
-            "prettier-plugin-tailwindcss",
-            "prettier-plugin-classnames",
-            "prettier-plugin-merge"
-        ]
-    },
     "overrides": {
         "react-is": "^19.0.0-rc-69d4b800-20241021"
     },
@@ -34,9 +26,6 @@
         "globals": "^17.13.0",
         "knip": "^6.41.0",
         "prettier": "^3.9.10",
-        "prettier-plugin-classnames": "^0.10.4",
-        "prettier-plugin-merge": "^0.10.1",
-        "prettier-plugin-tailwindcss": "^0.8.1",
         "typescript-eslint": "^8.71.2"
     },
     "allowScripts": {

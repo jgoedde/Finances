@@ -36,17 +36,17 @@ function SelectTrigger({
             data-size={size}
             className={cn(
                 outlinedTextFieldClassName,
-                `data-[placeholder]:text-on-surface-variant
-                data-[state=open]:border-primary
-                [&_svg:not([class*='text-'])]:text-on-surface-variant flex
-                cursor-pointer items-center justify-between gap-2 text-left
-                whitespace-nowrap data-[size=sm]:h-10
+                `flex cursor-pointer items-center justify-between gap-2
+                text-left whitespace-nowrap
+                data-[placeholder]:text-on-surface-variant data-[size=sm]:h-10
                 *:data-[slot=select-value]:line-clamp-1
                 *:data-[slot=select-value]:flex
                 *:data-[slot=select-value]:items-center
                 *:data-[slot=select-value]:gap-2 data-[state=open]:border-2
-                data-[state=open]:px-[15px] [&_svg]:pointer-events-none
-                [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6`,
+                data-[state=open]:border-primary data-[state=open]:px-[15px]
+                [&_svg]:pointer-events-none [&_svg]:shrink-0
+                [&_svg:not([class*='size-'])]:size-6
+                [&_svg:not([class*='text-'])]:text-on-surface-variant`,
                 className,
             )}
             {...props}
@@ -71,7 +71,11 @@ function SelectContent({
             <SelectPrimitive.Content
                 data-slot="select-content"
                 className={cn(
-                    `bg-surface-container text-on-surface
+                    `relative z-50
+                    max-h-(--radix-select-content-available-height) min-w-[8rem]
+                    origin-(--radix-select-content-transform-origin)
+                    overflow-x-hidden overflow-y-auto rounded-xs
+                    bg-surface-container text-on-surface shadow-elevation-2
                     data-[side=bottom]:slide-in-from-top-2
                     data-[side=left]:slide-in-from-right-2
                     data-[side=right]:slide-in-from-left-2
@@ -79,11 +83,7 @@ function SelectContent({
                     data-[state=closed]:animate-out
                     data-[state=closed]:fade-out-0
                     data-[state=closed]:zoom-out-95 data-[state=open]:animate-in
-                    data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95
-                    shadow-elevation-2 relative z-50
-                    max-h-(--radix-select-content-available-height) min-w-[8rem]
-                    origin-(--radix-select-content-transform-origin)
-                    overflow-x-hidden overflow-y-auto rounded-xs`,
+                    data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95`,
                     position === "popper" &&
                         `data-[side=bottom]:translate-y-1
                         data-[side=left]:-translate-x-1
@@ -121,7 +121,7 @@ function SelectLabel({
         <SelectPrimitive.Label
             data-slot="select-label"
             className={cn(
-                "text-on-surface-variant text-label-medium px-3 py-2",
+                "px-3 py-2 text-label-medium text-on-surface-variant",
                 className,
             )}
             {...props}
@@ -138,14 +138,15 @@ function SelectItem({
         <SelectPrimitive.Item
             data-slot="select-item"
             className={cn(
-                `text-on-surface text-body-large focus:bg-on-surface/10
+                `relative flex h-12 w-full cursor-pointer items-center gap-3
+                pr-10 pl-3 text-body-large text-on-surface outline-hidden
+                select-none focus:bg-on-surface/10
+                data-[disabled]:pointer-events-none data-[disabled]:opacity-38
                 data-[state=checked]:bg-secondary-container
                 data-[state=checked]:text-on-secondary-container
-                [&_svg:not([class*='text-'])]:text-on-surface-variant relative
-                flex h-12 w-full cursor-pointer items-center gap-3 pr-10 pl-3
-                outline-hidden select-none data-[disabled]:pointer-events-none
-                data-[disabled]:opacity-38 [&_svg]:pointer-events-none
-                [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4
+                [&_svg]:pointer-events-none [&_svg]:shrink-0
+                [&_svg:not([class*='size-'])]:size-4
+                [&_svg:not([class*='text-'])]:text-on-surface-variant
                 *:[span]:last:flex *:[span]:last:items-center
                 *:[span]:last:gap-2`,
                 className,
