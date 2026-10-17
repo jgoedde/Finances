@@ -91,8 +91,8 @@ export function MonthlyOverview() {
                         <AccordionTrigger>Mehr</AccordionTrigger>
                         <AccordionContent>
                             <div
-                                className="divide-outline-variant flex flex-col
-                                    divide-y"
+                                className="flex flex-col divide-y
+                                    divide-outline-variant"
                             >
                                 {chartData.map((payload) => {
                                     return (
@@ -136,7 +136,7 @@ function MyLegend({
         <div
             key={categoryName}
             className={
-                "text-on-surface flex min-h-14 items-center gap-x-4 py-2"
+                "flex min-h-14 items-center gap-x-4 py-2 text-on-surface"
             }
         >
             {
@@ -150,8 +150,8 @@ function MyLegend({
             <div className={"flex flex-col"}>
                 <div className={"text-body-large"}>{categoryName}</div>
                 <div
-                    className={`text-on-surface-variant text-body-medium flex
-                        items-center`}
+                    className={`flex items-center text-body-medium
+                        text-on-surface-variant`}
                 >
                     {expensesCount} Ausgaben,{" "}
                     <CircleSlash2 className={"mx-1 size-3"} />

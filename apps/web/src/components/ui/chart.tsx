@@ -52,16 +52,16 @@ function ChartContainer({
                 data-slot="chart"
                 data-chart={chartId}
                 className={cn(
-                    `[&_.recharts-cartesian-axis-tick_text]:fill-on-surface-variant
+                    `flex aspect-video justify-center text-label-small
+                    [&_.recharts-cartesian-axis-tick_text]:fill-on-surface-variant
                     [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-outline-variant
                     [&_.recharts-curve.recharts-tooltip-cursor]:stroke-outline-variant
+                    [&_.recharts-dot[stroke='#fff']]:stroke-transparent
+                    [&_.recharts-layer]:outline-hidden
                     [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-outline-variant
                     [&_.recharts-radial-bar-background-sector]:fill-surface
                     [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-on-surface/8
                     [&_.recharts-reference-line_[stroke='#ccc']]:stroke-outline-variant
-                    text-label-small flex aspect-video justify-center
-                    [&_.recharts-dot[stroke='#fff']]:stroke-transparent
-                    [&_.recharts-layer]:outline-hidden
                     [&_.recharts-sector]:outline-hidden
                     [&_.recharts-sector[stroke='#fff']]:stroke-transparent
                     [&_.recharts-surface]:outline-hidden`,
@@ -182,9 +182,9 @@ function ChartTooltipContent({
     return (
         <div
             className={cn(
-                `bg-inverse-surface text-inverse-on-surface text-body-small
-                shadow-elevation-2 grid min-w-[8rem] items-start gap-1.5
-                rounded-xs px-2 py-1`,
+                `grid min-w-[8rem] items-start gap-1.5 rounded-xs
+                bg-inverse-surface px-2 py-1 text-body-small
+                text-inverse-on-surface shadow-elevation-2`,
                 className,
             )}
         >
@@ -206,9 +206,9 @@ function ChartTooltipContent({
                             <div
                                 key={item.dataKey}
                                 className={cn(
-                                    `[&>svg]:text-on-surface-variant flex w-full
-                                    flex-wrap items-stretch gap-2 [&>svg]:h-2.5
-                                    [&>svg]:w-2.5`,
+                                    `flex w-full flex-wrap items-stretch gap-2
+                                    [&>svg]:h-2.5 [&>svg]:w-2.5
+                                    [&>svg]:text-on-surface-variant`,
                                     indicator === "dot" && "items-center",
                                 )}
                             >
@@ -282,8 +282,9 @@ function ChartTooltipContent({
                                             </div>
                                             {item.value && (
                                                 <span
-                                                    className="text-inverse-on-surface
-                                                        font-mono font-medium
+                                                    className="font-mono
+                                                        font-medium
+                                                        text-inverse-on-surface
                                                         tabular-nums"
                                                 >
                                                     {item.value.toLocaleString()}

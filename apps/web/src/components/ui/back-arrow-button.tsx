@@ -21,7 +21,7 @@ export function BackArrowButton({
             onClick={() =>
                 canGoBack ? router.history.back() : void navigate({ to: "/" })
             }
-            className={cn("text-on-surface mx-1", className)}
+            className={cn("mx-1 text-on-surface", className)}
             {...props}
         >
             <ArrowLeft />

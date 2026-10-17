@@ -84,7 +84,7 @@ export function FixedCostsTable() {
     return (
         <Card className={"m-2 gap-4 px-2 py-4"}>
             <div className={"flex flex-wrap items-center gap-2 px-2"}>
-                <h2 className={"font-brand text-title-large grow"}>
+                <h2 className={"grow font-brand text-title-large"}>
                     Fixkosten
                 </h2>
                 <OfflineHint active={!isOnline}>
@@ -131,16 +131,17 @@ export function FixedCostsTable() {
                         >
                             <TableCell className="text-body-large">
                                 <Link
-                                    className={`text-on-surface focus-ring
-                                    inline-flex items-center gap-x-1 rounded-xs
-                                    underline-offset-4 hover:underline`}
+                                    className={`inline-flex items-center gap-x-1
+                                    rounded-xs text-on-surface
+                                    underline-offset-4 focus-ring
+                                    hover:underline`}
                                     to={`/fixed-costs/$id`}
                                     params={{ id: row.id }}
                                 >
                                     {row.name}{" "}
                                     <ChevronRight
                                         className={
-                                            "text-on-surface-variant size-4"
+                                            "size-4 text-on-surface-variant"
                                         }
                                     />
                                 </Link>
@@ -159,7 +160,7 @@ export function FixedCostsTable() {
                                 </span>
                             </TableCell>
                             <TableCell
-                                className="text-on-surface-variant text-right"
+                                className="text-right text-on-surface-variant"
                             >
                                 {toMonthlyLabel(
                                     row.monthlyAmount,
@@ -195,10 +196,10 @@ export function FixedCostsTable() {
             </Table>
 
             <div
-                className={`border-outline-variant text-body-medium flex
-                    justify-end border-t px-4 pt-4`}
+                className={`flex justify-end border-t border-outline-variant
+                    px-4 pt-4 text-body-medium`}
             >
-                <span className="text-on-surface-variant mr-2">
+                <span className="mr-2 text-on-surface-variant">
                     Monatlich gesamt:
                 </span>
                 <span className="text-title-small">

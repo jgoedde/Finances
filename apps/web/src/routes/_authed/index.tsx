@@ -39,8 +39,8 @@ function RouteComponent() {
 
             <footer>
                 <div
-                    className={`text-on-surface-variant text-body-small flex
-                        flex-col items-center px-4 py-4`}
+                    className={`flex flex-col items-center px-4 py-4
+                        text-body-small text-on-surface-variant`}
                 >
                     <span>
                         Ausgabentracker{" "}

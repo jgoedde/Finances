@@ -10,7 +10,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
             <table
                 data-slot="table"
                 className={cn(
-                    "text-body-medium w-full caption-bottom",
+                    "w-full caption-bottom text-body-medium",
                     className,
                 )}
                 {...props}
@@ -24,7 +24,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
         <thead
             data-slot="table-header"
             className={cn(
-                "[&_tr]:border-outline-variant [&_tr]:border-b",
+                "[&_tr]:border-b [&_tr]:border-outline-variant",
                 className,
             )}
             {...props}
@@ -47,9 +47,9 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
         <tr
             data-slot="table-row"
             className={cn(
-                `hover:bg-on-surface/8 has-aria-expanded:bg-on-surface/8
-                data-[state=selected]:bg-secondary-container
-                border-outline-variant border-b transition-colors`,
+                `border-b border-outline-variant transition-colors
+                hover:bg-on-surface/8 has-aria-expanded:bg-on-surface/8
+                data-[state=selected]:bg-secondary-container`,
                 className,
             )}
             {...props}
@@ -62,8 +62,9 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
         <th
             data-slot="table-head"
             className={cn(
-                `text-on-surface-variant text-title-small h-14 px-4 text-left
-                align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0
+                `h-14 px-4 text-left align-middle text-title-small
+                whitespace-nowrap text-on-surface-variant
+                [&:has([role=checkbox])]:pr-0
                 [&>[role=checkbox]]:translate-y-[2px]`,
                 className,
             )}

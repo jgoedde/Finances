@@ -108,8 +108,8 @@ export function TransactionList() {
                 <div className={"mt-4 flex w-full flex-col"}>
                     {transactions.length === 0 && (
                         <div
-                            className={`text-on-surface-variant text-body-medium
-                            mt-2 text-center`}
+                            className={`mt-2 text-center text-body-medium
+                            text-on-surface-variant`}
                         >
                             Keine Geldbewegungen für {getActiveDateFilter()}
                         </div>
@@ -177,8 +177,8 @@ function DateFilterDrawerContent({
                 <Label
                     key={value}
                     htmlFor={value}
-                    className={`state-layer text-body-large text-on-surface flex
-                    min-h-14 cursor-pointer items-center gap-4 px-4`}
+                    className={`state-layer flex min-h-14 cursor-pointer
+                    items-center gap-4 px-4 text-body-large text-on-surface`}
                 >
                     <RadioGroupItem value={value} id={value} />
                     {label}
@@ -198,7 +198,7 @@ function TransactionGroup({
     return (
         <div className={"mb-3 flex flex-col py-1"}>
             <div
-                className={"text-on-surface-variant text-title-small mb-1 px-2"}
+                className={"mb-1 px-2 text-title-small text-on-surface-variant"}
             >
                 {day}
             </div>

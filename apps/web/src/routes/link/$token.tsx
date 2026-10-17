@@ -42,7 +42,7 @@ function RouteComponent() {
     if (link.isError) {
         return (
             <AuthCard title={"Link"}>
-                <p className="text-on-surface-variant text-body-medium">
+                <p className="text-body-medium text-on-surface-variant">
                     Dieser Link ist ungültig, abgelaufen oder wurde bereits
                     verwendet. Bitte frage nach einem neuen.
                 </p>
@@ -124,7 +124,7 @@ function RouteComponent() {
                         />
                     </Field>
                 ) : (
-                    <p className="text-on-surface-variant text-body-medium">
+                    <p className="text-body-medium text-on-surface-variant">
                         Für <strong>{linkInfo.username}</strong>
                     </p>
                 )}
@@ -157,7 +157,7 @@ function RouteComponent() {
                     />
                 </Field>
                 {error && (
-                    <p role={"alert"} className="text-error text-body-medium">
+                    <p role={"alert"} className="text-body-medium text-error">
                         {error}
                     </p>
                 )}

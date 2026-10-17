@@ -172,16 +172,16 @@ export function TransactionForm({
                 </div>
 
                 <div
-                    className={`divide-outline-variant mt-2 flex w-full flex-col
-                        divide-y px-2`}
+                    className={`mt-2 flex w-full flex-col divide-y
+                        divide-outline-variant px-2`}
                 >
                     <div
                         className={"flex items-center justify-between gap-x-2"}
                     >
                         <Label
                             htmlFor="amount"
-                            className={`text-on-surface-variant text-body-large
-                                shrink-0`}
+                            className={`shrink-0 text-body-large
+                                text-on-surface-variant`}
                         >
                             Preis
                         </Label>
@@ -195,8 +195,8 @@ export function TransactionForm({
                             }}
                             required
                             allowNegativeValue={false}
-                            className={`text-body-large text-on-surface h-12
-                                w-full bg-transparent px-3 outline-none`}
+                            className={`h-12 w-full bg-transparent px-3
+                                text-body-large text-on-surface outline-none`}
                             onValueChange={onAmountInputChange}
                             decimalsLimit={2}
                             value={amountStr}
@@ -230,8 +230,8 @@ export function TransactionForm({
                     <div className={"flex items-center gap-x-2"}>
                         <Label
                             htmlFor="description"
-                            className={`text-on-surface-variant text-body-large
-                                shrink-0`}
+                            className={`shrink-0 text-body-large
+                                text-on-surface-variant`}
                         >
                             Beschreibung
                         </Label>

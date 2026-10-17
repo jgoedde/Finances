@@ -81,16 +81,16 @@ export function SyncDrawer({ open, onOpenChange }: SyncDrawerProps) {
                             {status.failures.map((failure) => (
                                 <div
                                     key={failure.id}
-                                    className="border-outline-variant flex
-                                        flex-col gap-2 rounded-md border p-3"
+                                    className="flex flex-col gap-2 rounded-md
+                                        border border-outline-variant p-3"
                                 >
                                     <div className="text-body-large">
                                         {ACTION_LABEL[failure.action]}:{" "}
                                         {describe(failure.transaction)}
                                     </div>
                                     <div
-                                        className="text-on-surface-variant
-                                            text-body-medium"
+                                        className="text-body-medium
+                                            text-on-surface-variant"
                                     >
                                         {failure.reason}
                                     </div>
@@ -127,7 +127,7 @@ export function SyncDrawer({ open, onOpenChange }: SyncDrawerProps) {
                     {status.pending.length > 0 && (
                         <section className="flex flex-col gap-2">
                             <h3 className="text-title-small">Ausstehend</h3>
-                            <ul className="text-body-medium flex flex-col gap-1">
+                            <ul className="flex flex-col gap-1 text-body-medium">
                                 {status.pending.map((change) => (
                                     <li key={change.mutationId}>
                                         {ACTION_LABEL[change.action]}:{" "}

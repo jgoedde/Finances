@@ -25,11 +25,11 @@ function RadioGroupItem({
         <RadioGroupPrimitive.Item
             data-slot="radio-group-item"
             className={cn(
-                `focus-ring border-on-surface-variant ease-standard
-                disabled:border-on-surface/38 aria-invalid:border-error
-                data-[state=checked]:border-primary aspect-square size-5
-                shrink-0 cursor-pointer rounded-full border-2 transition-colors
-                duration-150 outline-none disabled:cursor-not-allowed`,
+                `aspect-square size-5 shrink-0 cursor-pointer rounded-full
+                border-2 border-on-surface-variant focus-ring transition-colors
+                duration-150 ease-standard outline-none
+                disabled:cursor-not-allowed disabled:border-on-surface/38
+                aria-invalid:border-error data-[state=checked]:border-primary`,
                 className,
             )}
             {...props}
@@ -38,7 +38,7 @@ function RadioGroupItem({
                 data-slot="radio-group-indicator"
                 className="flex size-full items-center justify-center"
             >
-                <span className="bg-primary size-2.5 rounded-full" />
+                <span className="size-2.5 rounded-full bg-primary" />
             </RadioGroupPrimitive.Indicator>
         </RadioGroupPrimitive.Item>
     );

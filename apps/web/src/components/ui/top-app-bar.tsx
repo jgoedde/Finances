@@ -22,14 +22,14 @@ export function TopAppBar({ title, actions, className }: Props) {
     return (
         <header
             className={cn(
-                `ease-standard sticky top-0 z-10 flex h-16 w-full shrink-0
-                items-center gap-1 transition-colors duration-200`,
+                `sticky top-0 z-10 flex h-16 w-full shrink-0 items-center gap-1
+                transition-colors duration-200 ease-standard`,
                 isScrolled ? "bg-surface-container" : "bg-surface",
                 className,
             )}
         >
             <BackArrowButton />
-            <h1 className={"text-title-large text-on-surface grow truncate"}>
+            <h1 className={"grow truncate text-title-large text-on-surface"}>
                 {title}
             </h1>
             {actions && (

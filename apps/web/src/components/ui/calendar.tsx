@@ -30,7 +30,7 @@ function Calendar({
         <DayPicker
             showOutsideDays={showOutsideDays}
             className={cn(
-                `bg-surface-container-high group/calendar p-3
+                `group/calendar bg-surface-container-high p-3
                 [--cell-size:--spacing(10)]
                 [[data-slot=card-content]_&]:bg-transparent
                 [[data-slot=popover-content]_&]:bg-transparent`,
@@ -223,19 +223,19 @@ function CalendarDayButton({
             data-range-end={modifiers.range_end}
             data-range-middle={modifiers.range_middle}
             className={cn(
-                `text-on-surface text-body-large
-                data-[selected-single=true]:bg-primary
-                data-[selected-single=true]:text-on-primary
+                `flex aspect-square size-auto w-full min-w-(--cell-size)
+                flex-col gap-1 rounded-full text-body-large leading-none
+                text-on-surface group-data-[focused=true]/day:relative
+                group-data-[focused=true]/day:z-10
+                data-[range-end=true]:bg-primary
+                data-[range-end=true]:text-on-primary
+                data-[range-middle=true]:rounded-none
                 data-[range-middle=true]:text-on-secondary-container
                 data-[range-start=true]:bg-primary
                 data-[range-start=true]:text-on-primary
-                data-[range-end=true]:bg-primary
-                data-[range-end=true]:text-on-primary [&>span]:text-label-small
-                flex aspect-square size-auto w-full min-w-(--cell-size) flex-col
-                gap-1 rounded-full leading-none
-                group-data-[focused=true]/day:relative
-                group-data-[focused=true]/day:z-10
-                data-[range-middle=true]:rounded-none [&>span]:opacity-70`,
+                data-[selected-single=true]:bg-primary
+                data-[selected-single=true]:text-on-primary
+                [&>span]:text-label-small [&>span]:opacity-70`,
                 defaultClassNames.day,
                 className,
             )}

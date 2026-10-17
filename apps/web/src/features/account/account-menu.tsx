@@ -91,9 +91,9 @@ export function AccountMenu() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className={`state-layer focus-ring relative flex size-12
-                        shrink-0 cursor-pointer items-center justify-center
-                        rounded-full`}
+                    className={`state-layer relative flex size-12 shrink-0
+                        cursor-pointer items-center justify-center rounded-full
+                        focus-ring`}
                     aria-label={`Konto von ${username}, ${syncItem.label}`}
                 >
                     <Avatar>
@@ -105,8 +105,8 @@ export function AccountMenu() {
                         <span
                             aria-hidden
                             className={cn(
-                                `ring-surface-container-high absolute top-2
-                                right-2 size-2.5 rounded-full ring-2`,
+                                `absolute top-2 right-2 size-2.5 rounded-full
+                                ring-2 ring-surface-container-high`,
                                 badgeClass,
                             )}
                         />

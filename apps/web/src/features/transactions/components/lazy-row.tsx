@@ -72,7 +72,7 @@ function StatCard({
                 <div className={"text-on-surface-variant [&>svg]:size-6"}>
                     {icon}
                 </div>
-                <div className={"text-body-medium text-on-surface text-center"}>
+                <div className={"text-center text-body-medium text-on-surface"}>
                     {label}
                 </div>
             </CardHeader>

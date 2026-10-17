@@ -92,7 +92,7 @@ function RouteComponent() {
                     />
                 </Field>
                 {error && (
-                    <p role={"alert"} className="text-error text-body-medium">
+                    <p role={"alert"} className="text-body-medium text-error">
                         {error}
                     </p>
                 )}

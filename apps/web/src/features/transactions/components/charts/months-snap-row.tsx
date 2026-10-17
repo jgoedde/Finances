@@ -114,8 +114,8 @@ function Chart({ data, monthName }: ChartProps) {
                 justify-center`}
         >
             <div
-                className={`text-primary font-brand text-title-large self-center
-                    font-semibold`}
+                className={`self-center font-brand text-title-large
+                    font-semibold text-primary`}
             >
                 {formatEuro(
                     data.reduce((acc, item) => acc + item.totalSpent, 0),
@@ -123,7 +123,7 @@ function Chart({ data, monthName }: ChartProps) {
             </div>
             <div
                 className={
-                    "text-on-surface-variant text-body-medium self-center"
+                    "self-center text-body-medium text-on-surface-variant"
                 }
             >
                 {monthName}

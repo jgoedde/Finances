@@ -50,14 +50,16 @@ function FieldLabel({
         <Label
             data-slot="field-label"
             className={cn(
-                `group/field-label peer/field-label text-body-small
-                text-on-surface-variant group-focus-within/field:text-primary
-                flex w-fit gap-2 group-data-[disabled=true]/field:opacity-38`,
-                `has-[>[data-slot=field]]:border-outline-variant
-                has-[>[data-slot=field]]:w-full
+                `group/field-label peer/field-label flex w-fit gap-2
+                text-body-small text-on-surface-variant
+                group-focus-within/field:text-primary
+                group-data-[disabled=true]/field:opacity-38`,
+                `has-[>[data-slot=field]]:w-full
                 has-[>[data-slot=field]]:flex-col
                 has-[>[data-slot=field]]:rounded-md
-                has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4`,
+                has-[>[data-slot=field]]:border
+                has-[>[data-slot=field]]:border-outline-variant
+                [&>*]:data-[slot=field]:p-4`,
                 `has-data-[state=checked]:border-primary
                 has-data-[state=checked]:bg-secondary-container`,
                 className,
@@ -72,11 +74,11 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
         <p
             data-slot="field-description"
             className={cn(
-                `text-on-surface-variant text-body-small px-4
+                `px-4 text-body-small text-on-surface-variant
                 group-has-[[data-orientation=horizontal]]/field:text-balance`,
                 "last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5",
-                `[&>a:hover]:text-primary [&>a]:underline
-                [&>a]:underline-offset-4`,
+                `[&>a]:underline [&>a]:underline-offset-4
+                [&>a:hover]:text-primary`,
                 className,
             )}
             {...props}

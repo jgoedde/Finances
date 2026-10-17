@@ -125,10 +125,10 @@ export function TransactionInput({
                             key={`suggestion-${e}`}
                             tabIndex={-1}
                             aria-hidden="true"
-                            className={`border-outline-variant
-                            text-on-surface-variant ripple-container state-layer
-                            text-label-large h-8 cursor-pointer rounded-sm
-                            border px-4`}
+                            className={`ripple-container state-layer h-8
+                            cursor-pointer rounded-sm border
+                            border-outline-variant px-4 text-label-large
+                            text-on-surface-variant`}
                             data-ripple-color={"bg-on-surface/50"}
                             {...ripple}
                             type={"button"}
@@ -148,7 +148,7 @@ export function TransactionInput({
                     <Label
                         htmlFor="transaction"
                         className={
-                            "text-on-surface-variant text-body-large shrink-0"
+                            "shrink-0 text-body-large text-on-surface-variant"
                         }
                     >
                         {transactionType === "expense" ? "Ausgabe" : "Einnahme"}

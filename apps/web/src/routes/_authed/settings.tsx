@@ -105,7 +105,7 @@ function RouteComponent() {
             <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-4">
                 <Card className={"gap-3 p-4"}>
                     <h2 className="font-brand text-title-large">Exportieren</h2>
-                    <p className="text-on-surface-variant text-body-medium">
+                    <p className="text-body-medium text-on-surface-variant">
                         Lade alle Deine Geldbewegungen, Kategorien und Fixkosten
                         als Datei herunter. Du kannst sie später in ein neues
                         Konto importieren.
@@ -123,7 +123,7 @@ function RouteComponent() {
 
                 <Card className={"gap-3 p-4"}>
                     <h2 className="font-brand text-title-large">Importieren</h2>
-                    <p className="text-on-surface-variant text-body-medium">
+                    <p className="text-body-medium text-on-surface-variant">
                         Übernimm einen Export oder ein Backup der alten App
                         (.db). Deine Kategorien werden dabei ersetzt. Enthält
                         Dein Konto schon Geldbewegungen oder Fixkosten, kannst
