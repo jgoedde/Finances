@@ -88,11 +88,10 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     }
 
     return (
-        <style
-            dangerouslySetInnerHTML={{
-                __html: Object.entries(THEMES)
-                    .map(
-                        ([theme, prefix]) => `
+        <style>
+            {Object.entries(THEMES)
+                .map(
+                    ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
     .map(([key, itemConfig]) => {
@@ -104,10 +103,9 @@ ${colorConfig
     .join("\n")}
 }
 `,
-                    )
-                    .join("\n"),
-            }}
-        />
+                )
+                .join("\n")}
+        </style>
     );
 };
 
@@ -147,7 +145,7 @@ function ChartTooltipContent({
         const itemConfig = getPayloadConfigFromPayload(config, item, key);
         const value =
             !labelKey && typeof label === "string"
-                ? config[label as keyof typeof config]?.label || label
+                ? config[label]?.label || label
                 : itemConfig?.label;
 
         if (labelFormatter) {
@@ -199,8 +197,10 @@ function ChartTooltipContent({
                             item,
                             key,
                         );
+                        const itemPayload = item.payload as
+                            { fill?: string } | undefined;
                         const indicatorColor =
-                            color || item.payload.fill || item.color;
+                            color || itemPayload?.fill || item.color;
 
                         return (
                             <div
@@ -220,7 +220,7 @@ function ChartTooltipContent({
                                         item.name,
                                         item,
                                         index,
-                                        item.payload,
+                                        payload,
                                     )
                                 ) : (
                                     <>
@@ -324,20 +324,16 @@ function getPayloadConfigFromPayload(
         key in payload &&
         typeof payload[key as keyof typeof payload] === "string"
     ) {
-        configLabelKey = payload[key as keyof typeof payload] as string;
+        configLabelKey = payload[key as keyof typeof payload];
     } else if (
         payloadPayload &&
         key in payloadPayload &&
         typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
     ) {
-        configLabelKey = payloadPayload[
-            key as keyof typeof payloadPayload
-        ] as string;
+        configLabelKey = payloadPayload[key as keyof typeof payloadPayload];
     }
 
-    return configLabelKey in config
-        ? config[configLabelKey]
-        : config[key as keyof typeof config];
+    return configLabelKey in config ? config[configLabelKey] : config[key];
 }
 
 export { ChartContainer, ChartTooltip, ChartTooltipContent };

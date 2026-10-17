@@ -69,7 +69,7 @@ describe("domain parity", () => {
 
     it.each(queries)("lists what matchesListQuery matches: %o", async (q) => {
         const listed = await json<Transaction[]>(
-            alice(`/api/transactions?${toSearchParams(q)}`),
+            alice(`/api/transactions?${toSearchParams(q).toString()}`),
         );
 
         const expected = fixtures.filter((t) => matchesListQuery(t, q));
@@ -82,7 +82,7 @@ describe("domain parity", () => {
         "reports spent as the sum of netSpending: %o",
         async (q) => {
             const { total } = await json<{ total: number }>(
-                alice(`/api/insights/spent?${toSearchParams(q)}`),
+                alice(`/api/insights/spent?${toSearchParams(q).toString()}`),
             );
 
             const sum = fixtures

@@ -8,7 +8,9 @@ describe("request logging", () => {
         const lines: Record<string, unknown>[] = [];
         const stream = new Writable({
             write(chunk: Buffer, _encoding, callback) {
-                lines.push(JSON.parse(chunk.toString()));
+                lines.push(
+                    JSON.parse(chunk.toString()) as Record<string, unknown>,
+                );
                 callback();
             },
         });
@@ -28,7 +30,7 @@ describe("request logging", () => {
             method: "GET",
             path: "/api/transactions",
             status: 200,
-            durationMs: expect.any(Number),
+            durationMs: expect.any(Number) as unknown,
             userId: id,
         });
     });
@@ -57,7 +59,7 @@ describe("request logging", () => {
             level: 50,
             path: "/api/transactions",
             status: 500,
-            err: { type: expect.any(String) },
+            err: { type: expect.any(String) as unknown },
         });
     });
 });

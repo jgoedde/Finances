@@ -27,7 +27,7 @@ export const sessionQuery = queryOptions({
         const { data, error } = await authClient.getSession();
 
         if (error) {
-            throw error;
+            throw new Error(error.message ?? error.statusText);
         }
 
         if (!data) {

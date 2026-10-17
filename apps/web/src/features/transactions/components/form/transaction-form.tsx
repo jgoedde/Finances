@@ -81,7 +81,7 @@ export function TransactionForm({
     function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const amount = parseFloat((amountStr as string).replace(",", "."));
+        const amount = parseFloat(amountStr.replace(",", "."));
 
         if (!selectedCategory || isNaN(amount) || !name) {
             alert("Please select a category, specify an amount and a name.");

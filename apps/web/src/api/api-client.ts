@@ -58,10 +58,9 @@ export function toQueryString<
     T extends { [K in keyof T]: string | number | boolean | undefined },
 >(params: T): string {
     const search = new URLSearchParams();
-    for (const [key, value] of Object.entries(params) as [
-        string,
-        string | number | boolean | undefined,
-    ][]) {
+    for (const [key, value] of Object.entries<
+        string | number | boolean | undefined
+    >(params)) {
         if (value !== undefined) {
             search.set(key, String(value));
         }

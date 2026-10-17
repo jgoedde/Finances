@@ -56,8 +56,9 @@ export function authOptions(db: DB, config: AuthConfig) {
             },
             session: {
                 create: {
-                    after: async (session) => {
+                    after: (session) => {
                         logger.info({ userId: session.userId }, "Signed in");
+                        return Promise.resolve();
                     },
                 },
             },

@@ -69,7 +69,7 @@ function syncMenuItem(status: SyncStatus) {
             return { icon: <CloudCheck />, label: "Alles synchronisiert" };
         default:
             throw new Error(
-                `Not implemented sync status "${status.state satisfies never}".`,
+                `Not implemented sync status "${String(status.state satisfies never)}".`,
             );
     }
 }

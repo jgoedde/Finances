@@ -1,72 +1,65 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck -- AI slop. probably fine. Should probably use library for these things.
-
+/** Edit distance between two strings, keeping one row of the table at a time. */
 function levenshtein(a: string, b: string): number {
-    const dp: number[][] = Array.from({ length: a.length + 1 }, () =>
-        Array(b.length + 1).fill(0),
-    );
-
-    for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-    for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+    let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
 
     for (let i = 1; i <= a.length; i++) {
+        const current = [i];
         for (let j = 1; j <= b.length; j++) {
-            dp[i][j] = Math.min(
-                dp[i - 1][j] + 1,
-                dp[i][j - 1] + 1,
-                dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+            current.push(
+                Math.min(
+                    previous[j]! + 1,
+                    current[j - 1]! + 1,
+                    previous[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1),
+                ),
             );
         }
+        previous = current;
     }
 
-    return dp[a.length][b.length];
+    return previous[b.length]!;
 }
 
+/** Merges the values of keys within `threshold` edits into the first key. */
 export function mergeSimilarKeys<T>(
     dict: Record<string, T[]>,
     threshold = 2,
 ): Record<string, T[]> {
-    const keys = Object.keys(dict);
+    const entries = Object.entries(dict);
     const merged: Record<string, T[]> = {};
     const visited = new Set<string>();
 
-    for (let i = 0; i < keys.length; i++) {
-        const baseKey = keys[i];
+    for (const [i, [baseKey, values]] of entries.entries()) {
         if (visited.has(baseKey)) continue;
 
-        const combinedArray = [...dict[baseKey]];
+        const combined = [...values];
         visited.add(baseKey);
 
-        for (let j = i + 1; j < keys.length; j++) {
-            const compareKey = keys[j];
+        for (const [compareKey, compareValues] of entries.slice(i + 1)) {
             if (visited.has(compareKey)) continue;
 
             if (levenshtein(baseKey, compareKey) <= threshold) {
-                combinedArray.push(...dict[compareKey]);
+                combined.push(...compareValues);
                 visited.add(compareKey);
             }
         }
 
-        merged[baseKey] = combinedArray;
+        merged[baseKey] = combined;
     }
 
     return merged;
 }
 
+/** Drops strings within `threshold` edits (ignoring case) of an earlier one. */
 export function mergeSimilarStrings(list: string[], threshold = 2): string[] {
     const result: string[] = [];
-    const visited = new Set<number>(); // track indices we've merged
+    const visited = new Set<number>();
 
-    for (let i = 0; i < list.length; i++) {
+    for (const [i, baseStr] of list.entries()) {
         if (visited.has(i)) continue;
-
-        const baseStr = list[i];
         visited.add(i);
 
-        for (let j = i + 1; j < list.length; j++) {
-            if (visited.has(j)) continue;
-
-            const compareStr = list[j];
+        for (const [j, compareStr] of list.entries()) {
+            if (j <= i || visited.has(j)) continue;
 
             if (
                 levenshtein(baseStr.toLowerCase(), compareStr.toLowerCase()) <=
