@@ -13,7 +13,7 @@ import { validate } from "../http/validate.ts";
 
 const idParam = z.object({ id: transactionIdSchema });
 
-function toTransaction(row: TransactionsTable): Transaction {
+export function toTransaction(row: TransactionsTable): Transaction {
     return {
         id: row.id,
         date: row.date,

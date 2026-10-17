@@ -13,6 +13,7 @@ import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedNewRouteImport } from './routes/_authed/new'
+import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as LinkTokenRouteImport } from './routes/link/$token'
 import { Route as AuthedEditIdRouteImport } from './routes/_authed/edit/$id'
 import { Route as AuthedFixedCostsIdRouteImport } from './routes/_authed/fixed-costs/$id'
@@ -35,6 +36,11 @@ const AuthedIndexRoute = AuthedIndexRouteImport.update({
 const AuthedNewRoute = AuthedNewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthedRoute,
 } as any)
 const LinkTokenRoute = LinkTokenRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthedIndexRoute
   '/login': typeof LoginRoute
   '/new': typeof AuthedNewRoute
+  '/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
   '/edit/$id': typeof AuthedEditIdRoute
   '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/new': typeof AuthedNewRoute
+  '/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
   '/': typeof AuthedIndexRoute
   '/edit/$id': typeof AuthedEditIdRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/_authed': typeof AuthedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authed/new': typeof AuthedNewRoute
+  '/_authed/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
   '/_authed/': typeof AuthedIndexRoute
   '/_authed/edit/$id': typeof AuthedEditIdRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/new'
+    | '/settings'
     | '/link/$token'
     | '/edit/$id'
     | '/fixed-costs/$id'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/new'
+    | '/settings'
     | '/link/$token'
     | '/'
     | '/edit/$id'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_authed'
     | '/login'
     | '/_authed/new'
+    | '/_authed/settings'
     | '/link/$token'
     | '/_authed/'
     | '/_authed/edit/$id'
@@ -155,6 +167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedNewRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/settings': {
+      id: '/_authed/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthedSettingsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/link/$token': {
       id: '/link/$token'
       path: '/link/$token'
@@ -188,6 +207,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthedRouteChildren {
   AuthedNewRoute: typeof AuthedNewRoute
+  AuthedSettingsRoute: typeof AuthedSettingsRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedEditIdRoute: typeof AuthedEditIdRoute
   AuthedFixedCostsIdRoute: typeof AuthedFixedCostsIdRoute
@@ -196,6 +216,7 @@ interface AuthedRouteChildren {
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedNewRoute: AuthedNewRoute,
+  AuthedSettingsRoute: AuthedSettingsRoute,
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedEditIdRoute: AuthedEditIdRoute,
   AuthedFixedCostsIdRoute: AuthedFixedCostsIdRoute,
