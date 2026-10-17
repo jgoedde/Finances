@@ -20,7 +20,7 @@ const isoDate = z.iso.date();
 export const fixedCostInputSchema = z.object({
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
-    amount: z.number().nonnegative().finite(),
+    amount: z.number().nonnegative(),
     currency: z.string().length(3),
     interval: fixedCostIntervalSchema,
     categoryId: z.string().min(1),
