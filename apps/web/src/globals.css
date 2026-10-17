@@ -1,4 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+/* Self-hosted so the PWA precaches them. Poppins: only the weights in use. */
+@import "@fontsource/poppins/latin-400.css";
+@import "@fontsource/poppins/latin-ext-400.css";
+@import "@fontsource/poppins/latin-500.css";
+@import "@fontsource/poppins/latin-ext-500.css";
+@import "@fontsource/poppins/latin-600.css";
+@import "@fontsource/poppins/latin-ext-600.css";
+@import "@fontsource-variable/roboto/wght.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "tailwindcss-motion";
@@ -195,8 +202,9 @@
     --color-secondary-foreground: var(--md-sys-color-on-secondary);
 
     /* Typefaces: Poppins as brand face (display/headline), Roboto as plain. */
-    --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
-    --font-brand: "Poppins", "Roboto", ui-sans-serif, sans-serif;
+    --font-sans:
+        "Roboto Variable", "Roboto", ui-sans-serif, system-ui, sans-serif;
+    --font-brand: "Poppins", "Roboto Variable", ui-sans-serif, sans-serif;
 
     /* MD3 type scale -> `text-display-large`, `text-body-medium`, ... */
     --text-display-large: 3.5625rem;
