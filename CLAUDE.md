@@ -15,8 +15,10 @@ Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the 
 - `npm run lint`: ESLint
 - `npm run format` / `npm run format:check`: Prettier (4-space indent, with Tailwind class sorting/wrapping plugins)
 - `npm run knip:check`: detect unused files and exports
+- `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first)
+- `npm test`: Vitest (API only)
 
-CI (`.github/workflows/ci.yml`) runs `knip:check`, `build` and `format:check`. Run all three before considering a change done. There is no test suite.
+CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check` and `test`. Run all four before considering a change done.
 
 Releases: pushing a `vX.Y.Z` tag builds the Docker image (nginx serving `dist`, see `Dockerfile` and `docker/nginx.conf`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
@@ -55,6 +57,16 @@ Data conventions: the `expenses` table holds both expenses and income, and the s
 - Use the primitives for MD3 components (`Button` variants `filled`/`filledTonal`/`elevated`/`outline`/`text`/`ghost`, `Card` variants, `Badge variant="md3"` as a chip, `SegmentedButton`, `TopAppBar`) rather than hand-styling.
 - `src/utils/color.ts` uses `@material/material-color-utilities` to derive tonal container colors from category colors.
 - PWA: `vite-plugin-pwa` uses `registerType: "prompt"`. The update toast is wired in `routes/__root.tsx` via `src/pwa.ts`.
+
+### API (`apps/api`, work in progress)
+
+The app is moving to a server-authoritative design (see `docs/adr/` and `GLOSSARY.md`). The client does not use the API yet.
+
+- Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses relative imports (no `@/` alias) and only erasable TS syntax. `tsc -b` is a type check only.
+- Request/response schemas live in `packages/shared` (zod) and are shared with the client.
+- `db/migrate.ts` first lets better-auth migrate its own tables, then runs our Kysely migrations from `db/migrations/`. Append new migrations; never edit applied ones.
+- Every app table is keyed by `(user_id, id)`, and every query must filter by the session's `userId`. Transactions are written with an idempotent `PUT /api/transactions/:id` (create or replace). Deletes leave a tombstone so late replays of a deleted id are ignored.
+- Users are created only server-side (invites, admin bootstrap from `ADMIN_USERNAME`/`ADMIN_PASSWORD`); public sign-up is disabled. New users get the default categories via a better-auth `databaseHooks` hook.
 
 ### Conventions
 
