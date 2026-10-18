@@ -51,7 +51,9 @@ export function fixedCostQuery(id: string) {
 
 type FixedCostList = FixedCostRecord[] | undefined;
 
-/** Server order of the list (`ORDER BY name`, binary collation). */
+/**
+ * Server order of the list (`ORDER BY name`, binary collation).
+ */
 function byName(a: FixedCostRecord, b: FixedCostRecord): number {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 }

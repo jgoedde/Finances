@@ -4,7 +4,9 @@ interface AuthCardProps {
     title: string;
 }
 
-/** Centered card for the signed-out pages (login, invites). */
+/**
+ * Centered card for the signed-out pages (login, invites).
+ */
 export function AuthCard({
     title,
     children,

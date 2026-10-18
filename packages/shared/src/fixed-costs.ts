@@ -14,7 +14,9 @@ export const fixedCostIntervalSchema = z.enum([
 ]);
 export type FixedCostInterval = z.infer<typeof fixedCostIntervalSchema>;
 
-/** Calendar date as `YYYY-MM-DD`. */
+/**
+ * Calendar date as `YYYY-MM-DD`.
+ */
 const isoDate = z.iso.date();
 
 export const fixedCostInputSchema = z.object({
@@ -44,17 +46,23 @@ const MONTHS_PER_INTERVAL = {
     yearly: 12,
 } as const satisfies Record<FixedCostInterval, number>;
 
-/** The amount spread evenly over the months of its interval, unrounded. */
+/**
+ * The amount spread evenly over the months of its interval, unrounded.
+ */
 export function getMonthlyAmount(fixedCost: FixedCost): number {
     return fixedCost.amount / MONTHS_PER_INTERVAL[fixedCost.interval];
 }
 
-/** Twelve monthly amounts, unrounded. */
+/**
+ * Twelve monthly amounts, unrounded.
+ */
 export function getYearlyAmount(fixedCost: FixedCost): number {
     return getMonthlyAmount(fixedCost) * 12;
 }
 
-/** Whether the fixed cost is active and `day` (`YYYY-MM-DD`) is in its range. */
+/**
+ * Whether the fixed cost is active and `day` (`YYYY-MM-DD`) is in its range.
+ */
 export function isRunningOn(fixedCost: FixedCost, day: string): boolean {
     return (
         fixedCost.active &&
@@ -63,7 +71,9 @@ export function isRunningOn(fixedCost: FixedCost, day: string): boolean {
     );
 }
 
-/** The calendar day of `instant` (Unix ms) in `timeZone`, as `YYYY-MM-DD`. */
+/**
+ * The calendar day of `instant` (Unix ms) in `timeZone`, as `YYYY-MM-DD`.
+ */
 export function toIsoDate(instant: number, timeZone: string): string {
     const parts = new Intl.DateTimeFormat("en-US", {
         timeZone,

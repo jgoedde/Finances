@@ -15,7 +15,9 @@ export const INTERVAL_LABELS = {
     yearly: m.fixed_cost_interval_yearly,
 } as const satisfies Record<FixedCostInterval, () => string>;
 
-/** Fixed cost hydrated with its category and derived amounts, for the UI. */
+/**
+ * Fixed cost hydrated with its category and derived amounts, for the UI.
+ */
 export interface FixedCost {
     id: string;
     name: string;
@@ -30,7 +32,9 @@ export interface FixedCost {
 
     monthlyAmount: number;
     yearlyAmount: number;
-    /** Active and within its start/end range today. */
+    /**
+     * Active and within its start/end range today.
+     */
     isRunning: boolean;
 }
 
@@ -59,7 +63,9 @@ export function toFixedCost(
     };
 }
 
-/** The date's calendar day in the device's time zone, as `YYYY-MM-DD`. */
+/**
+ * The date's calendar day in the device's time zone, as `YYYY-MM-DD`.
+ */
 export function toLocalIsoDate(date: Date): string {
     return toIsoDate(
         date.getTime(),
@@ -67,7 +73,9 @@ export function toLocalIsoDate(date: Date): string {
     );
 }
 
-/** Parses `YYYY-MM-DD` as a local date (not UTC midnight). */
+/**
+ * Parses `YYYY-MM-DD` as a local date (not UTC midnight).
+ */
 function fromIsoDate(value: string): Date {
     const [year = 0, month = 1, day = 1] = value.split("-").map(Number);
     return new Date(year, month - 1, day);

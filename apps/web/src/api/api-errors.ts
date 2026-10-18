@@ -20,7 +20,9 @@ const MESSAGES = {
 
 type ApiErrorCode = keyof typeof MESSAGES;
 
-/** The API's error code (e.g. `not_found`), if the API sent one. */
+/**
+ * The API's error code (e.g. `not_found`), if the API sent one.
+ */
 export function apiErrorCode(error: unknown): string | undefined {
     if (!(error instanceof ApiError)) {
         return undefined;
@@ -29,7 +31,9 @@ export function apiErrorCode(error: unknown): string | undefined {
     return typeof code === "string" ? code : undefined;
 }
 
-/** The message for an API error code, or undefined for unknown codes. */
+/**
+ * The message for an API error code, or undefined for unknown codes.
+ */
 export function apiErrorMessage(code: string | undefined): string | undefined {
     return code !== undefined &&
         Object.prototype.hasOwnProperty.call(MESSAGES, code)

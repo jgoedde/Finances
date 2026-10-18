@@ -29,7 +29,9 @@ describe("cli", () => {
         };
     });
 
-    /** The token from a printed link, checked against the API. */
+    /**
+     * The token from a printed link, checked against the API.
+     */
     async function linkInfo(url: string | undefined) {
         const token = url?.replace(`${BASE_URL}/link/`, "");
         return json<LinkInfo>(app.request(`/api/links/${token}`));

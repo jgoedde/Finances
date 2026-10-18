@@ -14,16 +14,22 @@ export const transactionIdSchema = z
     .regex(/^[A-Za-z0-9_-]+$/);
 
 export const transactionInputSchema = z.object({
-    /** Unix timestamp in milliseconds. */
+    /**
+     * Unix timestamp in milliseconds.
+     */
     date: z.number().int(),
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
     kind: transactionKindSchema,
-    /** Always non-negative; `kind` decides the direction. */
+    /**
+     * Always non-negative; `kind` decides the direction.
+     */
     amount: z.number().nonnegative(),
     currency: z.string().length(3),
     categoryId: z.string().min(1),
-    /** One-off large transaction, excluded from insights. */
+    /**
+     * One-off large transaction, excluded from insights.
+     */
     exceptional: z.boolean(),
 });
 export type TransactionInput = z.infer<typeof transactionInputSchema>;
@@ -33,7 +39,9 @@ export const transactionSchema = transactionInputSchema.extend({
 });
 export type Transaction = z.infer<typeof transactionSchema>;
 
-/** The transaction's share of net spending: expenses add, incomes subtract. */
+/**
+ * The transaction's share of net spending: expenses add, incomes subtract.
+ */
 export function netSpending(
     transaction: Pick<Transaction, "kind" | "amount">,
 ): number {
@@ -61,7 +69,9 @@ export interface TransactionListQuery {
     excludeExceptional?: boolean;
 }
 
-/** Whether the transaction is part of the list the query asks for. */
+/**
+ * Whether the transaction is part of the list the query asks for.
+ */
 export function matchesListQuery(
     transaction: Transaction,
     query: TransactionListQuery,
@@ -76,7 +86,9 @@ export function matchesListQuery(
     );
 }
 
-/** Position after the last result of a page: `<date>:<id>`. */
+/**
+ * Position after the last result of a page: `<date>:<id>`.
+ */
 const searchCursorSchema = z
     .string()
     .regex(/^-?\d+:[A-Za-z0-9_-]+$/)
@@ -89,9 +101,13 @@ const searchCursorSchema = z
     });
 
 export const transactionSearchQuerySchema = z.object({
-    /** Matched against name and description (case-insensitive for ASCII). */
+    /**
+     * Matched against name and description (case-insensitive for ASCII).
+     */
     q: z.string().max(200).optional(),
-    /** Only transactions before this Unix timestamp in milliseconds. */
+    /**
+     * Only transactions before this Unix timestamp in milliseconds.
+     */
     olderThan: z.coerce.number().int().optional(),
     cursor: searchCursorSchema.optional(),
     limit: z.coerce.number().int().min(1).max(100).default(50),
@@ -103,9 +119,13 @@ export interface TransactionSearchQuery {
     limit?: number;
 }
 
-/** One page of search results, newest first. */
+/**
+ * One page of search results, newest first.
+ */
 export interface TransactionSearchPage {
     items: Transaction[];
-    /** `null` on the last page. */
+    /**
+     * `null` on the last page.
+     */
     nextCursor: string | null;
 }

@@ -6,7 +6,9 @@ import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
-/** Below this share, a month counts as typical. */
+/**
+ * Below this share, a month counts as typical.
+ */
 const EVEN_THRESHOLD = 0.02;
 
 function paceText({ day, netSpending, typical }: MonthOverview["pace"]) {
@@ -32,7 +34,9 @@ interface MonthHeroProps {
     overview: MonthOverview;
 }
 
-/** Net spending of the month with its pace, the hero of the Overview. */
+/**
+ * Net spending of the month with its pace, the hero of the Overview.
+ */
 export function MonthHero({ overview }: MonthHeroProps) {
     const { pace, exceptional } = overview;
     const isAbove =

@@ -9,7 +9,9 @@ import { requestLogger } from "#/http/request-logger.ts";
 const BASE_URL = "http://localhost:3000";
 const PASSWORD = "password123";
 
-/** Reads a JSON response body as `T` (tests trust the server's shape). */
+/**
+ * Reads a JSON response body as `T` (tests trust the server's shape).
+ */
 export async function json<T>(response: Response | Promise<Response>) {
     return (await (await response).json()) as T;
 }
@@ -46,7 +48,9 @@ export async function createTestApp({
         return app.request(`${BASE_URL}${path}`, { ...init, headers });
     }
 
-    /** Signs in and returns a client that sends the session cookie. */
+    /**
+     * Signs in and returns a client that sends the session cookie.
+     */
     async function login(username: string, password = PASSWORD) {
         const response = await request("/api/auth/sign-in/username", {
             method: "POST",

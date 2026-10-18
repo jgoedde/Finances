@@ -53,7 +53,9 @@ export async function apiFetch<T>(
     return data as T;
 }
 
-/** Builds a query string, skipping undefined values. */
+/**
+ * Builds a query string, skipping undefined values.
+ */
 export function toQueryString<
     T extends { [K in keyof T]: string | number | boolean | undefined },
 >(params: T): string {

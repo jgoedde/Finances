@@ -13,7 +13,9 @@ function cacheControl(path: string): string {
     return "no-cache";
 }
 
-/** Serves the built client, falling back to index.html for SPA routes. */
+/**
+ * Serves the built client, falling back to index.html for SPA routes.
+ */
 export function staticRoutes(root: string) {
     const onFound = (
         path: string,

@@ -8,9 +8,13 @@ const DAY_SECONDS = 60 * 60 * 24;
 
 export interface AuthConfig {
     secret: string;
-    /** Public URL of the app, e.g. `https://finances.example.com`. */
+    /**
+     * Public URL of the app, e.g. `https://finances.example.com`.
+     */
     baseURL: string;
-    /** Extra origins allowed to call auth endpoints, e.g. a LAN address. */
+    /**
+     * Extra origins allowed to call auth endpoints, e.g. a LAN address.
+     */
     trustedOrigins?: string[];
 }
 
@@ -66,7 +70,9 @@ export function authOptions(db: DB, config: AuthConfig) {
     } satisfies BetterAuthOptions;
 }
 
-/** Run `migrate` with the same options first: better-auth checks its schema on creation. */
+/**
+ * Run `migrate` with the same options first: better-auth checks its schema on creation.
+ */
 export function createAuth(db: DB, config: AuthConfig) {
     return betterAuth(authOptions(db, config));
 }
@@ -93,7 +99,9 @@ export async function createUser(
     return user;
 }
 
-/** Replaces a user's password and signs them out everywhere. */
+/**
+ * Replaces a user's password and signs them out everywhere.
+ */
 export async function resetPassword(
     auth: Auth,
     userId: string,

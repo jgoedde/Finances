@@ -7,7 +7,9 @@ interface CategoryBarsCardProps {
     overview: MonthOverview;
 }
 
-/** The month's categories, largest first, against their typical month. */
+/**
+ * The month's categories, largest first, against their typical month.
+ */
 export function CategoryBarsCard({ overview }: CategoryBarsCardProps) {
     const { categories } = overview;
     const scale = Math.max(

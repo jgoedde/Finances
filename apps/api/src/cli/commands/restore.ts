@@ -9,7 +9,9 @@ import type { Command } from "commander";
 import { migrationNames } from "#/db/migrate.ts";
 import type { CommandContext, RunCommand } from "../command.ts";
 
-/** Why the snapshot can't be restored, or undefined if it can. */
+/**
+ * Why the snapshot can't be restored, or undefined if it can.
+ */
 function checkSnapshot(snapshot: SQLite.Database): string | undefined {
     let integrity: unknown;
     try {
@@ -45,7 +47,9 @@ function checkSnapshot(snapshot: SQLite.Database): string | undefined {
     return undefined;
 }
 
-/** True if no user has transactions or fixed costs (as on a fresh instance). */
+/**
+ * True if no user has transactions or fixed costs (as on a fresh instance).
+ */
 async function isEmpty({ db }: CommandContext): Promise<boolean> {
     const [transaction, fixedCost] = await Promise.all([
         db.selectFrom("transactions").select("id").limit(1).executeTakeFirst(),

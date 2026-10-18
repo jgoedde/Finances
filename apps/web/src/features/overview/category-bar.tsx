@@ -6,7 +6,9 @@ import { getLocale } from "#/paraglide/runtime.js";
 
 interface CategoryBarProps {
     category: CategoryOverview;
-    /** The amount a full-width bar stands for. */
+    /**
+     * The amount a full-width bar stands for.
+     */
     scale: number;
 }
 

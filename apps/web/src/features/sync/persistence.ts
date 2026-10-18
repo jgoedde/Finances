@@ -3,7 +3,9 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
 import { del, get, set } from "idb-keyval";
 
-/** Cached server data unused for longer than this is dropped. */
+/**
+ * Cached server data unused for longer than this is dropped.
+ */
 const QUERY_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 /**

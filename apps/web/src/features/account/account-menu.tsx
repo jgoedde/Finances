@@ -78,12 +78,16 @@ function syncMenuItem(status: SyncStatus) {
 }
 
 interface AccountMenuProps {
-    /** Where the menu opens: below in a top app bar, right in a rail or drawer. */
+    /**
+     * Where the menu opens: below in a top app bar, right in a rail or drawer.
+     */
     side?: "bottom" | "right";
     className?: string;
 }
 
-/** Avatar with the sync indicator; opens the account menu. */
+/**
+ * Avatar with the sync indicator; opens the account menu.
+ */
 export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
     const user = useQuery(sessionQuery).data;
     const status = useSyncStatus();

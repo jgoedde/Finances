@@ -13,7 +13,9 @@ import {
 export type SyncState = "failed" | "offline" | "pending" | "synced";
 
 export interface SyncStatus {
-    /** The most urgent state, for the indicator. */
+    /**
+     * The most urgent state, for the indicator.
+     */
     state: SyncState;
     isOnline: boolean;
     pending: QueuedChange[];
@@ -21,7 +23,9 @@ export interface SyncStatus {
 }
 
 export interface QueuedChange extends PendingChange {
-    /** Unique per queued mutation; one transaction can be queued twice. */
+    /**
+     * Unique per queued mutation; one transaction can be queued twice.
+     */
     mutationId: number;
 }
 

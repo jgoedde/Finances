@@ -48,7 +48,9 @@ async function insertLink(
     return { token, expiresAt: new Date(expiresAt).toISOString() };
 }
 
-/** `createdBy` is null when issued by the operator (CLI). */
+/**
+ * `createdBy` is null when issued by the operator (CLI).
+ */
 export function createInvite(
     db: DB,
     createdBy: string | null,
@@ -60,7 +62,9 @@ export function createInvite(
     );
 }
 
-/** Returns undefined if the user doesn't exist. */
+/**
+ * Returns undefined if the user doesn't exist.
+ */
 export async function createPasswordResetLink(
     db: DB,
     userId: string,
@@ -81,7 +85,9 @@ export async function createPasswordResetLink(
     );
 }
 
-/** Admin-only: issue invites and password reset links. */
+/**
+ * Admin-only: issue invites and password reset links.
+ */
 export function adminLinkRoutes(db: DB) {
     return new Hono<AppEnv>()
         .post("/invites", async (c) => {
@@ -118,7 +124,9 @@ export function adminLinkRoutes(db: DB) {
         );
 }
 
-/** Public: look up and redeem a link of either kind. */
+/**
+ * Public: look up and redeem a link of either kind.
+ */
 export function linkRoutes(db: DB, auth: Auth) {
     function findUsable(token: string) {
         return db
@@ -131,7 +139,9 @@ export function linkRoutes(db: DB, auth: Auth) {
             .executeTakeFirst();
     }
 
-    /** Marks the link used. Returns false if someone else got there first. */
+    /**
+     * Marks the link used. Returns false if someone else got there first.
+     */
     async function claim(token: string): Promise<boolean> {
         const result = await db
             .updateTable("invites")

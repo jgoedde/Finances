@@ -18,7 +18,9 @@ import { m } from "#/paraglide/messages.js";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
-/** Results for `?q=` across all months, newest first. */
+/**
+ * Results for `?q=` across all months, newest first.
+ */
 export function SearchResults() {
     const { q = "", older: dateFilterOption = "any" } =
         transactionsRoute.useSearch();
