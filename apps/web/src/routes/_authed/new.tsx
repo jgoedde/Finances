@@ -16,6 +16,9 @@ const prefilledSchema = z.object({
 });
 
 export const Route = createFileRoute("/_authed/new")({
+    head: () => ({
+        meta: [{ title: m.page_title({ page: m.transaction_new() }) }],
+    }),
     component: RouteComponent,
     validateSearch: prefilledSchema,
 });

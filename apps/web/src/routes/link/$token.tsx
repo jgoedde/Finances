@@ -14,6 +14,7 @@ import { Button } from "#/components/ui/button.tsx";
 import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/link/$token")({
+    head: () => ({ meta: [{ title: m.page_title({ page: m.link_title() }) }] }),
     component: RouteComponent,
 });
 

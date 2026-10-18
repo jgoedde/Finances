@@ -12,6 +12,9 @@ import {
 import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/fixed-costs/new")({
+    head: () => ({
+        meta: [{ title: m.page_title({ page: m.fixed_cost_new() }) }],
+    }),
     component: RouteComponent,
     loader: ({ context }) =>
         context.queryClient.query({

@@ -28,6 +28,9 @@ import { getLocale, type Locale, locales } from "#/paraglide/runtime.js";
 import { chooseLocale } from "#/i18n.ts";
 
 export const Route = createFileRoute("/_authed/settings")({
+    head: () => ({
+        meta: [{ title: m.page_title({ page: m.settings_title() }) }],
+    }),
     component: RouteComponent,
 });
 

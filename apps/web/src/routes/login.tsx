@@ -28,6 +28,9 @@ export const Route = createFileRoute("/login")({
             throw redirect({ to: "/" });
         }
     },
+    head: () => ({
+        meta: [{ title: m.page_title({ page: m.action_sign_in() }) }],
+    }),
     component: RouteComponent,
 });
 
