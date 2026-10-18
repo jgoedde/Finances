@@ -3,7 +3,7 @@ import { type KeyboardEvent, useMemo, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
-import { DeleteButtonWithConfirmDialog } from "#/components/delete-button-with-confirm-dialog.tsx";
+import { DeleteButton } from "#/components/delete-button.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { Input } from "#/components/ui/input.tsx";
@@ -373,7 +373,7 @@ export function FixedCostWizard({
                 actions={
                     onDelete && (
                         <OfflineHint active={!isOnline}>
-                            <DeleteButtonWithConfirmDialog
+                            <DeleteButton
                                 title={m.fixed_cost_delete_title()}
                                 description={m.fixed_cost_delete_description()}
                                 disabled={!isOnline}

@@ -7,16 +7,7 @@ import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "#/components/ui/alert-dialog.tsx";
+import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { ApiError } from "#/api/api-client.ts";
 import { apiErrorCode, apiErrorMessage } from "#/api/api-errors.ts";
 import {
@@ -73,10 +64,6 @@ function RouteComponent() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isExporting, setIsExporting] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
-    // A file that can only be imported by replacing the existing data.
-    const [fileToReplaceWith, setFileToReplaceWith] = useState<File | null>(
-        null,
-    );
 
     async function handleExport() {
         setIsExporting(true);
@@ -89,7 +76,11 @@ function RouteComponent() {
         }
     }
 
-    async function runImport(file: File, replace: boolean) {
+    /**
+     * Imports the file; resolves to `false` if it can only be imported by
+     * replacing the existing data.
+     */
+    async function runImport(file: File, replace: boolean): Promise<boolean> {
         setIsImporting(true);
         try {
             const result = await importFile(file, { replace });
@@ -102,12 +93,26 @@ function RouteComponent() {
             );
         } catch (error) {
             if (!replace && error instanceof ApiError && error.status === 409) {
-                setFileToReplaceWith(file);
-                return;
+                return false;
             }
             toast.error(importErrorMessage(error));
         } finally {
             setIsImporting(false);
+        }
+        return true;
+    }
+
+    async function importOrReplace(file: File) {
+        if (
+            !(await runImport(file, false)) &&
+            (await confirmAction({
+                title: m.settings_import_replace_title(),
+                description: m.settings_import_replace_description(),
+                confirmLabel: m.action_replace(),
+                destructive: true,
+            }))
+        ) {
+            await runImport(file, true);
         }
     }
 
@@ -115,7 +120,7 @@ function RouteComponent() {
         const file = event.target.files?.[0];
         event.target.value = "";
         if (file) {
-            void runImport(file, false);
+            void importOrReplace(file);
         }
     }
 
@@ -183,40 +188,6 @@ function RouteComponent() {
                         onChange={handleFileChange}
                     />
                 </Card>
-
-                <AlertDialog
-                    open={fileToReplaceWith !== null}
-                    onOpenChange={(open) => {
-                        if (!open) {
-                            setFileToReplaceWith(null);
-                        }
-                    }}
-                >
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>
-                                {m.settings_import_replace_title()}
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                                {m.settings_import_replace_description()}
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>
-                                {m.action_cancel()}
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={() => {
-                                    if (fileToReplaceWith) {
-                                        void runImport(fileToReplaceWith, true);
-                                    }
-                                }}
-                            >
-                                {m.action_replace()}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
 
                 <p
                     className={`py-4 text-center text-body-small
