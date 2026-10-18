@@ -8,10 +8,12 @@ const DAY_SECONDS = 60 * 60 * 24;
 
 export interface AuthConfig {
     secret: string;
+
     /**
      * Public URL of the app, e.g. `https://finances.example.com`.
      */
     baseURL: string;
+
     /**
      * Extra origins allowed to call auth endpoints, e.g. a LAN address.
      */

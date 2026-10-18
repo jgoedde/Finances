@@ -10,10 +10,12 @@ export interface Output {
  */
 export interface CommandContext {
     db: DB;
+
     /**
      * SQLite file behind `db`.
      */
     databasePath: string;
+
     /**
      * Public URL of the instance, used to build links.
      */

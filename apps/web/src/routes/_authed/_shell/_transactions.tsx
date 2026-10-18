@@ -14,6 +14,7 @@ const transactionsSearchSchema = z.object({
      * Only this category's transactions of the month.
      */
     category: z.string().min(1).optional().catch(undefined),
+
     /**
      * Search term; searches all months instead of the selected one.
      */
