@@ -3,10 +3,5 @@
     "react-x/no-nested-component-definitions": {
       "count": 3
     }
-  },
-  "src/features/transactions/components/form/transaction-input.tsx": {
-    "react-hooks/purity": {
-      "count": 1
-    }
   }
 }

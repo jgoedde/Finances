@@ -12,7 +12,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
 /** @typedef {{}} Action_NextInputs */
-/** @typedef {{}} Action_OkInputs */
 /** @typedef {{}} Action_ReloadInputs */
 /** @typedef {{}} Action_RemoveInputs */
 /** @typedef {{}} Action_ReplaceInputs */
@@ -192,7 +191,16 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Sync_Status_SyncedInputs */
 /** @typedef {{}} Sync_TitleInputs */
 /** @typedef {{}} Transaction_AmountInputs */
+/** @typedef {{}} Transaction_Amount_MissingInputs */
+/** @typedef {{}} Transaction_CategoryInputs */
+/** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
+/** @typedef {{}} Transaction_Counterparty_ExpenseInputs */
+/** @typedef {{}} Transaction_Counterparty_IncomeInputs */
+/** @typedef {{}} Transaction_Counterparty_MissingInputs */
+/** @typedef {{}} Transaction_DateInputs */
+/** @typedef {{}} Transaction_Date_TodayInputs */
+/** @typedef {{}} Transaction_Date_YesterdayInputs */
 /** @typedef {{}} Transaction_Delete_DescriptionInputs */
 /** @typedef {{}} Transaction_Delete_TitleInputs */
 /** @typedef {{}} Transaction_DescriptionInputs */
@@ -200,16 +208,14 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
-/** @typedef {{}} Transaction_Form_IncompleteInputs */
-/** @typedef {{}} Transaction_Form_Incomplete_TitleInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
+/** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
-/** @typedef {{ name: NonNullable<unknown> }} Transaction_Remove_CategoryInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
 import * as __en from "./en.js"
 import * as __de from "./de.js"
@@ -352,20 +358,6 @@ export const action_next = /** @type {((inputs?: Action_NextInputs, options?: { 
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_next(inputs)
 	return __en.action_next(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "OK" |
-*
-* @param {Action_OkInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const action_ok = /** @type {((inputs?: Action_OkInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_OkInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.action_ok(inputs)
-	return __en.action_ok(inputs)
 });
 /**
 * | output |
@@ -2878,6 +2870,48 @@ export const transaction_amount = /** @type {((inputs?: Transaction_AmountInputs
 /**
 * | output |
 * | --- |
+* | "Enter an amount." |
+*
+* @param {Transaction_Amount_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_amount_missing = /** @type {((inputs?: Transaction_Amount_MissingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Amount_MissingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_amount_missing(inputs)
+	return __en.transaction_amount_missing(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Category" |
+*
+* @param {Transaction_CategoryInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_category = /** @type {((inputs?: Transaction_CategoryInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_CategoryInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_category(inputs)
+	return __en.transaction_category(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Choose a category." |
+*
+* @param {Transaction_Category_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_category_missing = /** @type {((inputs?: Transaction_Category_MissingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Category_MissingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_category_missing(inputs)
+	return __en.transaction_category_missing(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Choose date" |
 *
 * @param {Transaction_Choose_DateInputs} inputs
@@ -2888,6 +2922,90 @@ export const transaction_choose_date = /** @type {((inputs?: Transaction_Choose_
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_choose_date(inputs)
 	return __en.transaction_choose_date(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Where?" |
+*
+* @param {Transaction_Counterparty_ExpenseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_expense = /** @type {((inputs?: Transaction_Counterparty_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Counterparty_ExpenseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_counterparty_expense(inputs)
+	return __en.transaction_counterparty_expense(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "From whom?" |
+*
+* @param {Transaction_Counterparty_IncomeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_income = /** @type {((inputs?: Transaction_Counterparty_IncomeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Counterparty_IncomeInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_counterparty_income(inputs)
+	return __en.transaction_counterparty_income(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Enter where or from whom." |
+*
+* @param {Transaction_Counterparty_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_missing = /** @type {((inputs?: Transaction_Counterparty_MissingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Counterparty_MissingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_counterparty_missing(inputs)
+	return __en.transaction_counterparty_missing(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Date" |
+*
+* @param {Transaction_DateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date = /** @type {((inputs?: Transaction_DateInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_DateInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_date(inputs)
+	return __en.transaction_date(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Today" |
+*
+* @param {Transaction_Date_TodayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date_today = /** @type {((inputs?: Transaction_Date_TodayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Date_TodayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_date_today(inputs)
+	return __en.transaction_date_today(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Yesterday" |
+*
+* @param {Transaction_Date_YesterdayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date_yesterday = /** @type {((inputs?: Transaction_Date_YesterdayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Date_YesterdayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_date_yesterday(inputs)
+	return __en.transaction_date_yesterday(inputs)
 });
 /**
 * | output |
@@ -2990,34 +3108,6 @@ export const transaction_expense_saved = /** @type {((inputs: Transaction_Expens
 /**
 * | output |
 * | --- |
-* | "Please select a category and enter an amount and a name." |
-*
-* @param {Transaction_Form_IncompleteInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_form_incomplete = /** @type {((inputs?: Transaction_Form_IncompleteInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Form_IncompleteInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.transaction_form_incomplete(inputs)
-	return __en.transaction_form_incomplete(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Missing details" |
-*
-* @param {Transaction_Form_Incomplete_TitleInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_form_incomplete_title = /** @type {((inputs?: Transaction_Form_Incomplete_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Form_Incomplete_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.transaction_form_incomplete_title(inputs)
-	return __en.transaction_form_incomplete_title(inputs)
-});
-/**
-* | output |
-* | --- |
 * | "The income was deleted." |
 *
 * @param {Transaction_Income_DeletedInputs} inputs
@@ -3074,6 +3164,20 @@ export const transaction_list_today = /** @type {((inputs?: Transaction_List_Tod
 /**
 * | output |
 * | --- |
+* | "More details" |
+*
+* @param {Transaction_MoreInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_more = /** @type {((inputs?: Transaction_MoreInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_MoreInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_more(inputs)
+	return __en.transaction_more(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "New transaction" |
 *
 * @param {Transaction_NewInputs} inputs
@@ -3112,20 +3216,6 @@ export const transaction_not_found = /** @type {((inputs?: Transaction_Not_Found
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_not_found(inputs)
 	return __en.transaction_not_found(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Remove category {name}" |
-*
-* @param {Transaction_Remove_CategoryInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_remove_category = /** @type {((inputs: Transaction_Remove_CategoryInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Remove_CategoryInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.transaction_remove_category(inputs)
-	return __en.transaction_remove_category(inputs)
 });
 /**
 * | output |

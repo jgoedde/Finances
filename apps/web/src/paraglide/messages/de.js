@@ -10,7 +10,6 @@
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
 /** @typedef {{}} Action_NextInputs */
-/** @typedef {{}} Action_OkInputs */
 /** @typedef {{}} Action_ReloadInputs */
 /** @typedef {{}} Action_RemoveInputs */
 /** @typedef {{}} Action_ReplaceInputs */
@@ -190,7 +189,16 @@
 /** @typedef {{}} Sync_Status_SyncedInputs */
 /** @typedef {{}} Sync_TitleInputs */
 /** @typedef {{}} Transaction_AmountInputs */
+/** @typedef {{}} Transaction_Amount_MissingInputs */
+/** @typedef {{}} Transaction_CategoryInputs */
+/** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
+/** @typedef {{}} Transaction_Counterparty_ExpenseInputs */
+/** @typedef {{}} Transaction_Counterparty_IncomeInputs */
+/** @typedef {{}} Transaction_Counterparty_MissingInputs */
+/** @typedef {{}} Transaction_DateInputs */
+/** @typedef {{}} Transaction_Date_TodayInputs */
+/** @typedef {{}} Transaction_Date_YesterdayInputs */
 /** @typedef {{}} Transaction_Delete_DescriptionInputs */
 /** @typedef {{}} Transaction_Delete_TitleInputs */
 /** @typedef {{}} Transaction_DescriptionInputs */
@@ -198,16 +206,14 @@
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
-/** @typedef {{}} Transaction_Form_IncompleteInputs */
-/** @typedef {{}} Transaction_Form_Incomplete_TitleInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
+/** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
-/** @typedef {{ name: NonNullable<unknown> }} Transaction_Remove_CategoryInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
 import * as registry from "../registry.js"
 
@@ -250,10 +256,6 @@ export const action_import = /** @type {(inputs: Action_ImportInputs) => Localiz
 
 export const action_next = /** @type {(inputs: Action_NextInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Weiter`)
-};
-
-export const action_ok = /** @type {(inputs: Action_OkInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`OK`)
 };
 
 export const action_reload = /** @type {(inputs: Action_ReloadInputs) => LocalizedString} */ () => {
@@ -976,8 +978,44 @@ export const transaction_amount = /** @type {(inputs: Transaction_AmountInputs) 
 	return /** @type {LocalizedString} */ (`Preis`)
 };
 
+export const transaction_amount_missing = /** @type {(inputs: Transaction_Amount_MissingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Gib einen Betrag ein.`)
+};
+
+export const transaction_category = /** @type {(inputs: Transaction_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kategorie`)
+};
+
+export const transaction_category_missing = /** @type {(inputs: Transaction_Category_MissingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wähle eine Kategorie.`)
+};
+
 export const transaction_choose_date = /** @type {(inputs: Transaction_Choose_DateInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Datum wählen`)
+};
+
+export const transaction_counterparty_expense = /** @type {(inputs: Transaction_Counterparty_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wo?`)
+};
+
+export const transaction_counterparty_income = /** @type {(inputs: Transaction_Counterparty_IncomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Von wem?`)
+};
+
+export const transaction_counterparty_missing = /** @type {(inputs: Transaction_Counterparty_MissingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Gib an, wo oder von wem.`)
+};
+
+export const transaction_date = /** @type {(inputs: Transaction_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Datum`)
+};
+
+export const transaction_date_today = /** @type {(inputs: Transaction_Date_TodayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Heute`)
+};
+
+export const transaction_date_yesterday = /** @type {(inputs: Transaction_Date_YesterdayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Gestern`)
 };
 
 export const transaction_delete_description = /** @type {(inputs: Transaction_Delete_DescriptionInputs) => LocalizedString} */ () => {
@@ -1008,14 +1046,6 @@ export const transaction_expense_saved = /** @type {(inputs: Transaction_Expense
 	return /** @type {LocalizedString} */ (`Ausgabe bei ${i?.name} gespeichert`)
 };
 
-export const transaction_form_incomplete = /** @type {(inputs: Transaction_Form_IncompleteInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Bitte wähle eine Kategorie und gib einen Betrag und einen Namen an.`)
-};
-
-export const transaction_form_incomplete_title = /** @type {(inputs: Transaction_Form_Incomplete_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Angaben fehlen`)
-};
-
 export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Die Einnahme wurde gelöscht.`)
 };
@@ -1032,6 +1062,10 @@ export const transaction_list_today = /** @type {(inputs: Transaction_List_Today
 	return /** @type {LocalizedString} */ (`Heute`)
 };
 
+export const transaction_more = /** @type {(inputs: Transaction_MoreInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Weitere Angaben`)
+};
+
 export const transaction_new = /** @type {(inputs: Transaction_NewInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Neue Geldbewegung`)
 };
@@ -1042,10 +1076,6 @@ export const transaction_no_description = /** @type {(inputs: Transaction_No_Des
 
 export const transaction_not_found = /** @type {(inputs: Transaction_Not_FoundInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Geldbewegung nicht gefunden.`)
-};
-
-export const transaction_remove_category = /** @type {(inputs: Transaction_Remove_CategoryInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Kategorie ${i?.name} entfernen`)
 };
 
 export const transaction_updated = /** @type {(inputs: Transaction_UpdatedInputs) => LocalizedString} */ () => {

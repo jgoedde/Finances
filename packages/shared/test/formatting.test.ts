@@ -5,6 +5,7 @@ import {
     formatLongDate,
     formatMonthYear,
     formatPercent,
+    formatShortDate,
     formatShortMonth,
     formatWeekday,
 } from "#/formatting.ts";
@@ -41,6 +42,8 @@ describe("formatting", () => {
         expect(formatDayHeading(date, "en")).toBe("Sun, October 18");
         expect(formatLongDate(date, "de")).toBe("18. Oktober 2026");
         expect(formatLongDate(date, "en")).toBe("October 18, 2026");
+        expect(formatShortDate(date, "de")).toBe("18. Okt.");
+        expect(formatShortDate(date, "en")).toBe("Oct 18");
     });
 
     it("formats weekdays from Monday", () => {
