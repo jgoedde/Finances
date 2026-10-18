@@ -211,6 +211,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
+/** @typedef {{}} Transaction_FabInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
@@ -3149,6 +3150,20 @@ export const transaction_expense_saved = /** @type {((inputs: Transaction_Expens
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_expense_saved(inputs)
 	return __en.transaction_expense_saved(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Track" |
+*
+* @param {Transaction_FabInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_fab = /** @type {((inputs?: Transaction_FabInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_FabInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_fab(inputs)
+	return __en.transaction_fab(inputs)
 });
 /**
 * | output |

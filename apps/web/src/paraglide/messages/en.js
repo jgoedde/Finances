@@ -209,6 +209,7 @@
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
+/** @typedef {{}} Transaction_FabInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
@@ -1059,6 +1060,10 @@ export const transaction_expense_deleted = /** @type {(inputs: Transaction_Expen
 
 export const transaction_expense_saved = /** @type {(inputs: Transaction_Expense_SavedInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`Expense at ${i?.name} saved`)
+};
+
+export const transaction_fab = /** @type {(inputs: Transaction_FabInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Track`)
 };
 
 export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {

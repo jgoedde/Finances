@@ -140,6 +140,7 @@
 
     "kind_expense": "Ausgabe",
     "kind_income": "Einnahme",
+    "transaction_fab": "Erfassen",
     "transaction_new": "Neue Geldbewegung",
     "transaction_edit": "Geldbewegung bearbeiten",
     "transaction_expense_saved": "Ausgabe bei {name} gespeichert",

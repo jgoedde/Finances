@@ -140,6 +140,7 @@
 
     "kind_expense": "Expense",
     "kind_income": "Income",
+    "transaction_fab": "Track",
     "transaction_new": "New transaction",
     "transaction_edit": "Edit transaction",
     "transaction_expense_saved": "Expense at {name} saved",
