@@ -1,4 +1,5 @@
 import { addMonths, addWeeks, addYears } from "date-fns";
+import { m } from "#/paraglide/messages.js";
 
 export const DATE_FILTER_OPTIONS = [
     "any",
@@ -29,15 +30,15 @@ export function getOlderThan(option: DateFilterOption): number | undefined {
 export function getDateFilterStr(option: DateFilterOption) {
     switch (option) {
         case "any":
-            return "Beliebiger Zeitraum";
+            return m.period_any();
         case "oneWeek":
-            return "Älter als eine Woche";
+            return m.period_older_than_week();
         case "oneMonth":
-            return "Älter als einen Monat";
+            return m.period_older_than_month();
         case "halfYear":
-            return "Älter als 6 Monate";
+            return m.period_older_than_half_year();
         case "oneYear":
-            return "Älter als ein Jahr";
+            return m.period_older_than_year();
         default:
             throw new Error("Unrecognized date filter");
     }

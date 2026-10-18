@@ -11,6 +11,7 @@ import {
 } from "#/components/ui/alert-dialog.tsx";
 import { Trash } from "lucide-react";
 import { Button } from "#/components/ui/button.tsx";
+import { m } from "#/paraglide/messages.js";
 
 type Props = {
     onDelete: VoidFunction;
@@ -24,23 +25,24 @@ export function DeleteButtonWithConfirmDialog({ onDelete }: Props) {
                     type={"button"}
                     variant={"ghost"}
                     size={"icon"}
-                    aria-label={"Löschen"}
+                    aria-label={m.action_delete()}
                 >
                     <Trash />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Buchung löschen?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                        {m.transaction_delete_title()}
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
-                        Diese Aktion kann nicht rückgängig gemacht werden. Die
-                        Buchung wird aus der Historie gelöscht.
+                        {m.transaction_delete_description()}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogCancel>{m.action_cancel()}</AlertDialogCancel>
                     <AlertDialogAction onClick={onDelete}>
-                        Löschen
+                        {m.action_delete()}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

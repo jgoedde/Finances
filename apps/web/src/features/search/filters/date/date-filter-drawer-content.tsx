@@ -11,6 +11,7 @@ import {
     type DateFilterOption,
     getDateFilterStr,
 } from "#/features/search/filters/date/date-filter.ts";
+import { m } from "#/paraglide/messages.js";
 
 interface Props {
     dateFilterOption: DateFilterOption;
@@ -26,9 +27,9 @@ export function DateFilterDrawerContent({
     return (
         <>
             <DrawerHeader className={"pt-0 text-left"}>
-                <DrawerTitle>Zeitraum</DrawerTitle>
+                <DrawerTitle>{m.period()}</DrawerTitle>
                 <DrawerDescription className={"sr-only"}>
-                    Zeitraum für die Suche wählen
+                    {m.period_choose_search()}
                 </DrawerDescription>
             </DrawerHeader>
             <RadioGroup
@@ -52,7 +53,7 @@ export function DateFilterDrawerContent({
                 ))}
             </RadioGroup>
             <Button variant={"text"} className={"m-4 self-start"}>
-                Benutzerdefinierter Zeitraum
+                {m.period_custom()}
             </Button>
         </>
     );

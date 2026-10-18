@@ -10,6 +10,7 @@ import {
     startOfDay,
     startOfMonth,
 } from "date-fns";
+import { m } from "#/paraglide/messages.js";
 
 const now = new Date();
 
@@ -37,17 +38,17 @@ export function LazyRow() {
         >
             <StatCard
                 icon={<Clock />}
-                label={"Heute ausgegeben"}
+                label={m.insights_spent_today()}
                 amount={spentToday}
             />
             <StatCard
                 icon={<Calendar />}
-                label={"Diesen Monat ausgegeben"}
+                label={m.insights_spent_this_month()}
                 amount={spentThisMonth}
             />
             <StatCard
                 icon={<History />}
-                label={"Gestern ausgegeben"}
+                label={m.insights_spent_yesterday()}
                 amount={spentYesterday}
             />
         </div>

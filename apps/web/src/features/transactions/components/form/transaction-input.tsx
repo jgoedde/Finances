@@ -10,6 +10,8 @@ import { Checkbox } from "#/components/ui/checkbox.tsx";
 import { Label } from "#/components/ui/label.tsx";
 import Fuse from "fuse.js";
 import type { TransactionKind } from "@finances/shared";
+import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
+import { m } from "#/paraglide/messages.js";
 
 const now = new Date();
 
@@ -151,7 +153,7 @@ export function TransactionInput({
                             "shrink-0 text-body-large text-on-surface-variant"
                         }
                     >
-                        {transactionType === "expense" ? "Ausgabe" : "Einnahme"}
+                        {getTransactionKindLabel(transactionType)}
                     </Label>
                     <Input
                         id={"transaction"}
@@ -175,7 +177,7 @@ export function TransactionInput({
                         htmlFor={"exceptional"}
                         className={"text-body-medium text-on-surface"}
                     >
-                        Außerordentlich
+                        {m.transaction_exceptional()}
                     </Label>
                 </div>
             </div>

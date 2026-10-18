@@ -9,6 +9,7 @@ import {
     FixedCostWizard,
     type FixedCostWizardValues,
 } from "#/features/fixed-costs/fixed-cost-wizard.tsx";
+import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/fixed-costs/new")({
     component: RouteComponent,
@@ -32,14 +33,14 @@ function RouteComponent() {
             currency: "EUR",
             active: true,
         });
-        toast.success(`Fixkosten „${values.name}“ erfasst`);
+        toast.success(m.fixed_cost_created({ name: values.name }));
         void navigate({ to: "/" });
     }
 
     return (
         <FixedCostWizard
-            title={"Neue Fixkosten"}
-            submitLabel={"Speichern"}
+            title={m.fixed_cost_new()}
+            submitLabel={m.action_save()}
             initialValues={{
                 name: "",
                 amount: null,

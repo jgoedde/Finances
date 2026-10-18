@@ -5,5 +5,7 @@
         "type": true
     },
     "tags": ["-lintignore"],
-    "includeEntryExports": true
+    "includeEntryExports": true,
+    "ignore": ["apps/web/src/paraglide/**"],
+    "ignoreDependencies": ["@inlang/plugin-message-format"]
 }

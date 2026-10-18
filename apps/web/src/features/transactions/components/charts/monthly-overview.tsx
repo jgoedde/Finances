@@ -16,6 +16,7 @@ import {
 import { ExportSankeyDialog } from "#/features/sankey/export-as-sankey.tsx";
 import { useSpendingPerCategory } from "#/features/transactions/insight-queries.ts";
 import { Card } from "#/components/ui/card.tsx";
+import { m } from "#/paraglide/messages.js";
 
 export function MonthlyOverview() {
     const categories = useSpendingPerCategory();
@@ -88,7 +89,7 @@ export function MonthlyOverview() {
                     defaultValue={"item-1"}
                 >
                     <AccordionItem value={"item-1"}>
-                        <AccordionTrigger>Mehr</AccordionTrigger>
+                        <AccordionTrigger>{m.insights_more()}</AccordionTrigger>
                         <AccordionContent>
                             <div
                                 className="flex flex-col divide-y
@@ -153,9 +154,11 @@ function MyLegend({
                     className={`flex items-center text-body-medium
                         text-on-surface-variant`}
                 >
-                    {expensesCount} Ausgaben,{" "}
+                    {m.insights_expense_count({ count: expensesCount })},{" "}
                     <CircleSlash2 className={"mx-1 size-3"} />
-                    {formatEuro(averageExpenseAmount)} pro Ausgabe
+                    {m.insights_per_expense({
+                        amount: formatEuro(averageExpenseAmount),
+                    })}
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@ import { convertHexToTonal } from "#/utils/color.ts";
 import { Badge } from "#/components/ui/badge.tsx";
 import type { Category } from "@finances/shared";
 import { XIcon } from "lucide-react";
+import { m } from "#/paraglide/messages.js";
 
 interface SelectedCategoryBadgeProps {
     category: Category;
@@ -31,7 +32,9 @@ export function SelectedCategoryBadge({
         >
             <button
                 type={"button"}
-                aria-label={`Kategorie ${category.name} entfernen`}
+                aria-label={m.transaction_remove_category({
+                    name: category.name,
+                })}
                 onClick={() => onClear()}
             >
                 {category.name}

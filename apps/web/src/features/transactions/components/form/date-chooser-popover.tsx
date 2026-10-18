@@ -5,8 +5,8 @@ import {
 } from "#/components/ui/popover.tsx";
 import { ClockFading } from "lucide-react";
 import { Calendar } from "#/components/ui/calendar.tsx";
-import { de } from "date-fns/locale";
 import { Button } from "#/components/ui/button.tsx";
+import { m } from "#/paraglide/messages.js";
 
 type Props = {
     selected: Date;
@@ -21,14 +21,13 @@ export function DateChooserPopover({ onSelect, selected }: Props) {
                     type={"button"}
                     variant={"ghost"}
                     size={"icon"}
-                    aria-label={"Datum wählen"}
+                    aria-label={m.transaction_choose_date()}
                 >
                     <ClockFading />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
                 <Calendar
-                    locale={de}
                     mode="single"
                     selected={selected}
                     onSelect={onSelect}

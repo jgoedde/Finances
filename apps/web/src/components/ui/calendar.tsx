@@ -9,12 +9,15 @@ import {
     DayPicker,
     getDefaultClassNames,
 } from "react-day-picker";
+import { de, enUS } from "react-day-picker/locale";
 import { Button, buttonVariants } from "#/components/ui/button.tsx";
 import { cn } from "#/lib/cn.ts";
+import { getLocale } from "#/paraglide/runtime.js";
 
 function Calendar({
     className,
     classNames,
+    locale = getLocale() === "de" ? de : enUS,
     showOutsideDays = true,
     captionLayout = "label",
     buttonVariant = "ghost",
@@ -28,6 +31,7 @@ function Calendar({
 
     return (
         <DayPicker
+            locale={locale}
             showOutsideDays={showOutsideDays}
             className={cn(
                 `group/calendar bg-surface-container-high p-3
@@ -41,7 +45,7 @@ function Calendar({
             captionLayout={captionLayout}
             formatters={{
                 formatMonthDropdown: (date) =>
-                    date.toLocaleString("default", { month: "short" }),
+                    date.toLocaleString(getLocale(), { month: "short" }),
                 ...formatters,
             }}
             classNames={{

@@ -17,6 +17,7 @@ import { Button } from "#/components/ui/button.tsx";
 import { useTransactionSearch } from "#/features/search/search-queries.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
+import { m } from "#/paraglide/messages.js";
 
 const searchSchema = z.object({
     q: z.string().optional().catch(undefined),
@@ -113,20 +114,20 @@ function RouteComponent() {
                     <input
                         ref={inputRef}
                         type={"search"}
-                        aria-label={"Suche"}
+                        aria-label={m.search_label()}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className={`min-w-0 grow bg-transparent text-body-large
                             text-on-surface caret-primary outline-none
                             placeholder:text-on-surface-variant
                             [&::-webkit-search-cancel-button]:hidden`}
-                        placeholder={"Buchung/Transaktion suchen"}
+                        placeholder={m.search_placeholder()}
                     />
                     {search !== "" && (
                         <Button
                             variant={"ghost"}
                             size={"icon"}
-                            aria-label={"Suche leeren"}
+                            aria-label={m.search_clear()}
                             onClick={() => {
                                 setSearch("");
                                 inputRef.current?.focus();
@@ -154,7 +155,7 @@ function RouteComponent() {
                     >
                         <button type={"button"}>
                             {dateFilterOption === "any"
-                                ? "Zeitraum"
+                                ? m.period()
                                 : getDateFilterStr(dateFilterOption)}
                             <ChevronDown />
                         </button>
@@ -165,7 +166,7 @@ function RouteComponent() {
                         className={`my-auto text-center text-body-large
                         text-on-surface-variant`}
                     >
-                        Die Suche ist offline nicht verfügbar.
+                        {m.search_offline()}
                     </p>
                 )}
                 {isSuccess &&
@@ -177,7 +178,7 @@ function RouteComponent() {
                                     "text-title-large text-on-surface-variant"
                                 }
                             >
-                                Keine Ergebnisse
+                                {m.search_no_results()}
                             </h3>
                         </div>
                     )}
@@ -194,7 +195,7 @@ function RouteComponent() {
                                 disabled={!isOnline || isFetchingNextPage}
                                 onClick={() => void fetchNextPage()}
                             >
-                                Mehr laden
+                                {m.search_load_more()}
                             </Button>
                         </OfflineHint>
                     </div>

@@ -7,6 +7,13 @@ import {
     isRunningOn,
     toIsoDate,
 } from "@finances/shared";
+import { m } from "#/paraglide/messages.js";
+
+export const INTERVAL_LABELS = {
+    monthly: m.fixed_cost_interval_monthly,
+    quarterly: m.fixed_cost_interval_quarterly,
+    yearly: m.fixed_cost_interval_yearly,
+} as const satisfies Record<FixedCostInterval, () => string>;
 
 /** Fixed cost hydrated with its category and derived amounts, for the UI. */
 export interface FixedCost {
@@ -27,12 +34,6 @@ export interface FixedCost {
     isRunning: boolean;
 }
 
-const UNKNOWN_CATEGORY: FixedCostCategory = {
-    id: "",
-    name: "Unbekannt",
-    description: null,
-};
-
 export function toFixedCost(
     record: FixedCostRecord,
     categories: FixedCostCategory[],
@@ -44,9 +45,11 @@ export function toFixedCost(
         amount: record.amount,
         currency: record.currency,
         interval: record.interval,
-        category:
-            categories.find((c) => c.id === record.categoryId) ??
-            UNKNOWN_CATEGORY,
+        category: categories.find((c) => c.id === record.categoryId) ?? {
+            id: "",
+            name: m.fixed_cost_unknown_category(),
+            description: null,
+        },
         active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,

@@ -5,7 +5,6 @@ import {
     type TransactionFormSubmitData,
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
-import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
 import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
 import {
     useDeleteTransaction,
@@ -13,7 +12,8 @@ import {
 } from "#/features/transactions/transaction-mutations.ts";
 import { findCachedTransaction } from "#/features/transactions/pending-changes.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
-import { ApiError } from "#/api/api-client.ts";
+import { apiErrorCode } from "#/api/api-errors.ts";
+import { m } from "#/paraglide/messages.js";
 import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/_authed/edit/$id")({
@@ -30,14 +30,12 @@ export const Route = createFileRoute("/_authed/edit/$id")({
         return queryClient.query({ ...query, staleTime: "static" });
     },
     onError: (error) => {
-        if (error instanceof ApiError && error.status === 404) {
-            toast.error("Geldbewegung nicht gefunden.");
+        if (apiErrorCode(error) === "not_found") {
+            toast.error(m.transaction_not_found());
             throw redirect({ to: "/" });
         }
 
-        toast.error(
-            "Es ist ein unbekannter Fehler aufgetreten. Bitte versuche es erneut.",
-        );
+        toast.error(m.error_unexpected());
         throw redirect({ to: "/" });
     },
 });
@@ -63,9 +61,9 @@ function RouteComponent() {
             currency: "EUR",
         });
         void navigate({ to: "/" });
-        toast.success(`Geldbewegung aktualisiert${syncLaterHint()}`, {
+        toast.success(`${m.transaction_updated()}${syncLaterHint()}`, {
             action: {
-                label: "Rückgängig",
+                label: m.action_undo(),
                 onClick: () => saveTransaction.mutate(transaction),
             },
         });
@@ -75,19 +73,20 @@ function RouteComponent() {
         deleteTransaction.mutate(transaction);
         void navigate({ to: "/" });
         // Deleted ids can't be reused, so restoring saves a copy.
-        toast.success(
-            `Die ${getTransactionKindLabel(transaction.kind)} wurde gelöscht.${syncLaterHint()}`,
-            {
-                action: {
-                    label: "Wiederherstellen",
-                    onClick: () =>
-                        saveTransaction.mutate({
-                            ...transaction,
-                            id: nanoid(8),
-                        }),
-                },
+        const deleted =
+            transaction.kind === "income"
+                ? m.transaction_income_deleted()
+                : m.transaction_expense_deleted();
+        toast.success(`${deleted}${syncLaterHint()}`, {
+            action: {
+                label: m.action_restore(),
+                onClick: () =>
+                    saveTransaction.mutate({
+                        ...transaction,
+                        id: nanoid(8),
+                    }),
             },
-        );
+        });
     };
 
     return (
@@ -104,7 +103,7 @@ function RouteComponent() {
             }}
             onDelete={onTransactionFormDelete}
             onSubmit={onTransactionFormSubmit}
-            title={"Geldbewegung bearbeiten"}
+            title={m.transaction_edit()}
         />
     );
 }

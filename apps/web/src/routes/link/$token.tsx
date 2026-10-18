@@ -4,12 +4,14 @@ import { type SubmitEvent, useState } from "react";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
-import { ApiError, apiFetch } from "#/api/api-client.ts";
+import { apiFetch } from "#/api/api-client.ts";
+import { apiErrorCode, apiErrorMessage } from "#/api/api-errors.ts";
 import { authClient, completeSignIn } from "#/auth/auth-client.ts";
 import { AuthCard } from "#/features/auth/auth-card.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
+import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/link/$token")({
     component: RouteComponent,
@@ -36,15 +38,14 @@ function RouteComponent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (link.isPending) {
-        return <AuthCard title={"Link"}>{null}</AuthCard>;
+        return <AuthCard title={m.link_title()}>{null}</AuthCard>;
     }
 
     if (link.isError) {
         return (
-            <AuthCard title={"Link"}>
+            <AuthCard title={m.link_title()}>
                 <p className="text-body-medium text-on-surface-variant">
-                    Dieser Link ist ungültig, abgelaufen oder wurde bereits
-                    verwendet. Bitte frage nach einem neuen.
+                    {m.link_invalid()}
                 </p>
             </AuthCard>
         );
@@ -56,7 +57,7 @@ function RouteComponent() {
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         if (password !== passwordRepeat) {
-            setError("Die Passwörter stimmen nicht überein.");
+            setError(m.link_passwords_differ());
             return;
         }
 
@@ -72,12 +73,12 @@ function RouteComponent() {
             });
         } catch (e) {
             setIsSubmitting(false);
+            const code = apiErrorCode(e);
+            // Only the username can fail validation.
             setError(
-                e instanceof ApiError && e.status === 409
-                    ? "Dieser Benutzername ist bereits vergeben."
-                    : e instanceof ApiError && e.status === 400
-                      ? "Benutzername: 3–30 Zeichen (Buchstaben, Ziffern, _ und .)."
-                      : "Das hat nicht geklappt. Bitte versuche es erneut.",
+                code === "invalid_request"
+                    ? m.link_username_rules()
+                    : (apiErrorMessage(code) ?? m.error_try_again()),
             );
             return;
         }
@@ -88,18 +89,20 @@ function RouteComponent() {
             password,
         });
         if (result.error) {
-            toast.success("Passwort gespeichert. Bitte melde Dich an.");
+            toast.success(m.link_password_saved_sign_in());
             await navigate({ to: "/login" });
             return;
         }
         await completeSignIn(queryClient);
-        toast.success(isSignup ? "Willkommen!" : "Passwort geändert");
+        toast.success(isSignup ? m.link_welcome() : m.link_password_changed());
         await navigate({ to: "/" });
     }
 
     return (
         <AuthCard
-            title={isSignup ? "Konto erstellen" : "Neues Passwort festlegen"}
+            title={
+                isSignup ? m.link_create_account() : m.link_set_new_password()
+            }
         >
             <form
                 className="flex flex-col gap-4"
@@ -108,7 +111,7 @@ function RouteComponent() {
                 {isSignup ? (
                     <Field>
                         <FieldLabel htmlFor={"username"}>
-                            Benutzername
+                            {m.auth_username()}
                         </FieldLabel>
                         <Input
                             id={"username"}
@@ -125,11 +128,13 @@ function RouteComponent() {
                     </Field>
                 ) : (
                     <p className="text-body-medium text-on-surface-variant">
-                        Für <strong>{linkInfo.username}</strong>
+                        {m.link_for_user()} <strong>{linkInfo.username}</strong>
                     </p>
                 )}
                 <Field>
-                    <FieldLabel htmlFor={"password"}>Passwort</FieldLabel>
+                    <FieldLabel htmlFor={"password"}>
+                        {m.auth_password()}
+                    </FieldLabel>
                     <Input
                         id={"password"}
                         type={"password"}
@@ -140,12 +145,14 @@ function RouteComponent() {
                         minLength={MIN_PASSWORD_LENGTH}
                     />
                     <FieldDescription>
-                        Mindestens {MIN_PASSWORD_LENGTH} Zeichen
+                        {m.link_min_password_length({
+                            count: MIN_PASSWORD_LENGTH,
+                        })}
                     </FieldDescription>
                 </Field>
                 <Field>
                     <FieldLabel htmlFor={"password-repeat"}>
-                        Passwort wiederholen
+                        {m.link_repeat_password()}
                     </FieldLabel>
                     <Input
                         id={"password-repeat"}
@@ -168,7 +175,7 @@ function RouteComponent() {
                     className={"mt-2 self-center"}
                 >
                     <Check />
-                    Speichern
+                    {m.action_save()}
                 </Button>
             </form>
         </AuthCard>

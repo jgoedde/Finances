@@ -6,6 +6,7 @@ import { TransactionList } from "#/features/transactions/components/list/transac
 import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
 import { Insights } from "#/features/transactions/components/insights.tsx";
 import { FixedCostsTable } from "#/features/fixed-costs/fixed-costs-table.tsx";
+import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/")({
     component: RouteComponent,
@@ -43,7 +44,7 @@ function RouteComponent() {
                         text-body-small text-on-surface-variant`}
                 >
                     <span>
-                        Ausgabentracker{" "}
+                        {m.app_name()}{" "}
                         <a
                             className={`text-primary underline-offset-4
                                 hover:underline`}

@@ -11,7 +11,9 @@ import {
     FixedCostWizard,
     type FixedCostWizardValues,
 } from "#/features/fixed-costs/fixed-cost-wizard.tsx";
-import { ApiError } from "#/api/api-client.ts";
+import { apiErrorCode } from "#/api/api-errors.ts";
+import { m } from "#/paraglide/messages.js";
+
 export const Route = createFileRoute("/_authed/fixed-costs/$id")({
     component: RouteComponent,
     loader: ({ context, params }) =>
@@ -26,14 +28,12 @@ export const Route = createFileRoute("/_authed/fixed-costs/$id")({
             }),
         ]),
     onError: (error) => {
-        if (error instanceof ApiError && error.status === 404) {
-            toast.error("Fixkostenstelle nicht gefunden.");
+        if (apiErrorCode(error) === "not_found") {
+            toast.error(m.fixed_cost_not_found());
             throw redirect({ to: "/" });
         }
 
-        toast.error(
-            "Es ist ein unbekannter Fehler aufgetreten. Bitte versuche es erneut.",
-        );
+        toast.error(m.error_unexpected());
         throw redirect({ to: "/" });
     },
 });
@@ -49,14 +49,14 @@ function RouteComponent() {
 
     function save(values: FixedCostWizardValues) {
         updateFixedCost.mutate({ id, patch: values });
-        toast.success("Fixkosten aktualisiert");
+        toast.success(m.fixed_cost_updated());
         void navigate({ to: "/" });
     }
 
     return (
         <FixedCostWizard
-            title={"Fixkosten bearbeiten"}
-            submitLabel={"Aktualisieren"}
+            title={m.fixed_cost_edit()}
+            submitLabel={m.action_update()}
             initialValues={{
                 name: fixedCost.name,
                 amount: fixedCost.amount,

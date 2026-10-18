@@ -4,6 +4,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "#/components/ui/tooltip.tsx";
+import { m } from "#/paraglide/messages.js";
 
 interface OfflineHintProps {
     /**
@@ -31,7 +32,7 @@ export function OfflineHint({
                     {children}
                 </span>
             </TooltipTrigger>
-            <TooltipContent>Offline nicht verfügbar</TooltipContent>
+            <TooltipContent>{m.offline_unavailable()}</TooltipContent>
         </Tooltip>
     );
 }
