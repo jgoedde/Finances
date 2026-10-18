@@ -12,14 +12,22 @@ import type { AppEnv } from "../http/session.ts";
 import { validate } from "../http/validate.ts";
 import { toFixedCost } from "./fixed-costs.ts";
 
-/** Months in the trend, ending with the selected one. */
+/**
+ * Months in the trend, ending with the selected one.
+ */
 const TREND_MONTHS = 12;
-/** Complete months before the selected one that make up the typical month. */
+/**
+ * Complete months before the selected one that make up the typical month.
+ */
 const TYPICAL_MONTHS = 6;
-/** Covers every time zone's offset from UTC when narrowing by date. */
+/**
+ * Covers every time zone's offset from UTC when narrowing by date.
+ */
 const MAX_OFFSET_MS = 2 * 24 * 60 * 60 * 1000;
 
-/** `YYYY-MM` shifted by `by` months. */
+/**
+ * `YYYY-MM` shifted by `by` months.
+ */
 function shiftMonth(month: string, by: number): string {
     const [year, monthIndex] = month.split("-").map(Number);
     return new Date(Date.UTC(year!, monthIndex! - 1 + by, 1))
@@ -27,7 +35,9 @@ function shiftMonth(month: string, by: number): string {
         .slice(0, 7);
 }
 
-/** Unix ms of the first instant of the month in UTC. */
+/**
+ * Unix ms of the first instant of the month in UTC.
+ */
 function monthStartUtc(month: string): number {
     return Date.parse(`${month}-01T00:00:00Z`);
 }

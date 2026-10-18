@@ -19,11 +19,15 @@ const SAVE_KEY = [...TRANSACTION_MUTATION_KEY, "save"] as const;
 const DELETE_KEY = [...TRANSACTION_MUTATION_KEY, "delete"] as const;
 
 interface MutationMeta extends Record<string, unknown> {
-    /** The user who made the change. */
+    /**
+     * The user who made the change.
+     */
     userId: string;
 }
 
-/** The change belongs to a user who is no longer signed in on this device. */
+/**
+ * The change belongs to a user who is no longer signed in on this device.
+ */
 class ForeignChangeError extends Error {}
 
 /**
@@ -91,7 +95,9 @@ export function registerTransactionMutations(
         };
     }
 
-    /** Refetch only once the queue is empty, so later changes don't flicker. */
+    /**
+     * Refetch only once the queue is empty, so later changes don't flicker.
+     */
     async function refreshWhenIdle() {
         if (
             queryClient.isMutating({ mutationKey: TRANSACTION_MUTATION_KEY }) >
@@ -146,12 +152,16 @@ function useChangeMutation(mutationKey: readonly string[]) {
     });
 }
 
-/** Creates or replaces a transaction; works offline. */
+/**
+ * Creates or replaces a transaction; works offline.
+ */
 export function useSaveTransaction() {
     return useChangeMutation(SAVE_KEY);
 }
 
-/** Deletes a transaction (pass the whole transaction, for display); works offline. */
+/**
+ * Deletes a transaction (pass the whole transaction, for display); works offline.
+ */
 export function useDeleteTransaction() {
     return useChangeMutation(DELETE_KEY);
 }

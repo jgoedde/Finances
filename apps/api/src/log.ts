@@ -2,7 +2,9 @@ import { pino } from "pino";
 
 const options = { level: process.env.LOG_LEVEL ?? "info" };
 
-/** stdout, or stderr for the CLI (see `cli/log-to-stderr.ts`). */
+/**
+ * stdout, or stderr for the CLI (see `cli/log-to-stderr.ts`).
+ */
 const fd = process.env.LOG_DESTINATION === "stderr" ? 2 : 1;
 
 /**

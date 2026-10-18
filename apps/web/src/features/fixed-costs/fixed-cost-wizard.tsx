@@ -54,32 +54,44 @@ export interface FixedCostWizardValues {
     name: string;
     amount: number;
     interval: FixedCostInterval;
-    /** `YYYY-MM-DD` */
+    /**
+     * `YYYY-MM-DD`
+     */
     startDate: string;
-    /** `YYYY-MM-DD` */
+    /**
+     * `YYYY-MM-DD`
+     */
     endDate: string | null;
     categoryId: string;
 }
 
 interface FixedCostWizardProps {
     title: string;
-    /** Label of the final step's button. */
+    /**
+     * Label of the final step's button.
+     */
     submitLabel: string;
     initialValues: {
         name: string;
         amount: number | null;
         interval: FixedCostInterval;
-        /** Defaults to today. */
+        /**
+         * Defaults to today.
+         */
         startDate?: Date;
         endDate: Date | null;
         categoryId: string | undefined;
     };
     categories: FixedCostCategory[];
-    /** Saves the fixed cost optimistically; errors are the caller's to report. */
+    /**
+     * Saves the fixed cost optimistically; errors are the caller's to report.
+     */
     onSubmit: (values: FixedCostWizardValues) => void;
 }
 
-/** Step-by-step form for creating or editing a fixed cost. */
+/**
+ * Step-by-step form for creating or editing a fixed cost.
+ */
 export function FixedCostWizard({
     title,
     submitLabel,

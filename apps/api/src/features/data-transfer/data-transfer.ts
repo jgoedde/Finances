@@ -63,7 +63,9 @@ async function exportData(db: DB, userId: string): Promise<DataExport> {
     };
 }
 
-/** Only an account without transactions and fixed costs can import. */
+/**
+ * Only an account without transactions and fixed costs can import.
+ */
 async function hasData(db: DB, userId: string): Promise<boolean> {
     const [transaction, fixedCost] = await Promise.all([
         db

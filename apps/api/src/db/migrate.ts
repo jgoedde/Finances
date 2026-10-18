@@ -10,7 +10,9 @@ const migrations: Record<string, Migration> = {
     "0001-app-tables": { up: appTables },
 };
 
-/** Our migrations known to this version, in order. */
+/**
+ * Our migrations known to this version, in order.
+ */
 export const migrationNames = Object.keys(migrations);
 
 /**

@@ -7,7 +7,9 @@ interface CategoryChipsProps {
     className?: string;
 }
 
-/** Filter chips for the month's categories, below expanded windows. */
+/**
+ * Filter chips for the month's categories, below expanded windows.
+ */
 export function CategoryChips({ className }: CategoryChipsProps) {
     const totals = useMonthCategoryTotals();
 

@@ -10,9 +10,13 @@ import { TransactionsView } from "#/features/transactions/components/list/transa
 import { cn } from "#/lib/cn.ts";
 
 const transactionsSearchSchema = z.object({
-    /** Only this category's transactions of the month. */
+    /**
+     * Only this category's transactions of the month.
+     */
     category: z.string().min(1).optional().catch(undefined),
-    /** Search term; searches all months instead of the selected one. */
+    /**
+     * Search term; searches all months instead of the selected one.
+     */
     q: z.string().optional().catch(undefined),
     older: z.enum(DATE_FILTER_OPTIONS).optional().catch(undefined),
 });

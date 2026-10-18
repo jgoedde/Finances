@@ -5,7 +5,9 @@ import {
     type TransactionListQuery,
 } from "@finances/shared";
 
-/** A transaction change not yet accepted by the server. */
+/**
+ * A transaction change not yet accepted by the server.
+ */
 export interface PendingChange {
     action: "save" | "delete";
     transaction: Transaction;
@@ -13,7 +15,9 @@ export interface PendingChange {
 
 export const TRANSACTION_MUTATION_KEY = ["transactions"] as const;
 
-/** The queued changes, oldest first. */
+/**
+ * The queued changes, oldest first.
+ */
 export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
     return queryClient
         .getMutationCache()
@@ -25,7 +29,9 @@ export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
         }));
 }
 
-/** Applies changes to a list as the server will once it has them. */
+/**
+ * Applies changes to a list as the server will once it has them.
+ */
 export function applyToList(
     list: Transaction[],
     params: TransactionListQuery,
@@ -41,7 +47,9 @@ export function applyToList(
     return result;
 }
 
-/** Applies a change to every cached transaction list and detail. */
+/**
+ * Applies a change to every cached transaction list and detail.
+ */
 export function applyToCache(
     queryClient: QueryClient,
     change: PendingChange,
@@ -65,7 +73,9 @@ export function applyToCache(
     }
 }
 
-/** Any cached version of the transaction, e.g. to edit it offline. */
+/**
+ * Any cached version of the transaction, e.g. to edit it offline.
+ */
 export function findCachedTransaction(
     queryClient: QueryClient,
     id: string,

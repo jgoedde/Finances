@@ -3,7 +3,9 @@ import { formatCurrency } from "@finances/shared";
 import { CategoryLink } from "#/features/transactions/components/list/category-link.tsx";
 import { useMonthCategoryTotals } from "#/features/transactions/components/list/use-month-category-totals.ts";
 
-/** The month's categories under "Transactions" in the drawer, like labels. */
+/**
+ * The month's categories under "Transactions" in the drawer, like labels.
+ */
 export function CategoryDrawerItems() {
     const totals = useMonthCategoryTotals();
 

@@ -34,13 +34,17 @@ export const Route = createFileRoute("/_authed/_shell/settings")({
     component: RouteComponent,
 });
 
-/** Each language in its own words. */
+/**
+ * Each language in its own words.
+ */
 const LANGUAGE_NAMES = {
     de: "Deutsch",
     en: "English",
 } as const satisfies Record<Locale, string>;
 
-/** Where validation failed, e.g. "transactions.12.date: …", if reported. */
+/**
+ * Where validation failed, e.g. "transactions.12.date: …", if reported.
+ */
 function firstIssue(body: unknown): string | undefined {
     const issues = (body as { issues?: { path: unknown[]; message: string }[] })
         ?.issues;

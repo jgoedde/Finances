@@ -8,7 +8,9 @@ interface IncomeExpensesCardProps {
     overview: MonthOverview;
 }
 
-/** What came in and what went out in the month, exceptional included. */
+/**
+ * What came in and what went out in the month, exceptional included.
+ */
 export function IncomeExpensesCard({ overview }: IncomeExpensesCardProps) {
     return (
         <Card className={"grid grid-cols-2 gap-4 p-5"}>

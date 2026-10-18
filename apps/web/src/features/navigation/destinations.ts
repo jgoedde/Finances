@@ -10,7 +10,9 @@ import { m } from "#/paraglide/messages.js";
 export type DestinationId =
     "overview" | "transactions" | "fixedCosts" | "settings";
 
-/** Which destination a route belongs to, by its id. */
+/**
+ * Which destination a route belongs to, by its id.
+ */
 const DESTINATION_ROUTES = {
     overview: "/_authed/_shell/",
     // Also active while a transaction is created or edited.
@@ -39,7 +41,9 @@ interface Destination {
     label: () => string;
 }
 
-/** The top-level destinations; settings sit apart at the bottom. */
+/**
+ * The top-level destinations; settings sit apart at the bottom.
+ */
 export const DESTINATIONS: Destination[] = [
     { id: "overview", icon: ChartPie, label: m.nav_overview },
     { id: "transactions", icon: ReceiptText, label: m.nav_transactions },

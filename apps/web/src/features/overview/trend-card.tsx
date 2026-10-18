@@ -15,7 +15,9 @@ import {
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
-/** `YYYY-MM` as its first day, local time. */
+/**
+ * `YYYY-MM` as its first day, local time.
+ */
 function toDate(month: string) {
     return new Date(`${month}-01T00:00:00`);
 }
@@ -24,7 +26,9 @@ interface TrendCardProps {
     overview: MonthOverview;
 }
 
-/** Net spending of the last twelve months; the selected month stands out. */
+/**
+ * Net spending of the last twelve months; the selected month stands out.
+ */
 export function TrendCard({ overview }: TrendCardProps) {
     const { trend } = overview;
     const selected = trend[trend.length - 1]?.month;

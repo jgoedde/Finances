@@ -1,4 +1,6 @@
-/** Edit distance between two strings, keeping one row of the table at a time. */
+/**
+ * Edit distance between two strings, keeping one row of the table at a time.
+ */
 function levenshtein(a: string, b: string): number {
     let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
 
@@ -19,7 +21,9 @@ function levenshtein(a: string, b: string): number {
     return previous[b.length]!;
 }
 
-/** Merges the values of keys within `threshold` edits into the first key. */
+/**
+ * Merges the values of keys within `threshold` edits into the first key.
+ */
 export function mergeSimilarKeys<T>(
     dict: Record<string, T[]>,
     threshold = 2,
@@ -49,7 +53,9 @@ export function mergeSimilarKeys<T>(
     return merged;
 }
 
-/** Drops strings within `threshold` edits (ignoring case) of an earlier one. */
+/**
+ * Drops strings within `threshold` edits (ignoring case) of an earlier one.
+ */
 export function mergeSimilarStrings(list: string[], threshold = 2): string[] {
     const result: string[] = [];
     const visited = new Set<number>();

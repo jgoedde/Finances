@@ -10,7 +10,9 @@ export const DATE_FILTER_OPTIONS = [
 ] as const;
 export type DateFilterOption = (typeof DATE_FILTER_OPTIONS)[number];
 
-/** Upper bound (Unix ms) for the option, or `undefined` for any date. */
+/**
+ * Upper bound (Unix ms) for the option, or `undefined` for any date.
+ */
 export function getOlderThan(option: DateFilterOption): number | undefined {
     const now = new Date();
     switch (option) {

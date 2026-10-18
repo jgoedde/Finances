@@ -10,7 +10,9 @@ const RECHECK_INTERVAL_MS = 30 * 1000;
 
 let recheckTimer: number | undefined;
 
-/** A request failed without reaching the server. */
+/**
+ * A request failed without reaching the server.
+ */
 export function reportNetworkFailure(): void {
     if (onlineManager.isOnline()) {
         onlineManager.setOnline(false);
@@ -18,7 +20,9 @@ export function reportNetworkFailure(): void {
     scheduleRecheck();
 }
 
-/** Asks the server right away; goes back online if it answers. */
+/**
+ * Asks the server right away; goes back online if it answers.
+ */
 export async function checkConnection(): Promise<boolean> {
     try {
         const response = await fetch("/api/health", { cache: "no-store" });
@@ -51,7 +55,9 @@ export function useIsOnline(): boolean {
     );
 }
 
-/** Appended to "saved" messages while changes can't be sent. */
+/**
+ * Appended to "saved" messages while changes can't be sent.
+ */
 export function syncLaterHint(): string {
     return onlineManager.isOnline() ? "" : ` – ${m.sync_later_hint()}`;
 }

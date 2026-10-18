@@ -5,7 +5,9 @@ import { authClient } from "#/auth/auth-client.ts";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
 import { m } from "#/paraglide/messages.js";
 
-/** Signs out and forgets everything cached, including unsent changes. */
+/**
+ * Signs out and forgets everything cached, including unsent changes.
+ */
 export function useSignOut() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();

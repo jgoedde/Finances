@@ -8,7 +8,9 @@ async function throwIfFailed(response: Response): Promise<void> {
     }
 }
 
-/** Downloads all of the user's data as a JSON file. */
+/**
+ * Downloads all of the user's data as a JSON file.
+ */
 export async function downloadExport(): Promise<void> {
     const response = await fetch("/api/data/export", {
         credentials: "same-origin",

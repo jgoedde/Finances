@@ -21,7 +21,9 @@ export interface FixedCostCategoriesTable {
 export interface TransactionsTable {
     user_id: string;
     id: string;
-    /** Unix timestamp in milliseconds. */
+    /**
+     * Unix timestamp in milliseconds.
+     */
     date: number;
     name: string;
     description: string | null;
@@ -49,16 +51,22 @@ export interface FixedCostsTable {
     interval: FixedCostInterval;
     category_id: string;
     active: 0 | 1;
-    /** `YYYY-MM-DD` */
+    /**
+     * `YYYY-MM-DD`
+     */
     start_date: string;
-    /** `YYYY-MM-DD` */
+    /**
+     * `YYYY-MM-DD`
+     */
     end_date: string | null;
 }
 
 export interface InvitesTable {
     token_hash: string;
     kind: "signup" | "password-reset";
-    /** Target user of a password reset. */
+    /**
+     * Target user of a password reset.
+     */
     user_id: string | null;
     created_by: string | null;
     created_at: number;
@@ -70,7 +78,9 @@ export interface UserTable {
     id: string;
     username: string | null;
     role: string | null;
-    /** ISO timestamp, written by better-auth. */
+    /**
+     * ISO timestamp, written by better-auth.
+     */
     createdAt: string;
 }
 
@@ -81,6 +91,8 @@ export interface Database {
     transaction_tombstones: TransactionTombstonesTable;
     fixed_costs: FixedCostsTable;
     invites: InvitesTable;
-    /** Read-only view of the better-auth user table. */
+    /**
+     * Read-only view of the better-auth user table.
+     */
     user: UserTable;
 }

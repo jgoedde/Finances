@@ -1,7 +1,9 @@
 import { validator } from "hono/validator";
 import type { z } from "zod";
 
-/** Validates a request part with a zod schema; responds 400 on failure. */
+/**
+ * Validates a request part with a zod schema; responds 400 on failure.
+ */
 export function validate<T extends z.ZodType>(
     target: "json" | "query" | "param",
     schema: T,

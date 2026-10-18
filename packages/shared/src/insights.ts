@@ -10,9 +10,13 @@ function isTimeZone(timeZone: string): boolean {
 }
 
 export const overviewQuerySchema = z.object({
-    /** `YYYY-MM`. */
+    /**
+     * `YYYY-MM`.
+     */
     month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
-    /** IANA time zone that decides which month and day a transaction is on. */
+    /**
+     * IANA time zone that decides which month and day a transaction is on.
+     */
     timeZone: z.string().refine(isTimeZone),
 });
 export interface OverviewQuery {
@@ -20,19 +24,25 @@ export interface OverviewQuery {
     timeZone: string;
 }
 
-/** A category's net spending in the month, next to its typical month. */
+/**
+ * A category's net spending in the month, next to its typical month.
+ */
 export interface CategoryOverview {
     categoryId: string;
     categoryName: string;
     categoryColor: string;
     categoryIconName: string;
     total: number;
-    /** `null` without complete months to compare with. */
+    /**
+     * `null` without complete months to compare with.
+     */
     typical: number | null;
 }
 
 export interface MonthlyTotal {
-    /** `YYYY-MM`. */
+    /**
+     * `YYYY-MM`.
+     */
     month: string;
     total: number;
 }
@@ -47,15 +57,23 @@ export interface MonthOverview {
     expenses: number;
     exceptional: { count: number; netSpending: number };
     pace: {
-        /** Compared up to this day of the month; `null` for the whole month. */
+        /**
+         * Compared up to this day of the month; `null` for the whole month.
+         */
         day: number | null;
         netSpending: number;
-        /** Typical month up to `day`; `null` without complete months. */
+        /**
+         * Typical month up to `day`; `null` without complete months.
+         */
         typical: number | null;
     };
-    /** Monthly amounts of the fixed costs running in the month. */
+    /**
+     * Monthly amounts of the fixed costs running in the month.
+     */
     fixedCosts: number;
     categories: CategoryOverview[];
-    /** Net spending of the twelve months ending with this one. */
+    /**
+     * Net spending of the twelve months ending with this one.
+     */
     trend: MonthlyTotal[];
 }

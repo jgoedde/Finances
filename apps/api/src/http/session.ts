@@ -8,7 +8,9 @@ export interface AppEnv {
     };
 }
 
-/** Rejects requests without a valid session; exposes the user id. */
+/**
+ * Rejects requests without a valid session; exposes the user id.
+ */
 export function requireUser(auth: Auth) {
     return createMiddleware<AppEnv>(async (c, next) => {
         const result = await auth.api.getSession({
@@ -23,7 +25,9 @@ export function requireUser(auth: Auth) {
     });
 }
 
-/** Must run after `requireUser`. */
+/**
+ * Must run after `requireUser`.
+ */
 export const requireAdmin = createMiddleware<AppEnv>(async (c, next) => {
     if (c.get("role") !== "admin") {
         return c.json({ error: "forbidden" }, 403);

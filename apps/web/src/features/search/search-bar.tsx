@@ -7,7 +7,9 @@ import { m } from "#/paraglide/messages.js";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
-/** Delay before a typed term goes to the URL and runs the search. */
+/**
+ * Delay before a typed term goes to the URL and runs the search.
+ */
 const SEARCH_DEBOUNCE_MS = 300;
 
 /**

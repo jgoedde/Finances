@@ -13,7 +13,9 @@ import {
     transactionBody,
 } from "./test-app.ts";
 
-/** A database file as the old browser-only app wrote it. */
+/**
+ * A database file as the old browser-only app wrote it.
+ */
 function legacyDatabase({ walHeader = false } = {}): Buffer {
     const db = new SQLite(":memory:");
     db.exec(`

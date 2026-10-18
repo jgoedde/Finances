@@ -19,7 +19,9 @@ function isFuture(month: Date) {
 }
 
 interface MonthSwitcherProps {
-    /** The destination showing the switcher. */
+    /**
+     * The destination showing the switcher.
+     */
     to: "/" | "/transactions";
 }
 

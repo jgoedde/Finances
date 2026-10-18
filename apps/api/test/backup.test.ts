@@ -22,7 +22,9 @@ describe("backup and restore", () => {
         await rm(dir, { recursive: true, force: true });
     });
 
-    /** A file-backed app and a CLI context for it. */
+    /**
+     * A file-backed app and a CLI context for it.
+     */
     async function instance(name: string) {
         const databasePath = join(dir, `${name}.db`);
         const app = await createTestApp({ filename: databasePath });

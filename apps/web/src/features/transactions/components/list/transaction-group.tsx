@@ -10,7 +10,9 @@ interface TransactionGroupProps {
     transactions: Transaction[];
 }
 
-/** One day of the transaction list, under a sticky header. */
+/**
+ * One day of the transaction list, under a sticky header.
+ */
 export function TransactionGroup({ day, transactions }: TransactionGroupProps) {
     const label = formatDayHeading(day, getLocale());
 

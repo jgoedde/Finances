@@ -29,7 +29,9 @@ defineCustomClientStrategy("custom-device", {
     setLocale: () => undefined,
 });
 
-/** Saves the language for this device and reloads the app in it. */
+/**
+ * Saves the language for this device and reloads the app in it.
+ */
 export function chooseLocale(locale: Locale): void {
     try {
         localStorage.setItem(STORAGE_KEY, locale);

@@ -21,7 +21,9 @@ function readAuthConfig(): AuthConfig {
     };
 }
 
-/** Opens and migrates the database. */
+/**
+ * Opens and migrates the database.
+ */
 export async function openMigratedDatabase() {
     const databasePath = process.env.DATABASE_PATH ?? "/data/finances.db";
     const db = openDatabase(databasePath);
@@ -30,7 +32,9 @@ export async function openMigratedDatabase() {
     return { db, databasePath, authConfig };
 }
 
-/** Opens and migrates the database, then creates the auth instance. */
+/**
+ * Opens and migrates the database, then creates the auth instance.
+ */
 export async function bootstrap() {
     const { db, authConfig } = await openMigratedDatabase();
     return { db, auth: createAuth(db, authConfig) };

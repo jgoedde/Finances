@@ -1,14 +1,20 @@
 import { useSyncExternalStore } from "react";
 import type { Transaction } from "@finances/shared";
 
-/** A pending change the server rejected. Kept until retried or discarded. */
+/**
+ * A pending change the server rejected. Kept until retried or discarded.
+ */
 export interface SyncFailure {
     id: string;
     action: "save" | "delete";
     transaction: Transaction;
-    /** The API's answer, if the change reached it. */
+    /**
+     * The API's answer, if the change reached it.
+     */
     error?: { status: number; code?: string };
-    /** German reason text, stored by versions before the API codes. */
+    /**
+     * German reason text, stored by versions before the API codes.
+     */
     reason?: string;
     failedAt: number;
 }

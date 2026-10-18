@@ -31,7 +31,9 @@ export function toTransaction(row: TransactionsTable): Transaction {
     };
 }
 
-/** Wraps a search term in `%` and escapes `%`, `_` and the backslash. */
+/**
+ * Wraps a search term in `%` and escapes `%`, `_` and the backslash.
+ */
 function toLikePattern(term: string): string {
     return `%${term.replace(/[\\%_]/g, "\\$&")}%`;
 }

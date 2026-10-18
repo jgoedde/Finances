@@ -1,6 +1,8 @@
 // Display formatting. Pure: the caller passes the UI locale.
 
-/** `12.5` as "12,50 €" (de) or "€12.50" (en). */
+/**
+ * `12.5` as "12,50 €" (de) or "€12.50" (en).
+ */
 export function formatCurrency(
     amount: number,
     locale: string,
@@ -12,7 +14,9 @@ export function formatCurrency(
     }).format(amount);
 }
 
-/** `0.123` as "12 %" (de); with `signed`, "+12 %" and "-12 %". */
+/**
+ * `0.123` as "12 %" (de); with `signed`, "+12 %" and "-12 %".
+ */
 export function formatPercent(
     ratio: number,
     locale: string,
@@ -25,17 +29,23 @@ export function formatPercent(
     }).format(ratio);
 }
 
-/** The month of `date`, e.g. "Oktober 2026". */
+/**
+ * The month of `date`, e.g. "Oktober 2026".
+ */
 export function formatMonthYear(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, { month: "long", year: "numeric" });
 }
 
-/** The abbreviated month name of `date`, e.g. "Okt". */
+/**
+ * The abbreviated month name of `date`, e.g. "Okt".
+ */
 export function formatShortMonth(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, { month: "short" });
 }
 
-/** A day heading, e.g. "Sa., 18. Oktober". */
+/**
+ * A day heading, e.g. "Sa., 18. Oktober".
+ */
 export function formatDayHeading(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, {
         weekday: "short",
@@ -44,7 +54,9 @@ export function formatDayHeading(date: Date, locale: string): string {
     });
 }
 
-/** A full date, e.g. "18. Oktober 2026". */
+/**
+ * A full date, e.g. "18. Oktober 2026".
+ */
 export function formatLongDate(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, { dateStyle: "long" });
 }
