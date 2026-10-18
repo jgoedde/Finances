@@ -22,6 +22,15 @@
     "action_undo": "Rückgängig",
     "action_update": "Aktualisieren",
 
+    "nav_label": "Hauptnavigation",
+    "nav_overview": "Übersicht",
+    "nav_transactions": "Geldbewegungen",
+    "month_choose": "Monat wählen",
+    "month_previous": "Vorheriger Monat",
+    "month_next": "Nächster Monat",
+    "month_previous_year": "Vorheriges Jahr",
+    "month_next_year": "Nächstes Jahr",
+
     "error_try_again": "Das hat nicht geklappt. Bitte versuche es erneut.",
     "error_unexpected": "Es ist ein unbekannter Fehler aufgetreten. Bitte versuche es erneut.",
     "error_unknown": "Unbekannter Fehler.",
@@ -113,10 +122,6 @@
     "offline_unavailable": "Offline nicht verfügbar",
 
     "period": "Zeitraum",
-    "period_today": "Heute",
-    "period_yesterday": "Gestern",
-    "period_last_7_days": "Letzte 7 Tage",
-    "period_choose_list": "Zeitraum der angezeigten Geldbewegungen wählen",
     "period_choose_search": "Zeitraum für die Suche wählen",
     "period_any": "Beliebiger Zeitraum",
     "period_older_than_week": "Älter als eine Woche",

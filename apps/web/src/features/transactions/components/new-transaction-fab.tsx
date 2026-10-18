@@ -4,27 +4,37 @@ import { useNavigate } from "@tanstack/react-router";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
-export function NewTransactionFAB() {
+const VARIANT_CLASS = {
+    // Compact only: floats above the navigation bar (see below).
+    floating: "size-14 shadow-elevation-3 hover:shadow-elevation-4",
+    // At the top of the navigation rail.
+    rail: "size-14 hover:shadow-elevation-1",
+    // At the top of the navigation drawer, like Gmail's "Compose".
+    extended: `flex h-14 items-center gap-3 px-4 text-label-large
+        hover:shadow-elevation-1`,
+} as const;
+
+export function NewTransactionFAB({
+    variant,
+}: {
+    variant: keyof typeof VARIANT_CLASS;
+}) {
     const ripple = useRipple();
 
     const navigate = useNavigate();
 
-    return (
+    const button = (
         <button
             type={"button"}
             className={cn(
-                `ripple-container state-layer size-14 shrink-0 -translate-x-1/4
-                cursor-pointer rounded-lg bg-primary-container
-                text-on-primary-container shadow-elevation-3 focus-ring
-                transition-shadow duration-200 ease-standard
-                hover:shadow-elevation-4`,
+                `ripple-container state-layer shrink-0 cursor-pointer rounded-lg
+                bg-primary-container text-on-primary-container focus-ring
+                transition-shadow duration-200 ease-standard`,
+                VARIANT_CLASS[variant],
             )}
-            style={{
-                position: "sticky",
-                left: "100%",
-                bottom: "calc(var(--spacing) * 4)",
-            }}
-            aria-label={m.transaction_new()}
+            aria-label={
+                variant === "extended" ? undefined : m.transaction_new()
+            }
             data-ripple-color="bg-on-surface/10"
             {...ripple}
             onClick={(e) => {
@@ -35,7 +45,23 @@ export function NewTransactionFAB() {
                 }, 100);
             }}
         >
-            <Banknote className={"mx-auto size-6"} />
+            <Banknote
+                className={cn("size-6", variant !== "extended" && "mx-auto")}
+            />
+            {variant === "extended" && m.transaction_new()}
         </button>
+    );
+
+    // `state-layer` makes the button `relative`, so a wrapper floats it.
+    return variant === "floating" ? (
+        <div
+            className={`fixed right-4
+                bottom-[calc(6rem+env(safe-area-inset-bottom))] z-20
+                medium:hidden`}
+        >
+            {button}
+        </div>
+    ) : (
+        button
     );
 }

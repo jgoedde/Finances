@@ -77,8 +77,17 @@ function syncMenuItem(status: SyncStatus) {
     }
 }
 
-/** Avatar with the sync indicator; opens the account menu. */
-export function AccountMenu() {
+/**
+ * Avatar with the sync indicator; opens the account menu. `side` is where
+ * the menu opens: below in a top app bar, to the right in a rail or drawer.
+ */
+export function AccountMenu({
+    side = "bottom",
+    className,
+}: {
+    side?: "bottom" | "right";
+    className?: string;
+}) {
     const user = useQuery(sessionQuery).data;
     const status = useSyncStatus();
     const signOut = useSignOut();
@@ -94,9 +103,12 @@ export function AccountMenu() {
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger
-                    className={`state-layer relative flex size-12 shrink-0
+                    className={cn(
+                        `state-layer relative flex size-12 shrink-0
                         cursor-pointer items-center justify-center rounded-full
-                        focus-ring`}
+                        focus-ring`,
+                        className,
+                    )}
                     aria-label={m.account_menu_label({
                         username,
                         status: syncItem.label,
@@ -112,13 +124,17 @@ export function AccountMenu() {
                             aria-hidden
                             className={cn(
                                 `absolute top-2 right-2 size-2.5 rounded-full
-                                ring-2 ring-surface-container-high`,
+                                ring-2 ring-surface`,
                                 badgeClass,
                             )}
                         />
                     )}
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align={"end"} className={"min-w-56"}>
+                <DropdownMenuContent
+                    side={side}
+                    align={"end"}
+                    className={"min-w-56"}
+                >
                     <DropdownMenuLabel>
                         {m.account_signed_in_as({ username })}
                     </DropdownMenuLabel>

@@ -101,20 +101,24 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Link_WelcomeInputs */
 /** @typedef {{}} Login_FailedInputs */
 /** @typedef {{}} Login_Wrong_CredentialsInputs */
+/** @typedef {{}} Month_ChooseInputs */
+/** @typedef {{}} Month_NextInputs */
+/** @typedef {{}} Month_Next_YearInputs */
+/** @typedef {{}} Month_PreviousInputs */
+/** @typedef {{}} Month_Previous_YearInputs */
+/** @typedef {{}} Nav_LabelInputs */
+/** @typedef {{}} Nav_OverviewInputs */
+/** @typedef {{}} Nav_TransactionsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
-/** @typedef {{}} Period_Choose_ListInputs */
 /** @typedef {{}} Period_Choose_SearchInputs */
 /** @typedef {{}} Period_CustomInputs */
-/** @typedef {{}} Period_Last_7_DaysInputs */
 /** @typedef {{}} Period_Older_Than_Half_YearInputs */
 /** @typedef {{}} Period_Older_Than_MonthInputs */
 /** @typedef {{}} Period_Older_Than_WeekInputs */
 /** @typedef {{}} Period_Older_Than_YearInputs */
-/** @typedef {{}} Period_TodayInputs */
-/** @typedef {{}} Period_YesterdayInputs */
 /** @typedef {{}} Pwa_Offline_ReadyInputs */
 /** @typedef {{}} Pwa_Update_AvailableInputs */
 /** @typedef {{}} Pwa_Wait_For_SyncInputs */
@@ -1581,6 +1585,118 @@ export const login_wrong_credentials = /** @type {((inputs?: Login_Wrong_Credent
 /**
 * | output |
 * | --- |
+* | "Choose month" |
+*
+* @param {Month_ChooseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_choose = /** @type {((inputs?: Month_ChooseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Month_ChooseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.month_choose(inputs)
+	return __en.month_choose(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Next month" |
+*
+* @param {Month_NextInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_next = /** @type {((inputs?: Month_NextInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Month_NextInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.month_next(inputs)
+	return __en.month_next(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Next year" |
+*
+* @param {Month_Next_YearInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_next_year = /** @type {((inputs?: Month_Next_YearInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Month_Next_YearInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.month_next_year(inputs)
+	return __en.month_next_year(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Previous month" |
+*
+* @param {Month_PreviousInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_previous = /** @type {((inputs?: Month_PreviousInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Month_PreviousInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.month_previous(inputs)
+	return __en.month_previous(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Previous year" |
+*
+* @param {Month_Previous_YearInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_previous_year = /** @type {((inputs?: Month_Previous_YearInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Month_Previous_YearInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.month_previous_year(inputs)
+	return __en.month_previous_year(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Main navigation" |
+*
+* @param {Nav_LabelInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_label = /** @type {((inputs?: Nav_LabelInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Nav_LabelInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.nav_label(inputs)
+	return __en.nav_label(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Overview" |
+*
+* @param {Nav_OverviewInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_overview = /** @type {((inputs?: Nav_OverviewInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Nav_OverviewInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.nav_overview(inputs)
+	return __en.nav_overview(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Transactions" |
+*
+* @param {Nav_TransactionsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_transactions = /** @type {((inputs?: Nav_TransactionsInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Nav_TransactionsInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.nav_transactions(inputs)
+	return __en.nav_transactions(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Not available offline" |
 *
 * @param {Offline_UnavailableInputs} inputs
@@ -1637,20 +1753,6 @@ export const period_any = /** @type {((inputs?: Period_AnyInputs, options?: { lo
 /**
 * | output |
 * | --- |
-* | "Choose the period of the transactions shown" |
-*
-* @param {Period_Choose_ListInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_choose_list = /** @type {((inputs?: Period_Choose_ListInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Period_Choose_ListInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.period_choose_list(inputs)
-	return __en.period_choose_list(inputs)
-});
-/**
-* | output |
-* | --- |
 * | "Choose the period to search" |
 *
 * @param {Period_Choose_SearchInputs} inputs
@@ -1675,20 +1777,6 @@ export const period_custom = /** @type {((inputs?: Period_CustomInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.period_custom(inputs)
 	return __en.period_custom(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Last 7 days" |
-*
-* @param {Period_Last_7_DaysInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_last_7_days = /** @type {((inputs?: Period_Last_7_DaysInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Period_Last_7_DaysInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.period_last_7_days(inputs)
-	return __en.period_last_7_days(inputs)
 });
 /**
 * | output |
@@ -1745,34 +1833,6 @@ export const period_older_than_year = /** @type {((inputs?: Period_Older_Than_Ye
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.period_older_than_year(inputs)
 	return __en.period_older_than_year(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Today" |
-*
-* @param {Period_TodayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_today = /** @type {((inputs?: Period_TodayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Period_TodayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.period_today(inputs)
-	return __en.period_today(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Yesterday" |
-*
-* @param {Period_YesterdayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_yesterday = /** @type {((inputs?: Period_YesterdayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Period_YesterdayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.period_yesterday(inputs)
-	return __en.period_yesterday(inputs)
 });
 /**
 * | output |

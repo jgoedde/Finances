@@ -1388,6 +1388,118 @@ export const login_wrong_credentials: ((inputs?: Login_Wrong_CredentialsInputs, 
 /**
 * | output |
 * | --- |
+* | "Choose month" |
+*
+* @param {Month_ChooseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_choose: ((inputs?: Month_ChooseInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Month_ChooseInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Next month" |
+*
+* @param {Month_NextInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_next: ((inputs?: Month_NextInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Month_NextInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Next year" |
+*
+* @param {Month_Next_YearInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_next_year: ((inputs?: Month_Next_YearInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Month_Next_YearInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Previous month" |
+*
+* @param {Month_PreviousInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_previous: ((inputs?: Month_PreviousInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Month_PreviousInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Previous year" |
+*
+* @param {Month_Previous_YearInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const month_previous_year: ((inputs?: Month_Previous_YearInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Month_Previous_YearInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Main navigation" |
+*
+* @param {Nav_LabelInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_label: ((inputs?: Nav_LabelInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Nav_LabelInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Overview" |
+*
+* @param {Nav_OverviewInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_overview: ((inputs?: Nav_OverviewInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Nav_OverviewInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Transactions" |
+*
+* @param {Nav_TransactionsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const nav_transactions: ((inputs?: Nav_TransactionsInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Nav_TransactionsInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Not available offline" |
 *
 * @param {Offline_UnavailableInputs} inputs
@@ -1444,20 +1556,6 @@ export const period_any: ((inputs?: Period_AnyInputs, options?: {
 /**
 * | output |
 * | --- |
-* | "Choose the period of the transactions shown" |
-*
-* @param {Period_Choose_ListInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_choose_list: ((inputs?: Period_Choose_ListInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_Choose_ListInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "Choose the period to search" |
 *
 * @param {Period_Choose_SearchInputs} inputs
@@ -1481,20 +1579,6 @@ export const period_choose_search: ((inputs?: Period_Choose_SearchInputs, option
 export const period_custom: ((inputs?: Period_CustomInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_CustomInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
-* | "Last 7 days" |
-*
-* @param {Period_Last_7_DaysInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_last_7_days: ((inputs?: Period_Last_7_DaysInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_Last_7_DaysInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -1551,34 +1635,6 @@ export const period_older_than_week: ((inputs?: Period_Older_Than_WeekInputs, op
 export const period_older_than_year: ((inputs?: Period_Older_Than_YearInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_Older_Than_YearInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
-* | "Today" |
-*
-* @param {Period_TodayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_today: ((inputs?: Period_TodayInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_TodayInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
-* | "Yesterday" |
-*
-* @param {Period_YesterdayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const period_yesterday: ((inputs?: Period_YesterdayInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_YesterdayInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -2733,22 +2789,26 @@ export type Link_Username_RulesInputs = {};
 export type Link_WelcomeInputs = {};
 export type Login_FailedInputs = {};
 export type Login_Wrong_CredentialsInputs = {};
+export type Month_ChooseInputs = {};
+export type Month_NextInputs = {};
+export type Month_Next_YearInputs = {};
+export type Month_PreviousInputs = {};
+export type Month_Previous_YearInputs = {};
+export type Nav_LabelInputs = {};
+export type Nav_OverviewInputs = {};
+export type Nav_TransactionsInputs = {};
 export type Offline_UnavailableInputs = {};
 export type Page_TitleInputs = {
     page: NonNullable<unknown>;
 };
 export type PeriodInputs = {};
 export type Period_AnyInputs = {};
-export type Period_Choose_ListInputs = {};
 export type Period_Choose_SearchInputs = {};
 export type Period_CustomInputs = {};
-export type Period_Last_7_DaysInputs = {};
 export type Period_Older_Than_Half_YearInputs = {};
 export type Period_Older_Than_MonthInputs = {};
 export type Period_Older_Than_WeekInputs = {};
 export type Period_Older_Than_YearInputs = {};
-export type Period_TodayInputs = {};
-export type Period_YesterdayInputs = {};
 export type Pwa_Offline_ReadyInputs = {};
 export type Pwa_Update_AvailableInputs = {};
 export type Pwa_Wait_For_SyncInputs = {};

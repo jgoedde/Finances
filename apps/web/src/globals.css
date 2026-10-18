@@ -199,6 +199,13 @@
     --color-primary-foreground: var(--md-sys-color-on-primary);
     --color-secondary-foreground: var(--md-sys-color-on-secondary);
 
+    /*
+     * MD3 window size classes -> `medium:`, `expanded:`. Compact is the
+     * unprefixed default. Layouts switch on these, not on `sm`/`md`/`lg`.
+     */
+    --breakpoint-medium: 37.5rem;
+    --breakpoint-expanded: 52.5rem;
+
     /* Typefaces: Poppins as brand face (display/headline), Roboto as plain. */
     --font-sans:
         "Roboto Variable", "Roboto", ui-sans-serif, system-ui, sans-serif;

@@ -37,7 +37,7 @@ function RouteComponent() {
             active: true,
         });
         toast.success(m.fixed_cost_created({ name: values.name }));
-        void navigate({ to: "/" });
+        void navigate({ to: "/fixed-costs" });
     }
 
     return (

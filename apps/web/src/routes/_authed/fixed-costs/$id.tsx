@@ -40,11 +40,11 @@ export const Route = createFileRoute("/_authed/fixed-costs/$id")({
     onError: (error) => {
         if (apiErrorCode(error) === "not_found") {
             toast.error(m.fixed_cost_not_found());
-            throw redirect({ to: "/" });
+            throw redirect({ to: "/fixed-costs" });
         }
 
         toast.error(m.error_unexpected());
-        throw redirect({ to: "/" });
+        throw redirect({ to: "/fixed-costs" });
     },
 });
 
@@ -60,7 +60,7 @@ function RouteComponent() {
     function save(values: FixedCostWizardValues) {
         updateFixedCost.mutate({ id, patch: values });
         toast.success(m.fixed_cost_updated());
-        void navigate({ to: "/" });
+        void navigate({ to: "/fixed-costs" });
     }
 
     return (

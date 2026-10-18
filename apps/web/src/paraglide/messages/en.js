@@ -99,20 +99,24 @@
 /** @typedef {{}} Link_WelcomeInputs */
 /** @typedef {{}} Login_FailedInputs */
 /** @typedef {{}} Login_Wrong_CredentialsInputs */
+/** @typedef {{}} Month_ChooseInputs */
+/** @typedef {{}} Month_NextInputs */
+/** @typedef {{}} Month_Next_YearInputs */
+/** @typedef {{}} Month_PreviousInputs */
+/** @typedef {{}} Month_Previous_YearInputs */
+/** @typedef {{}} Nav_LabelInputs */
+/** @typedef {{}} Nav_OverviewInputs */
+/** @typedef {{}} Nav_TransactionsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
-/** @typedef {{}} Period_Choose_ListInputs */
 /** @typedef {{}} Period_Choose_SearchInputs */
 /** @typedef {{}} Period_CustomInputs */
-/** @typedef {{}} Period_Last_7_DaysInputs */
 /** @typedef {{}} Period_Older_Than_Half_YearInputs */
 /** @typedef {{}} Period_Older_Than_MonthInputs */
 /** @typedef {{}} Period_Older_Than_WeekInputs */
 /** @typedef {{}} Period_Older_Than_YearInputs */
-/** @typedef {{}} Period_TodayInputs */
-/** @typedef {{}} Period_YesterdayInputs */
 /** @typedef {{}} Pwa_Offline_ReadyInputs */
 /** @typedef {{}} Pwa_Update_AvailableInputs */
 /** @typedef {{}} Pwa_Wait_For_SyncInputs */
@@ -588,6 +592,38 @@ export const login_wrong_credentials = /** @type {(inputs: Login_Wrong_Credentia
 	return /** @type {LocalizedString} */ (`Wrong username or password.`)
 };
 
+export const month_choose = /** @type {(inputs: Month_ChooseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose month`)
+};
+
+export const month_next = /** @type {(inputs: Month_NextInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Next month`)
+};
+
+export const month_next_year = /** @type {(inputs: Month_Next_YearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Next year`)
+};
+
+export const month_previous = /** @type {(inputs: Month_PreviousInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Previous month`)
+};
+
+export const month_previous_year = /** @type {(inputs: Month_Previous_YearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Previous year`)
+};
+
+export const nav_label = /** @type {(inputs: Nav_LabelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Main navigation`)
+};
+
+export const nav_overview = /** @type {(inputs: Nav_OverviewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Overview`)
+};
+
+export const nav_transactions = /** @type {(inputs: Nav_TransactionsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Transactions`)
+};
+
 export const offline_unavailable = /** @type {(inputs: Offline_UnavailableInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Not available offline`)
 };
@@ -604,20 +640,12 @@ export const period_any = /** @type {(inputs: Period_AnyInputs) => LocalizedStri
 	return /** @type {LocalizedString} */ (`Any time`)
 };
 
-export const period_choose_list = /** @type {(inputs: Period_Choose_ListInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Choose the period of the transactions shown`)
-};
-
 export const period_choose_search = /** @type {(inputs: Period_Choose_SearchInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Choose the period to search`)
 };
 
 export const period_custom = /** @type {(inputs: Period_CustomInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Custom period`)
-};
-
-export const period_last_7_days = /** @type {(inputs: Period_Last_7_DaysInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Last 7 days`)
 };
 
 export const period_older_than_half_year = /** @type {(inputs: Period_Older_Than_Half_YearInputs) => LocalizedString} */ () => {
@@ -634,14 +662,6 @@ export const period_older_than_week = /** @type {(inputs: Period_Older_Than_Week
 
 export const period_older_than_year = /** @type {(inputs: Period_Older_Than_YearInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Older than a year`)
-};
-
-export const period_today = /** @type {(inputs: Period_TodayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Today`)
-};
-
-export const period_yesterday = /** @type {(inputs: Period_YesterdayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Yesterday`)
 };
 
 export const pwa_offline_ready = /** @type {(inputs: Pwa_Offline_ReadyInputs) => LocalizedString} */ () => {
