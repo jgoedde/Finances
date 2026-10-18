@@ -23,7 +23,7 @@ export default defineConfig({
             outputStructure: "locale-modules",
             emitTsDeclarations: true,
             emitGitIgnore: false,
-            emitPrettierIgnore: false,
+            emitPrettierIgnore: true,
             emitReadme: false,
         }),
         react(),
