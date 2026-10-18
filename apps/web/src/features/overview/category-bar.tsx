@@ -14,6 +14,12 @@ interface CategoryBarProps {
 }
 
 /**
+ * Share of the category's color in the row tint, over the card's surface:
+ * just a hint of it.
+ */
+const TINT_SHARE = "12%";
+
+/**
  * A category's spending as a bar, with a tick at its typical month. Opens
  * the month's transactions of the category.
  */
@@ -33,6 +39,9 @@ export function CategoryBar({ category, scale }: CategoryBarProps) {
             }}
             className={`state-layer flex flex-col gap-2 rounded-md px-3 py-2
                 focus-ring`}
+            style={{
+                backgroundColor: `color-mix(in oklab, ${category.categoryColor} ${TINT_SHARE}, transparent)`,
+            }}
         >
             <div className={"flex items-center gap-3"}>
                 <span
