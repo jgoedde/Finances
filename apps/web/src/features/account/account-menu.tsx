@@ -18,16 +18,7 @@ import {
     DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu.tsx";
 import { Avatar, AvatarFallback } from "#/components/ui/avatar.tsx";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "#/components/ui/alert-dialog.tsx";
+import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { sessionQuery } from "#/auth/auth-client.ts";
 import { useSignOut } from "#/features/auth/use-sign-out.ts";
 import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
@@ -94,11 +85,26 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
     const signOut = useSignOut();
 
     const [isSyncDrawerOpen, setIsSyncDrawerOpen] = useState(false);
-    const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
 
     const username = user?.username ?? "";
     const badgeClass = BADGE_CLASS[status.state];
     const syncItem = syncMenuItem(status);
+
+    async function confirmSignOut() {
+        if (
+            status.pending.length === 0 ||
+            (await confirmAction({
+                title: m.sign_out_anyway_title(),
+                description: m.sign_out_unsynced_changes({
+                    count: status.pending.length,
+                }),
+                confirmLabel: m.action_sign_out(),
+                destructive: true,
+            }))
+        ) {
+            await signOut();
+        }
+    }
 
     return (
         <>
@@ -152,15 +158,7 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
                             {m.settings_title()}
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onSelect={() => {
-                            if (status.pending.length > 0) {
-                                setIsSignOutDialogOpen(true);
-                            } else {
-                                void signOut();
-                            }
-                        }}
-                    >
+                    <DropdownMenuItem onSelect={() => void confirmSignOut()}>
                         <LogOut />
                         {m.action_sign_out()}
                     </DropdownMenuItem>
@@ -171,32 +169,6 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
                 open={isSyncDrawerOpen}
                 onOpenChange={setIsSyncDrawerOpen}
             />
-
-            <AlertDialog
-                open={isSignOutDialogOpen}
-                onOpenChange={setIsSignOutDialogOpen}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            {m.sign_out_anyway_title()}
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {m.sign_out_unsynced_changes({
-                                count: status.pending.length,
-                            })}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            {m.action_cancel()}
-                        </AlertDialogCancel>
-                        <AlertDialogAction onClick={() => void signOut()}>
-                            {m.action_sign_out()}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </>
     );
 }

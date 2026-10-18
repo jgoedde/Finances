@@ -2,11 +2,13 @@ import {
     createRootRouteWithContext,
     HeadContent,
     Outlet,
+    useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { TRANSACTION_MUTATION_KEY } from "#/features/transactions/pending-changes.ts";
 import { Toaster } from "#/components/ui/sonner.tsx";
+import { ConfirmDialog } from "#/components/confirm-dialog.tsx";
 import { initPWA } from "#/pwa.ts";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -27,6 +29,18 @@ const UPDATE_TOAST_ID = "update-toast";
 
 function RootComponent() {
     const queryClient = useQueryClient();
+    const router = useRouter();
+
+    // A confirmation belongs to the page that asked for it, e.g. deleting
+    // the transaction being edited: leaving the page (also with the back
+    // button) cancels it.
+    useEffect(
+        () =>
+            router.subscribe("onBeforeNavigate", () =>
+                ConfirmDialog.end(false),
+            ),
+        [router],
+    );
 
     useEffect(() => {
         function showUpdateToast() {
@@ -69,6 +83,7 @@ function RootComponent() {
             <TanStackRouterDevtools />
             <ReactQueryDevtools initialIsOpen={false} />
             <Toaster />
+            <ConfirmDialog />
         </>
     );
 }

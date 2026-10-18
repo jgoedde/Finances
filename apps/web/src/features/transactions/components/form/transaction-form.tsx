@@ -1,7 +1,7 @@
 import { type SubmitEvent, useRef, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { CategoryTile } from "#/features/transactions/components/form/category-tile.tsx";
-import { DeleteButtonWithConfirmDialog } from "#/components/delete-button-with-confirm-dialog.tsx";
+import { DeleteButton } from "#/components/delete-button.tsx";
 import { DateChooserPopover } from "#/features/transactions/components/form/date-chooser-popover.tsx";
 import { TransactionInput } from "#/features/transactions/components/form/transaction-input.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
@@ -131,7 +131,7 @@ export function TransactionForm({
                         />
 
                         {typeof onDelete === "function" && (
-                            <DeleteButtonWithConfirmDialog
+                            <DeleteButton
                                 title={m.transaction_delete_title()}
                                 description={m.transaction_delete_description()}
                                 onDelete={onDelete}
