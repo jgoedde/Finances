@@ -14,11 +14,11 @@ const VARIANT_CLASS = {
         hover:shadow-elevation-1`,
 } as const;
 
-export function NewTransactionFAB({
-    variant,
-}: {
+interface NewTransactionFABProps {
     variant: keyof typeof VARIANT_CLASS;
-}) {
+}
+
+export function NewTransactionFAB({ variant }: NewTransactionFABProps) {
     const ripple = useRipple();
 
     const navigate = useNavigate();

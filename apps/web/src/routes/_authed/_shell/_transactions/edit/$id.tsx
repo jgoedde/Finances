@@ -16,7 +16,8 @@ import { apiErrorCode } from "#/api/api-errors.ts";
 import { m } from "#/paraglide/messages.js";
 import { nanoid } from "nanoid";
 
-export const Route = createFileRoute("/_authed/edit/$id")({
+export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
+    staticData: { detail: true },
     component: RouteComponent,
     loader: ({ context: { queryClient }, params }) => {
         // Offline, a transaction only seen in a list can still be edited.

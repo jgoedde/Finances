@@ -134,6 +134,7 @@
 /** @typedef {{}} Sankey_TitleInputs */
 /** @typedef {{}} Sankey_YearInputs */
 /** @typedef {{}} Sankey_Year_PlaceholderInputs */
+/** @typedef {{}} Search_All_MonthsInputs */
 /** @typedef {{}} Search_ClearInputs */
 /** @typedef {{}} Search_LabelInputs */
 /** @typedef {{}} Search_Load_MoreInputs */
@@ -186,6 +187,7 @@
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
@@ -732,6 +734,10 @@ export const sankey_year_placeholder = /** @type {(inputs: Sankey_Year_Placehold
 	return /** @type {LocalizedString} */ (`z. B. 2025`)
 };
 
+export const search_all_months = /** @type {(inputs: Search_All_MonthsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ergebnisse aus allen Monaten`)
+};
+
 export const search_clear = /** @type {(inputs: Search_ClearInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Suche leeren`)
 };
@@ -940,6 +946,10 @@ export const transaction_income_saved = /** @type {(inputs: Transaction_Income_S
 
 export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`Keine Geldbewegungen für ${i?.period}`)
+};
+
+export const transaction_list_today = /** @type {(inputs: Transaction_List_TodayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Heute`)
 };
 
 export const transaction_new = /** @type {(inputs: Transaction_NewInputs) => LocalizedString} */ () => {

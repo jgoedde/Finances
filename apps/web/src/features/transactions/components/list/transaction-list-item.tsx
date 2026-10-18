@@ -3,7 +3,7 @@ import { ChevronRight, CloudUpload, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { convertHexToTonal } from "#/utils/color.ts";
 import { useColorScheme } from "@mantine/hooks";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
 import { useCategories } from "#/features/transactions/transaction-queries.ts";
 import { formatEuro } from "#/utils/currency.ts";
@@ -14,9 +14,9 @@ import { m } from "#/paraglide/messages.js";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
-type TransactionListItemProps = {
+interface TransactionListItemProps {
     transaction: Transaction;
-};
+}
 
 export function TransactionListItem({ transaction }: TransactionListItemProps) {
     const rippleHandlers = useRipple();
@@ -44,6 +44,12 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
     }
 
     const navigate = useNavigate();
+    // Open in the detail pane beside the list.
+    const isSelected =
+        useParams({
+            from: "/_authed/_shell/_transactions/edit/$id",
+            shouldThrow: false,
+        })?.id === transaction.id;
 
     function onEditButtonClick() {
         setTimeout(() => {
@@ -61,9 +67,13 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
     return (
         <button
             type={"button"}
-            className={`ripple-container state-layer flex min-h-14 w-full
+            className={cn(
+                `ripple-container state-layer flex min-h-14 w-full
                 cursor-pointer flex-row items-center gap-x-4 rounded-md px-2
-                py-2 text-left focus-ring`}
+                py-2 text-left focus-ring`,
+                isSelected && "bg-secondary-container",
+            )}
+            aria-current={isSelected || undefined}
             data-ripple-color={"bg-on-surface/10"}
             {...rippleHandlers}
             onClick={(e) => {

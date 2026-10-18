@@ -17,11 +17,17 @@ function isFuture(month: Date) {
     return isAfter(month, startOfMonth(new Date()));
 }
 
+interface MonthSwitcherProps {
+    /** The destination showing the switcher. */
+    to: "/" | "/transactions";
+}
+
 /**
  * `‹ October 2026 ›` for the top app bar. The title opens a month picker.
- * Months after the current one can't be selected.
+ * Months after the current one can't be selected. Picking a month goes to
+ * `to`, the destination showing the switcher; other params carry over.
  */
-export function MonthSwitcher() {
+export function MonthSwitcher({ to }: MonthSwitcherProps) {
     const month = useSelectedMonth();
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [pickerYear, setPickerYear] = useState(month);
@@ -37,13 +43,7 @@ export function MonthSwitcher() {
                 aria-label={m.month_previous()}
                 asChild
             >
-                <Link
-                    to={"."}
-                    search={(prev) => ({
-                        ...prev,
-                        month: toMonthParam(previous),
-                    })}
-                >
+                <Link to={to} search={{ month: toMonthParam(previous) }}>
                     <ChevronLeft />
                 </Link>
             </Button>
@@ -137,11 +137,8 @@ export function MonthSwitcher() {
                             return (
                                 <Link
                                     key={index}
-                                    to={"."}
-                                    search={(prev) => ({
-                                        ...prev,
-                                        month: toMonthParam(option),
-                                    })}
+                                    to={to}
+                                    search={{ month: toMonthParam(option) }}
                                     className={cn(
                                         className,
                                         "state-layer focus-ring",
@@ -172,13 +169,7 @@ export function MonthSwitcher() {
                     aria-label={m.month_next()}
                     asChild
                 >
-                    <Link
-                        to={"."}
-                        search={(prev) => ({
-                            ...prev,
-                            month: toMonthParam(next),
-                        })}
-                    >
+                    <Link to={to} search={{ month: toMonthParam(next) }}>
                         <ChevronRight />
                     </Link>
                 </Button>

@@ -132,6 +132,7 @@ export const sankey_savings_targets: (inputs: Sankey_Savings_TargetsInputs) => L
 export const sankey_title: (inputs: Sankey_TitleInputs) => LocalizedString;
 export const sankey_year: (inputs: Sankey_YearInputs) => LocalizedString;
 export const sankey_year_placeholder: (inputs: Sankey_Year_PlaceholderInputs) => LocalizedString;
+export const search_all_months: (inputs: Search_All_MonthsInputs) => LocalizedString;
 export const search_clear: (inputs: Search_ClearInputs) => LocalizedString;
 export const search_label: (inputs: Search_LabelInputs) => LocalizedString;
 export const search_load_more: (inputs: Search_Load_MoreInputs) => LocalizedString;
@@ -184,6 +185,7 @@ export const transaction_form_incomplete: (inputs: Transaction_Form_IncompleteIn
 export const transaction_income_deleted: (inputs: Transaction_Income_DeletedInputs) => LocalizedString;
 export const transaction_income_saved: (inputs: Transaction_Income_SavedInputs) => LocalizedString;
 export const transaction_list_empty: (inputs: Transaction_List_EmptyInputs) => LocalizedString;
+export const transaction_list_today: (inputs: Transaction_List_TodayInputs) => LocalizedString;
 export const transaction_new: (inputs: Transaction_NewInputs) => LocalizedString;
 export const transaction_no_description: (inputs: Transaction_No_DescriptionInputs) => LocalizedString;
 export const transaction_not_found: (inputs: Transaction_Not_FoundInputs) => LocalizedString;
@@ -341,6 +343,7 @@ export type Sankey_Savings_TargetsInputs = {};
 export type Sankey_TitleInputs = {};
 export type Sankey_YearInputs = {};
 export type Sankey_Year_PlaceholderInputs = {};
+export type Search_All_MonthsInputs = {};
 export type Search_ClearInputs = {};
 export type Search_LabelInputs = {};
 export type Search_Load_MoreInputs = {};
@@ -414,6 +417,7 @@ export type Transaction_Income_SavedInputs = {
 export type Transaction_List_EmptyInputs = {
     period: NonNullable<unknown>;
 };
+export type Transaction_List_TodayInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};

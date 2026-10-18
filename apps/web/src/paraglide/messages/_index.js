@@ -136,6 +136,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Sankey_TitleInputs */
 /** @typedef {{}} Sankey_YearInputs */
 /** @typedef {{}} Sankey_Year_PlaceholderInputs */
+/** @typedef {{}} Search_All_MonthsInputs */
 /** @typedef {{}} Search_ClearInputs */
 /** @typedef {{}} Search_LabelInputs */
 /** @typedef {{}} Search_Load_MoreInputs */
@@ -188,6 +189,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
@@ -2075,6 +2077,20 @@ export const sankey_year_placeholder = /** @type {((inputs?: Sankey_Year_Placeho
 /**
 * | output |
 * | --- |
+* | "Results from all months" |
+*
+* @param {Search_All_MonthsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const search_all_months = /** @type {((inputs?: Search_All_MonthsInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_All_MonthsInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.search_all_months(inputs)
+	return __en.search_all_months(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Clear search" |
 *
 * @param {Search_ClearInputs} inputs
@@ -2800,6 +2816,20 @@ export const transaction_list_empty = /** @type {((inputs: Transaction_List_Empt
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_list_empty(inputs)
 	return __en.transaction_list_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Today" |
+*
+* @param {Transaction_List_TodayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_today = /** @type {((inputs?: Transaction_List_TodayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_TodayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_today(inputs)
+	return __en.transaction_list_today(inputs)
 });
 /**
 * | output |
