@@ -1,12 +1,15 @@
 import { Banknote } from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
+import { useIsScrolled } from "#/hooks/use-is-scrolled.ts";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
 const VARIANT_CLASS = {
-    // Compact only: floats above the navigation bar (see below).
-    floating: "size-14 shadow-elevation-3 hover:shadow-elevation-4",
+    // Compact only: floats above the navigation bar (see below). Like
+    // Gmail's "Compose", it shows a label until the page is scrolled.
+    floating: `flex h-14 items-center px-4 text-label-large shadow-elevation-3
+        hover:shadow-elevation-4`,
     // At the top of the navigation rail.
     rail: "size-14 hover:shadow-elevation-1",
     // At the top of the navigation drawer, like Gmail's "Compose".
@@ -22,6 +25,8 @@ export function NewTransactionFAB({ variant }: NewTransactionFABProps) {
     const ripple = useRipple();
 
     const navigate = useNavigate();
+
+    const isScrolled = useIsScrolled();
 
     const button = (
         <button
@@ -46,9 +51,27 @@ export function NewTransactionFAB({ variant }: NewTransactionFABProps) {
             }}
         >
             <Banknote
-                className={cn("size-6", variant !== "extended" && "mx-auto")}
+                className={cn(
+                    "size-6 shrink-0",
+                    variant === "rail" && "mx-auto",
+                )}
             />
             {variant === "extended" && m.transaction_new()}
+            {variant === "floating" && (
+                <span
+                    aria-hidden={true}
+                    className={cn(
+                        `overflow-hidden whitespace-nowrap
+                        transition-[max-width,margin,opacity] duration-200
+                        ease-standard`,
+                        isScrolled
+                            ? "ml-0 max-w-0 opacity-0"
+                            : "ml-3 max-w-40 opacity-100",
+                    )}
+                >
+                    {m.transaction_fab()}
+                </span>
+            )}
         </button>
     );
 

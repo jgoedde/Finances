@@ -2929,6 +2929,20 @@ export const transaction_expense_saved: ((inputs: Transaction_Expense_SavedInput
 /**
 * | output |
 * | --- |
+* | "Track" |
+*
+* @param {Transaction_FabInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_fab: ((inputs?: Transaction_FabInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_FabInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "The income was deleted." |
 *
 * @param {Transaction_Income_DeletedInputs} inputs
@@ -3332,6 +3346,7 @@ export type Transaction_Expense_DeletedInputs = {};
 export type Transaction_Expense_SavedInputs = {
     name: NonNullable<unknown>;
 };
+export type Transaction_FabInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
     name: NonNullable<unknown>;
