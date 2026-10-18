@@ -8,14 +8,17 @@ export interface AppEnv {
          * Set for every request by `createApp`.
          */
         db: DB;
+
         /**
          * Set for every request by `createApp`.
          */
         auth: Auth;
+
         /**
          * Set by `requireUser`.
          */
         userId: string;
+
         /**
          * Set by `requireUser`.
          */

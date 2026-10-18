@@ -20,6 +20,7 @@ interface SavingsTarget {
 interface Transaction {
     name: string;
     category_id: string;
+
     /**
      * Signed: negative is income.
      */

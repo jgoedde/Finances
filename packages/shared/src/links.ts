@@ -18,6 +18,7 @@ export interface CreatedLink {
 
 export interface LinkInfo {
     kind: LinkKind;
+
     /**
      * Set for password reset links.
      */

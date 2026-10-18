@@ -54,10 +54,12 @@ export interface FixedCostWizardValues {
     name: string;
     amount: number;
     interval: FixedCostInterval;
+
     /**
      * `YYYY-MM-DD`
      */
     startDate: string;
+
     /**
      * `YYYY-MM-DD`
      */
@@ -67,6 +69,7 @@ export interface FixedCostWizardValues {
 
 interface FixedCostWizardProps {
     title: string;
+
     /**
      * Label of the final step's button.
      */
@@ -75,6 +78,7 @@ interface FixedCostWizardProps {
         name: string;
         amount: number | null;
         interval: FixedCostInterval;
+
         /**
          * Defaults to today.
          */
@@ -83,6 +87,7 @@ interface FixedCostWizardProps {
         categoryId: string | undefined;
     };
     categories: FixedCostCategory[];
+
     /**
      * Saves the fixed cost optimistically; errors are the caller's to report.
      */

@@ -5,10 +5,12 @@ import { cn } from "#/lib/cn.ts";
 
 interface Props {
     title: ReactNode;
+
     /**
      * Show the back arrow. Off on top-level destinations.
      */
     back?: boolean;
+
     /**
      * Trailing action items (icon buttons or a single text button).
      */

@@ -8,10 +8,12 @@ export interface SyncFailure {
     id: string;
     action: "save" | "delete";
     transaction: Transaction;
+
     /**
      * The API's answer, if the change reached it.
      */
     error?: { status: number; code?: string };
+
     /**
      * German reason text, stored by versions before the API codes.
      */

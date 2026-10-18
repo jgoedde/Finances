@@ -19,6 +19,7 @@ import { getLocale } from "#/paraglide/runtime.js";
 export interface TransactionFormSubmitData {
     categoryId: string;
     name: string;
+
     /**
      * Always positive; `kind` decides the direction.
      */

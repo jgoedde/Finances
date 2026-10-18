@@ -21,12 +21,14 @@ export const transactionInputSchema = z.object({
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
     kind: transactionKindSchema,
+
     /**
      * Always non-negative; `kind` decides the direction.
      */
     amount: z.number().nonnegative(),
     currency: z.string().length(3),
     categoryId: z.string().min(1),
+
     /**
      * One-off large transaction, excluded from insights.
      */
@@ -105,6 +107,7 @@ export const transactionSearchQuerySchema = z.object({
      * Matched against name and description (case-insensitive for ASCII).
      */
     q: z.string().max(200).optional(),
+
     /**
      * Only transactions before this Unix timestamp in milliseconds.
      */
@@ -124,6 +127,7 @@ export interface TransactionSearchQuery {
  */
 export interface TransactionSearchPage {
     items: Transaction[];
+
     /**
      * `null` on the last page.
      */

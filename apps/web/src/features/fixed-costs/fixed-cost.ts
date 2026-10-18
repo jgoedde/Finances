@@ -32,6 +32,7 @@ export interface FixedCost {
 
     monthlyAmount: number;
     yearlyAmount: number;
+
     /**
      * Active and within its start/end range today.
      */
