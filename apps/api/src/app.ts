@@ -4,42 +4,48 @@ import type { DB } from "./db/database.ts";
 import {
     categoryRoutes,
     fixedCostCategoryRoutes,
-} from "./features/categories.ts";
-import { dataTransferRoutes } from "./features/data-transfer/data-transfer.ts";
-import { fixedCostRoutes } from "./features/fixed-costs.ts";
-import { insightRoutes } from "./features/insights.ts";
-import { adminLinkRoutes, linkRoutes } from "./features/links.ts";
-import { transactionRoutes } from "./features/transactions.ts";
+} from "./features/categories/routes.ts";
+import { dataTransferRoutes } from "./features/data-transfer/routes.ts";
+import { fixedCostRoutes } from "./features/fixed-costs/routes.ts";
+import { insightRoutes } from "./features/insights/routes.ts";
+import { adminLinkRoutes, linkRoutes } from "./features/links/routes.ts";
+import { transactionRoutes } from "./features/transactions/routes.ts";
 import { type AppEnv, requireAdmin, requireUser } from "./http/session.ts";
 
 export function createApp(db: DB, auth: Auth) {
     const app = new Hono<AppEnv>().basePath("/api");
-    const userOnly = requireUser(auth);
 
     // Replaces Hono's default handler, which writes to `console.error`; the
     // request logger logs the error (`c.error`) with the request line.
     app.onError((_error, c) => c.text("Internal Server Error", 500));
 
+    // Endpoints take their dependencies from the context.
+    app.use(async (c, next) => {
+        c.set("db", db);
+        c.set("auth", auth);
+        await next();
+    });
+
     app.get("/health", (c) => c.json({ ok: true }));
     app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
-    app.route("/links", linkRoutes(db, auth));
+    app.route("/links", linkRoutes);
 
     const protectedRoutes = {
-        "/transactions": transactionRoutes(db),
-        "/categories": categoryRoutes(db),
-        "/fixed-cost-categories": fixedCostCategoryRoutes(db),
-        "/fixed-costs": fixedCostRoutes(db),
-        "/insights": insightRoutes(db),
-        "/data": dataTransferRoutes(db),
+        "/transactions": transactionRoutes,
+        "/categories": categoryRoutes,
+        "/fixed-cost-categories": fixedCostCategoryRoutes,
+        "/fixed-costs": fixedCostRoutes,
+        "/insights": insightRoutes,
+        "/data": dataTransferRoutes,
     };
     for (const [path, routes] of Object.entries(protectedRoutes)) {
-        app.use(path, userOnly);
-        app.use(`${path}/*`, userOnly);
+        app.use(path, requireUser);
+        app.use(`${path}/*`, requireUser);
         app.route(path, routes);
     }
 
-    app.use("/admin/*", userOnly, requireAdmin);
-    app.route("/admin", adminLinkRoutes(db));
+    app.use("/admin/*", requireUser, requireAdmin);
+    app.route("/admin", adminLinkRoutes);
 
     return app;
 }

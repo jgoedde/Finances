@@ -1,9 +1,24 @@
 import { createMiddleware } from "hono/factory";
 import type { Auth } from "../auth/auth.ts";
+import type { DB } from "../db/database.ts";
 
 export interface AppEnv {
     Variables: {
+        /**
+         * Set for every request by `createApp`.
+         */
+        db: DB;
+        /**
+         * Set for every request by `createApp`.
+         */
+        auth: Auth;
+        /**
+         * Set by `requireUser`.
+         */
         userId: string;
+        /**
+         * Set by `requireUser`.
+         */
         role: string | null;
     };
 }
@@ -11,19 +26,17 @@ export interface AppEnv {
 /**
  * Rejects requests without a valid session; exposes the user id.
  */
-export function requireUser(auth: Auth) {
-    return createMiddleware<AppEnv>(async (c, next) => {
-        const result = await auth.api.getSession({
-            headers: c.req.raw.headers,
-        });
-        if (!result) {
-            return c.json({ error: "unauthorized" }, 401);
-        }
-        c.set("userId", result.user.id);
-        c.set("role", result.user.role ?? null);
-        await next();
+export const requireUser = createMiddleware<AppEnv>(async (c, next) => {
+    const result = await c.var.auth.api.getSession({
+        headers: c.req.raw.headers,
     });
-}
+    if (!result) {
+        return c.json({ error: "unauthorized" }, 401);
+    }
+    c.set("userId", result.user.id);
+    c.set("role", result.user.role ?? null);
+    await next();
+});
 
 /**
  * Must run after `requireUser`.

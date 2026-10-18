@@ -58,6 +58,7 @@ Data conventions: a transaction is an expense or an income (`kind`), and `amount
 Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 - Hono + better-sqlite3 + Kysely + better-auth. Node runs the `.ts` sources directly (type stripping), so the API uses only erasable TS syntax. `tsc -b` is a type check only.
+- One endpoint per file: `features/<feature>/<verb>-<noun>.ts` exports `factory.createHandlers(...validators, handler)` (`http/factory.ts`). Only the feature's `routes.ts` maps paths to endpoints; `app.ts` mounts the routers and applies `requireUser`/`requireAdmin`. Endpoints get their dependencies from the context (`c.var.db`, `c.var.auth`, `c.var.userId`), validate every input with `validate(...)` and stay thin: helpers shared within a feature, and logic the CLI also uses, live in the feature module (`features/<feature>/<feature>.ts`); pure aggregation lives in its own module (e.g. `insights/month-overview.ts`).
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.
 - `db/migrate.ts` first lets better-auth migrate its own tables, then runs our Kysely migrations from `db/migrations/`. Append new migrations; never edit applied ones.
 - Every app table is keyed by `(user_id, id)`, and every query must filter by the session's `userId`. Transactions are written with an idempotent `PUT /api/transactions/:id` (create or replace). Deletes leave a tombstone so late replays of a deleted id are ignored.

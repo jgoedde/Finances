@@ -1,20 +1,16 @@
-import { Hono } from "hono";
-import { bodyLimit } from "hono/body-limit";
-import {
-    type DataExport,
-    type ImportResult,
-    dataExportSchema,
-} from "@finances/shared";
+import type { DataExport, ImportResult } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
-import type { AppEnv } from "#/http/session.ts";
-import { logger } from "#/log.ts";
-import { toFixedCost } from "../fixed-costs.ts";
-import { toTransaction } from "../transactions.ts";
-import { isSqliteFile, readLegacyDatabase } from "./legacy-database.ts";
+import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
+import { toTransaction } from "#/features/transactions/transactions.ts";
+import {
+    isSqliteFile,
+    readLegacyDatabase,
+} from "#/features/data-transfer/legacy-database.ts";
 
-const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
-
-async function exportData(db: DB, userId: string): Promise<DataExport> {
+/**
+ * All of the user's data in the export format.
+ */
+export async function readExport(db: DB, userId: string): Promise<DataExport> {
     const [categories, fixedCostCategories, fixedCosts, transactions] =
         await Promise.all([
             db
@@ -66,7 +62,7 @@ async function exportData(db: DB, userId: string): Promise<DataExport> {
 /**
  * Only an account without transactions and fixed costs can import.
  */
-async function hasData(db: DB, userId: string): Promise<boolean> {
+export async function hasData(db: DB, userId: string): Promise<boolean> {
     const [transaction, fixedCost] = await Promise.all([
         db
             .selectFrom("transactions")
@@ -84,13 +80,13 @@ async function hasData(db: DB, userId: string): Promise<boolean> {
     return transaction !== undefined || fixedCost !== undefined;
 }
 
-class InvalidReferenceError extends Error {}
+export class InvalidReferenceError extends Error {}
 
 /**
  * Replaces all of the user's data with the import, atomically. Callers decide
  * whether an account with data may be replaced.
  */
-async function importData(
+export async function replaceData(
     db: DB,
     userId: string,
     data: DataExport,
@@ -213,101 +209,12 @@ async function importData(
     };
 }
 
-function parseUpload(bytes: Uint8Array): unknown {
+/**
+ * A JSON export or a legacy `.db` file, as uploaded.
+ */
+export function parseUpload(bytes: Uint8Array): unknown {
     if (isSqliteFile(bytes)) {
         return readLegacyDatabase(bytes);
     }
     return JSON.parse(new TextDecoder().decode(bytes));
-}
-
-export function dataTransferRoutes(db: DB) {
-    return (
-        new Hono<AppEnv>()
-            .get("/export", async (c) => {
-                const data = await exportData(db, c.get("userId"));
-                logger.info(
-                    {
-                        userId: c.get("userId"),
-                        transactions: data.transactions.length,
-                        fixedCosts: data.fixedCosts.length,
-                    },
-                    "Data exported",
-                );
-                const date = data.exportedAt.slice(0, 10);
-                c.header(
-                    "Content-Disposition",
-                    `attachment; filename="finances-${date}.json"`,
-                );
-                return c.json(data);
-            })
-            // Body: a JSON export or a legacy `.db` file, as raw bytes. An
-            // account with data is only replaced with `?replace=true`.
-            .post(
-                "/import",
-                bodyLimit({
-                    maxSize: MAX_IMPORT_BYTES,
-                    onError: (c) => c.json({ error: "file_too_large" }, 413),
-                }),
-                async (c) => {
-                    const userId = c.get("userId");
-                    const replace = c.req.query("replace") === "true";
-                    if (!replace && (await hasData(db, userId))) {
-                        return c.json({ error: "account_not_empty" }, 409);
-                    }
-
-                    let upload: unknown;
-                    try {
-                        upload = parseUpload(
-                            new Uint8Array(await c.req.arrayBuffer()),
-                        );
-                    } catch (error) {
-                        logger.warn(
-                            { userId, err: error },
-                            "Import rejected: unreadable file",
-                        );
-                        return c.json({ error: "unreadable_file" }, 422);
-                    }
-
-                    const parsed = dataExportSchema.safeParse(upload);
-                    if (!parsed.success) {
-                        logger.warn(
-                            {
-                                userId,
-                                issues: parsed.error.issues.length,
-                            },
-                            "Import rejected: invalid file",
-                        );
-                        return c.json(
-                            {
-                                error: "invalid_file",
-                                issues: parsed.error.issues,
-                            },
-                            422,
-                        );
-                    }
-
-                    try {
-                        const result = await importData(
-                            db,
-                            userId,
-                            parsed.data,
-                        );
-                        logger.info(
-                            { userId, replace, ...result },
-                            "Data imported",
-                        );
-                        return c.json(result);
-                    } catch (error) {
-                        if (error instanceof InvalidReferenceError) {
-                            logger.warn(
-                                { userId },
-                                "Import rejected: unknown category",
-                            );
-                            return c.json({ error: "unknown_category" }, 422);
-                        }
-                        throw error;
-                    }
-                },
-            )
-    );
 }
