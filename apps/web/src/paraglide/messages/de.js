@@ -100,6 +100,7 @@
 /** @typedef {{}} Login_FailedInputs */
 /** @typedef {{}} Login_Wrong_CredentialsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
+/** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
 /** @typedef {{}} Period_Choose_ListInputs */
@@ -589,6 +590,10 @@ export const login_wrong_credentials = /** @type {(inputs: Login_Wrong_Credentia
 
 export const offline_unavailable = /** @type {(inputs: Offline_UnavailableInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Offline nicht verfügbar`)
+};
+
+export const page_title = /** @type {(inputs: Page_TitleInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.page} · Ausgabentracker`)
 };
 
 export const period = /** @type {(inputs: PeriodInputs) => LocalizedString} */ () => {

@@ -29,6 +29,16 @@ export const Route = createFileRoute("/_authed/edit/$id")({
         }
         return queryClient.query({ ...query, staleTime: "static" });
     },
+    // After `loader`, so `loaderData` is typed.
+    head: ({ loaderData }) => ({
+        meta: [
+            {
+                title: m.page_title({
+                    page: loaderData?.name ?? m.transaction_edit(),
+                }),
+            },
+        ],
+    }),
     onError: (error) => {
         if (apiErrorCode(error) === "not_found") {
             toast.error(m.transaction_not_found());

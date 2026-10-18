@@ -98,6 +98,7 @@ export const link_welcome: (inputs: Link_WelcomeInputs) => LocalizedString;
 export const login_failed: (inputs: Login_FailedInputs) => LocalizedString;
 export const login_wrong_credentials: (inputs: Login_Wrong_CredentialsInputs) => LocalizedString;
 export const offline_unavailable: (inputs: Offline_UnavailableInputs) => LocalizedString;
+export const page_title: (inputs: Page_TitleInputs) => LocalizedString;
 export const period: (inputs: PeriodInputs) => LocalizedString;
 export const period_any: (inputs: Period_AnyInputs) => LocalizedString;
 export const period_choose_list: (inputs: Period_Choose_ListInputs) => LocalizedString;
@@ -300,6 +301,9 @@ export type Link_WelcomeInputs = {};
 export type Login_FailedInputs = {};
 export type Login_Wrong_CredentialsInputs = {};
 export type Offline_UnavailableInputs = {};
+export type Page_TitleInputs = {
+    page: NonNullable<unknown>;
+};
 export type PeriodInputs = {};
 export type Period_AnyInputs = {};
 export type Period_Choose_ListInputs = {};

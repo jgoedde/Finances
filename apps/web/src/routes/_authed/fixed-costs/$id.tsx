@@ -27,6 +27,16 @@ export const Route = createFileRoute("/_authed/fixed-costs/$id")({
                 staleTime: "static",
             }),
         ]),
+    // After `loader`, so `loaderData` is typed.
+    head: ({ loaderData }) => ({
+        meta: [
+            {
+                title: m.page_title({
+                    page: loaderData?.[0].name ?? m.fixed_cost_edit(),
+                }),
+            },
+        ],
+    }),
     onError: (error) => {
         if (apiErrorCode(error) === "not_found") {
             toast.error(m.fixed_cost_not_found());

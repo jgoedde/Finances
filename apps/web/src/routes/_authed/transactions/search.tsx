@@ -25,6 +25,9 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/_authed/transactions/search")({
+    head: () => ({
+        meta: [{ title: m.page_title({ page: m.search_label() }) }],
+    }),
     component: RouteComponent,
     validateSearch: searchSchema,
 });

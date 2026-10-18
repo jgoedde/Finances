@@ -102,6 +102,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Login_FailedInputs */
 /** @typedef {{}} Login_Wrong_CredentialsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
+/** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
 /** @typedef {{}} Period_Choose_ListInputs */
@@ -1590,6 +1591,20 @@ export const offline_unavailable = /** @type {((inputs?: Offline_UnavailableInpu
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.offline_unavailable(inputs)
 	return __en.offline_unavailable(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{page} · Expense Tracker" |
+*
+* @param {Page_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const page_title = /** @type {((inputs: Page_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Page_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.page_title(inputs)
+	return __en.page_title(inputs)
 });
 /**
 * | output |

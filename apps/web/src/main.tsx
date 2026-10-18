@@ -14,7 +14,6 @@ import { registerTransactionMutations } from "#/features/transactions/transactio
 import { restoreQueryClient } from "#/features/sync/persistence.ts";
 import { TooltipProvider } from "#/components/ui/tooltip.tsx";
 import { getLocale } from "#/paraglide/runtime.js";
-import { m } from "#/paraglide/messages.js";
 
 function onUnauthorized() {
     // The session expired or was revoked: forget it and go to the login.
@@ -43,7 +42,6 @@ declare module "@tanstack/react-router" {
 
 // index.html is static; switching the language reloads the page.
 document.documentElement.lang = getLocale();
-document.title = m.app_name();
 
 // Before rendering, so the app starts offline with the last known data.
 await restoreQueryClient(queryClient);

@@ -1,4 +1,8 @@
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import {
+    createRootRouteWithContext,
+    HeadContent,
+    Outlet,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { TRANSACTION_MUTATION_KEY } from "#/features/transactions/pending-changes.ts";
@@ -13,7 +17,9 @@ export interface RouterContext {
     queryClient: QueryClient;
 }
 
+// Routes set their own title with `head`; the deepest match wins.
 export const Route = createRootRouteWithContext<RouterContext>()({
+    head: () => ({ meta: [{ title: m.app_name() }] }),
     component: RootComponent,
 });
 
@@ -57,6 +63,8 @@ function RootComponent() {
 
     return (
         <>
+            {/* Renders the title; React hoists it into <head>. */}
+            <HeadContent />
             <Outlet />
             <TanStackRouterDevtools />
             <ReactQueryDevtools initialIsOpen={false} />

@@ -1402,6 +1402,20 @@ export const offline_unavailable: ((inputs?: Offline_UnavailableInputs, options?
 /**
 * | output |
 * | --- |
+* | "{page} · Expense Tracker" |
+*
+* @param {Page_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const page_title: ((inputs: Page_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Page_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Period" |
 *
 * @param {PeriodInputs} inputs
@@ -2720,6 +2734,9 @@ export type Link_WelcomeInputs = {};
 export type Login_FailedInputs = {};
 export type Login_Wrong_CredentialsInputs = {};
 export type Offline_UnavailableInputs = {};
+export type Page_TitleInputs = {
+    page: NonNullable<unknown>;
+};
 export type PeriodInputs = {};
 export type Period_AnyInputs = {};
 export type Period_Choose_ListInputs = {};
