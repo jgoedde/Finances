@@ -1,6 +1,4 @@
 /* Self-hosted so the PWA precaches them. Poppins: only the weights in use. */
-@import "@fontsource/poppins/latin-400.css";
-@import "@fontsource/poppins/latin-ext-400.css";
 @import "@fontsource/poppins/latin-500.css";
 @import "@fontsource/poppins/latin-ext-500.css";
 @import "@fontsource/poppins/latin-600.css";
@@ -210,39 +208,39 @@
     --text-display-large: 3.5625rem;
     --text-display-large--line-height: 4rem;
     --text-display-large--letter-spacing: -0.015625rem;
-    --text-display-large--font-weight: 400;
+    --text-display-large--font-weight: 500;
     --text-display-medium: 2.8125rem;
     --text-display-medium--line-height: 3.25rem;
     --text-display-medium--letter-spacing: 0;
-    --text-display-medium--font-weight: 400;
+    --text-display-medium--font-weight: 500;
     --text-display-small: 2.25rem;
     --text-display-small--line-height: 2.75rem;
     --text-display-small--letter-spacing: 0;
-    --text-display-small--font-weight: 400;
+    --text-display-small--font-weight: 500;
     --text-headline-large: 2rem;
     --text-headline-large--line-height: 2.5rem;
     --text-headline-large--letter-spacing: 0;
-    --text-headline-large--font-weight: 400;
+    --text-headline-large--font-weight: 500;
     --text-headline-medium: 1.75rem;
     --text-headline-medium--line-height: 2.25rem;
     --text-headline-medium--letter-spacing: 0;
-    --text-headline-medium--font-weight: 400;
+    --text-headline-medium--font-weight: 500;
     --text-headline-small: 1.5rem;
     --text-headline-small--line-height: 2rem;
     --text-headline-small--letter-spacing: 0;
-    --text-headline-small--font-weight: 400;
+    --text-headline-small--font-weight: 500;
     --text-title-large: 1.375rem;
     --text-title-large--line-height: 1.75rem;
     --text-title-large--letter-spacing: 0;
-    --text-title-large--font-weight: 400;
+    --text-title-large--font-weight: 500;
     --text-title-medium: 1rem;
     --text-title-medium--line-height: 1.5rem;
     --text-title-medium--letter-spacing: 0.009375rem;
-    --text-title-medium--font-weight: 500;
+    --text-title-medium--font-weight: 600;
     --text-title-small: 0.875rem;
     --text-title-small--line-height: 1.25rem;
     --text-title-small--letter-spacing: 0.00625rem;
-    --text-title-small--font-weight: 500;
+    --text-title-small--font-weight: 600;
     --text-body-large: 1rem;
     --text-body-large--line-height: 1.5rem;
     --text-body-large--letter-spacing: 0.03125rem;
@@ -258,15 +256,15 @@
     --text-label-large: 0.875rem;
     --text-label-large--line-height: 1.25rem;
     --text-label-large--letter-spacing: 0.00625rem;
-    --text-label-large--font-weight: 500;
+    --text-label-large--font-weight: 600;
     --text-label-medium: 0.75rem;
     --text-label-medium--line-height: 1rem;
     --text-label-medium--letter-spacing: 0.03125rem;
-    --text-label-medium--font-weight: 500;
+    --text-label-medium--font-weight: 600;
     --text-label-small: 0.6875rem;
     --text-label-small--line-height: 1rem;
     --text-label-small--letter-spacing: 0.03125rem;
-    --text-label-small--font-weight: 500;
+    --text-label-small--font-weight: 600;
 
     /*
      * MD3 shape scale mapped onto Tailwind's radius names:
