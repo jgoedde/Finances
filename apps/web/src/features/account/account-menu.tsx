@@ -77,17 +77,14 @@ function syncMenuItem(status: SyncStatus) {
     }
 }
 
-/**
- * Avatar with the sync indicator; opens the account menu. `side` is where
- * the menu opens: below in a top app bar, to the right in a rail or drawer.
- */
-export function AccountMenu({
-    side = "bottom",
-    className,
-}: {
+interface AccountMenuProps {
+    /** Where the menu opens: below in a top app bar, right in a rail or drawer. */
     side?: "bottom" | "right";
     className?: string;
-}) {
+}
+
+/** Avatar with the sync indicator; opens the account menu. */
+export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
     const user = useQuery(sessionQuery).data;
     const status = useSyncStatus();
     const signOut = useSignOut();

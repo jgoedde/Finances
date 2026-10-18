@@ -132,6 +132,7 @@
 
     "search_label": "Suche",
     "search_placeholder": "Buchung/Transaktion suchen",
+    "search_all_months": "Ergebnisse aus allen Monaten",
     "search_clear": "Suche leeren",
     "search_offline": "Die Suche ist offline nicht verfügbar.",
     "search_no_results": "Keine Ergebnisse",
@@ -157,6 +158,7 @@
     "transaction_remove_category": "Kategorie {name} entfernen",
     "transaction_no_description": "Keine Beschreibung",
     "transaction_list_empty": "Keine Geldbewegungen für {period}",
+    "transaction_list_today": "Heute",
 
     "insights_spent_today": "Heute ausgegeben",
     "insights_spent_this_month": "Diesen Monat ausgegeben",

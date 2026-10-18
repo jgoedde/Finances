@@ -15,7 +15,8 @@ const prefilledSchema = z.object({
     amount: z.number().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/_authed/new")({
+export const Route = createFileRoute("/_authed/_shell/_transactions/new")({
+    staticData: { detail: true },
     head: () => ({
         meta: [{ title: m.page_title({ page: m.transaction_new() }) }],
     }),

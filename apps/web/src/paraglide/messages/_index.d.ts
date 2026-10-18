@@ -1878,6 +1878,20 @@ export const sankey_year_placeholder: ((inputs?: Sankey_Year_PlaceholderInputs, 
 /**
 * | output |
 * | --- |
+* | "Results from all months" |
+*
+* @param {Search_All_MonthsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const search_all_months: ((inputs?: Search_All_MonthsInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Search_All_MonthsInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Clear search" |
 *
 * @param {Search_ClearInputs} inputs
@@ -2607,6 +2621,20 @@ export const transaction_list_empty: ((inputs: Transaction_List_EmptyInputs, opt
 /**
 * | output |
 * | --- |
+* | "Today" |
+*
+* @param {Transaction_List_TodayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_today: ((inputs?: Transaction_List_TodayInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_List_TodayInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "New transaction" |
 *
 * @param {Transaction_NewInputs} inputs
@@ -2826,6 +2854,7 @@ export type Sankey_Savings_TargetsInputs = {};
 export type Sankey_TitleInputs = {};
 export type Sankey_YearInputs = {};
 export type Sankey_Year_PlaceholderInputs = {};
+export type Search_All_MonthsInputs = {};
 export type Search_ClearInputs = {};
 export type Search_LabelInputs = {};
 export type Search_Load_MoreInputs = {};
@@ -2899,6 +2928,7 @@ export type Transaction_Income_SavedInputs = {
 export type Transaction_List_EmptyInputs = {
     period: NonNullable<unknown>;
 };
+export type Transaction_List_TodayInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};

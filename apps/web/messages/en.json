@@ -132,6 +132,7 @@
 
     "search_label": "Search",
     "search_placeholder": "Search transactions",
+    "search_all_months": "Results from all months",
     "search_clear": "Clear search",
     "search_offline": "Search isn't available offline.",
     "search_no_results": "No results",
@@ -157,6 +158,7 @@
     "transaction_remove_category": "Remove category {name}",
     "transaction_no_description": "No description",
     "transaction_list_empty": "No transactions ({period})",
+    "transaction_list_today": "Today",
 
     "insights_spent_today": "Spent today",
     "insights_spent_this_month": "Spent this month",

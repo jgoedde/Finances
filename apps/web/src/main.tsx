@@ -38,6 +38,14 @@ declare module "@tanstack/react-router" {
     interface Register {
         router: typeof router;
     }
+
+    interface StaticDataRouteOption {
+        /**
+         * A detail view (form) of a list: a pane beside the list on
+         * expanded windows, full-screen without navigation otherwise.
+         */
+        detail?: boolean;
+    }
 }
 
 // index.html is static; switching the language reloads the page.
