@@ -1,4 +1,5 @@
 import { type SubmitEvent, useRef, useState } from "react";
+import { useBlocker } from "@tanstack/react-router";
 import { ChevronDownIcon } from "lucide-react";
 import { Input } from "#/components/ui/input.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
@@ -110,10 +111,10 @@ export function TransactionForm({
     );
     const [description, setDescription] = useState(initialValues.description);
     const [date, setDate] = useState(initialValues.date);
-    const [name, setName] = useState(learnedName ?? rawName);
-    const [amountStr, setAmountStr] = useState(
-        initialValues.amount?.toFixed(2) ?? "",
-    );
+    const initialName = learnedName ?? rawName;
+    const initialAmountStr = initialValues.amount?.toFixed(2) ?? "";
+    const [name, setName] = useState(initialName);
+    const [amountStr, setAmountStr] = useState(initialAmountStr);
     const [shouldShowSuggestions, setShouldShowSuggestions] = useState(predict);
     const [isExceptional, setIsExceptional] = useState(
         initialValues.isExceptional,
@@ -140,6 +141,23 @@ export function TransactionForm({
     const selectedCategory = categories.find(
         (category) => category.id === categoryId,
     );
+
+    // Values prefilled from a link don't count as changes.
+    const isDirty =
+        name !== initialName ||
+        amountStr !== initialAmountStr ||
+        chosenCategoryId !== initialValues.categoryId ||
+        chosenKind !== (predict ? undefined : initialValues.kind) ||
+        description !== initialValues.description ||
+        date.getTime() !== initialValues.date.getTime() ||
+        isExceptional !== initialValues.isExceptional;
+
+    // Asks before reloading or closing the tab with unsaved changes.
+    useBlocker({
+        shouldBlockFn: () => false,
+        enableBeforeUnload: isDirty,
+        disabled: !isDirty,
+    });
 
     function clearMissing(field: RequiredField) {
         setMissingFields((fields) => fields.filter((it) => it !== field));
