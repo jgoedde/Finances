@@ -42,7 +42,8 @@ export const ConfirmDialog = createCallable<ConfirmDialogProps, boolean>(
                 }
             }}
         >
-            <AlertDialogContent>
+            {/* Clicking the scrim dismisses it, like Cancel. */}
+            <AlertDialogContent onOverlayClick={() => call.end(false)}>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>
