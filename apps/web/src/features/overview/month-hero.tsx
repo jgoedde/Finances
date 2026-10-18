@@ -1,10 +1,10 @@
+import { formatCurrency, formatPercent } from "@finances/shared";
 import { TrendingDown, TrendingUp } from "lucide-react";
 import type { MonthOverview } from "@finances/shared";
 import { Card } from "#/components/ui/card.tsx";
-import { formatPercent } from "#/features/overview/format-percent.ts";
-import { formatEuro } from "#/utils/currency.ts";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 /** Below this share, a month counts as typical. */
 const EVEN_THRESHOLD = 0.02;
@@ -17,7 +17,7 @@ function paceText({ day, netSpending, typical }: MonthOverview["pace"]) {
     if (Math.abs(change) < EVEN_THRESHOLD) {
         return m.overview_pace_even();
     }
-    const percent = formatPercent(Math.abs(change));
+    const percent = formatPercent(Math.abs(change), getLocale());
     if (day === null) {
         return change > 0
             ? m.overview_pace_above_month({ percent })
@@ -50,7 +50,7 @@ export function MonthHero({ overview }: MonthHeroProps) {
                 <span
                     className={"font-brand text-display-medium text-on-surface"}
                 >
-                    {formatEuro(overview.netSpending)}
+                    {formatCurrency(overview.netSpending, getLocale())}
                 </span>
                 <span
                     className={cn(
@@ -67,7 +67,10 @@ export function MonthHero({ overview }: MonthHeroProps) {
                     <span className={"text-body-small text-on-surface-variant"}>
                         {m.overview_exceptional({
                             count: exceptional.count,
-                            amount: formatEuro(exceptional.netSpending),
+                            amount: formatCurrency(
+                                exceptional.netSpending,
+                                getLocale(),
+                            ),
                         })}
                     </span>
                 )}
@@ -80,13 +83,16 @@ export function MonthHero({ overview }: MonthHeroProps) {
                     {m.overview_fixed_costs()}
                 </dt>
                 <dd className={"text-right text-on-surface"}>
-                    {formatEuro(overview.fixedCosts)}
+                    {formatCurrency(overview.fixedCosts, getLocale())}
                 </dd>
                 <dt className={"text-on-surface-variant"}>
                     {m.overview_total_outflow()}
                 </dt>
                 <dd className={"text-right text-title-medium text-on-surface"}>
-                    {formatEuro(overview.netSpending + overview.fixedCosts)}
+                    {formatCurrency(
+                        overview.netSpending + overview.fixedCosts,
+                        getLocale(),
+                    )}
                 </dd>
             </dl>
         </Card>

@@ -1,3 +1,4 @@
+import { formatCurrency } from "@finances/shared";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { ChevronRight, CloudUpload, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
@@ -6,11 +7,11 @@ import { useColorScheme } from "@mantine/hooks";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
 import { useCategories } from "#/features/transactions/transaction-queries.ts";
-import { formatEuro } from "#/utils/currency.ts";
 import { usePendingChanges } from "#/features/sync/use-sync-status.ts";
 import { cn } from "#/lib/cn.ts";
 import type { ComponentProps } from "react";
 import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
@@ -141,9 +142,11 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     />
                 )}
                 {transaction.kind === "income" ? (
-                    <div>+{formatEuro(transaction.amount)}</div>
+                    <div>
+                        +{formatCurrency(transaction.amount, getLocale())}
+                    </div>
                 ) : (
-                    <div>{formatEuro(transaction.amount)}</div>
+                    <div>{formatCurrency(transaction.amount, getLocale())}</div>
                 )}
             </div>
         </button>

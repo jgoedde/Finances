@@ -1,3 +1,4 @@
+import { formatMonthYear } from "@finances/shared";
 import { endOfMonth, startOfDay } from "date-fns";
 import { groupBy } from "lodash";
 import { getRouteApi } from "@tanstack/react-router";
@@ -33,10 +34,7 @@ export function TransactionList() {
                     text-on-surface-variant`}
             >
                 {m.transaction_list_empty({
-                    period: month.toLocaleDateString(getLocale(), {
-                        month: "long",
-                        year: "numeric",
-                    }),
+                    period: formatMonthYear(month, getLocale()),
                 })}
             </p>
         );

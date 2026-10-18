@@ -1,5 +1,5 @@
 import { isToday } from "date-fns";
-import type { Transaction } from "@finances/shared";
+import { formatDayHeading, type Transaction } from "@finances/shared";
 import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
@@ -12,11 +12,7 @@ interface TransactionGroupProps {
 
 /** One day of the transaction list, under a sticky header. */
 export function TransactionGroup({ day, transactions }: TransactionGroupProps) {
-    const label = day.toLocaleDateString(getLocale(), {
-        weekday: "short",
-        day: "2-digit",
-        month: "long",
-    });
+    const label = formatDayHeading(day, getLocale());
 
     return (
         <section className={"flex flex-col pb-2"}>

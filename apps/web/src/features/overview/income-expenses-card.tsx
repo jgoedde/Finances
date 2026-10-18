@@ -1,7 +1,8 @@
+import { formatCurrency } from "@finances/shared";
 import type { MonthOverview } from "@finances/shared";
 import { Card } from "#/components/ui/card.tsx";
-import { formatEuro } from "#/utils/currency.ts";
 import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 interface IncomeExpensesCardProps {
     overview: MonthOverview;
@@ -16,7 +17,7 @@ export function IncomeExpensesCard({ overview }: IncomeExpensesCardProps) {
                     {m.overview_income()}
                 </span>
                 <span className={"font-brand text-title-large text-income"}>
-                    {formatEuro(overview.income)}
+                    {formatCurrency(overview.income, getLocale())}
                 </span>
             </div>
             <div className={"flex flex-col gap-1"}>
@@ -24,7 +25,7 @@ export function IncomeExpensesCard({ overview }: IncomeExpensesCardProps) {
                     {m.overview_expenses()}
                 </span>
                 <span className={"font-brand text-title-large text-on-surface"}>
-                    {formatEuro(overview.expenses)}
+                    {formatCurrency(overview.expenses, getLocale())}
                 </span>
             </div>
         </Card>

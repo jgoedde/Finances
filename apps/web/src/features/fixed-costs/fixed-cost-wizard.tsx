@@ -1,3 +1,4 @@
+import { formatLongDate } from "@finances/shared";
 import { type KeyboardEvent, useMemo, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
@@ -223,12 +224,7 @@ export function FixedCostWizard({
                                     className={dateTriggerClassName}
                                 >
                                     {startDate ? (
-                                        startDate.toLocaleDateString(
-                                            getLocale(),
-                                            {
-                                                dateStyle: "long",
-                                            },
-                                        )
+                                        formatLongDate(startDate, getLocale())
                                     ) : (
                                         <span>
                                             {m.fixed_cost_choose_start_date()}
@@ -272,12 +268,7 @@ export function FixedCostWizard({
                                     )}
                                 >
                                     {endDate ? (
-                                        endDate.toLocaleDateString(
-                                            getLocale(),
-                                            {
-                                                dateStyle: "long",
-                                            },
-                                        )
+                                        formatLongDate(endDate, getLocale())
                                     ) : (
                                         <span>
                                             {m.fixed_cost_end_date_optional()}

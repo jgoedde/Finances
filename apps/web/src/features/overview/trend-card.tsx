@@ -1,20 +1,23 @@
 import { Bar, BarChart, CartesianGrid, Cell, XAxis } from "recharts";
-import type { MonthlyTotal, MonthOverview } from "@finances/shared";
+import {
+    formatCurrency,
+    formatMonthYear,
+    formatShortMonth,
+    type MonthlyTotal,
+    type MonthOverview,
+} from "@finances/shared";
 import { Card } from "#/components/ui/card.tsx";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "#/components/ui/chart.tsx";
-import { formatEuro } from "#/utils/currency.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
-function monthLabel(month: string, style: "short" | "long") {
-    return new Date(`${month}-01T12:00:00`).toLocaleDateString(getLocale(), {
-        month: style,
-        year: style === "long" ? "numeric" : undefined,
-    });
+/** `YYYY-MM` as its first day, local time. */
+function toDate(month: string) {
+    return new Date(`${month}-01T00:00:00`);
 }
 
 interface TrendCardProps {
@@ -48,23 +51,28 @@ export function TrendCard({ overview }: TrendCardProps) {
                         axisLine={false}
                         interval={"preserveStartEnd"}
                         tickFormatter={(month: string) =>
-                            monthLabel(month, "short")
+                            formatShortMonth(toDate(month), getLocale())
                         }
                     />
                     <ChartTooltip
                         content={
                             <ChartTooltipContent
                                 hideIndicator
-                                labelFormatter={(_, payload) =>
-                                    monthLabel(
-                                        (
-                                            payload[0]?.payload as
-                                                MonthlyTotal | undefined
-                                        )?.month ?? "",
-                                        "long",
-                                    )
+                                labelFormatter={(_, payload) => {
+                                    const month = (
+                                        payload[0]?.payload as
+                                            MonthlyTotal | undefined
+                                    )?.month;
+                                    return month
+                                        ? formatMonthYear(
+                                              toDate(month),
+                                              getLocale(),
+                                          )
+                                        : null;
+                                }}
+                                formatter={(value) =>
+                                    formatCurrency(Number(value), getLocale())
                                 }
-                                formatter={(value) => formatEuro(Number(value))}
                             />
                         }
                     />

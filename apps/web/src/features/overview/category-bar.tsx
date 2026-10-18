@@ -1,8 +1,8 @@
+import { formatCurrency, formatPercent } from "@finances/shared";
 import { Link } from "@tanstack/react-router";
 import type { CategoryOverview } from "@finances/shared";
-import { formatPercent } from "#/features/overview/format-percent.ts";
-import { formatEuro } from "#/utils/currency.ts";
 import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 interface CategoryBarProps {
     category: CategoryOverview;
@@ -45,7 +45,7 @@ export function CategoryBar({ category, scale }: CategoryBarProps) {
                     {category.categoryName}
                 </span>
                 <span className={"text-label-large text-on-surface"}>
-                    {formatEuro(total)}
+                    {formatCurrency(total, getLocale())}
                 </span>
             </div>
             <div className={"flex items-center gap-3 pl-5.5"}>
@@ -72,7 +72,9 @@ export function CategoryBar({ category, scale }: CategoryBarProps) {
                 >
                     {change !== null &&
                         m.overview_vs_typical({
-                            change: formatPercent(change, true),
+                            change: formatPercent(change, getLocale(), {
+                                signed: true,
+                            }),
                         })}
                 </span>
             </div>
