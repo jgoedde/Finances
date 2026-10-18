@@ -189,13 +189,16 @@
 /** @typedef {{}} Sync_Status_SyncedInputs */
 /** @typedef {{}} Sync_TitleInputs */
 /** @typedef {{}} Transaction_AmountInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Amount_LastInputs */
 /** @typedef {{}} Transaction_Amount_MissingInputs */
 /** @typedef {{}} Transaction_CategoryInputs */
 /** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
+/** @typedef {{ raw: NonNullable<unknown> }} Transaction_Counterparty_AliasedInputs */
 /** @typedef {{}} Transaction_Counterparty_ExpenseInputs */
 /** @typedef {{}} Transaction_Counterparty_IncomeInputs */
 /** @typedef {{}} Transaction_Counterparty_MissingInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Transaction_Counterparty_UseInputs */
 /** @typedef {{}} Transaction_DateInputs */
 /** @typedef {{}} Transaction_Date_TodayInputs */
 /** @typedef {{}} Transaction_Date_YesterdayInputs */
@@ -978,6 +981,10 @@ export const transaction_amount = /** @type {(inputs: Transaction_AmountInputs) 
 	return /** @type {LocalizedString} */ (`Amount`)
 };
 
+export const transaction_amount_last = /** @type {(inputs: Transaction_Amount_LastInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Same as last time: ${i?.amount}`)
+};
+
 export const transaction_amount_missing = /** @type {(inputs: Transaction_Amount_MissingInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Enter an amount.`)
 };
@@ -994,6 +1001,10 @@ export const transaction_choose_date = /** @type {(inputs: Transaction_Choose_Da
 	return /** @type {LocalizedString} */ (`Choose date`)
 };
 
+export const transaction_counterparty_aliased = /** @type {(inputs: Transaction_Counterparty_AliasedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`From “${i?.raw}”`)
+};
+
 export const transaction_counterparty_expense = /** @type {(inputs: Transaction_Counterparty_ExpenseInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Where?`)
 };
@@ -1004,6 +1015,10 @@ export const transaction_counterparty_income = /** @type {(inputs: Transaction_C
 
 export const transaction_counterparty_missing = /** @type {(inputs: Transaction_Counterparty_MissingInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Enter where or from whom.`)
+};
+
+export const transaction_counterparty_use = /** @type {(inputs: Transaction_Counterparty_UseInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Use “${i?.name}”`)
 };
 
 export const transaction_date = /** @type {(inputs: Transaction_DateInputs) => LocalizedString} */ () => {

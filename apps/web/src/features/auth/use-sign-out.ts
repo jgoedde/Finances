@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authClient } from "#/auth/auth-client.ts";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
+import { counterpartyAliases } from "#/features/transactions/counterparty-aliases.ts";
 import { m } from "#/paraglide/messages.js";
 
 /**
@@ -20,6 +21,7 @@ export function useSignOut() {
         }
         queryClient.clear();
         syncFailures.clear();
+        counterpartyAliases.clear();
         await navigate({ to: "/login" });
     };
 }

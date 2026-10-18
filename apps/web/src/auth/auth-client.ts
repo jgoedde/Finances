@@ -2,6 +2,7 @@ import { createAuthClient } from "better-auth/client";
 import { usernameClient } from "better-auth/client/plugins";
 import { type QueryClient, queryOptions } from "@tanstack/react-query";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
+import { counterpartyAliases } from "#/features/transactions/counterparty-aliases.ts";
 
 export const authClient = createAuthClient({
     basePath: "/api/auth",
@@ -61,5 +62,6 @@ export async function completeSignIn(queryClient: QueryClient): Promise<void> {
     }
     queryClient.clear();
     syncFailures.clear();
+    counterpartyAliases.clear();
     queryClient.setQueryData(sessionQuery.queryKey, user);
 }

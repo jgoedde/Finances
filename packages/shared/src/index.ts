@@ -7,6 +7,7 @@ export * from "./export.ts";
 export * from "./formatting.ts";
 export * from "./calendar.ts";
 export * from "./spending.ts";
+export * from "./counterparties.ts";
 export {
     findPatterns,
     firstPatternMonth,

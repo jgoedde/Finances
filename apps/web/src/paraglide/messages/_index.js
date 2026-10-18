@@ -191,13 +191,16 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Sync_Status_SyncedInputs */
 /** @typedef {{}} Sync_TitleInputs */
 /** @typedef {{}} Transaction_AmountInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Amount_LastInputs */
 /** @typedef {{}} Transaction_Amount_MissingInputs */
 /** @typedef {{}} Transaction_CategoryInputs */
 /** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
+/** @typedef {{ raw: NonNullable<unknown> }} Transaction_Counterparty_AliasedInputs */
 /** @typedef {{}} Transaction_Counterparty_ExpenseInputs */
 /** @typedef {{}} Transaction_Counterparty_IncomeInputs */
 /** @typedef {{}} Transaction_Counterparty_MissingInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Transaction_Counterparty_UseInputs */
 /** @typedef {{}} Transaction_DateInputs */
 /** @typedef {{}} Transaction_Date_TodayInputs */
 /** @typedef {{}} Transaction_Date_YesterdayInputs */
@@ -2870,6 +2873,20 @@ export const transaction_amount = /** @type {((inputs?: Transaction_AmountInputs
 /**
 * | output |
 * | --- |
+* | "Same as last time: {amount}" |
+*
+* @param {Transaction_Amount_LastInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_amount_last = /** @type {((inputs: Transaction_Amount_LastInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Amount_LastInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_amount_last(inputs)
+	return __en.transaction_amount_last(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Enter an amount." |
 *
 * @param {Transaction_Amount_MissingInputs} inputs
@@ -2926,6 +2943,20 @@ export const transaction_choose_date = /** @type {((inputs?: Transaction_Choose_
 /**
 * | output |
 * | --- |
+* | "From “{raw}”" |
+*
+* @param {Transaction_Counterparty_AliasedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_aliased = /** @type {((inputs: Transaction_Counterparty_AliasedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Counterparty_AliasedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_counterparty_aliased(inputs)
+	return __en.transaction_counterparty_aliased(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Where?" |
 *
 * @param {Transaction_Counterparty_ExpenseInputs} inputs
@@ -2964,6 +2995,20 @@ export const transaction_counterparty_missing = /** @type {((inputs?: Transactio
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_counterparty_missing(inputs)
 	return __en.transaction_counterparty_missing(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Use “{name}”" |
+*
+* @param {Transaction_Counterparty_UseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_use = /** @type {((inputs: Transaction_Counterparty_UseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Counterparty_UseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_counterparty_use(inputs)
+	return __en.transaction_counterparty_use(inputs)
 });
 /**
 * | output |

@@ -83,6 +83,6 @@ export function roundToCents(value: number): number {
 /**
  * Groups names regardless of case and surrounding spaces.
  */
-export function nameKey(transaction: DatedTransaction): string {
+export function nameKey(transaction: Pick<DatedTransaction, "name">): string {
     return transaction.name.trim().toLocaleLowerCase("de");
 }

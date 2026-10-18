@@ -2649,6 +2649,20 @@ export const transaction_amount: ((inputs?: Transaction_AmountInputs, options?: 
 /**
 * | output |
 * | --- |
+* | "Same as last time: {amount}" |
+*
+* @param {Transaction_Amount_LastInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_amount_last: ((inputs: Transaction_Amount_LastInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Amount_LastInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Enter an amount." |
 *
 * @param {Transaction_Amount_MissingInputs} inputs
@@ -2705,6 +2719,20 @@ export const transaction_choose_date: ((inputs?: Transaction_Choose_DateInputs, 
 /**
 * | output |
 * | --- |
+* | "From “{raw}”" |
+*
+* @param {Transaction_Counterparty_AliasedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_aliased: ((inputs: Transaction_Counterparty_AliasedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_AliasedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Where?" |
 *
 * @param {Transaction_Counterparty_ExpenseInputs} inputs
@@ -2742,6 +2770,20 @@ export const transaction_counterparty_income: ((inputs?: Transaction_Counterpart
 export const transaction_counterparty_missing: ((inputs?: Transaction_Counterparty_MissingInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_MissingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Use “{name}”" |
+*
+* @param {Transaction_Counterparty_UseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_use: ((inputs: Transaction_Counterparty_UseInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_UseInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3262,13 +3304,22 @@ export type Sync_Status_PendingInputs = {};
 export type Sync_Status_SyncedInputs = {};
 export type Sync_TitleInputs = {};
 export type Transaction_AmountInputs = {};
+export type Transaction_Amount_LastInputs = {
+    amount: NonNullable<unknown>;
+};
 export type Transaction_Amount_MissingInputs = {};
 export type Transaction_CategoryInputs = {};
 export type Transaction_Category_MissingInputs = {};
 export type Transaction_Choose_DateInputs = {};
+export type Transaction_Counterparty_AliasedInputs = {
+    raw: NonNullable<unknown>;
+};
 export type Transaction_Counterparty_ExpenseInputs = {};
 export type Transaction_Counterparty_IncomeInputs = {};
 export type Transaction_Counterparty_MissingInputs = {};
+export type Transaction_Counterparty_UseInputs = {
+    name: NonNullable<unknown>;
+};
 export type Transaction_DateInputs = {};
 export type Transaction_Date_TodayInputs = {};
 export type Transaction_Date_YesterdayInputs = {};
