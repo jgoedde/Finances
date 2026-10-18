@@ -141,20 +141,6 @@ export const action_next: ((inputs?: Action_NextInputs, options?: {
 /**
 * | output |
 * | --- |
-* | "OK" |
-*
-* @param {Action_OkInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const action_ok: ((inputs?: Action_OkInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_OkInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "Reload" |
 *
 * @param {Action_ReloadInputs} inputs
@@ -2663,6 +2649,48 @@ export const transaction_amount: ((inputs?: Transaction_AmountInputs, options?: 
 /**
 * | output |
 * | --- |
+* | "Enter an amount." |
+*
+* @param {Transaction_Amount_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_amount_missing: ((inputs?: Transaction_Amount_MissingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Amount_MissingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Category" |
+*
+* @param {Transaction_CategoryInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_category: ((inputs?: Transaction_CategoryInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_CategoryInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Choose a category." |
+*
+* @param {Transaction_Category_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_category_missing: ((inputs?: Transaction_Category_MissingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Category_MissingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Choose date" |
 *
 * @param {Transaction_Choose_DateInputs} inputs
@@ -2672,6 +2700,90 @@ export const transaction_amount: ((inputs?: Transaction_AmountInputs, options?: 
 export const transaction_choose_date: ((inputs?: Transaction_Choose_DateInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Choose_DateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Where?" |
+*
+* @param {Transaction_Counterparty_ExpenseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_expense: ((inputs?: Transaction_Counterparty_ExpenseInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_ExpenseInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "From whom?" |
+*
+* @param {Transaction_Counterparty_IncomeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_income: ((inputs?: Transaction_Counterparty_IncomeInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_IncomeInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Enter where or from whom." |
+*
+* @param {Transaction_Counterparty_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_counterparty_missing: ((inputs?: Transaction_Counterparty_MissingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Counterparty_MissingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Date" |
+*
+* @param {Transaction_DateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date: ((inputs?: Transaction_DateInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_DateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Today" |
+*
+* @param {Transaction_Date_TodayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date_today: ((inputs?: Transaction_Date_TodayInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Date_TodayInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Yesterday" |
+*
+* @param {Transaction_Date_YesterdayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_date_yesterday: ((inputs?: Transaction_Date_YesterdayInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Date_YesterdayInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -2775,34 +2887,6 @@ export const transaction_expense_saved: ((inputs: Transaction_Expense_SavedInput
 /**
 * | output |
 * | --- |
-* | "Please select a category and enter an amount and a name." |
-*
-* @param {Transaction_Form_IncompleteInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_form_incomplete: ((inputs?: Transaction_Form_IncompleteInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Form_IncompleteInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
-* | "Missing details" |
-*
-* @param {Transaction_Form_Incomplete_TitleInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_form_incomplete_title: ((inputs?: Transaction_Form_Incomplete_TitleInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Form_Incomplete_TitleInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "The income was deleted." |
 *
 * @param {Transaction_Income_DeletedInputs} inputs
@@ -2859,6 +2943,20 @@ export const transaction_list_today: ((inputs?: Transaction_List_TodayInputs, op
 /**
 * | output |
 * | --- |
+* | "More details" |
+*
+* @param {Transaction_MoreInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_more: ((inputs?: Transaction_MoreInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_MoreInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "New transaction" |
 *
 * @param {Transaction_NewInputs} inputs
@@ -2901,20 +2999,6 @@ export const transaction_not_found: ((inputs?: Transaction_Not_FoundInputs, opti
 /**
 * | output |
 * | --- |
-* | "Remove category {name}" |
-*
-* @param {Transaction_Remove_CategoryInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const transaction_remove_category: ((inputs: Transaction_Remove_CategoryInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Remove_CategoryInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "Transaction updated" |
 *
 * @param {Transaction_UpdatedInputs} inputs
@@ -2942,7 +3026,6 @@ export type Action_DiscardInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
 export type Action_NextInputs = {};
-export type Action_OkInputs = {};
 export type Action_ReloadInputs = {};
 export type Action_RemoveInputs = {};
 export type Action_ReplaceInputs = {};
@@ -3179,7 +3262,16 @@ export type Sync_Status_PendingInputs = {};
 export type Sync_Status_SyncedInputs = {};
 export type Sync_TitleInputs = {};
 export type Transaction_AmountInputs = {};
+export type Transaction_Amount_MissingInputs = {};
+export type Transaction_CategoryInputs = {};
+export type Transaction_Category_MissingInputs = {};
 export type Transaction_Choose_DateInputs = {};
+export type Transaction_Counterparty_ExpenseInputs = {};
+export type Transaction_Counterparty_IncomeInputs = {};
+export type Transaction_Counterparty_MissingInputs = {};
+export type Transaction_DateInputs = {};
+export type Transaction_Date_TodayInputs = {};
+export type Transaction_Date_YesterdayInputs = {};
 export type Transaction_Delete_DescriptionInputs = {};
 export type Transaction_Delete_TitleInputs = {};
 export type Transaction_DescriptionInputs = {};
@@ -3189,8 +3281,6 @@ export type Transaction_Expense_DeletedInputs = {};
 export type Transaction_Expense_SavedInputs = {
     name: NonNullable<unknown>;
 };
-export type Transaction_Form_IncompleteInputs = {};
-export type Transaction_Form_Incomplete_TitleInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
     name: NonNullable<unknown>;
@@ -3199,10 +3289,8 @@ export type Transaction_List_EmptyInputs = {
     period: NonNullable<unknown>;
 };
 export type Transaction_List_TodayInputs = {};
+export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};
-export type Transaction_Remove_CategoryInputs = {
-    name: NonNullable<unknown>;
-};
 export type Transaction_UpdatedInputs = {};

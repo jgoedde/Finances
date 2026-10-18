@@ -1,41 +1,47 @@
 import { Input } from "#/components/ui/input.tsx";
+import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { addMonths, endOfDay, startOfMonth } from "date-fns";
-import * as React from "react";
-import { useMemo } from "react";
+import { type ChangeEvent, type Ref, useMemo } from "react";
 import { mergeSimilarKeys, mergeSimilarStrings } from "#/utils/similarity.ts";
 import { groupBy, uniq } from "lodash";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { useTransactions } from "#/features/transactions/transaction-queries.ts";
-import { Checkbox } from "#/components/ui/checkbox.tsx";
-import { Label } from "#/components/ui/label.tsx";
 import Fuse from "fuse.js";
 import type { TransactionKind } from "@finances/shared";
-import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
 import { m } from "#/paraglide/messages.js";
 
 const now = new Date();
 
-interface TransactionInputProps {
-    transactionLocal: string;
+const LABELS = {
+    expense: m.transaction_counterparty_expense,
+    income: m.transaction_counterparty_income,
+} as const satisfies Record<TransactionKind, () => string>;
+
+interface CounterpartyFieldProps {
+    ref?: Ref<HTMLInputElement>;
+    value: string;
     selectedCategoryId: string | undefined;
-    onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onApplySuggestion: (suggestion: string) => void;
     shouldShowSuggestions: boolean;
-    isExceptional: boolean;
-    onExceptionalCheckBoxClick: (val: boolean) => void;
-    transactionType: TransactionKind;
+    kind: TransactionKind;
+    error: string | undefined;
 }
 
-export function TransactionInput({
-    transactionLocal,
+/**
+ * The transaction's counterparty (its `name`): where the money went or
+ * where it came from, with suggestions from recent transactions.
+ */
+export function CounterpartyField({
+    ref,
+    value,
     selectedCategoryId,
     onInputChange,
     onApplySuggestion,
     shouldShowSuggestions,
-    isExceptional,
-    onExceptionalCheckBoxClick,
-    transactionType,
-}: TransactionInputProps) {
+    kind,
+    error,
+}: CounterpartyFieldProps) {
     const queryOptions = useMemo(
         () => ({
             start: startOfMonth(addMonths(now, -3)),
@@ -55,16 +61,13 @@ export function TransactionInput({
     }, [transactions]);
 
     const similarTransactions = useMemo(() => {
-        if (transactionLocal.trim() === "") {
+        if (value.trim() === "") {
             return [];
         }
-        const names = uniq(
-            fuse.search(transactionLocal).map((e) => e.item.name),
-        );
+        const names = uniq(fuse.search(value).map((e) => e.item.name));
         return mergeSimilarStrings(names, 2).slice(0, 4);
-    }, [transactionLocal, fuse]);
+    }, [value, fuse]);
 
-    // Shuffle top 8 for randomness
     const topTransactions = useMemo(() => {
         function getTimeOfDayBucket(date: Date) {
             const hour = date.getHours();
@@ -101,27 +104,45 @@ export function TransactionInput({
         // Sort by score, then freq
         scored.sort((a, b) => b.score - a.score || b.freq - a.freq);
 
-        return scored
-            .slice(0, 8)
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 4)
-            .map((s) => s.name);
+        return scored.slice(0, 4).map((s) => s.name);
     }, [transactions]);
 
     const ripple = useRipple();
 
     const suggestions = useMemo(() => {
-        if (transactionLocal.trim() === "") {
+        if (value.trim() === "") {
             return topTransactions;
         } else {
             return similarTransactions;
         }
-    }, [transactionLocal, similarTransactions, topTransactions]);
+    }, [value, similarTransactions, topTransactions]);
 
     return (
-        <div className={"flex flex-col gap-x-2"}>
+        <Field data-invalid={error !== undefined}>
+            <FieldLabel htmlFor={"transaction"}>{LABELS[kind]()}</FieldLabel>
+            <Input
+                ref={ref}
+                id={"transaction"}
+                name={"transaction"}
+                value={value}
+                onChange={onInputChange}
+                type={"text"}
+                autoComplete={"off"}
+                aria-invalid={error !== undefined}
+                aria-describedby={
+                    error !== undefined ? "transaction-error" : undefined
+                }
+            />
+            {error !== undefined && (
+                <p
+                    id={"transaction-error"}
+                    className={"px-4 text-body-small text-error"}
+                >
+                    {error}
+                </p>
+            )}
             {suggestions.length > 0 && shouldShowSuggestions && (
-                <div className={"my-2 flex flex-wrap gap-2"}>
+                <div className={"flex flex-wrap gap-2"}>
                     {suggestions.map((e) => (
                         <button
                             key={`suggestion-${e}`}
@@ -145,42 +166,6 @@ export function TransactionInput({
                     ))}
                 </div>
             )}
-            <div className={"flex items-center justify-between"}>
-                <div className={"flex items-center"}>
-                    <Label
-                        htmlFor="transaction"
-                        className={
-                            "shrink-0 text-body-large text-on-surface-variant"
-                        }
-                    >
-                        {getTransactionKindLabel(transactionType)}
-                    </Label>
-                    <Input
-                        id={"transaction"}
-                        name={"transaction"}
-                        required
-                        value={transactionLocal}
-                        onChange={onInputChange}
-                        type={"text"}
-                        className={`h-12 rounded-none border-none px-3
-                            focus:border-none focus:px-3`}
-                    />
-                </div>
-                <div className={"flex items-center gap-x-4"}>
-                    <Checkbox
-                        id={"exceptional"}
-                        name={"exceptional"}
-                        checked={isExceptional}
-                        onCheckedChange={onExceptionalCheckBoxClick}
-                    />
-                    <Label
-                        htmlFor={"exceptional"}
-                        className={"text-body-medium text-on-surface"}
-                    >
-                        {m.transaction_exceptional()}
-                    </Label>
-                </div>
-            </div>
-        </div>
+        </Field>
     );
 }

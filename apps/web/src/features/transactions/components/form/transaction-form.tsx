@@ -1,19 +1,21 @@
 import { type SubmitEvent, useRef, useState } from "react";
+import { ChevronDownIcon } from "lucide-react";
 import { Input } from "#/components/ui/input.tsx";
-import { CategoryTile } from "#/features/transactions/components/form/category-tile.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
-import { showInfo } from "#/components/info-dialog.tsx";
-import { DateChooserPopover } from "#/features/transactions/components/form/date-chooser-popover.tsx";
-import { TransactionInput } from "#/features/transactions/components/form/transaction-input.tsx";
+import { CounterpartyField } from "#/features/transactions/components/form/counterparty-field.tsx";
+import { CategoryChips } from "#/features/transactions/components/form/category-chips.tsx";
+import { DateChips } from "#/features/transactions/components/form/date-chips.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
-import type { Category, TransactionKind } from "@finances/shared";
+import type { TransactionKind } from "@finances/shared";
 import { useCategories } from "#/features/transactions/transaction-queries.ts";
 import { Label } from "#/components/ui/label.tsx";
-import { CurrencyInput } from "react-currency-input-field";
+import { Checkbox } from "#/components/ui/checkbox.tsx";
+import { Field, FieldLabel } from "#/components/ui/field.tsx";
+import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { SelectedCategoryBadge } from "#/features/transactions/components/form/selected-category-badge.tsx";
 import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
+import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
@@ -42,23 +44,33 @@ interface InitialFormValues {
     categoryId?: string;
 }
 
-interface Props {
+/**
+ * The fields that can be missing, in the order of the form.
+ */
+type RequiredField = "amount" | "name" | "category";
+
+interface TransactionFormProps {
     initialValues: InitialFormValues;
     onDelete?: VoidFunction;
     onSubmit: (data: TransactionFormSubmitData) => void;
     title: string;
 }
 
+/**
+ * Form for creating or editing a transaction: amount, counterparty and
+ * category first, everything else prefilled or tucked away.
+ */
 export function TransactionForm({
     initialValues,
     onDelete,
     onSubmit,
     title,
-}: Props) {
+}: TransactionFormProps) {
     const categories = useCategories();
 
     const amountInputRef = useRef<HTMLInputElement>(null);
-    const descriptionInputRef = useRef<HTMLInputElement>(null);
+    const nameInputRef = useRef<HTMLInputElement>(null);
+    const categoryChipsRef = useRef<HTMLDivElement>(null);
 
     const [categoryId, setCategoryId] = useState(initialValues.categoryId);
     const [description, setDescription] = useState(initialValues.description);
@@ -76,25 +88,50 @@ export function TransactionForm({
     const [isExceptional, setIsExceptional] = useState(
         initialValues.isExceptional,
     );
+    const [isMoreOpen, setIsMoreOpen] = useState(
+        initialValues.description !== "" || initialValues.isExceptional,
+    );
+    const [missingFields, setMissingFields] = useState<RequiredField[]>([]);
 
     const selectedCategory = categories.find(
         (category) => category.id === categoryId,
     );
 
-    function onAmountInputChange(value: string | undefined) {
-        setAmountStr(value ?? "");
+    function clearMissing(field: RequiredField) {
+        setMissingFields((fields) => fields.filter((it) => it !== field));
     }
 
     function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const amount = parseFloat(amountStr.replace(",", "."));
+        const trimmedName = name.trim();
 
-        if (!selectedCategory || isNaN(amount) || !name) {
-            void showInfo({
-                title: m.transaction_form_incomplete_title(),
-                description: m.transaction_form_incomplete(),
-            });
+        const missing: RequiredField[] = [];
+        if (isNaN(amount)) missing.push("amount");
+        if (trimmedName === "") missing.push("name");
+        if (!selectedCategory) missing.push("category");
+
+        setMissingFields(missing);
+        switch (missing[0]) {
+            case undefined:
+                break;
+            case "amount":
+                amountInputRef.current?.focus();
+                return;
+            case "name":
+                nameInputRef.current?.focus();
+                return;
+            case "category":
+                categoryChipsRef.current?.querySelector("button")?.focus();
+                return;
+            default:
+                throw new Error(
+                    `unreachable error - type ${String(missing[0] satisfies never)}`,
+                );
+        }
+
+        if (!selectedCategory) {
             return;
         }
 
@@ -105,51 +142,37 @@ export function TransactionForm({
             amount,
             categoryId: selectedCategory.id,
             kind: transactionType,
-            name,
+            name: trimmedName,
         });
     }
 
-    function onCategoryTileClick(c: Category) {
-        if (categoryId === c.id) {
-            setCategoryId(undefined);
-        } else {
-            setCategoryId(c.id);
-            if (initialValues.showSuggestions && name.trim() === "") {
-                setShouldShowSuggestions(true);
-            }
-            if (amountStr?.trim() === "") {
-                amountInputRef?.current?.focus();
-            }
+    function onCategorySelect(id: string) {
+        setCategoryId(id);
+        clearMissing("category");
+        if (initialValues.showSuggestions && name.trim() === "") {
+            setShouldShowSuggestions(true);
         }
     }
 
     return (
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} className={"flex min-h-dvh flex-col"}>
             <TopAppBar
                 title={title}
                 actions={
-                    <>
-                        <DateChooserPopover
-                            selected={date}
-                            onSelect={(a) => setDate(a ?? new Date())}
+                    typeof onDelete === "function" && (
+                        <DeleteButton
+                            title={m.transaction_delete_title()}
+                            description={m.transaction_delete_description()}
+                            onDelete={onDelete}
                         />
-
-                        {typeof onDelete === "function" && (
-                            <DeleteButton
-                                title={m.transaction_delete_title()}
-                                description={m.transaction_delete_description()}
-                                onDelete={onDelete}
-                            />
-                        )}
-
-                        <Button type={"submit"} variant={"text"}>
-                            {m.action_save()}
-                        </Button>
-                    </>
+                    )
                 }
             />
 
-            <div className={"my-4 flex w-full justify-center"}>
+            <div
+                className={`mx-auto flex w-full max-w-md grow flex-col gap-6
+                    px-4 pt-2 pb-6`}
+            >
                 <SegmentedButton
                     options={[
                         {
@@ -168,107 +191,157 @@ export function TransactionForm({
                         setTransactionType(e as TransactionKind);
                     }}
                 />
-            </div>
 
-            <div className={"mx-auto flex w-full max-w-md flex-col"}>
-                <div className={"flex flex-wrap"}>
-                    {selectedCategory === undefined &&
-                        categories.map((c) => (
-                            <CategoryTile
-                                key={c.name}
-                                selectedCategoryId={categoryId}
-                                category={c}
-                                onClick={() => onCategoryTileClick(c)}
-                            />
-                        ))}
-                </div>
-
-                <div
-                    className={`mt-2 flex w-full flex-col divide-y
-                        divide-outline-variant px-2`}
-                >
-                    <div
-                        className={"flex items-center justify-between gap-x-2"}
-                    >
-                        <Label
-                            htmlFor="amount"
-                            className={`shrink-0 text-body-large
-                                text-on-surface-variant`}
-                        >
-                            {m.transaction_amount()}
-                        </Label>
-                        <CurrencyInput
-                            ref={amountInputRef}
-                            id="amount"
-                            name="amount"
-                            intlConfig={{
-                                locale: getLocale(),
-                                currency: "EUR",
-                            }}
-                            required
-                            allowNegativeValue={false}
-                            className={`h-12 w-full bg-transparent px-3
-                                text-body-large text-on-surface outline-none`}
-                            onValueChange={onAmountInputChange}
-                            decimalsLimit={2}
-                            value={amountStr}
-                            step={1}
-                        />
-                    </div>
-                    {categoryId != null && (
-                        <TransactionInput
-                            shouldShowSuggestions={shouldShowSuggestions}
-                            transactionLocal={name}
-                            onInputChange={(e) => {
-                                setName(e.target.value);
-
-                                setShouldShowSuggestions(true);
-                            }}
-                            onApplySuggestion={(e) => {
-                                setName(e);
-                                setShouldShowSuggestions(false);
-                                if (descriptionInputRef.current) {
-                                    descriptionInputRef.current.focus();
-                                }
-                            }}
-                            selectedCategoryId={categoryId}
-                            isExceptional={isExceptional}
-                            onExceptionalCheckBoxClick={(val) => {
-                                setIsExceptional(val);
-                            }}
-                            transactionType={transactionType}
-                        />
+                <Field data-invalid={missingFields.includes("amount")}>
+                    <FieldLabel htmlFor={"amount"}>
+                        {m.transaction_amount()}
+                    </FieldLabel>
+                    <CurrencyInputWrapper
+                        ref={amountInputRef}
+                        id={"amount"}
+                        name={"amount"}
+                        inputMode={"decimal"}
+                        intlConfig={{
+                            locale: getLocale(),
+                            currency: "EUR",
+                        }}
+                        allowNegativeValue={false}
+                        onValueChange={(value) => {
+                            setAmountStr(value ?? "");
+                            clearMissing("amount");
+                        }}
+                        decimalsLimit={2}
+                        value={amountStr}
+                        step={1}
+                        autoComplete={"off"}
+                        // Prefilled from a link, the keyboard would only
+                        // cover the save button.
+                        autoFocus={initialValues.amount === undefined}
+                        aria-invalid={missingFields.includes("amount")}
+                    />
+                    {missingFields.includes("amount") && (
+                        <p className={"px-4 text-body-small text-error"}>
+                            {m.transaction_amount_missing()}
+                        </p>
                     )}
-                    <div className={"flex items-center gap-x-2"}>
-                        <Label
-                            htmlFor="description"
-                            className={`shrink-0 text-body-large
-                                text-on-surface-variant`}
-                        >
-                            {m.transaction_description()}
-                        </Label>
-                        <Input
-                            ref={descriptionInputRef}
-                            name={"description"}
-                            value={description}
-                            onChange={(e) => {
-                                setDescription(e.target.value);
-                            }}
-                            type={"text"}
-                            className={`h-12 rounded-none border-none px-3
-                                focus:border-none focus:px-3`}
+                </Field>
+
+                <CounterpartyField
+                    ref={nameInputRef}
+                    shouldShowSuggestions={shouldShowSuggestions}
+                    value={name}
+                    onInputChange={(e) => {
+                        setName(e.target.value);
+                        clearMissing("name");
+
+                        setShouldShowSuggestions(true);
+                    }}
+                    onApplySuggestion={(e) => {
+                        setName(e);
+                        clearMissing("name");
+                        setShouldShowSuggestions(false);
+                    }}
+                    selectedCategoryId={categoryId}
+                    kind={transactionType}
+                    error={
+                        missingFields.includes("name")
+                            ? m.transaction_counterparty_missing()
+                            : undefined
+                    }
+                />
+
+                <CategoryChips
+                    ref={categoryChipsRef}
+                    categories={categories}
+                    selectedCategoryId={categoryId}
+                    onSelect={onCategorySelect}
+                    error={
+                        missingFields.includes("category")
+                            ? m.transaction_category_missing()
+                            : undefined
+                    }
+                />
+
+                <DateChips date={date} onChange={setDate} />
+
+                <div className={"flex flex-col gap-4"}>
+                    <Button
+                        type={"button"}
+                        variant={"text"}
+                        className={"-ml-3 self-start"}
+                        aria-expanded={isMoreOpen}
+                        aria-controls={"transaction-more"}
+                        onClick={() => setIsMoreOpen((open) => !open)}
+                    >
+                        {m.transaction_more()}
+                        <ChevronDownIcon
+                            aria-hidden
+                            className={cn(
+                                `transition-transform duration-200
+                                ease-standard`,
+                                isMoreOpen && "rotate-180",
+                            )}
                         />
-                    </div>
-                    {selectedCategory !== undefined && (
-                        <div className={"mt-4 ml-auto"}>
-                            <SelectedCategoryBadge
-                                category={selectedCategory}
-                                onClear={() => setCategoryId(undefined)}
-                            />
+                    </Button>
+                    {isMoreOpen && (
+                        <div
+                            id={"transaction-more"}
+                            className={"flex flex-col gap-4"}
+                        >
+                            <Field>
+                                <FieldLabel htmlFor={"description"}>
+                                    {m.transaction_description()}
+                                </FieldLabel>
+                                <Input
+                                    id={"description"}
+                                    name={"description"}
+                                    value={description}
+                                    onChange={(e) => {
+                                        setDescription(e.target.value);
+                                    }}
+                                    type={"text"}
+                                />
+                            </Field>
+                            <div className={"flex items-center gap-x-4"}>
+                                <Checkbox
+                                    id={"exceptional"}
+                                    name={"exceptional"}
+                                    checked={isExceptional}
+                                    onCheckedChange={(checked) =>
+                                        setIsExceptional(checked === true)
+                                    }
+                                />
+                                <Label
+                                    htmlFor={"exceptional"}
+                                    className={
+                                        "text-body-large text-on-surface"
+                                    }
+                                >
+                                    {m.transaction_exceptional()}
+                                </Label>
+                            </div>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Compact: sticks to the bottom, within the thumb's reach. */}
+            <footer
+                className={`sticky bottom-0 border-t border-outline-variant
+                    bg-surface px-4 pt-4
+                    pb-[calc(1rem+env(safe-area-inset-bottom))] medium:static
+                    medium:border-none medium:pt-0`}
+            >
+                <div className={"mx-auto flex w-full max-w-md justify-end"}>
+                    <Button
+                        type={"submit"}
+                        variant={"filled"}
+                        className={"w-full medium:w-auto"}
+                    >
+                        {m.action_save()}
+                    </Button>
+                </div>
+            </footer>
         </form>
     );
 }

@@ -55,6 +55,13 @@ export function formatDayHeading(date: Date, locale: string): string {
 }
 
 /**
+ * A day without the year, e.g. "18. Okt.".
+ */
+export function formatShortDate(date: Date, locale: string): string {
+    return date.toLocaleDateString(locale, { day: "numeric", month: "short" });
+}
+
+/**
  * A full date, e.g. "18. Oktober 2026".
  */
 export function formatLongDate(date: Date, locale: string): string {
