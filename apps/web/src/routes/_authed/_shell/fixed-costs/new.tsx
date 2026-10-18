@@ -11,7 +11,8 @@ import {
 } from "#/features/fixed-costs/fixed-cost-wizard.tsx";
 import { m } from "#/paraglide/messages.js";
 
-export const Route = createFileRoute("/_authed/fixed-costs/new")({
+export const Route = createFileRoute("/_authed/_shell/fixed-costs/new")({
+    staticData: { detail: true },
     head: () => ({
         meta: [{ title: m.page_title({ page: m.fixed_cost_new() }) }],
     }),

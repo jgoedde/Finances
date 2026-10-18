@@ -15,11 +15,12 @@ import { Route as AuthedShellRouteImport } from './routes/_authed/_shell'
 import { Route as LinkTokenRouteImport } from './routes/link/$token'
 import { Route as AuthedShellIndexRouteImport } from './routes/_authed/_shell/index'
 import { Route as AuthedShellTransactionsRouteImport } from './routes/_authed/_shell/_transactions'
+import { Route as AuthedShellFixedCostsRouteRouteImport } from './routes/_authed/_shell/fixed-costs/route'
 import { Route as AuthedShellSettingsRouteImport } from './routes/_authed/_shell/settings'
-import { Route as AuthedFixedCostsIdRouteImport } from './routes/_authed/fixed-costs/$id'
-import { Route as AuthedFixedCostsNewRouteImport } from './routes/_authed/fixed-costs/new'
 import { Route as AuthedShellTransactionsNewRouteImport } from './routes/_authed/_shell/_transactions/new'
 import { Route as AuthedShellFixedCostsIndexRouteImport } from './routes/_authed/_shell/fixed-costs/index'
+import { Route as AuthedShellFixedCostsIdRouteImport } from './routes/_authed/_shell/fixed-costs/$id'
+import { Route as AuthedShellFixedCostsNewRouteImport } from './routes/_authed/_shell/fixed-costs/new'
 import { Route as AuthedShellTransactionsEditIdRouteImport } from './routes/_authed/_shell/_transactions/edit/$id'
 import { Route as AuthedShellTransactionsTransactionsIndexRouteImport } from './routes/_authed/_shell/_transactions/transactions/index'
 
@@ -50,20 +51,16 @@ const AuthedShellTransactionsRoute = AuthedShellTransactionsRouteImport.update({
   id: '/_transactions',
   getParentRoute: () => AuthedShellRoute,
 } as any)
+const AuthedShellFixedCostsRouteRoute =
+  AuthedShellFixedCostsRouteRouteImport.update({
+    id: '/fixed-costs',
+    path: '/fixed-costs',
+    getParentRoute: () => AuthedShellRoute,
+  } as any)
 const AuthedShellSettingsRoute = AuthedShellSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AuthedShellRoute,
-} as any)
-const AuthedFixedCostsIdRoute = AuthedFixedCostsIdRouteImport.update({
-  id: '/fixed-costs/$id',
-  path: '/fixed-costs/$id',
-  getParentRoute: () => AuthedRoute,
-} as any)
-const AuthedFixedCostsNewRoute = AuthedFixedCostsNewRouteImport.update({
-  id: '/fixed-costs/new',
-  path: '/fixed-costs/new',
-  getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedShellTransactionsNewRoute =
   AuthedShellTransactionsNewRouteImport.update({
@@ -73,9 +70,20 @@ const AuthedShellTransactionsNewRoute =
   } as any)
 const AuthedShellFixedCostsIndexRoute =
   AuthedShellFixedCostsIndexRouteImport.update({
-    id: '/fixed-costs/',
-    path: '/fixed-costs/',
-    getParentRoute: () => AuthedShellRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthedShellFixedCostsRouteRoute,
+  } as any)
+const AuthedShellFixedCostsIdRoute = AuthedShellFixedCostsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthedShellFixedCostsRouteRoute,
+} as any)
+const AuthedShellFixedCostsNewRoute =
+  AuthedShellFixedCostsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthedShellFixedCostsRouteRoute,
   } as any)
 const AuthedShellTransactionsEditIdRoute =
   AuthedShellTransactionsEditIdRouteImport.update({
@@ -94,10 +102,11 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthedShellIndexRoute
   '/login': typeof LoginRoute
   '/link/$token': typeof LinkTokenRoute
+  '/fixed-costs': typeof AuthedShellFixedCostsRouteRouteWithChildren
   '/settings': typeof AuthedShellSettingsRoute
-  '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
-  '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/new': typeof AuthedShellTransactionsNewRoute
+  '/fixed-costs/$id': typeof AuthedShellFixedCostsIdRoute
+  '/fixed-costs/new': typeof AuthedShellFixedCostsNewRoute
   '/fixed-costs/': typeof AuthedShellFixedCostsIndexRoute
   '/edit/$id': typeof AuthedShellTransactionsEditIdRoute
   '/transactions/': typeof AuthedShellTransactionsTransactionsIndexRoute
@@ -107,9 +116,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/link/$token': typeof LinkTokenRoute
   '/settings': typeof AuthedShellSettingsRoute
-  '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
-  '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/new': typeof AuthedShellTransactionsNewRoute
+  '/fixed-costs/$id': typeof AuthedShellFixedCostsIdRoute
+  '/fixed-costs/new': typeof AuthedShellFixedCostsNewRoute
   '/fixed-costs': typeof AuthedShellFixedCostsIndexRoute
   '/edit/$id': typeof AuthedShellTransactionsEditIdRoute
   '/transactions': typeof AuthedShellTransactionsTransactionsIndexRoute
@@ -120,12 +129,13 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authed/_shell': typeof AuthedShellRouteWithChildren
   '/link/$token': typeof LinkTokenRoute
+  '/_authed/_shell/fixed-costs': typeof AuthedShellFixedCostsRouteRouteWithChildren
   '/_authed/_shell/_transactions': typeof AuthedShellTransactionsRouteWithChildren
   '/_authed/_shell/settings': typeof AuthedShellSettingsRoute
-  '/_authed/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
-  '/_authed/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/_authed/_shell/': typeof AuthedShellIndexRoute
   '/_authed/_shell/_transactions/new': typeof AuthedShellTransactionsNewRoute
+  '/_authed/_shell/fixed-costs/$id': typeof AuthedShellFixedCostsIdRoute
+  '/_authed/_shell/fixed-costs/new': typeof AuthedShellFixedCostsNewRoute
   '/_authed/_shell/fixed-costs/': typeof AuthedShellFixedCostsIndexRoute
   '/_authed/_shell/_transactions/edit/$id': typeof AuthedShellTransactionsEditIdRoute
   '/_authed/_shell/_transactions/transactions/': typeof AuthedShellTransactionsTransactionsIndexRoute
@@ -136,10 +146,11 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/link/$token'
+    | '/fixed-costs'
     | '/settings'
+    | '/new'
     | '/fixed-costs/$id'
     | '/fixed-costs/new'
-    | '/new'
     | '/fixed-costs/'
     | '/edit/$id'
     | '/transactions/'
@@ -149,9 +160,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/link/$token'
     | '/settings'
+    | '/new'
     | '/fixed-costs/$id'
     | '/fixed-costs/new'
-    | '/new'
     | '/fixed-costs'
     | '/edit/$id'
     | '/transactions'
@@ -161,12 +172,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authed/_shell'
     | '/link/$token'
+    | '/_authed/_shell/fixed-costs'
     | '/_authed/_shell/_transactions'
     | '/_authed/_shell/settings'
-    | '/_authed/fixed-costs/$id'
-    | '/_authed/fixed-costs/new'
     | '/_authed/_shell/'
     | '/_authed/_shell/_transactions/new'
+    | '/_authed/_shell/fixed-costs/$id'
+    | '/_authed/_shell/fixed-costs/new'
     | '/_authed/_shell/fixed-costs/'
     | '/_authed/_shell/_transactions/edit/$id'
     | '/_authed/_shell/_transactions/transactions/'
@@ -222,26 +234,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedShellTransactionsRouteImport
       parentRoute: typeof AuthedShellRoute
     }
+    '/_authed/_shell/fixed-costs': {
+      id: '/_authed/_shell/fixed-costs'
+      path: '/fixed-costs'
+      fullPath: '/fixed-costs'
+      preLoaderRoute: typeof AuthedShellFixedCostsRouteRouteImport
+      parentRoute: typeof AuthedShellRoute
+    }
     '/_authed/_shell/settings': {
       id: '/_authed/_shell/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthedShellSettingsRouteImport
       parentRoute: typeof AuthedShellRoute
-    }
-    '/_authed/fixed-costs/$id': {
-      id: '/_authed/fixed-costs/$id'
-      path: '/fixed-costs/$id'
-      fullPath: '/fixed-costs/$id'
-      preLoaderRoute: typeof AuthedFixedCostsIdRouteImport
-      parentRoute: typeof AuthedRoute
-    }
-    '/_authed/fixed-costs/new': {
-      id: '/_authed/fixed-costs/new'
-      path: '/fixed-costs/new'
-      fullPath: '/fixed-costs/new'
-      preLoaderRoute: typeof AuthedFixedCostsNewRouteImport
-      parentRoute: typeof AuthedRoute
     }
     '/_authed/_shell/_transactions/new': {
       id: '/_authed/_shell/_transactions/new'
@@ -252,10 +257,24 @@ declare module '@tanstack/react-router' {
     }
     '/_authed/_shell/fixed-costs/': {
       id: '/_authed/_shell/fixed-costs/'
-      path: '/fixed-costs'
+      path: '/'
       fullPath: '/fixed-costs/'
       preLoaderRoute: typeof AuthedShellFixedCostsIndexRouteImport
-      parentRoute: typeof AuthedShellRoute
+      parentRoute: typeof AuthedShellFixedCostsRouteRoute
+    }
+    '/_authed/_shell/fixed-costs/$id': {
+      id: '/_authed/_shell/fixed-costs/$id'
+      path: '/$id'
+      fullPath: '/fixed-costs/$id'
+      preLoaderRoute: typeof AuthedShellFixedCostsIdRouteImport
+      parentRoute: typeof AuthedShellFixedCostsRouteRoute
+    }
+    '/_authed/_shell/fixed-costs/new': {
+      id: '/_authed/_shell/fixed-costs/new'
+      path: '/new'
+      fullPath: '/fixed-costs/new'
+      preLoaderRoute: typeof AuthedShellFixedCostsNewRouteImport
+      parentRoute: typeof AuthedShellFixedCostsRouteRoute
     }
     '/_authed/_shell/_transactions/edit/$id': {
       id: '/_authed/_shell/_transactions/edit/$id'
@@ -273,6 +292,24 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthedShellFixedCostsRouteRouteChildren {
+  AuthedShellFixedCostsIdRoute: typeof AuthedShellFixedCostsIdRoute
+  AuthedShellFixedCostsNewRoute: typeof AuthedShellFixedCostsNewRoute
+  AuthedShellFixedCostsIndexRoute: typeof AuthedShellFixedCostsIndexRoute
+}
+
+const AuthedShellFixedCostsRouteRouteChildren: AuthedShellFixedCostsRouteRouteChildren =
+  {
+    AuthedShellFixedCostsIdRoute: AuthedShellFixedCostsIdRoute,
+    AuthedShellFixedCostsNewRoute: AuthedShellFixedCostsNewRoute,
+    AuthedShellFixedCostsIndexRoute: AuthedShellFixedCostsIndexRoute,
+  }
+
+const AuthedShellFixedCostsRouteRouteWithChildren =
+  AuthedShellFixedCostsRouteRoute._addFileChildren(
+    AuthedShellFixedCostsRouteRouteChildren,
+  )
 
 interface AuthedShellTransactionsRouteChildren {
   AuthedShellTransactionsNewRoute: typeof AuthedShellTransactionsNewRoute
@@ -294,17 +331,17 @@ const AuthedShellTransactionsRouteWithChildren =
   )
 
 interface AuthedShellRouteChildren {
+  AuthedShellFixedCostsRouteRoute: typeof AuthedShellFixedCostsRouteRouteWithChildren
   AuthedShellTransactionsRoute: typeof AuthedShellTransactionsRouteWithChildren
   AuthedShellSettingsRoute: typeof AuthedShellSettingsRoute
   AuthedShellIndexRoute: typeof AuthedShellIndexRoute
-  AuthedShellFixedCostsIndexRoute: typeof AuthedShellFixedCostsIndexRoute
 }
 
 const AuthedShellRouteChildren: AuthedShellRouteChildren = {
+  AuthedShellFixedCostsRouteRoute: AuthedShellFixedCostsRouteRouteWithChildren,
   AuthedShellTransactionsRoute: AuthedShellTransactionsRouteWithChildren,
   AuthedShellSettingsRoute: AuthedShellSettingsRoute,
   AuthedShellIndexRoute: AuthedShellIndexRoute,
-  AuthedShellFixedCostsIndexRoute: AuthedShellFixedCostsIndexRoute,
 }
 
 const AuthedShellRouteWithChildren = AuthedShellRoute._addFileChildren(
@@ -313,14 +350,10 @@ const AuthedShellRouteWithChildren = AuthedShellRoute._addFileChildren(
 
 interface AuthedRouteChildren {
   AuthedShellRoute: typeof AuthedShellRouteWithChildren
-  AuthedFixedCostsIdRoute: typeof AuthedFixedCostsIdRoute
-  AuthedFixedCostsNewRoute: typeof AuthedFixedCostsNewRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedShellRoute: AuthedShellRouteWithChildren,
-  AuthedFixedCostsIdRoute: AuthedFixedCostsIdRoute,
-  AuthedFixedCostsNewRoute: AuthedFixedCostsNewRoute,
 }
 
 const AuthedRouteWithChildren =

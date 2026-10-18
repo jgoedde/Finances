@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import {
     fixedCostCategoriesQuery,
     fixedCostQuery,
+    useDeleteFixedCost,
     useUpdateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import { toFixedCost } from "#/features/fixed-costs/fixed-cost.ts";
@@ -14,7 +15,8 @@ import {
 import { apiErrorCode } from "#/api/api-errors.ts";
 import { m } from "#/paraglide/messages.js";
 
-export const Route = createFileRoute("/_authed/fixed-costs/$id")({
+export const Route = createFileRoute("/_authed/_shell/fixed-costs/$id")({
+    staticData: { detail: true },
     component: RouteComponent,
     loader: ({ context, params }) =>
         Promise.all([
@@ -56,10 +58,17 @@ function RouteComponent() {
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
     const fixedCost = toFixedCost(record, categories);
     const updateFixedCost = useUpdateFixedCost();
+    const deleteFixedCost = useDeleteFixedCost();
 
     function save(values: FixedCostWizardValues) {
         updateFixedCost.mutate({ id, patch: values });
         toast.success(m.fixed_cost_updated());
+        void navigate({ to: "/fixed-costs" });
+    }
+
+    function remove() {
+        deleteFixedCost.mutate(id);
+        toast.success(m.fixed_cost_deleted());
         void navigate({ to: "/fixed-costs" });
     }
 
@@ -77,6 +86,7 @@ function RouteComponent() {
             }}
             categories={categories}
             onSubmit={save}
+            onDelete={remove}
         />
     );
 }
