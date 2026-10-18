@@ -470,7 +470,7 @@ export const insights_distribution_title = /** @type {(inputs: Insights_Distribu
 	return /** @type {LocalizedString} */ (`Ausgabenverteilung`)
 };
 
-export const insights_expense_count = /** @type {(inputs: Insights_Expense_CountInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("de", i?.count, {});
+export const insights_expense_count = /** @type {(inputs: Insights_Expense_CountInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Ausgabe`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Ausgaben`);
 	return /** @type {LocalizedString} */ ("insights_expense_count");
@@ -788,7 +788,7 @@ export const sign_out_failed = /** @type {(inputs: Sign_Out_FailedInputs) => Loc
 	return /** @type {LocalizedString} */ (`Abmelden fehlgeschlagen. Bitte versuche es erneut.`)
 };
 
-export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("de", i?.count, {});
+export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung wurde noch nicht synchronisiert und geht beim Abmelden verloren.`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen wurden noch nicht synchronisiert und gehen beim Abmelden verloren.`);
 	return /** @type {LocalizedString} */ ("sign_out_unsynced_changes");
