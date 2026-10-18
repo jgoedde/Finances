@@ -10,6 +10,7 @@
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
 /** @typedef {{}} Action_NextInputs */
+/** @typedef {{}} Action_OkInputs */
 /** @typedef {{}} Action_ReloadInputs */
 /** @typedef {{}} Action_RemoveInputs */
 /** @typedef {{}} Action_ReplaceInputs */
@@ -198,6 +199,7 @@
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
 /** @typedef {{}} Transaction_Form_IncompleteInputs */
+/** @typedef {{}} Transaction_Form_Incomplete_TitleInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
@@ -248,6 +250,10 @@ export const action_import = /** @type {(inputs: Action_ImportInputs) => Localiz
 
 export const action_next = /** @type {(inputs: Action_NextInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Next`)
+};
+
+export const action_ok = /** @type {(inputs: Action_OkInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`OK`)
 };
 
 export const action_reload = /** @type {(inputs: Action_ReloadInputs) => LocalizedString} */ () => {
@@ -1004,6 +1010,10 @@ export const transaction_expense_saved = /** @type {(inputs: Transaction_Expense
 
 export const transaction_form_incomplete = /** @type {(inputs: Transaction_Form_IncompleteInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Please select a category and enter an amount and a name.`)
+};
+
+export const transaction_form_incomplete_title = /** @type {(inputs: Transaction_Form_Incomplete_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Missing details`)
 };
 
 export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {

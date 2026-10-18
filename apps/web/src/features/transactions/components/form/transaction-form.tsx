@@ -2,6 +2,7 @@ import { type SubmitEvent, useRef, useState } from "react";
 import { Input } from "#/components/ui/input.tsx";
 import { CategoryTile } from "#/features/transactions/components/form/category-tile.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
+import { showInfo } from "#/components/info-dialog.tsx";
 import { DateChooserPopover } from "#/features/transactions/components/form/date-chooser-popover.tsx";
 import { TransactionInput } from "#/features/transactions/components/form/transaction-input.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
@@ -90,7 +91,10 @@ export function TransactionForm({
         const amount = parseFloat(amountStr.replace(",", "."));
 
         if (!selectedCategory || isNaN(amount) || !name) {
-            alert(m.transaction_form_incomplete());
+            void showInfo({
+                title: m.transaction_form_incomplete_title(),
+                description: m.transaction_form_incomplete(),
+            });
             return;
         }
 

@@ -8,6 +8,7 @@ export const action_discard: (inputs: Action_DiscardInputs) => LocalizedString;
 export const action_export: (inputs: Action_ExportInputs) => LocalizedString;
 export const action_import: (inputs: Action_ImportInputs) => LocalizedString;
 export const action_next: (inputs: Action_NextInputs) => LocalizedString;
+export const action_ok: (inputs: Action_OkInputs) => LocalizedString;
 export const action_reload: (inputs: Action_ReloadInputs) => LocalizedString;
 export const action_remove: (inputs: Action_RemoveInputs) => LocalizedString;
 export const action_replace: (inputs: Action_ReplaceInputs) => LocalizedString;
@@ -196,6 +197,7 @@ export const transaction_exceptional: (inputs: Transaction_ExceptionalInputs) =>
 export const transaction_expense_deleted: (inputs: Transaction_Expense_DeletedInputs) => LocalizedString;
 export const transaction_expense_saved: (inputs: Transaction_Expense_SavedInputs) => LocalizedString;
 export const transaction_form_incomplete: (inputs: Transaction_Form_IncompleteInputs) => LocalizedString;
+export const transaction_form_incomplete_title: (inputs: Transaction_Form_Incomplete_TitleInputs) => LocalizedString;
 export const transaction_income_deleted: (inputs: Transaction_Income_DeletedInputs) => LocalizedString;
 export const transaction_income_saved: (inputs: Transaction_Income_SavedInputs) => LocalizedString;
 export const transaction_list_empty: (inputs: Transaction_List_EmptyInputs) => LocalizedString;
@@ -221,6 +223,7 @@ export type Action_DiscardInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
 export type Action_NextInputs = {};
+export type Action_OkInputs = {};
 export type Action_ReloadInputs = {};
 export type Action_RemoveInputs = {};
 export type Action_ReplaceInputs = {};
@@ -468,6 +471,7 @@ export type Transaction_Expense_SavedInputs = {
     name: NonNullable<unknown>;
 };
 export type Transaction_Form_IncompleteInputs = {};
+export type Transaction_Form_Incomplete_TitleInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
     name: NonNullable<unknown>;

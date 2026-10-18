@@ -9,6 +9,7 @@ import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { TRANSACTION_MUTATION_KEY } from "#/features/transactions/pending-changes.ts";
 import { Toaster } from "#/components/ui/sonner.tsx";
 import { ConfirmDialog } from "#/components/confirm-dialog.tsx";
+import { InfoDialog } from "#/components/info-dialog.tsx";
 import { initPWA } from "#/pwa.ts";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -31,14 +32,15 @@ function RootComponent() {
     const queryClient = useQueryClient();
     const router = useRouter();
 
-    // A confirmation belongs to the page that asked for it, e.g. deleting
-    // the transaction being edited: leaving the page (also with the back
-    // button) cancels it.
+    // A dialog belongs to the page that opened it, e.g. confirming to
+    // delete the transaction being edited: leaving the page (also with the
+    // back button) cancels or dismisses it.
     useEffect(
         () =>
-            router.subscribe("onBeforeNavigate", () =>
-                ConfirmDialog.end(false),
-            ),
+            router.subscribe("onBeforeNavigate", () => {
+                ConfirmDialog.end(false);
+                InfoDialog.end();
+            }),
         [router],
     );
 
@@ -84,6 +86,7 @@ function RootComponent() {
             <ReactQueryDevtools initialIsOpen={false} />
             <Toaster />
             <ConfirmDialog />
+            <InfoDialog />
         </>
     );
 }
