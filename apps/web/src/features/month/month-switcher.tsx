@@ -1,3 +1,4 @@
+import { formatMonthYear, formatShortMonth } from "@finances/shared";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
@@ -62,10 +63,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                     aria-label={m.month_choose()}
                 >
                     <span className={"truncate"}>
-                        {month.toLocaleDateString(getLocale(), {
-                            month: "long",
-                            year: "numeric",
-                        })}
+                        {formatMonthYear(month, getLocale())}
                     </span>
                     <ChevronDown
                         className={"size-5 shrink-0 text-on-surface-variant"}
@@ -107,10 +105,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                             const option = startOfMonth(
                                 setMonth(pickerYear, index),
                             );
-                            const label = option.toLocaleDateString(
-                                getLocale(),
-                                { month: "short" },
-                            );
+                            const label = formatShortMonth(option, getLocale());
                             const isSelected =
                                 option.getTime() === month.getTime();
                             const className = cn(

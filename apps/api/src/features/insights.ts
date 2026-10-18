@@ -1,113 +1,240 @@
 import { Hono } from "hono";
-import { sql } from "kysely";
 import {
-    type CategorySpending,
-    type DailySpike,
-    type DailyTotal,
-    type MonthlyCategoryTotal,
-    spentQuerySchema,
+    type CategoryOverview,
+    getMonthlyAmount,
+    type MonthOverview,
+    netSpending,
+    overviewQuerySchema,
+    toIsoDate,
 } from "@finances/shared";
 import type { DB } from "../db/database.ts";
 import type { AppEnv } from "../http/session.ts";
 import { validate } from "../http/validate.ts";
+import { toFixedCost } from "./fixed-costs.ts";
 
-// Dates are Unix milliseconds; SQLite date functions work in UTC.
-// Exceptional transactions are left out of everything except `spent`.
+/** Months in the trend, ending with the selected one. */
+const TREND_MONTHS = 12;
+/** Complete months before the selected one that make up the typical month. */
+const TYPICAL_MONTHS = 6;
+/** Covers every time zone's offset from UTC when narrowing by date. */
+const MAX_OFFSET_MS = 2 * 24 * 60 * 60 * 1000;
+
+/** `YYYY-MM` shifted by `by` months. */
+function shiftMonth(month: string, by: number): string {
+    const [year, monthIndex] = month.split("-").map(Number);
+    return new Date(Date.UTC(year!, monthIndex! - 1 + by, 1))
+        .toISOString()
+        .slice(0, 7);
+}
+
+/** Unix ms of the first instant of the month in UTC. */
+function monthStartUtc(month: string): number {
+    return Date.parse(`${month}-01T00:00:00Z`);
+}
+
+function lastDayOf(month: string): string {
+    const end = new Date(monthStartUtc(shiftMonth(month, 1)) - 1);
+    return end.toISOString().slice(0, 10);
+}
+
+function median(values: number[]): number | null {
+    if (values.length === 0) {
+        return null;
+    }
+    const sorted = [...values].sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 1
+        ? sorted[middle]!
+        : (sorted[middle - 1]! + sorted[middle]!) / 2;
+}
+
+function round(value: number): number {
+    return Math.round(value * 100) / 100;
+}
+
+interface BucketedTransaction {
+    month: string;
+    dayOfMonth: number;
+    categoryId: string;
+    netSpending: number;
+    kind: "expense" | "income";
+    amount: number;
+    exceptional: boolean;
+}
 
 export function insightRoutes(db: DB) {
-    return (
-        new Hono<AppEnv>()
-            .get("/spent", validate("query", spentQuerySchema), async (c) => {
-                const { from, to, kind } = c.req.valid("query");
-                const { rows } = await sql<{ total: number | null }>`
-                SELECT round(SUM(CASE kind WHEN 'expense' THEN amount ELSE -amount END), 2) AS total
-                FROM transactions
-                WHERE user_id = ${c.get("userId")}
-                  AND date >= ${from}
-                  AND date <= ${to}
-                  AND (kind = ${kind ?? null} OR ${kind ?? null} IS NULL)`.execute(
-                    db,
+    return new Hono<AppEnv>().get(
+        "/overview",
+        validate("query", overviewQuerySchema),
+        async (c) => {
+            const { month, timeZone } = c.req.valid("query");
+            const userId = c.get("userId");
+
+            const firstMonth = shiftMonth(month, -(TREND_MONTHS - 1));
+            const rows = await db
+                .selectFrom("transactions")
+                .select([
+                    "date",
+                    "kind",
+                    "amount",
+                    "exceptional",
+                    "category_id",
+                ])
+                .where("user_id", "=", userId)
+                .where("date", ">=", monthStartUtc(firstMonth) - MAX_OFFSET_MS)
+                .where(
+                    "date",
+                    "<",
+                    monthStartUtc(shiftMonth(month, 1)) + MAX_OFFSET_MS,
+                )
+                .execute();
+            const transactions: BucketedTransaction[] = rows.map((row) => {
+                const day = toIsoDate(row.date, timeZone);
+                return {
+                    month: day.slice(0, 7),
+                    dayOfMonth: Number(day.slice(8)),
+                    categoryId: row.category_id,
+                    kind: row.kind,
+                    amount: row.amount,
+                    exceptional: row.exceptional === 1,
+                    netSpending: netSpending({
+                        kind: row.kind,
+                        amount: row.amount,
+                    }),
+                };
+            });
+            const inMonth = transactions.filter((t) => t.month === month);
+            const typicalSpending = transactions.filter((t) => !t.exceptional);
+
+            // A month in progress is compared up to today.
+            const today = toIsoDate(Date.now(), timeZone);
+            const day =
+                today.slice(0, 7) === month ? Number(today.slice(8)) : null;
+            const upToDay = (t: BucketedTransaction) =>
+                day === null || t.dayOfMonth <= day;
+
+            // Complete months before this one, if they have transactions.
+            const history = Array.from({ length: TYPICAL_MONTHS }, (_, i) =>
+                shiftMonth(month, -(i + 1)),
+            ).filter((m) => transactions.some((t) => t.month === m));
+            const sum = (list: BucketedTransaction[]) =>
+                list.reduce((total, t) => total + t.netSpending, 0);
+            const typicalOf = (
+                matches: (t: BucketedTransaction) => boolean,
+            ) => {
+                const typical = median(
+                    history.map((m) =>
+                        sum(
+                            typicalSpending.filter(
+                                (t) =>
+                                    t.month === m && upToDay(t) && matches(t),
+                            ),
+                        ),
+                    ),
                 );
-                const total = rows[0]?.total ?? 0;
-                // Income alone is reported as a positive amount.
-                return c.json({ total: kind === "income" ? -total : total });
-            })
-            .get("/trend", async (c) => {
-                const { rows } = await sql<DailyTotal>`
-                SELECT date(date / 1000, 'unixepoch') AS day,
-                       round(SUM(amount), 2)          AS total
-                FROM transactions
-                WHERE user_id = ${c.get("userId")}
-                  AND kind = 'expense'
-                  AND exceptional = 0
-                  AND date(date / 1000, 'unixepoch') >= date('now', '-30 days')
-                GROUP BY day
-                ORDER BY day`.execute(db);
-                return c.json(rows);
-            })
-            // The day with the highest spending of a single category in the last
-            // 30 days.
-            .get("/spike", async (c) => {
-                const { rows } = await sql<DailySpike>`
-                WITH daily_category_totals AS (SELECT date(t.date / 1000, 'unixepoch') AS day,
-                                                      c.name                           AS category_name,
-                                                      c.color                          AS category_color,
-                                                      SUM(t.amount)                    AS total
-                                               FROM transactions t
-                                                        JOIN categories c
-                                                             ON c.user_id = t.user_id AND c.id = t.category_id
-                                               WHERE t.user_id = ${c.get("userId")}
-                                                 AND t.kind = 'expense'
-                                                 AND t.exceptional = 0
-                                                 AND date(t.date / 1000, 'unixepoch') >= date('now', '-30 days')
-                                               GROUP BY day, c.id)
-                SELECT day,
-                       round(total, 2) AS total,
-                       category_name   AS categoryName,
-                       category_color  AS categoryColor
-                FROM daily_category_totals
-                ORDER BY total DESC
-                LIMIT 1`.execute(db);
-                return c.json(rows[0] ?? null);
-            })
-            // Spending per category in the current month.
-            .get("/categories", async (c) => {
-                const { rows } = await sql<CategorySpending>`
-                SELECT c.id                     AS categoryId,
-                       c.name                   AS categoryName,
-                       c.color                  AS categoryColor,
-                       c.icon_name              AS categoryIconName,
-                       round(SUM(t.amount), 2)  AS total,
-                       COUNT(t.id)              AS expenseCount,
-                       round(AVG(t.amount), 2)  AS averageExpense
-                FROM transactions t
-                         JOIN categories c ON c.user_id = t.user_id AND c.id = t.category_id
-                WHERE t.user_id = ${c.get("userId")}
-                  AND t.kind = 'expense'
-                  AND t.exceptional = 0
-                  AND strftime('%Y-%m', t.date / 1000, 'unixepoch') = strftime('%Y-%m', 'now')
-                GROUP BY c.id
-                ORDER BY total DESC`.execute(db);
-                return c.json(rows);
-            })
-            .get("/months", async (c) => {
-                const { rows } = await sql<MonthlyCategoryTotal>`
-                WITH monthly_category_totals AS (SELECT strftime('%Y-%m', date / 1000, 'unixepoch') AS month,
-                                                        category_id,
-                                                        SUM(amount)                                 AS total
-                                                 FROM transactions
-                                                 WHERE user_id = ${c.get("userId")}
-                                                   AND kind = 'expense'
-                                                   AND exceptional = 0
-                                                 GROUP BY month, category_id)
-                SELECT m.month,
-                       c.name          AS categoryName,
-                       c.icon_name     AS categoryIconName,
-                       round(m.total, 2) AS total
-                FROM monthly_category_totals m
-                         JOIN categories c ON c.user_id = ${c.get("userId")} AND c.id = m.category_id
-                ORDER BY m.month DESC, c.name`.execute(db);
-                return c.json(rows);
-            })
+                return typical === null ? null : round(typical);
+            };
+
+            const categoryIds = new Set(
+                typicalSpending
+                    .filter(
+                        (t) => t.month === month || history.includes(t.month),
+                    )
+                    .map((t) => t.categoryId),
+            );
+            const categoryRows =
+                categoryIds.size === 0
+                    ? []
+                    : await db
+                          .selectFrom("categories")
+                          .select(["id", "name", "color", "icon_name"])
+                          .where("user_id", "=", userId)
+                          .where("id", "in", [...categoryIds])
+                          .execute();
+            const categories: CategoryOverview[] = categoryRows
+                .map((category) => ({
+                    categoryId: category.id,
+                    categoryName: category.name,
+                    categoryColor: category.color,
+                    categoryIconName: category.icon_name,
+                    total: round(
+                        sum(
+                            typicalSpending.filter(
+                                (t) =>
+                                    t.month === month &&
+                                    t.categoryId === category.id,
+                            ),
+                        ),
+                    ),
+                    typical: typicalOf((t) => t.categoryId === category.id),
+                }))
+                .filter(({ total, typical }) => total !== 0 || !!typical)
+                .sort((a, b) => b.total - a.total);
+
+            const firstDay = `${month}-01`;
+            const lastDay = lastDayOf(month);
+            const fixedCosts = (
+                await db
+                    .selectFrom("fixed_costs")
+                    .selectAll()
+                    .where("user_id", "=", userId)
+                    .execute()
+            )
+                .map(toFixedCost)
+                // Running on at least one day of the month.
+                .filter(
+                    (fixedCost) =>
+                        fixedCost.active &&
+                        fixedCost.startDate <= lastDay &&
+                        (fixedCost.endDate === null ||
+                            fixedCost.endDate >= firstDay),
+                )
+                .reduce(
+                    (total, fixedCost) => total + getMonthlyAmount(fixedCost),
+                    0,
+                );
+
+            const exceptional = inMonth.filter((t) => t.exceptional);
+            const overview: MonthOverview = {
+                netSpending: round(sum(inMonth)),
+                income: round(
+                    inMonth
+                        .filter((t) => t.kind === "income")
+                        .reduce((total, t) => total + t.amount, 0),
+                ),
+                expenses: round(
+                    inMonth
+                        .filter((t) => t.kind === "expense")
+                        .reduce((total, t) => total + t.amount, 0),
+                ),
+                exceptional: {
+                    count: exceptional.length,
+                    netSpending: round(sum(exceptional)),
+                },
+                pace: {
+                    day,
+                    netSpending: round(
+                        sum(
+                            typicalSpending.filter(
+                                (t) => t.month === month && upToDay(t),
+                            ),
+                        ),
+                    ),
+                    typical: typicalOf(() => true),
+                },
+                fixedCosts: round(fixedCosts),
+                categories,
+                trend: Array.from({ length: TREND_MONTHS }, (_, i) => {
+                    const m = shiftMonth(firstMonth, i);
+                    return {
+                        month: m,
+                        total: round(
+                            sum(typicalSpending.filter((t) => t.month === m)),
+                        ),
+                    };
+                }),
+            };
+            return c.json(overview);
+        },
     );
 }

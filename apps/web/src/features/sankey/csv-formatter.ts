@@ -1,4 +1,5 @@
-import { formatEuro } from "#/utils/currency.ts";
+import { getLocale } from "#/paraglide/runtime.js";
+import { formatCurrency } from "@finances/shared";
 import type { Category } from "@finances/shared";
 
 interface IncomeSource {
@@ -94,12 +95,12 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     let csv = `# Financial Overview - ${monthName} ${year}\n\n`;
     csv += `## Key Facts\n\n`;
     csv += `- **Month:** ${monthName} ${year}\n`;
-    csv += `- **Total Income:** ${formatEuro(totalFixedIncome.toFixed(2))}\n`;
-    csv += `- **Tracked Income:** ${formatEuro(totalTrackedIncome.toFixed(2))}\n`;
-    csv += `- **Fixed Costs:** ${formatEuro(totalFixedCosts.toFixed(2))}\n`;
-    csv += `- **Expenses:** ${formatEuro(totalExpenses.toFixed(2))}\n`;
-    csv += `- **Savings:** ${formatEuro(totalSavings.toFixed(2))}\n`;
-    csv += `- **Unspent Money:** ${formatEuro(unspentMoney.toFixed(2))}\n\n`;
+    csv += `- **Total Income:** ${formatCurrency(totalFixedIncome, getLocale())}\n`;
+    csv += `- **Tracked Income:** ${formatCurrency(totalTrackedIncome, getLocale())}\n`;
+    csv += `- **Fixed Costs:** ${formatCurrency(totalFixedCosts, getLocale())}\n`;
+    csv += `- **Expenses:** ${formatCurrency(totalExpenses, getLocale())}\n`;
+    csv += `- **Savings:** ${formatCurrency(totalSavings, getLocale())}\n`;
+    csv += `- **Unspent Money:** ${formatCurrency(unspentMoney, getLocale())}\n\n`;
     csv += `---\n\n`;
     csv += `\`\`\`mermaid\n`;
     csv += `---\nconfig:\n  sankey:\n    showValues: true\n---\n\n`;
@@ -172,7 +173,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     if (incomeSources.length > 0) {
         csv += `### Income Sources\n\n`;
         incomeSources.forEach((source) => {
-            csv += `- **${source.name}**: ${formatEuro(source.amount.toFixed(2))}\n`;
+            csv += `- **${source.name}**: ${formatCurrency(source.amount, getLocale())}\n`;
         });
         csv += `\n`;
     }
@@ -180,7 +181,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     if (incomes.length > 0) {
         csv += `### Tracked Income\n\n`;
         incomes.forEach((income) => {
-            csv += `- **${income.name}**: ${formatEuro(Math.abs(income.amount).toFixed(2))}\n`;
+            csv += `- **${income.name}**: ${formatCurrency(Math.abs(income.amount), getLocale())}\n`;
         });
         csv += `\n`;
     }
@@ -191,12 +192,12 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     ) {
         csv += `### Fixed Costs\n\n`;
         mergedFixedCosts.items.forEach((cost) => {
-            csv += `- **${cost.name}**: ${formatEuro(cost.amount.toFixed(2))}\n`;
+            csv += `- **${cost.name}**: ${formatCurrency(cost.amount, getLocale())}\n`;
         });
         if (mergedFixedCosts.merged.length > 0) {
-            csv += `\n**Other Fixed Costs** (${formatEuro(mergedFixedCosts.mergedTotal.toFixed(2))}):\n`;
+            csv += `\n**Other Fixed Costs** (${formatCurrency(mergedFixedCosts.mergedTotal, getLocale())}):\n`;
             mergedFixedCosts.merged.forEach((cost) => {
-                csv += `- ${cost.name}: ${formatEuro(cost.amount.toFixed(2))}\n`;
+                csv += `- ${cost.name}: ${formatCurrency(cost.amount, getLocale())}\n`;
             });
         }
         csv += `\n`;
@@ -208,12 +209,12 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     ) {
         csv += `### Variable Costs\n\n`;
         mergedVariableCosts.items.forEach((cat) => {
-            csv += `- **${cat.name}**: ${formatEuro(cat.amount.toFixed(2))}\n`;
+            csv += `- **${cat.name}**: ${formatCurrency(cat.amount, getLocale())}\n`;
         });
         if (mergedVariableCosts.merged.length > 0) {
-            csv += `\n**Other Expenses** (${formatEuro(mergedVariableCosts.mergedTotal.toFixed(2))}):\n`;
+            csv += `\n**Other Expenses** (${formatCurrency(mergedVariableCosts.mergedTotal, getLocale())}):\n`;
             mergedVariableCosts.merged.forEach((cat) => {
-                csv += `- ${cat.name}: ${formatEuro(cat.amount.toFixed(2))}\n`;
+                csv += `- ${cat.name}: ${formatCurrency(cat.amount, getLocale())}\n`;
             });
         }
         csv += `\n`;
@@ -222,7 +223,7 @@ export function buildSankeyCSV(config: SankeyCSVConfig): string {
     if (totalSavings > 0) {
         csv += `### Savings\n\n`;
         savingsTargets.forEach((target) => {
-            csv += `- **${target.name}**: ${formatEuro(target.amount.toFixed(2))}\n`;
+            csv += `- **${target.name}**: ${formatCurrency(target.amount, getLocale())}\n`;
         });
         csv += `\n`;
     }

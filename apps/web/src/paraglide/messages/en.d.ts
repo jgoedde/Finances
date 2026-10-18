@@ -67,20 +67,6 @@ export const fixed_cost_unknown_category: (inputs: Fixed_Cost_Unknown_CategoryIn
 export const fixed_cost_update_failed: (inputs: Fixed_Cost_Update_FailedInputs) => LocalizedString;
 export const fixed_cost_updated: (inputs: Fixed_Cost_UpdatedInputs) => LocalizedString;
 export const fixed_costs_title: (inputs: Fixed_Costs_TitleInputs) => LocalizedString;
-export const insights_distribution_title: (inputs: Insights_Distribution_TitleInputs) => LocalizedString;
-export const insights_expense_count: (inputs: Insights_Expense_CountInputs) => LocalizedString;
-export const insights_more: (inputs: Insights_MoreInputs) => LocalizedString;
-export const insights_newer_month: (inputs: Insights_Newer_MonthInputs) => LocalizedString;
-export const insights_older_month: (inputs: Insights_Older_MonthInputs) => LocalizedString;
-export const insights_per_expense: (inputs: Insights_Per_ExpenseInputs) => LocalizedString;
-export const insights_per_month: (inputs: Insights_Per_MonthInputs) => LocalizedString;
-export const insights_spent_this_month: (inputs: Insights_Spent_This_MonthInputs) => LocalizedString;
-export const insights_spent_today: (inputs: Insights_Spent_TodayInputs) => LocalizedString;
-export const insights_spent_yesterday: (inputs: Insights_Spent_YesterdayInputs) => LocalizedString;
-export const insights_trend_day: (inputs: Insights_Trend_DayInputs) => LocalizedString;
-export const insights_trend_spike_category: (inputs: Insights_Trend_Spike_CategoryInputs) => LocalizedString;
-export const insights_trend_spike_date: (inputs: Insights_Trend_Spike_DateInputs) => LocalizedString;
-export const insights_trend_title: (inputs: Insights_Trend_TitleInputs) => LocalizedString;
 export const kind_expense: (inputs: Kind_ExpenseInputs) => LocalizedString;
 export const kind_income: (inputs: Kind_IncomeInputs) => LocalizedString;
 export const link_create_account: (inputs: Link_Create_AccountInputs) => LocalizedString;
@@ -106,6 +92,24 @@ export const nav_label: (inputs: Nav_LabelInputs) => LocalizedString;
 export const nav_overview: (inputs: Nav_OverviewInputs) => LocalizedString;
 export const nav_transactions: (inputs: Nav_TransactionsInputs) => LocalizedString;
 export const offline_unavailable: (inputs: Offline_UnavailableInputs) => LocalizedString;
+export const overview_categories_empty: (inputs: Overview_Categories_EmptyInputs) => LocalizedString;
+export const overview_categories_hint: (inputs: Overview_Categories_HintInputs) => LocalizedString;
+export const overview_categories_title: (inputs: Overview_Categories_TitleInputs) => LocalizedString;
+export const overview_exceptional: (inputs: Overview_ExceptionalInputs) => LocalizedString;
+export const overview_expenses: (inputs: Overview_ExpensesInputs) => LocalizedString;
+export const overview_fixed_costs: (inputs: Overview_Fixed_CostsInputs) => LocalizedString;
+export const overview_income: (inputs: Overview_IncomeInputs) => LocalizedString;
+export const overview_net_spending: (inputs: Overview_Net_SpendingInputs) => LocalizedString;
+export const overview_pace_above_day: (inputs: Overview_Pace_Above_DayInputs) => LocalizedString;
+export const overview_pace_above_month: (inputs: Overview_Pace_Above_MonthInputs) => LocalizedString;
+export const overview_pace_below_day: (inputs: Overview_Pace_Below_DayInputs) => LocalizedString;
+export const overview_pace_below_month: (inputs: Overview_Pace_Below_MonthInputs) => LocalizedString;
+export const overview_pace_even: (inputs: Overview_Pace_EvenInputs) => LocalizedString;
+export const overview_pace_none: (inputs: Overview_Pace_NoneInputs) => LocalizedString;
+export const overview_total_outflow: (inputs: Overview_Total_OutflowInputs) => LocalizedString;
+export const overview_trend_hint: (inputs: Overview_Trend_HintInputs) => LocalizedString;
+export const overview_trend_title: (inputs: Overview_Trend_TitleInputs) => LocalizedString;
+export const overview_vs_typical: (inputs: Overview_Vs_TypicalInputs) => LocalizedString;
 export const page_title: (inputs: Page_TitleInputs) => LocalizedString;
 export const period: (inputs: PeriodInputs) => LocalizedString;
 export const period_any: (inputs: Period_AnyInputs) => LocalizedString;
@@ -268,26 +272,6 @@ export type Fixed_Cost_Unknown_CategoryInputs = {};
 export type Fixed_Cost_Update_FailedInputs = {};
 export type Fixed_Cost_UpdatedInputs = {};
 export type Fixed_Costs_TitleInputs = {};
-export type Insights_Distribution_TitleInputs = {};
-export type Insights_Expense_CountInputs = {
-    count: NonNullable<unknown>;
-};
-export type Insights_MoreInputs = {};
-export type Insights_Newer_MonthInputs = {};
-export type Insights_Older_MonthInputs = {};
-export type Insights_Per_ExpenseInputs = {
-    amount: NonNullable<unknown>;
-};
-export type Insights_Per_MonthInputs = {};
-export type Insights_Spent_This_MonthInputs = {};
-export type Insights_Spent_TodayInputs = {};
-export type Insights_Spent_YesterdayInputs = {};
-export type Insights_Trend_DayInputs = {};
-export type Insights_Trend_Spike_CategoryInputs = {};
-export type Insights_Trend_Spike_DateInputs = {
-    date: NonNullable<unknown>;
-};
-export type Insights_Trend_TitleInputs = {};
 export type Kind_ExpenseInputs = {};
 export type Kind_IncomeInputs = {};
 export type Link_Create_AccountInputs = {};
@@ -315,6 +299,39 @@ export type Nav_LabelInputs = {};
 export type Nav_OverviewInputs = {};
 export type Nav_TransactionsInputs = {};
 export type Offline_UnavailableInputs = {};
+export type Overview_Categories_EmptyInputs = {};
+export type Overview_Categories_HintInputs = {};
+export type Overview_Categories_TitleInputs = {};
+export type Overview_ExceptionalInputs = {
+    count: NonNullable<unknown>;
+    amount: NonNullable<unknown>;
+};
+export type Overview_ExpensesInputs = {};
+export type Overview_Fixed_CostsInputs = {};
+export type Overview_IncomeInputs = {};
+export type Overview_Net_SpendingInputs = {};
+export type Overview_Pace_Above_DayInputs = {
+    percent: NonNullable<unknown>;
+    day: NonNullable<unknown>;
+};
+export type Overview_Pace_Above_MonthInputs = {
+    percent: NonNullable<unknown>;
+};
+export type Overview_Pace_Below_DayInputs = {
+    percent: NonNullable<unknown>;
+    day: NonNullable<unknown>;
+};
+export type Overview_Pace_Below_MonthInputs = {
+    percent: NonNullable<unknown>;
+};
+export type Overview_Pace_EvenInputs = {};
+export type Overview_Pace_NoneInputs = {};
+export type Overview_Total_OutflowInputs = {};
+export type Overview_Trend_HintInputs = {};
+export type Overview_Trend_TitleInputs = {};
+export type Overview_Vs_TypicalInputs = {
+    change: NonNullable<unknown>;
+};
 export type Page_TitleInputs = {
     page: NonNullable<unknown>;
 };

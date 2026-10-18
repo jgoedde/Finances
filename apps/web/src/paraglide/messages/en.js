@@ -69,20 +69,6 @@
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
 /** @typedef {{}} Fixed_Cost_UpdatedInputs */
 /** @typedef {{}} Fixed_Costs_TitleInputs */
-/** @typedef {{}} Insights_Distribution_TitleInputs */
-/** @typedef {{ count: NonNullable<unknown> }} Insights_Expense_CountInputs */
-/** @typedef {{}} Insights_MoreInputs */
-/** @typedef {{}} Insights_Newer_MonthInputs */
-/** @typedef {{}} Insights_Older_MonthInputs */
-/** @typedef {{ amount: NonNullable<unknown> }} Insights_Per_ExpenseInputs */
-/** @typedef {{}} Insights_Per_MonthInputs */
-/** @typedef {{}} Insights_Spent_This_MonthInputs */
-/** @typedef {{}} Insights_Spent_TodayInputs */
-/** @typedef {{}} Insights_Spent_YesterdayInputs */
-/** @typedef {{}} Insights_Trend_DayInputs */
-/** @typedef {{}} Insights_Trend_Spike_CategoryInputs */
-/** @typedef {{ date: NonNullable<unknown> }} Insights_Trend_Spike_DateInputs */
-/** @typedef {{}} Insights_Trend_TitleInputs */
 /** @typedef {{}} Kind_ExpenseInputs */
 /** @typedef {{}} Kind_IncomeInputs */
 /** @typedef {{}} Link_Create_AccountInputs */
@@ -108,6 +94,24 @@
 /** @typedef {{}} Nav_OverviewInputs */
 /** @typedef {{}} Nav_TransactionsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
+/** @typedef {{}} Overview_Categories_EmptyInputs */
+/** @typedef {{}} Overview_Categories_HintInputs */
+/** @typedef {{}} Overview_Categories_TitleInputs */
+/** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
+/** @typedef {{}} Overview_ExpensesInputs */
+/** @typedef {{}} Overview_Fixed_CostsInputs */
+/** @typedef {{}} Overview_IncomeInputs */
+/** @typedef {{}} Overview_Net_SpendingInputs */
+/** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Above_DayInputs */
+/** @typedef {{ percent: NonNullable<unknown> }} Overview_Pace_Above_MonthInputs */
+/** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Below_DayInputs */
+/** @typedef {{ percent: NonNullable<unknown> }} Overview_Pace_Below_MonthInputs */
+/** @typedef {{}} Overview_Pace_EvenInputs */
+/** @typedef {{}} Overview_Pace_NoneInputs */
+/** @typedef {{}} Overview_Total_OutflowInputs */
+/** @typedef {{}} Overview_Trend_HintInputs */
+/** @typedef {{}} Overview_Trend_TitleInputs */
+/** @typedef {{ change: NonNullable<unknown> }} Overview_Vs_TypicalInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
@@ -472,64 +476,6 @@ export const fixed_costs_title = /** @type {(inputs: Fixed_Costs_TitleInputs) =>
 	return /** @type {LocalizedString} */ (`Fixed costs`)
 };
 
-export const insights_distribution_title = /** @type {(inputs: Insights_Distribution_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Spending by category`)
-};
-
-export const insights_expense_count = /** @type {(inputs: Insights_Expense_CountInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {}, true);
-	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} expense`);
-	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} expenses`);
-	return /** @type {LocalizedString} */ ("insights_expense_count");
-};
-
-export const insights_more = /** @type {(inputs: Insights_MoreInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`More`)
-};
-
-export const insights_newer_month = /** @type {(inputs: Insights_Newer_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Newer month`)
-};
-
-export const insights_older_month = /** @type {(inputs: Insights_Older_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Older month`)
-};
-
-export const insights_per_expense = /** @type {(inputs: Insights_Per_ExpenseInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`${i?.amount} per expense`)
-};
-
-export const insights_per_month = /** @type {(inputs: Insights_Per_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Per month`)
-};
-
-export const insights_spent_this_month = /** @type {(inputs: Insights_Spent_This_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Spent this month`)
-};
-
-export const insights_spent_today = /** @type {(inputs: Insights_Spent_TodayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Spent today`)
-};
-
-export const insights_spent_yesterday = /** @type {(inputs: Insights_Spent_YesterdayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Spent yesterday`)
-};
-
-export const insights_trend_day = /** @type {(inputs: Insights_Trend_DayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Day`)
-};
-
-export const insights_trend_spike_category = /** @type {(inputs: Insights_Trend_Spike_CategoryInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Most spent on`)
-};
-
-export const insights_trend_spike_date = /** @type {(inputs: Insights_Trend_Spike_DateInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`, on ${i?.date}`)
-};
-
-export const insights_trend_title = /** @type {(inputs: Insights_Trend_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`30-day trend`)
-};
-
 export const kind_expense = /** @type {(inputs: Kind_ExpenseInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Expense`)
 };
@@ -628,6 +574,80 @@ export const nav_transactions = /** @type {(inputs: Nav_TransactionsInputs) => L
 
 export const offline_unavailable = /** @type {(inputs: Offline_UnavailableInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Not available offline`)
+};
+
+export const overview_categories_empty = /** @type {(inputs: Overview_Categories_EmptyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`No spending this month`)
+};
+
+export const overview_categories_hint = /** @type {(inputs: Overview_Categories_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Line: typical month`)
+};
+
+export const overview_categories_title = /** @type {(inputs: Overview_Categories_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Categories`)
+};
+
+export const overview_exceptional = /** @type {(inputs: Overview_ExceptionalInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`Incl. ${i?.count} exceptional transaction: ${i?.amount}`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`Incl. ${i?.count} exceptional transactions: ${i?.amount}`);
+	return /** @type {LocalizedString} */ ("overview_exceptional");
+};
+
+export const overview_expenses = /** @type {(inputs: Overview_ExpensesInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expenses`)
+};
+
+export const overview_fixed_costs = /** @type {(inputs: Overview_Fixed_CostsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`+ Fixed costs`)
+};
+
+export const overview_income = /** @type {(inputs: Overview_IncomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Income`)
+};
+
+export const overview_net_spending = /** @type {(inputs: Overview_Net_SpendingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Net spending`)
+};
+
+export const overview_pace_above_day = /** @type {(inputs: Overview_Pace_Above_DayInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.percent} above a typical month by day ${i?.day}`)
+};
+
+export const overview_pace_above_month = /** @type {(inputs: Overview_Pace_Above_MonthInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.percent} above a typical month`)
+};
+
+export const overview_pace_below_day = /** @type {(inputs: Overview_Pace_Below_DayInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.percent} below a typical month by day ${i?.day}`)
+};
+
+export const overview_pace_below_month = /** @type {(inputs: Overview_Pace_Below_MonthInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.percent} below a typical month`)
+};
+
+export const overview_pace_even = /** @type {(inputs: Overview_Pace_EvenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Like a typical month`)
+};
+
+export const overview_pace_none = /** @type {(inputs: Overview_Pace_NoneInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Not enough history for a typical month yet`)
+};
+
+export const overview_total_outflow = /** @type {(inputs: Overview_Total_OutflowInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`= Total outflow`)
+};
+
+export const overview_trend_hint = /** @type {(inputs: Overview_Trend_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Net spending without exceptional transactions`)
+};
+
+export const overview_trend_title = /** @type {(inputs: Overview_Trend_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Last 12 months`)
+};
+
+export const overview_vs_typical = /** @type {(inputs: Overview_Vs_TypicalInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.change} vs. typical`)
 };
 
 export const page_title = /** @type {(inputs: Page_TitleInputs) => LocalizedString} */ (i) => {

@@ -1,6 +1,7 @@
+import { getLocale } from "#/paraglide/runtime.js";
+import { formatCurrency } from "@finances/shared";
 import { CategoryLink } from "#/features/transactions/components/list/category-link.tsx";
 import { useMonthCategoryTotals } from "#/features/transactions/components/list/use-month-category-totals.ts";
-import { formatEuro } from "#/utils/currency.ts";
 
 /** The month's categories under "Transactions" in the drawer, like labels. */
 export function CategoryDrawerItems() {
@@ -27,7 +28,7 @@ export function CategoryDrawerItems() {
                         {category.name}
                     </span>
                     <span className={"text-label-medium"}>
-                        {formatEuro(total)}
+                        {formatCurrency(total, getLocale())}
                     </span>
                 </CategoryLink>
             ))}

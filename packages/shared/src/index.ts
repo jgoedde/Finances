@@ -4,3 +4,4 @@ export * from "./fixed-costs.ts";
 export * from "./insights.ts";
 export * from "./links.ts";
 export * from "./export.ts";
+export * from "./formatting.ts";

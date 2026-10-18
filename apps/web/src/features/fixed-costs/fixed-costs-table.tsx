@@ -1,3 +1,4 @@
+import { formatCurrency } from "@finances/shared";
 import {
     Table,
     TableBody,
@@ -24,13 +25,6 @@ import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
-
-function toMonthlyLabel(amount: number, currency: string) {
-    return new Intl.NumberFormat(getLocale(), {
-        style: "currency",
-        currency,
-    }).format(amount);
-}
 
 export function FixedCostsTable() {
     const fixedCosts = useFixedCosts();
@@ -121,7 +115,11 @@ export function FixedCostsTable() {
                                 </span>
                             </TableCell>
                             <TableCell className="text-right">
-                                {toMonthlyLabel(row.amount, row.currency)}
+                                {formatCurrency(
+                                    row.amount,
+                                    getLocale(),
+                                    row.currency,
+                                )}
                             </TableCell>
                             <TableCell>
                                 <span className="text-on-surface-variant">
@@ -131,8 +129,9 @@ export function FixedCostsTable() {
                             <TableCell
                                 className="text-right text-on-surface-variant"
                             >
-                                {toMonthlyLabel(
+                                {formatCurrency(
                                     row.monthlyAmount,
+                                    getLocale(),
                                     row.currency,
                                 )}
                             </TableCell>
@@ -172,7 +171,7 @@ export function FixedCostsTable() {
                     {m.fixed_cost_monthly_total()}
                 </span>
                 <span className="text-title-small">
-                    {toMonthlyLabel(monthlyTotal, "EUR")}
+                    {formatCurrency(monthlyTotal, getLocale())}
                 </span>
             </div>
         </Card>

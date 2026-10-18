@@ -1,3 +1,4 @@
+import { formatCurrency } from "@finances/shared";
 import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -10,7 +11,6 @@ import {
     DrawerTitle,
 } from "#/components/ui/drawer.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { formatEuro } from "#/utils/currency.ts";
 import { checkConnection } from "#/features/sync/connectivity.ts";
 import {
     type SyncFailure,
@@ -27,6 +27,7 @@ import {
 import type { PendingChange } from "#/features/transactions/pending-changes.ts";
 import { apiErrorMessage } from "#/api/api-errors.ts";
 import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 const STATUS_TEXT = {
     failed: m.sync_status_failed,
@@ -52,7 +53,7 @@ function failureReason({ error, reason }: SyncFailure): string {
 
 function describe(transaction: Transaction): string {
     const sign = transaction.kind === "income" ? "+" : "";
-    return `${transaction.name} · ${sign}${formatEuro(transaction.amount)}`;
+    return `${transaction.name} · ${sign}${formatCurrency(transaction.amount, getLocale())}`;
 }
 
 interface SyncDrawerProps {
