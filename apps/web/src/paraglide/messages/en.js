@@ -47,8 +47,10 @@
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
-/** @typedef {{}} Fixed_Cost_Delete_ConfirmInputs */
+/** @typedef {{}} Fixed_Cost_Delete_DescriptionInputs */
 /** @typedef {{}} Fixed_Cost_Delete_FailedInputs */
+/** @typedef {{}} Fixed_Cost_Delete_TitleInputs */
+/** @typedef {{}} Fixed_Cost_DeletedInputs */
 /** @typedef {{}} Fixed_Cost_EditInputs */
 /** @typedef {{}} Fixed_Cost_End_DateInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_HintInputs */
@@ -57,6 +59,7 @@
 /** @typedef {{}} Fixed_Cost_Interval_MonthlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_YearlyInputs */
+/** @typedef {{}} Fixed_Cost_List_EmptyInputs */
 /** @typedef {{}} Fixed_Cost_Monthly_TotalInputs */
 /** @typedef {{}} Fixed_Cost_NameInputs */
 /** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
@@ -395,12 +398,20 @@ export const fixed_cost_created = /** @type {(inputs: Fixed_Cost_CreatedInputs) 
 	return /** @type {LocalizedString} */ (`Fixed cost “${i?.name}” added`)
 };
 
-export const fixed_cost_delete_confirm = /** @type {(inputs: Fixed_Cost_Delete_ConfirmInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Do you really want to delete this fixed cost?`)
+export const fixed_cost_delete_description = /** @type {(inputs: Fixed_Cost_Delete_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This can't be undone.`)
 };
 
 export const fixed_cost_delete_failed = /** @type {(inputs: Fixed_Cost_Delete_FailedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`The fixed cost couldn't be deleted. Please try again.`)
+};
+
+export const fixed_cost_delete_title = /** @type {(inputs: Fixed_Cost_Delete_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Delete fixed cost?`)
+};
+
+export const fixed_cost_deleted = /** @type {(inputs: Fixed_Cost_DeletedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixed cost deleted`)
 };
 
 export const fixed_cost_edit = /** @type {(inputs: Fixed_Cost_EditInputs) => LocalizedString} */ () => {
@@ -435,8 +446,12 @@ export const fixed_cost_interval_yearly = /** @type {(inputs: Fixed_Cost_Interva
 	return /** @type {LocalizedString} */ (`Yearly`)
 };
 
+export const fixed_cost_list_empty = /** @type {(inputs: Fixed_Cost_List_EmptyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`No fixed costs yet.`)
+};
+
 export const fixed_cost_monthly_total = /** @type {(inputs: Fixed_Cost_Monthly_TotalInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Monthly total:`)
+	return /** @type {LocalizedString} */ (`Monthly total`)
 };
 
 export const fixed_cost_name = /** @type {(inputs: Fixed_Cost_NameInputs) => LocalizedString} */ () => {

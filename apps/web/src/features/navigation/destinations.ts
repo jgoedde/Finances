@@ -17,7 +17,8 @@ const DESTINATION_ROUTES = {
     overview: "/_authed/_shell/",
     // Also active while a transaction is created or edited.
     transactions: "/_authed/_shell/_transactions",
-    fixedCosts: "/_authed/_shell/fixed-costs/",
+    // Also active while a fixed cost is created or edited.
+    fixedCosts: "/_authed/_shell/fixed-costs",
     settings: "/_authed/_shell/settings",
 } as const satisfies Record<
     DestinationId,

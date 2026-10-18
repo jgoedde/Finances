@@ -13,11 +13,22 @@ import { Trash } from "lucide-react";
 import { Button } from "#/components/ui/button.tsx";
 import { m } from "#/paraglide/messages.js";
 
-type Props = {
+interface DeleteButtonWithConfirmDialogProps {
+    title: string;
+    description: string;
+    disabled?: boolean;
     onDelete: VoidFunction;
-};
+}
 
-export function DeleteButtonWithConfirmDialog({ onDelete }: Props) {
+/**
+ * Delete icon button for a top app bar that asks for confirmation first.
+ */
+export function DeleteButtonWithConfirmDialog({
+    title,
+    description,
+    disabled,
+    onDelete,
+}: DeleteButtonWithConfirmDialogProps) {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -26,17 +37,16 @@ export function DeleteButtonWithConfirmDialog({ onDelete }: Props) {
                     variant={"ghost"}
                     size={"icon"}
                     aria-label={m.action_delete()}
+                    disabled={disabled}
                 >
                     <Trash />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        {m.transaction_delete_title()}
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {m.transaction_delete_description()}
+                        {description}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

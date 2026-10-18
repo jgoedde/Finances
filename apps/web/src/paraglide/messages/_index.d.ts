@@ -659,15 +659,15 @@ export const fixed_cost_created: ((inputs: Fixed_Cost_CreatedInputs, options?: {
 /**
 * | output |
 * | --- |
-* | "Do you really want to delete this fixed cost?" |
+* | "This can't be undone." |
 *
-* @param {Fixed_Cost_Delete_ConfirmInputs} inputs
+* @param {Fixed_Cost_Delete_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
 * @returns {LocalizedString}
 */
-export const fixed_cost_delete_confirm: ((inputs?: Fixed_Cost_Delete_ConfirmInputs, options?: {
+export const fixed_cost_delete_description: ((inputs?: Fixed_Cost_Delete_DescriptionInputs, options?: {
     locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Delete_ConfirmInputs, {
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Delete_DescriptionInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -682,6 +682,34 @@ export const fixed_cost_delete_confirm: ((inputs?: Fixed_Cost_Delete_ConfirmInpu
 export const fixed_cost_delete_failed: ((inputs?: Fixed_Cost_Delete_FailedInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Delete_FailedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Delete fixed cost?" |
+*
+* @param {Fixed_Cost_Delete_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_delete_title: ((inputs?: Fixed_Cost_Delete_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Delete_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Fixed cost deleted" |
+*
+* @param {Fixed_Cost_DeletedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_deleted: ((inputs?: Fixed_Cost_DeletedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_DeletedInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -799,7 +827,21 @@ export const fixed_cost_interval_yearly: ((inputs?: Fixed_Cost_Interval_YearlyIn
 /**
 * | output |
 * | --- |
-* | "Monthly total:" |
+* | "No fixed costs yet." |
+*
+* @param {Fixed_Cost_List_EmptyInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_list_empty: ((inputs?: Fixed_Cost_List_EmptyInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_List_EmptyInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Monthly total" |
 *
 * @param {Fixed_Cost_Monthly_TotalInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -2911,8 +2953,10 @@ export type Fixed_Cost_Choose_Start_DateInputs = {};
 export type Fixed_Cost_CreatedInputs = {
     name: NonNullable<unknown>;
 };
-export type Fixed_Cost_Delete_ConfirmInputs = {};
+export type Fixed_Cost_Delete_DescriptionInputs = {};
 export type Fixed_Cost_Delete_FailedInputs = {};
+export type Fixed_Cost_Delete_TitleInputs = {};
+export type Fixed_Cost_DeletedInputs = {};
 export type Fixed_Cost_EditInputs = {};
 export type Fixed_Cost_End_DateInputs = {};
 export type Fixed_Cost_End_Date_HintInputs = {};
@@ -2921,6 +2965,7 @@ export type Fixed_Cost_IntervalInputs = {};
 export type Fixed_Cost_Interval_MonthlyInputs = {};
 export type Fixed_Cost_Interval_QuarterlyInputs = {};
 export type Fixed_Cost_Interval_YearlyInputs = {};
+export type Fixed_Cost_List_EmptyInputs = {};
 export type Fixed_Cost_Monthly_TotalInputs = {};
 export type Fixed_Cost_NameInputs = {};
 export type Fixed_Cost_Name_PlaceholderInputs = {};

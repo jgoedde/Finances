@@ -49,8 +49,10 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
-/** @typedef {{}} Fixed_Cost_Delete_ConfirmInputs */
+/** @typedef {{}} Fixed_Cost_Delete_DescriptionInputs */
 /** @typedef {{}} Fixed_Cost_Delete_FailedInputs */
+/** @typedef {{}} Fixed_Cost_Delete_TitleInputs */
+/** @typedef {{}} Fixed_Cost_DeletedInputs */
 /** @typedef {{}} Fixed_Cost_EditInputs */
 /** @typedef {{}} Fixed_Cost_End_DateInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_HintInputs */
@@ -59,6 +61,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Interval_MonthlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_YearlyInputs */
+/** @typedef {{}} Fixed_Cost_List_EmptyInputs */
 /** @typedef {{}} Fixed_Cost_Monthly_TotalInputs */
 /** @typedef {{}} Fixed_Cost_NameInputs */
 /** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
@@ -869,16 +872,16 @@ export const fixed_cost_created = /** @type {((inputs: Fixed_Cost_CreatedInputs,
 /**
 * | output |
 * | --- |
-* | "Do you really want to delete this fixed cost?" |
+* | "This can't be undone." |
 *
-* @param {Fixed_Cost_Delete_ConfirmInputs} inputs
+* @param {Fixed_Cost_Delete_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
 * @returns {LocalizedString}
 */
-export const fixed_cost_delete_confirm = /** @type {((inputs?: Fixed_Cost_Delete_ConfirmInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Delete_ConfirmInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+export const fixed_cost_delete_description = /** @type {((inputs?: Fixed_Cost_Delete_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Delete_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.fixed_cost_delete_confirm(inputs)
-	return __en.fixed_cost_delete_confirm(inputs)
+	if (locale === "de") return __de.fixed_cost_delete_description(inputs)
+	return __en.fixed_cost_delete_description(inputs)
 });
 /**
 * | output |
@@ -893,6 +896,34 @@ export const fixed_cost_delete_failed = /** @type {((inputs?: Fixed_Cost_Delete_
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_delete_failed(inputs)
 	return __en.fixed_cost_delete_failed(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Delete fixed cost?" |
+*
+* @param {Fixed_Cost_Delete_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_delete_title = /** @type {((inputs?: Fixed_Cost_Delete_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Delete_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_delete_title(inputs)
+	return __en.fixed_cost_delete_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Fixed cost deleted" |
+*
+* @param {Fixed_Cost_DeletedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_deleted = /** @type {((inputs?: Fixed_Cost_DeletedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_DeletedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_deleted(inputs)
+	return __en.fixed_cost_deleted(inputs)
 });
 /**
 * | output |
@@ -1009,7 +1040,21 @@ export const fixed_cost_interval_yearly = /** @type {((inputs?: Fixed_Cost_Inter
 /**
 * | output |
 * | --- |
-* | "Monthly total:" |
+* | "No fixed costs yet." |
+*
+* @param {Fixed_Cost_List_EmptyInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_list_empty = /** @type {((inputs?: Fixed_Cost_List_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_List_EmptyInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_list_empty(inputs)
+	return __en.fixed_cost_list_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Monthly total" |
 *
 * @param {Fixed_Cost_Monthly_TotalInputs} inputs
 * @param {{ locale?: "en" | "de" }} options

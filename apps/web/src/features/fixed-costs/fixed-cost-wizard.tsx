@@ -3,6 +3,7 @@ import { type KeyboardEvent, useMemo, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import { DeleteButtonWithConfirmDialog } from "#/components/delete-button-with-confirm-dialog.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { Input } from "#/components/ui/input.tsx";
@@ -92,6 +93,12 @@ interface FixedCostWizardProps {
      * Saves the fixed cost optimistically; errors are the caller's to report.
      */
     onSubmit: (values: FixedCostWizardValues) => void;
+
+    /**
+     * Deletes the fixed cost; shows a delete button in the top app bar
+     * when set.
+     */
+    onDelete?: VoidFunction;
 }
 
 /**
@@ -103,6 +110,7 @@ export function FixedCostWizard({
     initialValues,
     categories,
     onSubmit,
+    onDelete,
 }: FixedCostWizardProps) {
     const [step, setStep] = useState<number>(0);
 
@@ -359,8 +367,22 @@ export function FixedCostWizard({
     };
 
     return (
-        <div className="flex min-h-screen flex-col">
-            <TopAppBar title={title} />
+        <div className="flex min-h-dvh flex-col">
+            <TopAppBar
+                title={title}
+                actions={
+                    onDelete && (
+                        <OfflineHint active={!isOnline}>
+                            <DeleteButtonWithConfirmDialog
+                                title={m.fixed_cost_delete_title()}
+                                description={m.fixed_cost_delete_description()}
+                                disabled={!isOnline}
+                                onDelete={onDelete}
+                            />
+                        </OfflineHint>
+                    )
+                }
+            />
 
             <main className="flex flex-1 items-center justify-center">
                 <div
