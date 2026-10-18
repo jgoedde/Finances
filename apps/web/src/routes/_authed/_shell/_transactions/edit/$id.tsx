@@ -103,7 +103,7 @@ function RouteComponent() {
     return (
         <TransactionForm
             initialValues={{
-                showSuggestions: false,
+                predict: false,
                 isExceptional: transaction.exceptional,
                 date: new Date(transaction.date),
                 description: transaction.description ?? "",

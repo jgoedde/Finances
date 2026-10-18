@@ -63,7 +63,7 @@ function RouteComponent() {
                 date: now,
                 kind: "expense",
                 isExceptional: false,
-                showSuggestions: true,
+                predict: true,
                 amount,
                 categoryId: undefined,
             }}

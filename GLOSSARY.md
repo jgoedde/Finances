@@ -36,6 +36,10 @@ _Avoid_: Cost, spending
 A transaction where money is received.
 _Avoid_: Revenue, earning
 
+**Counterparty**:
+Who a transaction is with: where the money went for an expense, where it came from for an income, such as a supermarket or an employer. The same counterparty may appear under several categories.
+_Avoid_: Vendor, merchant, payee, name
+
 **Exceptional transaction**:
 A one-off, unusually large transaction, such as buying a car. Left out of insights about typical spending so it doesn't distort them, but still counted in how much was spent.
 _Avoid_: Outlier, special purchase

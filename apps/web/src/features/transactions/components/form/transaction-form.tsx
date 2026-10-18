@@ -1,4 +1,5 @@
 import { type SubmitEvent, useRef, useState } from "react";
+import { useBlocker } from "@tanstack/react-router";
 import { ChevronDownIcon } from "lucide-react";
 import { Input } from "#/components/ui/input.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
@@ -6,7 +7,15 @@ import { CounterpartyField } from "#/features/transactions/components/form/count
 import { CategoryChips } from "#/features/transactions/components/form/category-chips.tsx";
 import { DateChips } from "#/features/transactions/components/form/date-chips.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
-import type { TransactionKind } from "@finances/shared";
+import {
+    findCounterparty,
+    formatCurrency,
+    matchCounterparty,
+    type TransactionKind,
+} from "@finances/shared";
+import { useCounterparties } from "#/features/transactions/use-counterparties.ts";
+import { counterpartyAliases } from "#/features/transactions/counterparty-aliases.ts";
+import { Badge } from "#/components/ui/badge.tsx";
 import { useCategories } from "#/features/transactions/transaction-queries.ts";
 import { Label } from "#/components/ui/label.tsx";
 import { Checkbox } from "#/components/ui/checkbox.tsx";
@@ -39,7 +48,13 @@ interface InitialFormValues {
     date: Date;
     kind: TransactionKind;
     isExceptional: boolean;
-    showSuggestions: boolean;
+
+    /**
+     * Guess from the history (new transactions): suggest counterparties,
+     * match and replace raw ones, predict category and kind, hint the last
+     * amount. Never overrides what the user chose.
+     */
+    predict: boolean;
     amount?: number;
     categoryId?: string;
 }
@@ -72,19 +87,35 @@ export function TransactionForm({
     const nameInputRef = useRef<HTMLInputElement>(null);
     const categoryChipsRef = useRef<HTMLDivElement>(null);
 
-    const [categoryId, setCategoryId] = useState(initialValues.categoryId);
+    const { predict } = initialValues;
+    const counterparties = useCounterparties();
+
+    // The name as it came in, e.g. "ALDI NORD 1234 HAMBURG" from a link.
+    const rawName = initialValues.name;
+    const [learnedName] = useState(() =>
+        predict && rawName.trim() !== ""
+            ? counterpartyAliases.get(rawName)
+            : undefined,
+    );
+    const [aliasedFrom, setAliasedFrom] = useState(
+        learnedName !== undefined ? rawName : undefined,
+    );
+    const [isMatchDismissed, setIsMatchDismissed] = useState(false);
+
+    // Undefined until chosen, so the prediction can fill in.
+    const [chosenCategoryId, setChosenCategoryId] = useState(
+        initialValues.categoryId,
+    );
+    const [chosenKind, setChosenKind] = useState<TransactionKind | undefined>(
+        predict ? undefined : initialValues.kind,
+    );
     const [description, setDescription] = useState(initialValues.description);
     const [date, setDate] = useState(initialValues.date);
-    const [name, setName] = useState(initialValues.name);
-    const [amountStr, setAmountStr] = useState(
-        initialValues.amount?.toFixed(2) ?? "",
-    );
-    const [transactionType, setTransactionType] = useState<TransactionKind>(
-        initialValues.kind,
-    );
-    const [shouldShowSuggestions, setShouldShowSuggestions] = useState(
-        initialValues.showSuggestions,
-    );
+    const initialName = learnedName ?? rawName;
+    const initialAmountStr = initialValues.amount?.toFixed(2) ?? "";
+    const [name, setName] = useState(initialName);
+    const [amountStr, setAmountStr] = useState(initialAmountStr);
+    const [shouldShowSuggestions, setShouldShowSuggestions] = useState(predict);
     const [isExceptional, setIsExceptional] = useState(
         initialValues.isExceptional,
     );
@@ -93,9 +124,40 @@ export function TransactionForm({
     );
     const [missingFields, setMissingFields] = useState<RequiredField[]>([]);
 
+    const known = predict ? findCounterparty(counterparties, name) : undefined;
+    const match =
+        predict &&
+        !isMatchDismissed &&
+        aliasedFrom === undefined &&
+        name === rawName &&
+        rawName.trim() !== ""
+            ? matchCounterparty(counterparties, rawName)
+            : undefined;
+
+    const categoryId = chosenCategoryId ?? known?.categoryId;
+    const transactionType = chosenKind ?? known?.kind ?? initialValues.kind;
+    const lastAmount = amountStr === "" ? known?.lastAmount : undefined;
+
     const selectedCategory = categories.find(
         (category) => category.id === categoryId,
     );
+
+    // Values prefilled from a link don't count as changes.
+    const isDirty =
+        name !== initialName ||
+        amountStr !== initialAmountStr ||
+        chosenCategoryId !== initialValues.categoryId ||
+        chosenKind !== (predict ? undefined : initialValues.kind) ||
+        description !== initialValues.description ||
+        date.getTime() !== initialValues.date.getTime() ||
+        isExceptional !== initialValues.isExceptional;
+
+    // Asks before reloading or closing the tab with unsaved changes.
+    useBlocker({
+        shouldBlockFn: () => false,
+        enableBeforeUnload: isDirty,
+        disabled: !isDirty,
+    });
 
     function clearMissing(field: RequiredField) {
         setMissingFields((fields) => fields.filter((it) => it !== field));
@@ -147,11 +209,30 @@ export function TransactionForm({
     }
 
     function onCategorySelect(id: string) {
-        setCategoryId(id);
+        setChosenCategoryId(id);
         clearMissing("category");
-        if (initialValues.showSuggestions && name.trim() === "") {
-            setShouldShowSuggestions(true);
+    }
+
+    function pickName(picked: string) {
+        setName(picked);
+        clearMissing("name");
+        setShouldShowSuggestions(false);
+    }
+
+    function acceptMatch() {
+        if (!match) {
+            return;
         }
+        pickName(match.name);
+        counterpartyAliases.set(rawName, match.name);
+        setAliasedFrom(rawName);
+    }
+
+    function undoAlias() {
+        setName(rawName);
+        counterpartyAliases.remove(rawName);
+        setAliasedFrom(undefined);
+        setIsMatchDismissed(true);
     }
 
     return (
@@ -188,7 +269,7 @@ export function TransactionForm({
                     ]}
                     value={transactionType}
                     onChange={(e) => {
-                        setTransactionType(e as TransactionKind);
+                        setChosenKind(e as TransactionKind);
                     }}
                 />
 
@@ -218,11 +299,34 @@ export function TransactionForm({
                         // cover the save button.
                         autoFocus={initialValues.amount === undefined}
                         aria-invalid={missingFields.includes("amount")}
+                        placeholder={
+                            lastAmount !== undefined
+                                ? formatCurrency(lastAmount, getLocale())
+                                : undefined
+                        }
                     />
                     {missingFields.includes("amount") && (
                         <p className={"px-4 text-body-small text-error"}>
                             {m.transaction_amount_missing()}
                         </p>
+                    )}
+                    {lastAmount !== undefined && (
+                        <Badge asChild variant={"md3"}>
+                            <button
+                                type={"button"}
+                                onClick={() => {
+                                    setAmountStr(lastAmount.toFixed(2));
+                                    clearMissing("amount");
+                                }}
+                            >
+                                {m.transaction_amount_last({
+                                    amount: formatCurrency(
+                                        lastAmount,
+                                        getLocale(),
+                                    ),
+                                })}
+                            </button>
+                        </Badge>
                     )}
                 </Field>
 
@@ -230,18 +334,19 @@ export function TransactionForm({
                     ref={nameInputRef}
                     shouldShowSuggestions={shouldShowSuggestions}
                     value={name}
+                    counterparties={counterparties}
                     onInputChange={(e) => {
                         setName(e.target.value);
                         clearMissing("name");
+                        setAliasedFrom(undefined);
 
                         setShouldShowSuggestions(true);
                     }}
-                    onApplySuggestion={(e) => {
-                        setName(e);
-                        clearMissing("name");
-                        setShouldShowSuggestions(false);
-                    }}
-                    selectedCategoryId={categoryId}
+                    onPick={pickName}
+                    match={match}
+                    onAcceptMatch={acceptMatch}
+                    aliasedFrom={aliasedFrom}
+                    onUndoAlias={undoAlias}
                     kind={transactionType}
                     error={
                         missingFields.includes("name")

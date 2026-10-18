@@ -187,13 +187,16 @@ export const sync_status_pending: (inputs: Sync_Status_PendingInputs) => Localiz
 export const sync_status_synced: (inputs: Sync_Status_SyncedInputs) => LocalizedString;
 export const sync_title: (inputs: Sync_TitleInputs) => LocalizedString;
 export const transaction_amount: (inputs: Transaction_AmountInputs) => LocalizedString;
+export const transaction_amount_last: (inputs: Transaction_Amount_LastInputs) => LocalizedString;
 export const transaction_amount_missing: (inputs: Transaction_Amount_MissingInputs) => LocalizedString;
 export const transaction_category: (inputs: Transaction_CategoryInputs) => LocalizedString;
 export const transaction_category_missing: (inputs: Transaction_Category_MissingInputs) => LocalizedString;
 export const transaction_choose_date: (inputs: Transaction_Choose_DateInputs) => LocalizedString;
+export const transaction_counterparty_aliased: (inputs: Transaction_Counterparty_AliasedInputs) => LocalizedString;
 export const transaction_counterparty_expense: (inputs: Transaction_Counterparty_ExpenseInputs) => LocalizedString;
 export const transaction_counterparty_income: (inputs: Transaction_Counterparty_IncomeInputs) => LocalizedString;
 export const transaction_counterparty_missing: (inputs: Transaction_Counterparty_MissingInputs) => LocalizedString;
+export const transaction_counterparty_use: (inputs: Transaction_Counterparty_UseInputs) => LocalizedString;
 export const transaction_date: (inputs: Transaction_DateInputs) => LocalizedString;
 export const transaction_date_today: (inputs: Transaction_Date_TodayInputs) => LocalizedString;
 export const transaction_date_yesterday: (inputs: Transaction_Date_YesterdayInputs) => LocalizedString;
@@ -465,13 +468,22 @@ export type Sync_Status_PendingInputs = {};
 export type Sync_Status_SyncedInputs = {};
 export type Sync_TitleInputs = {};
 export type Transaction_AmountInputs = {};
+export type Transaction_Amount_LastInputs = {
+    amount: NonNullable<unknown>;
+};
 export type Transaction_Amount_MissingInputs = {};
 export type Transaction_CategoryInputs = {};
 export type Transaction_Category_MissingInputs = {};
 export type Transaction_Choose_DateInputs = {};
+export type Transaction_Counterparty_AliasedInputs = {
+    raw: NonNullable<unknown>;
+};
 export type Transaction_Counterparty_ExpenseInputs = {};
 export type Transaction_Counterparty_IncomeInputs = {};
 export type Transaction_Counterparty_MissingInputs = {};
+export type Transaction_Counterparty_UseInputs = {
+    name: NonNullable<unknown>;
+};
 export type Transaction_DateInputs = {};
 export type Transaction_Date_TodayInputs = {};
 export type Transaction_Date_YesterdayInputs = {};

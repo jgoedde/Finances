@@ -1,16 +1,22 @@
-import { Input } from "#/components/ui/input.tsx";
-import { Field, FieldLabel } from "#/components/ui/field.tsx";
-import { addMonths, endOfDay, startOfMonth } from "date-fns";
 import { type ChangeEvent, type Ref, useMemo } from "react";
-import { mergeSimilarKeys, mergeSimilarStrings } from "#/utils/similarity.ts";
-import { groupBy, uniq } from "lodash";
-import { useRipple } from "#/hooks/use-ripple.ts";
-import { useTransactions } from "#/features/transactions/transaction-queries.ts";
+import { SparklesIcon } from "lucide-react";
 import Fuse from "fuse.js";
-import type { TransactionKind } from "@finances/shared";
+import {
+    type Counterparty,
+    nameKey,
+    rankCounterparties,
+    type TransactionKind,
+} from "@finances/shared";
+import { Input } from "#/components/ui/input.tsx";
+import { Badge } from "#/components/ui/badge.tsx";
+import { Button } from "#/components/ui/button.tsx";
+import { Field, FieldLabel } from "#/components/ui/field.tsx";
+import { useRipple } from "#/hooks/use-ripple.ts";
 import { m } from "#/paraglide/messages.js";
 
 const now = new Date();
+
+const SUGGESTION_COUNT = 5;
 
 const LABELS = {
     expense: m.transaction_counterparty_expense,
@@ -20,12 +26,28 @@ const LABELS = {
 interface CounterpartyFieldProps {
     ref?: Ref<HTMLInputElement>;
     value: string;
-    selectedCategoryId: string | undefined;
+    counterparties: Counterparty[];
     onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onApplySuggestion: (suggestion: string) => void;
+
+    /**
+     * A suggested counterparty was tapped.
+     */
+    onPick: (name: string) => void;
     shouldShowSuggestions: boolean;
     kind: TransactionKind;
     error: string | undefined;
+
+    /**
+     * The known counterparty the raw value most likely stands for.
+     */
+    match: Counterparty | undefined;
+    onAcceptMatch: VoidFunction;
+
+    /**
+     * The raw value a learned alias replaced.
+     */
+    aliasedFrom: string | undefined;
+    onUndoAlias: VoidFunction;
 }
 
 /**
@@ -35,87 +57,35 @@ interface CounterpartyFieldProps {
 export function CounterpartyField({
     ref,
     value,
-    selectedCategoryId,
+    counterparties,
     onInputChange,
-    onApplySuggestion,
+    onPick,
     shouldShowSuggestions,
     kind,
     error,
+    match,
+    onAcceptMatch,
+    aliasedFrom,
+    onUndoAlias,
 }: CounterpartyFieldProps) {
-    const queryOptions = useMemo(
-        () => ({
-            start: startOfMonth(addMonths(now, -3)),
-            end: endOfDay(now),
-            categoryId: selectedCategoryId,
-        }),
-        [selectedCategoryId],
+    const fuse = useMemo(
+        () => new Fuse(counterparties, { keys: ["name"] }),
+        [counterparties],
     );
-
-    const transactions = useTransactions(queryOptions);
-
-    const fuse = useMemo(() => {
-        return new Fuse(transactions, {
-            keys: ["name", "description"],
-            shouldSort: true,
-        });
-    }, [transactions]);
-
-    const similarTransactions = useMemo(() => {
-        if (value.trim() === "") {
-            return [];
-        }
-        const names = uniq(fuse.search(value).map((e) => e.item.name));
-        return mergeSimilarStrings(names, 2).slice(0, 4);
-    }, [value, fuse]);
-
-    const topTransactions = useMemo(() => {
-        function getTimeOfDayBucket(date: Date) {
-            const hour = date.getHours();
-            if (hour >= 5 && hour < 11) return "Morgen";
-            if (hour >= 11 && hour < 17) return "Mittag";
-            if (hour >= 17 && hour < 22) return "Abend";
-            return "Nacht";
-        }
-
-        const currentTimeBucket = getTimeOfDayBucket(now);
-        const currentWeekday = now.getDay();
-
-        // Group by name using mergeSimilarKeys
-        const grouped = mergeSimilarKeys(groupBy(transactions, "name"));
-
-        // Score suggestions by frequency, time of day, and weekday
-        const scored = Object.entries(grouped).map(([name, arr]) => {
-            // arr: Transaction[]
-            const freq = arr.length;
-            // How many match current time bucket?
-            const timeMatches = arr.filter((e) => {
-                const d = new Date(e.date);
-                return getTimeOfDayBucket(d) === currentTimeBucket;
-            }).length;
-            // How many match current weekday?
-            const weekdayMatches = arr.filter((e) => {
-                const d = new Date(e.date);
-                return d.getDay() === currentWeekday;
-            }).length;
-            // Score: freq + timeMatches*2 + weekdayMatches*2
-            const score = freq + timeMatches * 2 + weekdayMatches * 2;
-            return { name, freq, score };
-        });
-        // Sort by score, then freq
-        scored.sort((a, b) => b.score - a.score || b.freq - a.freq);
-
-        return scored.slice(0, 4).map((s) => s.name);
-    }, [transactions]);
-
-    const ripple = useRipple();
 
     const suggestions = useMemo(() => {
         if (value.trim() === "") {
-            return topTransactions;
-        } else {
-            return similarTransactions;
+            return rankCounterparties(counterparties, now, SUGGESTION_COUNT);
         }
-    }, [value, similarTransactions, topTransactions]);
+        const key = nameKey({ name: value });
+        return fuse
+            .search(value)
+            .map((result) => result.item)
+            .filter((it) => nameKey(it) !== key && it !== match)
+            .slice(0, SUGGESTION_COUNT);
+    }, [value, counterparties, fuse, match]);
+
+    const ripple = useRipple();
 
     return (
         <Field data-invalid={error !== undefined}>
@@ -141,29 +111,68 @@ export function CounterpartyField({
                     {error}
                 </p>
             )}
-            {suggestions.length > 0 && shouldShowSuggestions && (
+            {aliasedFrom !== undefined && (
+                <div
+                    className={`-my-2 flex items-center gap-1 pl-4
+                    text-body-small text-on-surface-variant`}
+                >
+                    <span className={"min-w-0 truncate"}>
+                        {m.transaction_counterparty_aliased({
+                            raw: aliasedFrom,
+                        })}
+                    </span>
+                    <Button
+                        type={"button"}
+                        variant={"text"}
+                        size={"sm"}
+                        onClick={onUndoAlias}
+                    >
+                        {m.action_undo()}
+                    </Button>
+                </div>
+            )}
+            {(match !== undefined ||
+                (shouldShowSuggestions && suggestions.length > 0)) && (
                 <div className={"flex flex-wrap gap-2"}>
-                    {suggestions.map((e) => (
-                        <button
-                            key={`suggestion-${e}`}
-                            tabIndex={-1}
-                            aria-hidden="true"
-                            className={`ripple-container state-layer h-8
-                            cursor-pointer rounded-sm border
-                            border-outline-variant px-4 text-label-large
-                            text-on-surface-variant`}
-                            data-ripple-color={"bg-on-surface/50"}
-                            {...ripple}
-                            type={"button"}
-                            onClick={(event) => {
-                                ripple.onClick(event);
+                    {match !== undefined && (
+                        <Badge asChild variant={"md3"}>
+                            <button
+                                type={"button"}
+                                aria-label={m.transaction_counterparty_use({
+                                    name: match.name,
+                                })}
+                                className={`border-transparent
+                                bg-secondary-container
+                                text-on-secondary-container`}
+                                onClick={onAcceptMatch}
+                            >
+                                <SparklesIcon aria-hidden />
+                                {`${match.name}?`}
+                            </button>
+                        </Badge>
+                    )}
+                    {shouldShowSuggestions &&
+                        suggestions.map((suggestion) => (
+                            <button
+                                key={suggestion.name}
+                                tabIndex={-1}
+                                aria-hidden="true"
+                                className={`ripple-container state-layer h-8
+                                cursor-pointer rounded-sm border
+                                border-outline-variant px-4 text-label-large
+                                text-on-surface-variant`}
+                                data-ripple-color={"bg-on-surface/50"}
+                                {...ripple}
+                                type={"button"}
+                                onClick={(event) => {
+                                    ripple.onClick(event);
 
-                                onApplySuggestion(e);
-                            }}
-                        >
-                            {e}
-                        </button>
-                    ))}
+                                    onPick(suggestion.name);
+                                }}
+                            >
+                                {suggestion.name}
+                            </button>
+                        ))}
                 </div>
             )}
         </Field>
