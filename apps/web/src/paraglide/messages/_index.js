@@ -12,6 +12,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
 /** @typedef {{}} Action_NextInputs */
+/** @typedef {{}} Action_OkInputs */
 /** @typedef {{}} Action_ReloadInputs */
 /** @typedef {{}} Action_RemoveInputs */
 /** @typedef {{}} Action_ReplaceInputs */
@@ -200,6 +201,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
 /** @typedef {{}} Transaction_Form_IncompleteInputs */
+/** @typedef {{}} Transaction_Form_Incomplete_TitleInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
@@ -350,6 +352,20 @@ export const action_next = /** @type {((inputs?: Action_NextInputs, options?: { 
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_next(inputs)
 	return __en.action_next(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "OK" |
+*
+* @param {Action_OkInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_ok = /** @type {((inputs?: Action_OkInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_OkInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.action_ok(inputs)
+	return __en.action_ok(inputs)
 });
 /**
 * | output |
@@ -2984,6 +3000,20 @@ export const transaction_form_incomplete = /** @type {((inputs?: Transaction_For
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_form_incomplete(inputs)
 	return __en.transaction_form_incomplete(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Missing details" |
+*
+* @param {Transaction_Form_Incomplete_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_form_incomplete_title = /** @type {((inputs?: Transaction_Form_Incomplete_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Form_Incomplete_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_form_incomplete_title(inputs)
+	return __en.transaction_form_incomplete_title(inputs)
 });
 /**
 * | output |

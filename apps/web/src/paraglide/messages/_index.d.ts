@@ -141,6 +141,20 @@ export const action_next: ((inputs?: Action_NextInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "OK" |
+*
+* @param {Action_OkInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_ok: ((inputs?: Action_OkInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_OkInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Reload" |
 *
 * @param {Action_ReloadInputs} inputs
@@ -2775,6 +2789,20 @@ export const transaction_form_incomplete: ((inputs?: Transaction_Form_Incomplete
 /**
 * | output |
 * | --- |
+* | "Missing details" |
+*
+* @param {Transaction_Form_Incomplete_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_form_incomplete_title: ((inputs?: Transaction_Form_Incomplete_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Form_Incomplete_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "The income was deleted." |
 *
 * @param {Transaction_Income_DeletedInputs} inputs
@@ -2914,6 +2942,7 @@ export type Action_DiscardInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
 export type Action_NextInputs = {};
+export type Action_OkInputs = {};
 export type Action_ReloadInputs = {};
 export type Action_RemoveInputs = {};
 export type Action_ReplaceInputs = {};
@@ -3161,6 +3190,7 @@ export type Transaction_Expense_SavedInputs = {
     name: NonNullable<unknown>;
 };
 export type Transaction_Form_IncompleteInputs = {};
+export type Transaction_Form_Incomplete_TitleInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
     name: NonNullable<unknown>;
