@@ -22,6 +22,15 @@
     "action_undo": "Undo",
     "action_update": "Update",
 
+    "nav_label": "Main navigation",
+    "nav_overview": "Overview",
+    "nav_transactions": "Transactions",
+    "month_choose": "Choose month",
+    "month_previous": "Previous month",
+    "month_next": "Next month",
+    "month_previous_year": "Previous year",
+    "month_next_year": "Next year",
+
     "error_try_again": "That didn't work. Please try again.",
     "error_unexpected": "An unknown error occurred. Please try again.",
     "error_unknown": "Unknown error.",
@@ -113,10 +122,6 @@
     "offline_unavailable": "Not available offline",
 
     "period": "Period",
-    "period_today": "Today",
-    "period_yesterday": "Yesterday",
-    "period_last_7_days": "Last 7 days",
-    "period_choose_list": "Choose the period of the transactions shown",
     "period_choose_search": "Choose the period to search",
     "period_any": "Any time",
     "period_older_than_week": "Older than a week",

@@ -11,14 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedShellRouteImport } from './routes/_authed/_shell'
 import { Route as AuthedNewRouteImport } from './routes/_authed/new'
-import { Route as AuthedSettingsRouteImport } from './routes/_authed/settings'
 import { Route as LinkTokenRouteImport } from './routes/link/$token'
+import { Route as AuthedShellIndexRouteImport } from './routes/_authed/_shell/index'
+import { Route as AuthedShellSettingsRouteImport } from './routes/_authed/_shell/settings'
 import { Route as AuthedEditIdRouteImport } from './routes/_authed/edit/$id'
 import { Route as AuthedFixedCostsIdRouteImport } from './routes/_authed/fixed-costs/$id'
 import { Route as AuthedFixedCostsNewRouteImport } from './routes/_authed/fixed-costs/new'
 import { Route as AuthedTransactionsSearchRouteImport } from './routes/_authed/transactions/search'
+import { Route as AuthedShellFixedCostsIndexRouteImport } from './routes/_authed/_shell/fixed-costs/index'
+import { Route as AuthedShellTransactionsIndexRouteImport } from './routes/_authed/_shell/transactions/index'
 
 const AuthedRoute = AuthedRouteImport.update({
   id: '/_authed',
@@ -29,9 +32,8 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthedIndexRoute = AuthedIndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthedShellRoute = AuthedShellRouteImport.update({
+  id: '/_shell',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedNewRoute = AuthedNewRouteImport.update({
@@ -39,15 +41,20 @@ const AuthedNewRoute = AuthedNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AuthedRoute,
 } as any)
-const AuthedSettingsRoute = AuthedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthedRoute,
-} as any)
 const LinkTokenRoute = LinkTokenRouteImport.update({
   id: '/link/$token',
   path: '/link/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedShellIndexRoute = AuthedShellIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthedShellRoute,
+} as any)
+const AuthedShellSettingsRoute = AuthedShellSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthedShellRoute,
 } as any)
 const AuthedEditIdRoute = AuthedEditIdRouteImport.update({
   id: '/edit/$id',
@@ -70,41 +77,60 @@ const AuthedTransactionsSearchRoute =
     path: '/transactions/search',
     getParentRoute: () => AuthedRoute,
   } as any)
+const AuthedShellFixedCostsIndexRoute =
+  AuthedShellFixedCostsIndexRouteImport.update({
+    id: '/fixed-costs/',
+    path: '/fixed-costs/',
+    getParentRoute: () => AuthedShellRoute,
+  } as any)
+const AuthedShellTransactionsIndexRoute =
+  AuthedShellTransactionsIndexRouteImport.update({
+    id: '/transactions/',
+    path: '/transactions/',
+    getParentRoute: () => AuthedShellRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthedIndexRoute
+  '/': typeof AuthedShellIndexRoute
   '/login': typeof LoginRoute
   '/new': typeof AuthedNewRoute
-  '/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
+  '/settings': typeof AuthedShellSettingsRoute
   '/edit/$id': typeof AuthedEditIdRoute
   '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
   '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/transactions/search': typeof AuthedTransactionsSearchRoute
+  '/fixed-costs/': typeof AuthedShellFixedCostsIndexRoute
+  '/transactions/': typeof AuthedShellTransactionsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AuthedShellIndexRoute
   '/login': typeof LoginRoute
   '/new': typeof AuthedNewRoute
-  '/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
-  '/': typeof AuthedIndexRoute
+  '/settings': typeof AuthedShellSettingsRoute
   '/edit/$id': typeof AuthedEditIdRoute
   '/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
   '/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/transactions/search': typeof AuthedTransactionsSearchRoute
+  '/fixed-costs': typeof AuthedShellFixedCostsIndexRoute
+  '/transactions': typeof AuthedShellTransactionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authed': typeof AuthedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authed/_shell': typeof AuthedShellRouteWithChildren
   '/_authed/new': typeof AuthedNewRoute
-  '/_authed/settings': typeof AuthedSettingsRoute
   '/link/$token': typeof LinkTokenRoute
-  '/_authed/': typeof AuthedIndexRoute
+  '/_authed/_shell/settings': typeof AuthedShellSettingsRoute
   '/_authed/edit/$id': typeof AuthedEditIdRoute
   '/_authed/fixed-costs/$id': typeof AuthedFixedCostsIdRoute
   '/_authed/fixed-costs/new': typeof AuthedFixedCostsNewRoute
   '/_authed/transactions/search': typeof AuthedTransactionsSearchRoute
+  '/_authed/_shell/': typeof AuthedShellIndexRoute
+  '/_authed/_shell/fixed-costs/': typeof AuthedShellFixedCostsIndexRoute
+  '/_authed/_shell/transactions/': typeof AuthedShellTransactionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -112,35 +138,42 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/new'
-    | '/settings'
     | '/link/$token'
+    | '/settings'
     | '/edit/$id'
     | '/fixed-costs/$id'
     | '/fixed-costs/new'
     | '/transactions/search'
+    | '/fixed-costs/'
+    | '/transactions/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
     | '/new'
-    | '/settings'
     | '/link/$token'
-    | '/'
+    | '/settings'
     | '/edit/$id'
     | '/fixed-costs/$id'
     | '/fixed-costs/new'
     | '/transactions/search'
+    | '/fixed-costs'
+    | '/transactions'
   id:
     | '__root__'
     | '/_authed'
     | '/login'
+    | '/_authed/_shell'
     | '/_authed/new'
-    | '/_authed/settings'
     | '/link/$token'
-    | '/_authed/'
+    | '/_authed/_shell/settings'
     | '/_authed/edit/$id'
     | '/_authed/fixed-costs/$id'
     | '/_authed/fixed-costs/new'
     | '/_authed/transactions/search'
+    | '/_authed/_shell/'
+    | '/_authed/_shell/fixed-costs/'
+    | '/_authed/_shell/transactions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,11 +198,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authed/': {
-      id: '/_authed/'
-      path: '/'
+    '/_authed/_shell': {
+      id: '/_authed/_shell'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof AuthedIndexRouteImport
+      preLoaderRoute: typeof AuthedShellRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/new': {
@@ -179,19 +212,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedNewRouteImport
       parentRoute: typeof AuthedRoute
     }
-    '/_authed/settings': {
-      id: '/_authed/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthedSettingsRouteImport
-      parentRoute: typeof AuthedRoute
-    }
     '/link/$token': {
       id: '/link/$token'
       path: '/link/$token'
       fullPath: '/link/$token'
       preLoaderRoute: typeof LinkTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/_shell/': {
+      id: '/_authed/_shell/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedShellIndexRouteImport
+      parentRoute: typeof AuthedShellRoute
+    }
+    '/_authed/_shell/settings': {
+      id: '/_authed/_shell/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthedShellSettingsRouteImport
+      parentRoute: typeof AuthedShellRoute
     }
     '/_authed/edit/$id': {
       id: '/_authed/edit/$id'
@@ -221,13 +261,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedTransactionsSearchRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/_shell/fixed-costs/': {
+      id: '/_authed/_shell/fixed-costs/'
+      path: '/fixed-costs'
+      fullPath: '/fixed-costs/'
+      preLoaderRoute: typeof AuthedShellFixedCostsIndexRouteImport
+      parentRoute: typeof AuthedShellRoute
+    }
+    '/_authed/_shell/transactions/': {
+      id: '/_authed/_shell/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof AuthedShellTransactionsIndexRouteImport
+      parentRoute: typeof AuthedShellRoute
+    }
   }
 }
 
+interface AuthedShellRouteChildren {
+  AuthedShellSettingsRoute: typeof AuthedShellSettingsRoute
+  AuthedShellIndexRoute: typeof AuthedShellIndexRoute
+  AuthedShellFixedCostsIndexRoute: typeof AuthedShellFixedCostsIndexRoute
+  AuthedShellTransactionsIndexRoute: typeof AuthedShellTransactionsIndexRoute
+}
+
+const AuthedShellRouteChildren: AuthedShellRouteChildren = {
+  AuthedShellSettingsRoute: AuthedShellSettingsRoute,
+  AuthedShellIndexRoute: AuthedShellIndexRoute,
+  AuthedShellFixedCostsIndexRoute: AuthedShellFixedCostsIndexRoute,
+  AuthedShellTransactionsIndexRoute: AuthedShellTransactionsIndexRoute,
+}
+
+const AuthedShellRouteWithChildren = AuthedShellRoute._addFileChildren(
+  AuthedShellRouteChildren,
+)
+
 interface AuthedRouteChildren {
+  AuthedShellRoute: typeof AuthedShellRouteWithChildren
   AuthedNewRoute: typeof AuthedNewRoute
-  AuthedSettingsRoute: typeof AuthedSettingsRoute
-  AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedEditIdRoute: typeof AuthedEditIdRoute
   AuthedFixedCostsIdRoute: typeof AuthedFixedCostsIdRoute
   AuthedFixedCostsNewRoute: typeof AuthedFixedCostsNewRoute
@@ -235,9 +306,8 @@ interface AuthedRouteChildren {
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedShellRoute: AuthedShellRouteWithChildren,
   AuthedNewRoute: AuthedNewRoute,
-  AuthedSettingsRoute: AuthedSettingsRoute,
-  AuthedIndexRoute: AuthedIndexRoute,
   AuthedEditIdRoute: AuthedEditIdRoute,
   AuthedFixedCostsIdRoute: AuthedFixedCostsIdRoute,
   AuthedFixedCostsNewRoute: AuthedFixedCostsNewRoute,

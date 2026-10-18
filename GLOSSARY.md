@@ -44,10 +44,22 @@ _Avoid_: Outlier, special purchase
 What was spent minus what was received over a set of transactions. An expense adds to it and an income subtracts from it, so a negative value means more came in than went out.
 _Avoid_: Balance, total, signed amount
 
+**Pattern**:
+A regularity in a user's spending that they may not consciously notice, such as many small purchases at the same vendor or spending that clusters on certain weekdays. Detected from their transactions, never entered by hand.
+_Avoid_: Habit, insight, trend
+
+**Typical month**:
+The median net spending of the six most recent complete months, leaving out exceptional transactions. Measured up to a given day of the month when compared with a month in progress.
+_Avoid_: Average month, normal month, baseline
+
+**Pace**:
+How a month's net spending so far compares with a typical month up to the same day, for example 12 % above.
+_Avoid_: Burn rate, budget status
+
 ## Fixed costs
 
 **Fixed cost**:
-A recurring expense of a fixed amount, such as rent or a subscription, charged every interval between its start date and optional end date.
+A recurring expense of a fixed amount, such as rent or a subscription, charged every interval between its start date and optional end date. Never also recorded as a transaction.
 _Avoid_: Subscription, recurring transaction, standing order
 
 **Interval**:
@@ -57,6 +69,10 @@ _Avoid_: Frequency, period, cycle
 **Monthly amount**:
 A fixed cost's amount spread evenly over the months of its interval. A yearly amount is twelve monthly amounts.
 _Avoid_: Monthly rate, average
+
+**Total outflow**:
+A month's net spending plus the monthly amounts of the fixed costs running in it.
+_Avoid_: Total spending, expenses
 
 **Active**:
 A fixed cost the user has not switched off. An inactive fixed cost is kept but counts nowhere.

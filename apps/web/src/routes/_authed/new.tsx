@@ -44,7 +44,7 @@ function RouteComponent() {
             exceptional: data.isExceptional,
         });
 
-        void navigate({ to: "/" });
+        void navigate({ to: "/transactions" });
         const saved =
             data.kind === "income"
                 ? m.transaction_income_saved({ name: data.name })

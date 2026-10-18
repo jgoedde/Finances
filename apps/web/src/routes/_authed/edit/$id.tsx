@@ -42,11 +42,11 @@ export const Route = createFileRoute("/_authed/edit/$id")({
     onError: (error) => {
         if (apiErrorCode(error) === "not_found") {
             toast.error(m.transaction_not_found());
-            throw redirect({ to: "/" });
+            throw redirect({ to: "/transactions" });
         }
 
         toast.error(m.error_unexpected());
-        throw redirect({ to: "/" });
+        throw redirect({ to: "/transactions" });
     },
 });
 
@@ -70,7 +70,7 @@ function RouteComponent() {
             exceptional: updated.isExceptional,
             currency: "EUR",
         });
-        void navigate({ to: "/" });
+        void navigate({ to: "/transactions" });
         toast.success(`${m.transaction_updated()}${syncLaterHint()}`, {
             action: {
                 label: m.action_undo(),
@@ -81,7 +81,7 @@ function RouteComponent() {
 
     const onTransactionFormDelete = () => {
         deleteTransaction.mutate(transaction);
-        void navigate({ to: "/" });
+        void navigate({ to: "/transactions" });
         // Deleted ids can't be reused, so restoring saves a copy.
         const deleted =
             transaction.kind === "income"

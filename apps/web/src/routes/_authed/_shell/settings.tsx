@@ -27,7 +27,7 @@ import { m } from "#/paraglide/messages.js";
 import { getLocale, type Locale, locales } from "#/paraglide/runtime.js";
 import { chooseLocale } from "#/i18n.ts";
 
-export const Route = createFileRoute("/_authed/settings")({
+export const Route = createFileRoute("/_authed/_shell/settings")({
     head: () => ({
         meta: [{ title: m.page_title({ page: m.settings_title() }) }],
     }),
@@ -213,6 +213,22 @@ function RouteComponent() {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+
+                <p
+                    className={`py-4 text-center text-body-small
+                        text-on-surface-variant`}
+                >
+                    {m.app_name()}{" "}
+                    <a
+                        className={
+                            "text-primary underline-offset-4 hover:underline"
+                        }
+                        href="https://github.com/jgoedde/Finances/releases"
+                    >
+                        v{__APP_VERSION__}
+                    </a>{" "}
+                    · {import.meta.env.MODE}
+                </p>
             </main>
         </div>
     );
