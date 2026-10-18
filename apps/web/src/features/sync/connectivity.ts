@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { onlineManager } from "@tanstack/react-query";
+import { m } from "#/paraglide/messages.js";
 
 // TanStack's onlineManager follows the browser's online/offline events. Those
 // miss "connected but nothing gets through" (dead spots, captive portals), so
@@ -52,7 +53,5 @@ export function useIsOnline(): boolean {
 
 /** Appended to "saved" messages while changes can't be sent. */
 export function syncLaterHint(): string {
-    return onlineManager.isOnline()
-        ? ""
-        : " – wird synchronisiert, sobald Du online bist";
+    return onlineManager.isOnline() ? "" : ` – ${m.sync_later_hint()}`;
 }

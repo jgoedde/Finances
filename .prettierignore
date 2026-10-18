@@ -1,3 +1,7 @@
 apps/web/src/routeTree.gen.ts
+apps/web/src/paraglide
+# Inlang's cache; only settings.json is committed.
+apps/web/project.inlang/*
+!apps/web/project.inlang/settings.json
 coverage
 eslint-suppressions.json

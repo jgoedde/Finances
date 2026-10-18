@@ -6,9 +6,9 @@ import {
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
-import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
+import { m } from "#/paraglide/messages.js";
 
 const prefilledSchema = z.object({
     vendor: z.string().nonempty().optional().catch(undefined),
@@ -42,15 +42,17 @@ function RouteComponent() {
         });
 
         void navigate({ to: "/" });
-        toast.success(
-            `${getTransactionKindLabel(data.kind)} bei ${data.name} gespeichert${syncLaterHint()}`,
-        );
+        const saved =
+            data.kind === "income"
+                ? m.transaction_income_saved({ name: data.name })
+                : m.transaction_expense_saved({ name: data.name });
+        toast.success(`${saved}${syncLaterHint()}`);
     };
 
     return (
         <TransactionForm
             onSubmit={onTransactionFormSubmit}
-            title={"Neue Geldbewegung"}
+            title={m.transaction_new()}
             initialValues={{
                 name: vendor ?? "",
                 description: "",

@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useCanGoBack, useNavigate, useRouter } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button.tsx";
 import { cn } from "#/lib/cn.ts";
+import { m } from "#/paraglide/messages.js";
 
 // Leading navigation icon of an MD3 top app bar.
 export function BackArrowButton({
@@ -19,7 +20,7 @@ export function BackArrowButton({
             type={"button"}
             variant={"ghost"}
             size={"icon"}
-            aria-label={"Zurück"}
+            aria-label={m.action_back()}
             onClick={() =>
                 canGoBack ? router.history.back() : void navigate({ to: "/" })
             }

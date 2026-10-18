@@ -10,6 +10,7 @@ import { formatEuro } from "#/utils/currency.ts";
 import { usePendingChanges } from "#/features/sync/use-sync-status.ts";
 import { cn } from "#/lib/cn.ts";
 import type { ComponentProps } from "react";
+import { m } from "#/paraglide/messages.js";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
@@ -39,7 +40,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
             return category.name;
         }
 
-        return "Keine Beschreibung";
+        return m.transaction_no_description();
     }
 
     const navigate = useNavigate();
@@ -125,7 +126,7 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                 {isPending && (
                     <CloudUpload
                         role={"img"}
-                        aria-label={"Noch nicht synchronisiert"}
+                        aria-label={m.sync_not_synced_yet()}
                         className={"size-4 text-on-surface-variant"}
                     />
                 )}

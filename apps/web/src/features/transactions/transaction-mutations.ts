@@ -1,6 +1,7 @@
 import { type QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import type { Transaction, TransactionInput } from "@finances/shared";
 import { ApiError, apiFetch, isUnauthorized } from "#/api/api-client.ts";
+import { apiErrorCode } from "#/api/api-errors.ts";
 import { sessionQuery } from "#/auth/auth-client.ts";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
 import {
@@ -44,20 +45,6 @@ function retryDelay(attempt: number): number {
     return Math.min(1000 * 2 ** attempt, 30 * 1000);
 }
 
-function failureReason(error: unknown): string {
-    if (error instanceof ApiError) {
-        const code = (error.body as { error?: string } | undefined)?.error;
-        if (code === "unknown_category") {
-            return "Die Kategorie existiert nicht mehr.";
-        }
-        if (error.status === 400) {
-            return "Die Daten sind ungültig.";
-        }
-        return `Der Server hat die Änderung abgelehnt (${error.status}).`;
-    }
-    return "Unbekannter Fehler.";
-}
-
 export function registerTransactionMutations(
     queryClient: QueryClient,
     { onUnauthorized }: { onUnauthorized: () => void },
@@ -89,7 +76,14 @@ export function registerTransactionMutations(
                 syncFailures.add({
                     action,
                     transaction,
-                    reason: failureReason(error),
+                    // Worded when shown, in the language at that time.
+                    error:
+                        error instanceof ApiError
+                            ? {
+                                  status: error.status,
+                                  code: apiErrorCode(error),
+                              }
+                            : undefined,
                 });
             }
             // Drop the optimistic state.

@@ -2,6 +2,7 @@ import { Banknote } from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "#/lib/cn.ts";
+import { m } from "#/paraglide/messages.js";
 
 export function NewTransactionFAB() {
     const ripple = useRipple();
@@ -23,7 +24,7 @@ export function NewTransactionFAB() {
                 left: "100%",
                 bottom: "calc(var(--spacing) * 4)",
             }}
-            aria-label={"Neue Geldbewegung"}
+            aria-label={m.transaction_new()}
             data-ripple-color="bg-on-surface/10"
             {...ripple}
             onClick={(e) => {

@@ -7,6 +7,7 @@ import { initPWA } from "#/pwa.ts";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { m } from "#/paraglide/messages.js";
 
 export interface RouterContext {
     queryClient: QueryClient;
@@ -23,38 +24,33 @@ function RootComponent() {
 
     useEffect(() => {
         function showUpdateToast() {
-            toast(
-                "Neue Version verfügbar. Seite neu laden zum Aktualisieren.",
-                {
-                    id: UPDATE_TOAST_ID,
-                    duration: Infinity,
-                    action: {
-                        label: "Neu laden",
-                        onClick: () => {
-                            // Pending changes are safe across reloads, but
-                            // updating mid-sync is not worth the risk.
-                            if (
-                                queryClient.isMutating({
-                                    mutationKey: TRANSACTION_MUTATION_KEY,
-                                }) > 0
-                            ) {
-                                toast.error(
-                                    "Bitte warte, bis alle Änderungen synchronisiert sind.",
-                                );
-                                showUpdateToast();
-                                return;
-                            }
-                            void updateSW(true);
-                        },
+            toast(m.pwa_update_available(), {
+                id: UPDATE_TOAST_ID,
+                duration: Infinity,
+                action: {
+                    label: m.action_reload(),
+                    onClick: () => {
+                        // Pending changes are safe across reloads, but
+                        // updating mid-sync is not worth the risk.
+                        if (
+                            queryClient.isMutating({
+                                mutationKey: TRANSACTION_MUTATION_KEY,
+                            }) > 0
+                        ) {
+                            toast.error(m.pwa_wait_for_sync());
+                            showUpdateToast();
+                            return;
+                        }
+                        void updateSW(true);
                     },
                 },
-            );
+            });
         }
 
         const updateSW = initPWA({
             onNeedRefresh: showUpdateToast,
             onOfflineReady() {
-                toast.success("Bereit für Offline-Nutzung");
+                toast.success(m.pwa_offline_ready());
             },
         });
     }, [queryClient]);

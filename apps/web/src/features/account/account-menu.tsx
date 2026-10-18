@@ -37,6 +37,7 @@ import {
     useSyncStatus,
 } from "#/features/sync/use-sync-status.ts";
 import { cn } from "#/lib/cn.ts";
+import { m } from "#/paraglide/messages.js";
 
 const BADGE_CLASS = {
     failed: "bg-error",
@@ -50,23 +51,25 @@ function syncMenuItem(status: SyncStatus) {
         case "failed":
             return {
                 icon: <CircleAlert className={"text-error"} />,
-                label: `${status.failures.length} abgelehnt`,
+                label: m.sync_menu_failed({ count: status.failures.length }),
             };
         case "offline":
             return {
                 icon: <CloudOff />,
                 label:
                     status.pending.length > 0
-                        ? `Offline · ${status.pending.length} ausstehend`
-                        : "Offline",
+                        ? m.sync_menu_offline_pending({
+                              count: status.pending.length,
+                          })
+                        : m.sync_menu_offline(),
             };
         case "pending":
             return {
                 icon: <RefreshCw />,
-                label: `${status.pending.length} ausstehend`,
+                label: m.sync_menu_pending({ count: status.pending.length }),
             };
         case "synced":
-            return { icon: <CloudCheck />, label: "Alles synchronisiert" };
+            return { icon: <CloudCheck />, label: m.sync_menu_synced() };
         default:
             throw new Error(
                 `Not implemented sync status "${String(status.state satisfies never)}".`,
@@ -94,7 +97,10 @@ export function AccountMenu() {
                     className={`state-layer relative flex size-12 shrink-0
                         cursor-pointer items-center justify-center rounded-full
                         focus-ring`}
-                    aria-label={`Konto von ${username}, ${syncItem.label}`}
+                    aria-label={m.account_menu_label({
+                        username,
+                        status: syncItem.label,
+                    })}
                 >
                     <Avatar>
                         <AvatarFallback>
@@ -114,7 +120,7 @@ export function AccountMenu() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align={"end"} className={"min-w-56"}>
                     <DropdownMenuLabel>
-                        Angemeldet als {username}
+                        {m.account_signed_in_as({ username })}
                     </DropdownMenuLabel>
                     <DropdownMenuItem
                         onSelect={() => setIsSyncDrawerOpen(true)}
@@ -126,7 +132,7 @@ export function AccountMenu() {
                     <DropdownMenuItem asChild>
                         <Link to={"/settings"}>
                             <Settings />
-                            Einstellungen
+                            {m.settings_title()}
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -139,7 +145,7 @@ export function AccountMenu() {
                         }}
                     >
                         <LogOut />
-                        Abmelden
+                        {m.action_sign_out()}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -155,16 +161,21 @@ export function AccountMenu() {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Trotzdem abmelden?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                            {m.sign_out_anyway_title()}
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                            {status.pending.length} Änderungen wurden noch nicht
-                            synchronisiert und gehen beim Abmelden verloren.
+                            {m.sign_out_unsynced_changes({
+                                count: status.pending.length,
+                            })}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                        <AlertDialogCancel>
+                            {m.action_cancel()}
+                        </AlertDialogCancel>
                         <AlertDialogAction onClick={() => void signOut()}>
-                            Abmelden
+                            {m.action_sign_out()}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

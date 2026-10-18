@@ -18,8 +18,16 @@ import { useTransactions } from "#/features/transactions/transaction-queries.ts"
 import { groupBy } from "lodash";
 import type { Transaction } from "@finances/shared";
 import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 type DateFilter = "today" | "yesterday" | "last-7-days";
+
+const DATE_FILTER_LABELS = {
+    today: m.period_today,
+    yesterday: m.period_yesterday,
+    "last-7-days": m.period_last_7_days,
+} as const satisfies Record<DateFilter, () => string>;
 
 const now = new Date();
 
@@ -61,19 +69,16 @@ export function TransactionList() {
     );
 
     function getActiveDateFilter() {
-        if (dateFilterOption === "today") {
-            return "Heute";
-        }
-        if (dateFilterOption === "yesterday") {
-            return "Gestern";
-        }
-        if (dateFilterOption === "last-7-days") {
-            return "Letzte 7 Tage";
-        }
+        return Object.prototype.hasOwnProperty.call(
+            DATE_FILTER_LABELS,
+            dateFilterOption,
+        )
+            ? DATE_FILTER_LABELS[dateFilterOption as DateFilter]()
+            : undefined;
     }
 
     const grouped: Record<string, Transaction[]> = groupBy(transactions, (e) =>
-        new Date(e.date).toLocaleDateString("de-DE", {
+        new Date(e.date).toLocaleDateString(getLocale(), {
             weekday: "short",
             day: "2-digit",
             month: "long",
@@ -111,7 +116,9 @@ export function TransactionList() {
                             className={`mt-2 text-center text-body-medium
                             text-on-surface-variant`}
                         >
-                            Keine Geldbewegungen für {getActiveDateFilter()}
+                            {m.transaction_list_empty({
+                                period: getActiveDateFilter() ?? "",
+                            })}
                         </div>
                     )}
                     {dateFilterOption === "last-7-days"
@@ -132,9 +139,9 @@ export function TransactionList() {
             </Card>
             <DrawerContent>
                 <DrawerHeader className={"pt-0 text-left"}>
-                    <DrawerTitle>Zeitraum</DrawerTitle>
+                    <DrawerTitle>{m.period()}</DrawerTitle>
                     <DrawerDescription className={"sr-only"}>
-                        Zeitraum der angezeigten Geldbewegungen wählen
+                        {m.period_choose_list()}
                     </DrawerDescription>
                 </DrawerHeader>
                 <DateFilterDrawerContent
@@ -167,13 +174,7 @@ function DateFilterDrawerContent({
             }}
             className={"mb-6 gap-0"}
         >
-            {(
-                [
-                    ["today", "Heute"],
-                    ["yesterday", "Gestern"],
-                    ["last-7-days", "Letzte 7 Tage"],
-                ] as const
-            ).map(([value, label]) => (
+            {Object.entries(DATE_FILTER_LABELS).map(([value, label]) => (
                 <Label
                     key={value}
                     htmlFor={value}
@@ -181,7 +182,7 @@ function DateFilterDrawerContent({
                     items-center gap-4 px-4 text-body-large text-on-surface`}
                 >
                     <RadioGroupItem value={value} id={value} />
-                    {label}
+                    {label()}
                 </Label>
             ))}
         </RadioGroup>

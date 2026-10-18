@@ -12,6 +12,9 @@ import { CurrencyInput } from "react-currency-input-field";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { SelectedCategoryBadge } from "#/features/transactions/components/form/selected-category-badge.tsx";
+import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 export interface TransactionFormSubmitData {
     categoryId: string;
@@ -84,7 +87,7 @@ export function TransactionForm({
         const amount = parseFloat(amountStr.replace(",", "."));
 
         if (!selectedCategory || isNaN(amount) || !name) {
-            alert("Please select a category, specify an amount and a name.");
+            alert(m.transaction_form_incomplete());
             return;
         }
 
@@ -131,7 +134,7 @@ export function TransactionForm({
                         )}
 
                         <Button type={"submit"} variant={"text"}>
-                            Speichern
+                            {m.action_save()}
                         </Button>
                     </>
                 }
@@ -141,12 +144,12 @@ export function TransactionForm({
                 <SegmentedButton
                     options={[
                         {
-                            label: "Einnahme",
+                            label: getTransactionKindLabel("income"),
                             value: "income",
                             icon: "banknote-arrow-up",
                         },
                         {
-                            label: "Ausgabe",
+                            label: getTransactionKindLabel("expense"),
                             value: "expense",
                             icon: "banknote-arrow-down",
                         },
@@ -183,14 +186,14 @@ export function TransactionForm({
                             className={`shrink-0 text-body-large
                                 text-on-surface-variant`}
                         >
-                            Preis
+                            {m.transaction_amount()}
                         </Label>
                         <CurrencyInput
                             ref={amountInputRef}
                             id="amount"
                             name="amount"
                             intlConfig={{
-                                locale: "de-DE",
+                                locale: getLocale(),
                                 currency: "EUR",
                             }}
                             required
@@ -233,7 +236,7 @@ export function TransactionForm({
                             className={`shrink-0 text-body-large
                                 text-on-surface-variant`}
                         >
-                            Beschreibung
+                            {m.transaction_description()}
                         </Label>
                         <Input
                             ref={descriptionInputRef}

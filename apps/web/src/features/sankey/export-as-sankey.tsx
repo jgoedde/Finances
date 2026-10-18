@@ -30,6 +30,7 @@ import { fixedCostsQuery } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import { getMonthlyAmount, isRunningOn, netSpending } from "@finances/shared";
 import { toLocalIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
 import { nanoid } from "nanoid";
+import { m } from "#/paraglide/messages.js";
 
 interface IncomeSource {
     id: string;
@@ -124,7 +125,7 @@ export function ExportSankeyDialog() {
         const yearNum = parseInt(year);
 
         if (!monthNum || !yearNum || monthNum < 1 || monthNum > 12) {
-            toast.error("Please enter a valid month (1-12) and year");
+            toast.error(m.sankey_invalid_month());
             return;
         }
 
@@ -145,7 +146,7 @@ export function ExportSankeyDialog() {
                 queryClient.query(fixedCostsQuery),
             ]);
         } catch {
-            toast.error("Could not load the data for the export");
+            toast.error(m.sankey_load_failed());
             return;
         }
 
@@ -187,17 +188,14 @@ export function ExportSankeyDialog() {
             <AlertDialogTrigger asChild>
                 <Button variant="filledTonal">
                     <TableOfContents />
-                    Summarize
+                    {m.sankey_open()}
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[90vh] overflow-y-auto">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        Export Month as Sankey Diagram
-                    </AlertDialogTitle>
+                    <AlertDialogTitle>{m.sankey_title()}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Enter the month and year to export, along with income
-                        sources and fixed costs.
+                        {m.sankey_description()}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
 
@@ -209,7 +207,7 @@ export function ExportSankeyDialog() {
                                     text-on-surface-variant`}
                                 htmlFor="month"
                             >
-                                Month (1-12)
+                                {m.sankey_month()}
                             </Label>
                             <Input
                                 id="month"
@@ -218,7 +216,7 @@ export function ExportSankeyDialog() {
                                 max="12"
                                 value={month}
                                 onChange={(e) => setMonth(e.target.value)}
-                                placeholder="e.g., 11"
+                                placeholder={m.sankey_month_placeholder()}
                                 required
                             />
                         </div>
@@ -228,7 +226,7 @@ export function ExportSankeyDialog() {
                                     text-on-surface-variant`}
                                 htmlFor="year"
                             >
-                                Year
+                                {m.sankey_year()}
                             </Label>
                             <Input
                                 id="year"
@@ -237,7 +235,7 @@ export function ExportSankeyDialog() {
                                 max="2100"
                                 value={year}
                                 onChange={(e) => setYear(e.target.value)}
-                                placeholder="e.g., 2025"
+                                placeholder={m.sankey_year_placeholder()}
                                 required
                             />
                         </div>
@@ -246,7 +244,7 @@ export function ExportSankeyDialog() {
                     <div>
                         <div className="mb-2 flex items-center justify-between">
                             <Label className={"text-title-small"}>
-                                Income Sources
+                                {m.sankey_income_sources()}
                             </Label>
                             <Button
                                 variant="text"
@@ -254,7 +252,7 @@ export function ExportSankeyDialog() {
                                 onClick={addIncomeSource}
                             >
                                 <Plus />
-                                Add
+                                {m.action_add()}
                             </Button>
                         </div>
                         <div className="space-y-2">
@@ -264,7 +262,7 @@ export function ExportSankeyDialog() {
                                     className="flex items-center gap-2"
                                 >
                                     <Input
-                                        placeholder="Name (e.g., job)"
+                                        placeholder={m.sankey_income_source_placeholder()}
                                         value={source.name}
                                         onChange={(e) =>
                                             updateIncomeSource(
@@ -276,7 +274,7 @@ export function ExportSankeyDialog() {
                                     />
                                     <Input
                                         type="number"
-                                        placeholder="Amount"
+                                        placeholder={m.sankey_amount_placeholder()}
                                         value={source.amount}
                                         onChange={(e) =>
                                             updateIncomeSource(
@@ -289,7 +287,7 @@ export function ExportSankeyDialog() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        aria-label="Remove"
+                                        aria-label={m.action_remove()}
                                         onClick={() =>
                                             removeIncomeSource(source.id)
                                         }
@@ -305,7 +303,7 @@ export function ExportSankeyDialog() {
                     <div>
                         <div className="mb-2 flex items-center justify-between">
                             <Label className={"text-title-small"}>
-                                Savings Targets
+                                {m.sankey_savings_targets()}
                             </Label>
                             <Button
                                 variant="text"
@@ -313,7 +311,7 @@ export function ExportSankeyDialog() {
                                 onClick={addSavingsTarget}
                             >
                                 <Plus />
-                                Add
+                                {m.action_add()}
                             </Button>
                         </div>
                         <div className="space-y-2">
@@ -323,7 +321,7 @@ export function ExportSankeyDialog() {
                                     className="flex items-center gap-2"
                                 >
                                     <Input
-                                        placeholder="Name (e.g., bitcoin)"
+                                        placeholder={m.sankey_savings_target_placeholder()}
                                         value={target.name}
                                         onChange={(e) =>
                                             updateSavingsTarget(
@@ -335,7 +333,7 @@ export function ExportSankeyDialog() {
                                     />
                                     <Input
                                         type="number"
-                                        placeholder="Amount"
+                                        placeholder={m.sankey_amount_placeholder()}
                                         value={target.amount}
                                         onChange={(e) =>
                                             updateSavingsTarget(
@@ -348,7 +346,7 @@ export function ExportSankeyDialog() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        aria-label="Remove"
+                                        aria-label={m.action_remove()}
                                         onClick={() =>
                                             removeSavingsTarget(target.id)
                                         }
@@ -363,9 +361,9 @@ export function ExportSankeyDialog() {
                 </div>
 
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>{m.action_cancel()}</AlertDialogCancel>
                     <AlertDialogAction onClick={() => void generateSankeyCSV()}>
-                        Export
+                        {m.action_export()}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

@@ -22,10 +22,15 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "#/components/ui/popover.tsx";
-import { toLocalIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
+import {
+    INTERVAL_LABELS,
+    toLocalIsoDate,
+} from "#/features/fixed-costs/fixed-cost.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { cn } from "#/lib/cn.ts";
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 // Popover triggers styled like an MD3 outlined text field.
 const dateTriggerClassName = `border-outline text-on-surface text-body-large
@@ -35,13 +40,13 @@ const dateTriggerClassName = `border-outline text-on-surface text-body-large
 type StepId =
     "name" | "amount" | "interval" | "startDate" | "endDate" | "category";
 
-const STEPS: { id: StepId; title: string }[] = [
-    { id: "name", title: "Bezeichnung" },
-    { id: "amount", title: "Betrag" },
-    { id: "category", title: "Kategorie" },
-    { id: "interval", title: "Turnus" },
-    { id: "startDate", title: "Startdatum" },
-    { id: "endDate", title: "Enddatum" },
+const STEPS: StepId[] = [
+    "name",
+    "amount",
+    "category",
+    "interval",
+    "startDate",
+    "endDate",
 ];
 
 export interface FixedCostWizardValues {
@@ -98,7 +103,7 @@ export function FixedCostWizard({
     );
     const [categoryId, setCategoryId] = useState(initialValues.categoryId);
 
-    const stepId = STEPS[step]?.id;
+    const stepId = STEPS[step];
     const isLastStep = step === STEPS.length - 1;
     // Fixed costs are read-only offline; only saving needs the server.
     const isOnline = useIsOnline();
@@ -147,12 +152,14 @@ export function FixedCostWizard({
             case "name":
                 return (
                     <Field>
-                        <FieldLabel htmlFor={"name"}>Bezeichnung</FieldLabel>
+                        <FieldLabel htmlFor={"name"}>
+                            {m.fixed_cost_name()}
+                        </FieldLabel>
                         <Input
                             id={"name"}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="z.B. Spotify"
+                            placeholder={m.fixed_cost_name_placeholder()}
                             autoFocus
                             autoComplete={"off"}
                             enterKeyHint={"next"}
@@ -163,12 +170,14 @@ export function FixedCostWizard({
             case "amount":
                 return (
                     <Field>
-                        <FieldLabel htmlFor={"amount"}>Betrag (EUR)</FieldLabel>
+                        <FieldLabel htmlFor={"amount"}>
+                            {m.fixed_cost_amount_eur()}
+                        </FieldLabel>
                         <CurrencyInputWrapper
                             id={"amount"}
                             inputMode={"decimal"}
                             intlConfig={{
-                                locale: "de-DE",
+                                locale: getLocale(),
                                 currency: "EUR",
                             }}
                             required
@@ -187,13 +196,11 @@ export function FixedCostWizard({
             case "interval":
                 return (
                     <Field>
-                        <FieldLabel>Turnus</FieldLabel>
+                        <FieldLabel>{m.fixed_cost_interval()}</FieldLabel>
                         <SegmentedButton
-                            options={[
-                                { label: "Monatlich", value: "monthly" },
-                                { label: "Quartalsweise", value: "quarterly" },
-                                { label: "Jährlich", value: "yearly" },
-                            ]}
+                            options={Object.entries(INTERVAL_LABELS).map(
+                                ([value, label]) => ({ label: label(), value }),
+                            )}
                             value={interval}
                             onChange={(v) =>
                                 setInterval(v as FixedCostInterval)
@@ -205,7 +212,7 @@ export function FixedCostWizard({
                 return (
                     <Field>
                         <FieldLabel htmlFor={"start-date"}>
-                            Startdatum
+                            {m.fixed_cost_start_date()}
                         </FieldLabel>
                         <Popover>
                             <PopoverTrigger asChild>
@@ -216,11 +223,16 @@ export function FixedCostWizard({
                                     className={dateTriggerClassName}
                                 >
                                     {startDate ? (
-                                        startDate.toLocaleDateString("de", {
-                                            dateStyle: "long",
-                                        })
+                                        startDate.toLocaleDateString(
+                                            getLocale(),
+                                            {
+                                                dateStyle: "long",
+                                            },
+                                        )
                                     ) : (
-                                        <span>Startdatum auswählen</span>
+                                        <span>
+                                            {m.fixed_cost_choose_start_date()}
+                                        </span>
                                     )}
                                     <ChevronDownIcon />
                                 </Button>
@@ -244,7 +256,9 @@ export function FixedCostWizard({
             case "endDate":
                 return (
                     <Field>
-                        <FieldLabel htmlFor={"end-date"}>Enddatum</FieldLabel>
+                        <FieldLabel htmlFor={"end-date"}>
+                            {m.fixed_cost_end_date()}
+                        </FieldLabel>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
@@ -258,11 +272,16 @@ export function FixedCostWizard({
                                     )}
                                 >
                                     {endDate ? (
-                                        endDate.toLocaleDateString("de", {
-                                            dateStyle: "long",
-                                        })
+                                        endDate.toLocaleDateString(
+                                            getLocale(),
+                                            {
+                                                dateStyle: "long",
+                                            },
+                                        )
                                     ) : (
-                                        <span>Enddatum (optional)</span>
+                                        <span>
+                                            {m.fixed_cost_end_date_optional()}
+                                        </span>
                                     )}
                                     <ChevronDownIcon />
                                 </Button>
@@ -280,24 +299,28 @@ export function FixedCostWizard({
                             </PopoverContent>
                         </Popover>
                         <FieldDescription>
-                            Lass leer für unbefristet
+                            {m.fixed_cost_end_date_hint()}
                         </FieldDescription>
                     </Field>
                 );
             case "category":
                 return (
                     <Field>
-                        <FieldLabel>Kategorie</FieldLabel>
+                        <FieldLabel>{m.fixed_cost_category()}</FieldLabel>
                         <Select
                             value={categoryId}
                             onValueChange={setCategoryId}
                         >
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Wähle eine Kategorie" />
+                                <SelectValue
+                                    placeholder={m.fixed_cost_choose_category()}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectLabel>Kategorien</SelectLabel>
+                                    <SelectLabel>
+                                        {m.fixed_cost_categories()}
+                                    </SelectLabel>
                                     {categories.map((c) => (
                                         <SelectItem key={c.id} value={c.id}>
                                             {c.name}
@@ -350,7 +373,7 @@ export function FixedCostWizard({
                             onClick={goPrev}
                             className="flex-1"
                         >
-                            Zurück
+                            {m.action_back()}
                         </Button>
                     )}
                     <OfflineHint active={isSaveBlocked}>
@@ -360,7 +383,7 @@ export function FixedCostWizard({
                             className="flex-1"
                             disabled={!canNext || isSaveBlocked}
                         >
-                            {isLastStep ? submitLabel : "Weiter"}
+                            {isLastStep ? submitLabel : m.action_next()}
                         </Button>
                     </OfflineHint>
                 </div>

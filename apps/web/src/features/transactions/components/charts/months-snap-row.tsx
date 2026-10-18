@@ -8,6 +8,8 @@ import { type ComponentProps, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "#/components/ui/button.tsx";
 import { Card } from "#/components/ui/card.tsx";
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 const now = new Date();
 
@@ -45,10 +47,10 @@ export function MonthsSnapRow() {
             <div className={"flex items-start"}>
                 <div className={"flex flex-col"}>
                     <h2 className={"font-brand text-title-large"}>
-                        Ausgabenverteilung
+                        {m.insights_distribution_title()}
                     </h2>
                     <div className={"text-body-medium text-on-surface-variant"}>
-                        Pro Monat
+                        {m.insights_per_month()}
                     </div>
                 </div>
                 {/* Mouse users can't swipe, so offer explicit navigation on larger screens. */}
@@ -56,7 +58,7 @@ export function MonthsSnapRow() {
                     <Button
                         variant={"ghost"}
                         size={"icon"}
-                        aria-label={"Neuerer Monat"}
+                        aria-label={m.insights_newer_month()}
                         onClick={() => scrollByPage(-1)}
                     >
                         <ChevronLeft />
@@ -64,7 +66,7 @@ export function MonthsSnapRow() {
                     <Button
                         variant={"ghost"}
                         size={"icon"}
-                        aria-label={"Älterer Monat"}
+                        aria-label={m.insights_older_month()}
                         onClick={() => scrollByPage(1)}
                     >
                         <ChevronRight />
@@ -90,7 +92,7 @@ export function MonthsSnapRow() {
 }
 
 function getMonthName(date: YearMonth) {
-    return new Date(date.year, date.monthIndex).toLocaleString("de-DE", {
+    return new Date(date.year, date.monthIndex).toLocaleString(getLocale(), {
         month: "long",
         year: "numeric",
     });

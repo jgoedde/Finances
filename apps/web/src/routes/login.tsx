@@ -12,6 +12,7 @@ import { AuthCard } from "#/features/auth/auth-card.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
+import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/login")({
     validateSearch: z.object({
@@ -54,8 +55,8 @@ function RouteComponent() {
         if (result.error) {
             setError(
                 result.error.status === 401
-                    ? "Benutzername oder Passwort ist falsch."
-                    : "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
+                    ? m.login_wrong_credentials()
+                    : m.login_failed(),
             );
             return;
         }
@@ -68,13 +69,15 @@ function RouteComponent() {
     }
 
     return (
-        <AuthCard title={"Anmelden"}>
+        <AuthCard title={m.action_sign_in()}>
             <form
                 className="flex flex-col gap-4"
                 onSubmit={(e) => void handleSubmit(e)}
             >
                 <Field>
-                    <FieldLabel htmlFor={"username"}>Benutzername</FieldLabel>
+                    <FieldLabel htmlFor={"username"}>
+                        {m.auth_username()}
+                    </FieldLabel>
                     <Input
                         id={"username"}
                         value={username}
@@ -86,7 +89,9 @@ function RouteComponent() {
                     />
                 </Field>
                 <Field>
-                    <FieldLabel htmlFor={"password"}>Passwort</FieldLabel>
+                    <FieldLabel htmlFor={"password"}>
+                        {m.auth_password()}
+                    </FieldLabel>
                     <Input
                         id={"password"}
                         type={"password"}
@@ -108,7 +113,7 @@ function RouteComponent() {
                     className={"mt-2 self-center"}
                 >
                     <LogIn />
-                    Anmelden
+                    {m.action_sign_in()}
                 </Button>
             </form>
         </AuthCard>

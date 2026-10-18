@@ -9,7 +9,10 @@ import {
 import { Button } from "#/components/ui/button.tsx";
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import type { FixedCost } from "#/features/fixed-costs/fixed-cost.ts";
+import {
+    type FixedCost,
+    INTERVAL_LABELS,
+} from "#/features/fixed-costs/fixed-cost.ts";
 import {
     useDeleteFixedCost,
     useFixedCosts,
@@ -19,15 +22,11 @@ import { Switch } from "#/components/ui/switch.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
-
-const INTERVAL_LABELS: Record<FixedCost["interval"], string> = {
-    monthly: "Monatlich",
-    quarterly: "Quartalsweise",
-    yearly: "Jährlich",
-};
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 function toMonthlyLabel(amount: number, currency: string) {
-    return new Intl.NumberFormat("de-DE", {
+    return new Intl.NumberFormat(getLocale(), {
         style: "currency",
         currency,
     }).format(amount);
@@ -49,7 +48,7 @@ export function FixedCostsTable() {
     }
 
     function remove(id: string) {
-        if (confirm("Möchtest Du diese Fixkostenstelle wirklich löschen?")) {
+        if (confirm(m.fixed_cost_delete_confirm())) {
             deleteFixedCost.mutate(id);
         }
     }
@@ -58,20 +57,20 @@ export function FixedCostsTable() {
         <Card className={"m-2 gap-4 px-2 py-4"}>
             <div className={"flex flex-wrap items-center gap-2 px-2"}>
                 <h2 className={"grow font-brand text-title-large"}>
-                    Fixkosten
+                    {m.fixed_costs_title()}
                 </h2>
                 <OfflineHint active={!isOnline}>
                     {isOnline ? (
                         <Button variant={"filledTonal"} asChild>
                             <Link to={"/fixed-costs/new"}>
                                 <Plus />
-                                Fixkosten erfassen
+                                {m.fixed_cost_add()}
                             </Link>
                         </Button>
                     ) : (
                         <Button variant={"filledTonal"} disabled>
                             <Plus />
-                            Fixkosten erfassen
+                            {m.fixed_cost_add()}
                         </Button>
                     )}
                 </OfflineHint>
@@ -79,11 +78,15 @@ export function FixedCostsTable() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Bezeichnung</TableHead>
-                        <TableHead>Kategorie</TableHead>
-                        <TableHead className="text-right">Betrag</TableHead>
-                        <TableHead>Turnus</TableHead>
-                        <TableHead className="text-right">/ Monat</TableHead>
+                        <TableHead>{m.fixed_cost_name()}</TableHead>
+                        <TableHead>{m.fixed_cost_category()}</TableHead>
+                        <TableHead className="text-right">
+                            {m.fixed_cost_amount()}
+                        </TableHead>
+                        <TableHead>{m.fixed_cost_interval()}</TableHead>
+                        <TableHead className="text-right">
+                            {m.fixed_cost_per_month()}
+                        </TableHead>
                         <TableHead className="w-30" />
                     </TableRow>
                 </TableHeader>
@@ -122,7 +125,7 @@ export function FixedCostsTable() {
                             </TableCell>
                             <TableCell>
                                 <span className="text-on-surface-variant">
-                                    {INTERVAL_LABELS[row.interval]}
+                                    {INTERVAL_LABELS[row.interval]()}
                                 </span>
                             </TableCell>
                             <TableCell
@@ -137,7 +140,7 @@ export function FixedCostsTable() {
                                 <OfflineHint active={!isOnline}>
                                     <div className="flex items-center gap-2">
                                         <Switch
-                                            aria-label={"Aktiv"}
+                                            aria-label={m.fixed_cost_active()}
                                             checked={row.active}
                                             disabled={!isOnline}
                                             onCheckedChange={() =>
@@ -147,7 +150,7 @@ export function FixedCostsTable() {
                                         <Button
                                             size="icon"
                                             variant="ghost"
-                                            aria-label={"Löschen"}
+                                            aria-label={m.action_delete()}
                                             disabled={!isOnline}
                                             onClick={() => remove(row.id)}
                                         >
@@ -166,7 +169,7 @@ export function FixedCostsTable() {
                     px-4 pt-4 text-body-medium`}
             >
                 <span className="mr-2 text-on-surface-variant">
-                    Monatlich gesamt:
+                    {m.fixed_cost_monthly_total()}
                 </span>
                 <span className="text-title-small">
                     {toMonthlyLabel(monthlyTotal, "EUR")}

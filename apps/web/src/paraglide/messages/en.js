@@ -1,0 +1,938 @@
+/* eslint-disable */
+/** @typedef {import('../runtime.js').LocalizedString} LocalizedString */
+/** @typedef {{ username: NonNullable<unknown>, status: NonNullable<unknown> }} Account_Menu_LabelInputs */
+/** @typedef {{ username: NonNullable<unknown> }} Account_Signed_In_AsInputs */
+/** @typedef {{}} Action_AddInputs */
+/** @typedef {{}} Action_BackInputs */
+/** @typedef {{}} Action_CancelInputs */
+/** @typedef {{}} Action_DeleteInputs */
+/** @typedef {{}} Action_DiscardInputs */
+/** @typedef {{}} Action_ExportInputs */
+/** @typedef {{}} Action_ImportInputs */
+/** @typedef {{}} Action_NextInputs */
+/** @typedef {{}} Action_ReloadInputs */
+/** @typedef {{}} Action_RemoveInputs */
+/** @typedef {{}} Action_ReplaceInputs */
+/** @typedef {{}} Action_RestoreInputs */
+/** @typedef {{}} Action_RetryInputs */
+/** @typedef {{}} Action_SaveInputs */
+/** @typedef {{}} Action_Sign_InInputs */
+/** @typedef {{}} Action_Sign_OutInputs */
+/** @typedef {{}} Action_UndoInputs */
+/** @typedef {{}} Action_UpdateInputs */
+/** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_File_Too_LargeInputs */
+/** @typedef {{}} Api_Error_ForbiddenInputs */
+/** @typedef {{}} Api_Error_Invalid_FileInputs */
+/** @typedef {{}} Api_Error_Invalid_LinkInputs */
+/** @typedef {{}} Api_Error_Invalid_RequestInputs */
+/** @typedef {{}} Api_Error_Not_FoundInputs */
+/** @typedef {{}} Api_Error_UnauthorizedInputs */
+/** @typedef {{}} Api_Error_Unknown_CategoryInputs */
+/** @typedef {{}} Api_Error_Unknown_UserInputs */
+/** @typedef {{}} Api_Error_Username_RequiredInputs */
+/** @typedef {{}} Api_Error_Username_TakenInputs */
+/** @typedef {{}} App_NameInputs */
+/** @typedef {{}} Auth_PasswordInputs */
+/** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Error_Try_AgainInputs */
+/** @typedef {{}} Error_UnexpectedInputs */
+/** @typedef {{}} Error_UnknownInputs */
+/** @typedef {{}} Fixed_Cost_ActiveInputs */
+/** @typedef {{}} Fixed_Cost_AddInputs */
+/** @typedef {{}} Fixed_Cost_AmountInputs */
+/** @typedef {{}} Fixed_Cost_Amount_EurInputs */
+/** @typedef {{}} Fixed_Cost_CategoriesInputs */
+/** @typedef {{}} Fixed_Cost_CategoryInputs */
+/** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
+/** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
+/** @typedef {{}} Fixed_Cost_Delete_ConfirmInputs */
+/** @typedef {{}} Fixed_Cost_Delete_FailedInputs */
+/** @typedef {{}} Fixed_Cost_EditInputs */
+/** @typedef {{}} Fixed_Cost_End_DateInputs */
+/** @typedef {{}} Fixed_Cost_End_Date_HintInputs */
+/** @typedef {{}} Fixed_Cost_End_Date_OptionalInputs */
+/** @typedef {{}} Fixed_Cost_IntervalInputs */
+/** @typedef {{}} Fixed_Cost_Interval_MonthlyInputs */
+/** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
+/** @typedef {{}} Fixed_Cost_Interval_YearlyInputs */
+/** @typedef {{}} Fixed_Cost_Monthly_TotalInputs */
+/** @typedef {{}} Fixed_Cost_NameInputs */
+/** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
+/** @typedef {{}} Fixed_Cost_NewInputs */
+/** @typedef {{}} Fixed_Cost_Not_FoundInputs */
+/** @typedef {{}} Fixed_Cost_Per_MonthInputs */
+/** @typedef {{}} Fixed_Cost_Save_FailedInputs */
+/** @typedef {{}} Fixed_Cost_Start_DateInputs */
+/** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
+/** @typedef {{}} Fixed_Cost_Update_FailedInputs */
+/** @typedef {{}} Fixed_Cost_UpdatedInputs */
+/** @typedef {{}} Fixed_Costs_TitleInputs */
+/** @typedef {{}} Insights_Distribution_TitleInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Insights_Expense_CountInputs */
+/** @typedef {{}} Insights_MoreInputs */
+/** @typedef {{}} Insights_Newer_MonthInputs */
+/** @typedef {{}} Insights_Older_MonthInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Insights_Per_ExpenseInputs */
+/** @typedef {{}} Insights_Per_MonthInputs */
+/** @typedef {{}} Insights_Spent_This_MonthInputs */
+/** @typedef {{}} Insights_Spent_TodayInputs */
+/** @typedef {{}} Insights_Spent_YesterdayInputs */
+/** @typedef {{}} Insights_Trend_DayInputs */
+/** @typedef {{}} Insights_Trend_Spike_CategoryInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Insights_Trend_Spike_DateInputs */
+/** @typedef {{}} Insights_Trend_TitleInputs */
+/** @typedef {{}} Kind_ExpenseInputs */
+/** @typedef {{}} Kind_IncomeInputs */
+/** @typedef {{}} Link_Create_AccountInputs */
+/** @typedef {{}} Link_For_UserInputs */
+/** @typedef {{}} Link_InvalidInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Link_Min_Password_LengthInputs */
+/** @typedef {{}} Link_Password_ChangedInputs */
+/** @typedef {{}} Link_Password_Saved_Sign_InInputs */
+/** @typedef {{}} Link_Passwords_DifferInputs */
+/** @typedef {{}} Link_Repeat_PasswordInputs */
+/** @typedef {{}} Link_Set_New_PasswordInputs */
+/** @typedef {{}} Link_TitleInputs */
+/** @typedef {{}} Link_Username_RulesInputs */
+/** @typedef {{}} Link_WelcomeInputs */
+/** @typedef {{}} Login_FailedInputs */
+/** @typedef {{}} Login_Wrong_CredentialsInputs */
+/** @typedef {{}} Offline_UnavailableInputs */
+/** @typedef {{}} PeriodInputs */
+/** @typedef {{}} Period_AnyInputs */
+/** @typedef {{}} Period_Choose_ListInputs */
+/** @typedef {{}} Period_Choose_SearchInputs */
+/** @typedef {{}} Period_CustomInputs */
+/** @typedef {{}} Period_Last_7_DaysInputs */
+/** @typedef {{}} Period_Older_Than_Half_YearInputs */
+/** @typedef {{}} Period_Older_Than_MonthInputs */
+/** @typedef {{}} Period_Older_Than_WeekInputs */
+/** @typedef {{}} Period_Older_Than_YearInputs */
+/** @typedef {{}} Period_TodayInputs */
+/** @typedef {{}} Period_YesterdayInputs */
+/** @typedef {{}} Pwa_Offline_ReadyInputs */
+/** @typedef {{}} Pwa_Update_AvailableInputs */
+/** @typedef {{}} Pwa_Wait_For_SyncInputs */
+/** @typedef {{}} Sankey_Amount_PlaceholderInputs */
+/** @typedef {{}} Sankey_DescriptionInputs */
+/** @typedef {{}} Sankey_Income_Source_PlaceholderInputs */
+/** @typedef {{}} Sankey_Income_SourcesInputs */
+/** @typedef {{}} Sankey_Invalid_MonthInputs */
+/** @typedef {{}} Sankey_Load_FailedInputs */
+/** @typedef {{}} Sankey_MonthInputs */
+/** @typedef {{}} Sankey_Month_PlaceholderInputs */
+/** @typedef {{}} Sankey_OpenInputs */
+/** @typedef {{}} Sankey_Savings_Target_PlaceholderInputs */
+/** @typedef {{}} Sankey_Savings_TargetsInputs */
+/** @typedef {{}} Sankey_TitleInputs */
+/** @typedef {{}} Sankey_YearInputs */
+/** @typedef {{}} Sankey_Year_PlaceholderInputs */
+/** @typedef {{}} Search_ClearInputs */
+/** @typedef {{}} Search_LabelInputs */
+/** @typedef {{}} Search_Load_MoreInputs */
+/** @typedef {{}} Search_No_ResultsInputs */
+/** @typedef {{}} Search_OfflineInputs */
+/** @typedef {{}} Search_PlaceholderInputs */
+/** @typedef {{}} Settings_Export_DescriptionInputs */
+/** @typedef {{}} Settings_Export_FailedInputs */
+/** @typedef {{}} Settings_Import_DescriptionInputs */
+/** @typedef {{}} Settings_Import_FailedInputs */
+/** @typedef {{ issue: NonNullable<unknown> }} Settings_Import_Invalid_File_DetailInputs */
+/** @typedef {{}} Settings_Import_Replace_DescriptionInputs */
+/** @typedef {{}} Settings_Import_Replace_TitleInputs */
+/** @typedef {{ transactions: NonNullable<unknown>, fixedCosts: NonNullable<unknown> }} Settings_Import_SuccessInputs */
+/** @typedef {{}} Settings_LanguageInputs */
+/** @typedef {{}} Settings_Language_DescriptionInputs */
+/** @typedef {{}} Settings_TitleInputs */
+/** @typedef {{}} Sign_Out_Anyway_TitleInputs */
+/** @typedef {{}} Sign_Out_FailedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sign_Out_Unsynced_ChangesInputs */
+/** @typedef {{}} Sync_Action_DeletedInputs */
+/** @typedef {{}} Sync_Action_SavedInputs */
+/** @typedef {{}} Sync_Later_HintInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Menu_FailedInputs */
+/** @typedef {{}} Sync_Menu_OfflineInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Menu_Offline_PendingInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Menu_PendingInputs */
+/** @typedef {{}} Sync_Menu_SyncedInputs */
+/** @typedef {{}} Sync_Not_Synced_YetInputs */
+/** @typedef {{}} Sync_NowInputs */
+/** @typedef {{}} Sync_PendingInputs */
+/** @typedef {{}} Sync_RejectedInputs */
+/** @typedef {{ status: NonNullable<unknown> }} Sync_Rejected_StatusInputs */
+/** @typedef {{}} Sync_Server_UnreachableInputs */
+/** @typedef {{}} Sync_Status_FailedInputs */
+/** @typedef {{}} Sync_Status_OfflineInputs */
+/** @typedef {{}} Sync_Status_PendingInputs */
+/** @typedef {{}} Sync_Status_SyncedInputs */
+/** @typedef {{}} Sync_TitleInputs */
+/** @typedef {{}} Transaction_AmountInputs */
+/** @typedef {{}} Transaction_Choose_DateInputs */
+/** @typedef {{}} Transaction_Delete_DescriptionInputs */
+/** @typedef {{}} Transaction_Delete_TitleInputs */
+/** @typedef {{}} Transaction_DescriptionInputs */
+/** @typedef {{}} Transaction_EditInputs */
+/** @typedef {{}} Transaction_ExceptionalInputs */
+/** @typedef {{}} Transaction_Expense_DeletedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
+/** @typedef {{}} Transaction_Form_IncompleteInputs */
+/** @typedef {{}} Transaction_Income_DeletedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
+/** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_NewInputs */
+/** @typedef {{}} Transaction_No_DescriptionInputs */
+/** @typedef {{}} Transaction_Not_FoundInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Transaction_Remove_CategoryInputs */
+/** @typedef {{}} Transaction_UpdatedInputs */
+import * as registry from "../registry.js"
+
+
+export const account_menu_label = /** @type {(inputs: Account_Menu_LabelInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.username}'s account, ${i?.status}`)
+};
+
+export const account_signed_in_as = /** @type {(inputs: Account_Signed_In_AsInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Signed in as ${i?.username}`)
+};
+
+export const action_add = /** @type {(inputs: Action_AddInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Add`)
+};
+
+export const action_back = /** @type {(inputs: Action_BackInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Back`)
+};
+
+export const action_cancel = /** @type {(inputs: Action_CancelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Cancel`)
+};
+
+export const action_delete = /** @type {(inputs: Action_DeleteInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Delete`)
+};
+
+export const action_discard = /** @type {(inputs: Action_DiscardInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Discard`)
+};
+
+export const action_export = /** @type {(inputs: Action_ExportInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Export`)
+};
+
+export const action_import = /** @type {(inputs: Action_ImportInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Import`)
+};
+
+export const action_next = /** @type {(inputs: Action_NextInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Next`)
+};
+
+export const action_reload = /** @type {(inputs: Action_ReloadInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Reload`)
+};
+
+export const action_remove = /** @type {(inputs: Action_RemoveInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Remove`)
+};
+
+export const action_replace = /** @type {(inputs: Action_ReplaceInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Replace`)
+};
+
+export const action_restore = /** @type {(inputs: Action_RestoreInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Restore`)
+};
+
+export const action_retry = /** @type {(inputs: Action_RetryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Try again`)
+};
+
+export const action_save = /** @type {(inputs: Action_SaveInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Save`)
+};
+
+export const action_sign_in = /** @type {(inputs: Action_Sign_InInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sign in`)
+};
+
+export const action_sign_out = /** @type {(inputs: Action_Sign_OutInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sign out`)
+};
+
+export const action_undo = /** @type {(inputs: Action_UndoInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Undo`)
+};
+
+export const action_update = /** @type {(inputs: Action_UpdateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Update`)
+};
+
+export const api_error_account_not_empty = /** @type {(inputs: Api_Error_Account_Not_EmptyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Your account already contains data.`)
+};
+
+export const api_error_file_too_large = /** @type {(inputs: Api_Error_File_Too_LargeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The file is too large.`)
+};
+
+export const api_error_forbidden = /** @type {(inputs: Api_Error_ForbiddenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`You aren't allowed to do that.`)
+};
+
+export const api_error_invalid_file = /** @type {(inputs: Api_Error_Invalid_FileInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The file is not a valid backup.`)
+};
+
+export const api_error_invalid_link = /** @type {(inputs: Api_Error_Invalid_LinkInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This link is invalid, has expired or has already been used.`)
+};
+
+export const api_error_invalid_request = /** @type {(inputs: Api_Error_Invalid_RequestInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The data is invalid.`)
+};
+
+export const api_error_not_found = /** @type {(inputs: Api_Error_Not_FoundInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Not found.`)
+};
+
+export const api_error_unauthorized = /** @type {(inputs: Api_Error_UnauthorizedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Please sign in again.`)
+};
+
+export const api_error_unknown_category = /** @type {(inputs: Api_Error_Unknown_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The category no longer exists.`)
+};
+
+export const api_error_unknown_user = /** @type {(inputs: Api_Error_Unknown_UserInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This user doesn't exist.`)
+};
+
+export const api_error_username_required = /** @type {(inputs: Api_Error_Username_RequiredInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Please enter a username.`)
+};
+
+export const api_error_username_taken = /** @type {(inputs: Api_Error_Username_TakenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This username is already taken.`)
+};
+
+export const app_name = /** @type {(inputs: App_NameInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expense Tracker`)
+};
+
+export const auth_password = /** @type {(inputs: Auth_PasswordInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Password`)
+};
+
+export const auth_username = /** @type {(inputs: Auth_UsernameInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Username`)
+};
+
+export const error_try_again = /** @type {(inputs: Error_Try_AgainInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`That didn't work. Please try again.`)
+};
+
+export const error_unexpected = /** @type {(inputs: Error_UnexpectedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`An unknown error occurred. Please try again.`)
+};
+
+export const error_unknown = /** @type {(inputs: Error_UnknownInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Unknown error.`)
+};
+
+export const fixed_cost_active = /** @type {(inputs: Fixed_Cost_ActiveInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Active`)
+};
+
+export const fixed_cost_add = /** @type {(inputs: Fixed_Cost_AddInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Add fixed cost`)
+};
+
+export const fixed_cost_amount = /** @type {(inputs: Fixed_Cost_AmountInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Amount`)
+};
+
+export const fixed_cost_amount_eur = /** @type {(inputs: Fixed_Cost_Amount_EurInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Amount (EUR)`)
+};
+
+export const fixed_cost_categories = /** @type {(inputs: Fixed_Cost_CategoriesInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Categories`)
+};
+
+export const fixed_cost_category = /** @type {(inputs: Fixed_Cost_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Category`)
+};
+
+export const fixed_cost_choose_category = /** @type {(inputs: Fixed_Cost_Choose_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose a category`)
+};
+
+export const fixed_cost_choose_start_date = /** @type {(inputs: Fixed_Cost_Choose_Start_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose a start date`)
+};
+
+export const fixed_cost_created = /** @type {(inputs: Fixed_Cost_CreatedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Fixed cost “${i?.name}” added`)
+};
+
+export const fixed_cost_delete_confirm = /** @type {(inputs: Fixed_Cost_Delete_ConfirmInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Do you really want to delete this fixed cost?`)
+};
+
+export const fixed_cost_delete_failed = /** @type {(inputs: Fixed_Cost_Delete_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The fixed cost couldn't be deleted. Please try again.`)
+};
+
+export const fixed_cost_edit = /** @type {(inputs: Fixed_Cost_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Edit fixed cost`)
+};
+
+export const fixed_cost_end_date = /** @type {(inputs: Fixed_Cost_End_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`End date`)
+};
+
+export const fixed_cost_end_date_hint = /** @type {(inputs: Fixed_Cost_End_Date_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Leave empty for no end date`)
+};
+
+export const fixed_cost_end_date_optional = /** @type {(inputs: Fixed_Cost_End_Date_OptionalInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`End date (optional)`)
+};
+
+export const fixed_cost_interval = /** @type {(inputs: Fixed_Cost_IntervalInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Interval`)
+};
+
+export const fixed_cost_interval_monthly = /** @type {(inputs: Fixed_Cost_Interval_MonthlyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Monthly`)
+};
+
+export const fixed_cost_interval_quarterly = /** @type {(inputs: Fixed_Cost_Interval_QuarterlyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Quarterly`)
+};
+
+export const fixed_cost_interval_yearly = /** @type {(inputs: Fixed_Cost_Interval_YearlyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Yearly`)
+};
+
+export const fixed_cost_monthly_total = /** @type {(inputs: Fixed_Cost_Monthly_TotalInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Monthly total:`)
+};
+
+export const fixed_cost_name = /** @type {(inputs: Fixed_Cost_NameInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Name`)
+};
+
+export const fixed_cost_name_placeholder = /** @type {(inputs: Fixed_Cost_Name_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`e.g. Spotify`)
+};
+
+export const fixed_cost_new = /** @type {(inputs: Fixed_Cost_NewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`New fixed cost`)
+};
+
+export const fixed_cost_not_found = /** @type {(inputs: Fixed_Cost_Not_FoundInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixed cost not found.`)
+};
+
+export const fixed_cost_per_month = /** @type {(inputs: Fixed_Cost_Per_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`/ month`)
+};
+
+export const fixed_cost_save_failed = /** @type {(inputs: Fixed_Cost_Save_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The fixed cost couldn't be saved. Please try again.`)
+};
+
+export const fixed_cost_start_date = /** @type {(inputs: Fixed_Cost_Start_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Start date`)
+};
+
+export const fixed_cost_unknown_category = /** @type {(inputs: Fixed_Cost_Unknown_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Unknown`)
+};
+
+export const fixed_cost_update_failed = /** @type {(inputs: Fixed_Cost_Update_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The fixed cost couldn't be updated. Please try again.`)
+};
+
+export const fixed_cost_updated = /** @type {(inputs: Fixed_Cost_UpdatedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixed cost updated`)
+};
+
+export const fixed_costs_title = /** @type {(inputs: Fixed_Costs_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixed costs`)
+};
+
+export const insights_distribution_title = /** @type {(inputs: Insights_Distribution_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Spending by category`)
+};
+
+export const insights_expense_count = /** @type {(inputs: Insights_Expense_CountInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {});
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} expense`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} expenses`);
+	return /** @type {LocalizedString} */ ("insights_expense_count");
+};
+
+export const insights_more = /** @type {(inputs: Insights_MoreInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`More`)
+};
+
+export const insights_newer_month = /** @type {(inputs: Insights_Newer_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Newer month`)
+};
+
+export const insights_older_month = /** @type {(inputs: Insights_Older_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Older month`)
+};
+
+export const insights_per_expense = /** @type {(inputs: Insights_Per_ExpenseInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.amount} per expense`)
+};
+
+export const insights_per_month = /** @type {(inputs: Insights_Per_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Per month`)
+};
+
+export const insights_spent_this_month = /** @type {(inputs: Insights_Spent_This_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Spent this month`)
+};
+
+export const insights_spent_today = /** @type {(inputs: Insights_Spent_TodayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Spent today`)
+};
+
+export const insights_spent_yesterday = /** @type {(inputs: Insights_Spent_YesterdayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Spent yesterday`)
+};
+
+export const insights_trend_day = /** @type {(inputs: Insights_Trend_DayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Day`)
+};
+
+export const insights_trend_spike_category = /** @type {(inputs: Insights_Trend_Spike_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Most spent on`)
+};
+
+export const insights_trend_spike_date = /** @type {(inputs: Insights_Trend_Spike_DateInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`, on ${i?.date}`)
+};
+
+export const insights_trend_title = /** @type {(inputs: Insights_Trend_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`30-day trend`)
+};
+
+export const kind_expense = /** @type {(inputs: Kind_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expense`)
+};
+
+export const kind_income = /** @type {(inputs: Kind_IncomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Income`)
+};
+
+export const link_create_account = /** @type {(inputs: Link_Create_AccountInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Create account`)
+};
+
+export const link_for_user = /** @type {(inputs: Link_For_UserInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`For`)
+};
+
+export const link_invalid = /** @type {(inputs: Link_InvalidInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This link is invalid, has expired or has already been used. Please ask for a new one.`)
+};
+
+export const link_min_password_length = /** @type {(inputs: Link_Min_Password_LengthInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`At least ${i?.count} characters`)
+};
+
+export const link_password_changed = /** @type {(inputs: Link_Password_ChangedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Password changed`)
+};
+
+export const link_password_saved_sign_in = /** @type {(inputs: Link_Password_Saved_Sign_InInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Password saved. Please sign in.`)
+};
+
+export const link_passwords_differ = /** @type {(inputs: Link_Passwords_DifferInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The passwords don't match.`)
+};
+
+export const link_repeat_password = /** @type {(inputs: Link_Repeat_PasswordInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Repeat password`)
+};
+
+export const link_set_new_password = /** @type {(inputs: Link_Set_New_PasswordInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Set a new password`)
+};
+
+export const link_title = /** @type {(inputs: Link_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Link`)
+};
+
+export const link_username_rules = /** @type {(inputs: Link_Username_RulesInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Username: 3–30 characters (letters, digits, _ and .).`)
+};
+
+export const link_welcome = /** @type {(inputs: Link_WelcomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Welcome!`)
+};
+
+export const login_failed = /** @type {(inputs: Login_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sign-in failed. Please try again.`)
+};
+
+export const login_wrong_credentials = /** @type {(inputs: Login_Wrong_CredentialsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wrong username or password.`)
+};
+
+export const offline_unavailable = /** @type {(inputs: Offline_UnavailableInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Not available offline`)
+};
+
+export const period = /** @type {(inputs: PeriodInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Period`)
+};
+
+export const period_any = /** @type {(inputs: Period_AnyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Any time`)
+};
+
+export const period_choose_list = /** @type {(inputs: Period_Choose_ListInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose the period of the transactions shown`)
+};
+
+export const period_choose_search = /** @type {(inputs: Period_Choose_SearchInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose the period to search`)
+};
+
+export const period_custom = /** @type {(inputs: Period_CustomInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Custom period`)
+};
+
+export const period_last_7_days = /** @type {(inputs: Period_Last_7_DaysInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Last 7 days`)
+};
+
+export const period_older_than_half_year = /** @type {(inputs: Period_Older_Than_Half_YearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Older than 6 months`)
+};
+
+export const period_older_than_month = /** @type {(inputs: Period_Older_Than_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Older than a month`)
+};
+
+export const period_older_than_week = /** @type {(inputs: Period_Older_Than_WeekInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Older than a week`)
+};
+
+export const period_older_than_year = /** @type {(inputs: Period_Older_Than_YearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Older than a year`)
+};
+
+export const period_today = /** @type {(inputs: Period_TodayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Today`)
+};
+
+export const period_yesterday = /** @type {(inputs: Period_YesterdayInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Yesterday`)
+};
+
+export const pwa_offline_ready = /** @type {(inputs: Pwa_Offline_ReadyInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ready to work offline`)
+};
+
+export const pwa_update_available = /** @type {(inputs: Pwa_Update_AvailableInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`A new version is available. Reload to update.`)
+};
+
+export const pwa_wait_for_sync = /** @type {(inputs: Pwa_Wait_For_SyncInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Please wait until all changes are synced.`)
+};
+
+export const sankey_amount_placeholder = /** @type {(inputs: Sankey_Amount_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Amount`)
+};
+
+export const sankey_description = /** @type {(inputs: Sankey_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Enter the month and year to export, along with income sources and fixed costs.`)
+};
+
+export const sankey_income_source_placeholder = /** @type {(inputs: Sankey_Income_Source_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Name (e.g., job)`)
+};
+
+export const sankey_income_sources = /** @type {(inputs: Sankey_Income_SourcesInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Income Sources`)
+};
+
+export const sankey_invalid_month = /** @type {(inputs: Sankey_Invalid_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Please enter a valid month (1-12) and year`)
+};
+
+export const sankey_load_failed = /** @type {(inputs: Sankey_Load_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Could not load the data for the export`)
+};
+
+export const sankey_month = /** @type {(inputs: Sankey_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Month (1-12)`)
+};
+
+export const sankey_month_placeholder = /** @type {(inputs: Sankey_Month_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`e.g., 11`)
+};
+
+export const sankey_open = /** @type {(inputs: Sankey_OpenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Summarize`)
+};
+
+export const sankey_savings_target_placeholder = /** @type {(inputs: Sankey_Savings_Target_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Name (e.g., bitcoin)`)
+};
+
+export const sankey_savings_targets = /** @type {(inputs: Sankey_Savings_TargetsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Savings Targets`)
+};
+
+export const sankey_title = /** @type {(inputs: Sankey_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Export Month as Sankey Diagram`)
+};
+
+export const sankey_year = /** @type {(inputs: Sankey_YearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Year`)
+};
+
+export const sankey_year_placeholder = /** @type {(inputs: Sankey_Year_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`e.g., 2025`)
+};
+
+export const search_clear = /** @type {(inputs: Search_ClearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Clear search`)
+};
+
+export const search_label = /** @type {(inputs: Search_LabelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Search`)
+};
+
+export const search_load_more = /** @type {(inputs: Search_Load_MoreInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Load more`)
+};
+
+export const search_no_results = /** @type {(inputs: Search_No_ResultsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`No results`)
+};
+
+export const search_offline = /** @type {(inputs: Search_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Search isn't available offline.`)
+};
+
+export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Search transactions`)
+};
+
+export const settings_export_description = /** @type {(inputs: Settings_Export_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Download all your transactions, categories and fixed costs as a file. You can import it into a new account later.`)
+};
+
+export const settings_export_failed = /** @type {(inputs: Settings_Export_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The export failed.`)
+};
+
+export const settings_import_description = /** @type {(inputs: Settings_Import_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Import an export or a backup of the old app (.db). This replaces your categories. If your account already has transactions or fixed costs, you can replace everything with the file.`)
+};
+
+export const settings_import_failed = /** @type {(inputs: Settings_Import_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The import failed. Please try again.`)
+};
+
+export const settings_import_invalid_file_detail = /** @type {(inputs: Settings_Import_Invalid_File_DetailInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`The file is not a valid backup (${i?.issue}).`)
+};
+
+export const settings_import_replace_description = /** @type {(inputs: Settings_Import_Replace_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Your account already contains data. The import deletes all transactions, fixed costs and categories and replaces them with those from the file. This can't be undone; export first if you want to keep your current data.`)
+};
+
+export const settings_import_replace_title = /** @type {(inputs: Settings_Import_Replace_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Replace all data?`)
+};
+
+export const settings_import_success = /** @type {(inputs: Settings_Import_SuccessInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Imported. Transactions: ${i?.transactions}, fixed costs: ${i?.fixedCosts}.`)
+};
+
+export const settings_language = /** @type {(inputs: Settings_LanguageInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Language`)
+};
+
+export const settings_language_description = /** @type {(inputs: Settings_Language_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Applies to this device only.`)
+};
+
+export const settings_title = /** @type {(inputs: Settings_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Settings`)
+};
+
+export const sign_out_anyway_title = /** @type {(inputs: Sign_Out_Anyway_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sign out anyway?`)
+};
+
+export const sign_out_failed = /** @type {(inputs: Sign_Out_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sign-out failed. Please try again.`)
+};
+
+export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {});
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} change hasn't been synced yet and will be lost when you sign out.`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} changes haven't been synced yet and will be lost when you sign out.`);
+	return /** @type {LocalizedString} */ ("sign_out_unsynced_changes");
+};
+
+export const sync_action_deleted = /** @type {(inputs: Sync_Action_DeletedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Deleted`)
+};
+
+export const sync_action_saved = /** @type {(inputs: Sync_Action_SavedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Saved`)
+};
+
+export const sync_later_hint = /** @type {(inputs: Sync_Later_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`will sync once you're online`)
+};
+
+export const sync_menu_failed = /** @type {(inputs: Sync_Menu_FailedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} rejected`)
+};
+
+export const sync_menu_offline = /** @type {(inputs: Sync_Menu_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Offline`)
+};
+
+export const sync_menu_offline_pending = /** @type {(inputs: Sync_Menu_Offline_PendingInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Offline · ${i?.count} pending`)
+};
+
+export const sync_menu_pending = /** @type {(inputs: Sync_Menu_PendingInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} pending`)
+};
+
+export const sync_menu_synced = /** @type {(inputs: Sync_Menu_SyncedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`All synced`)
+};
+
+export const sync_not_synced_yet = /** @type {(inputs: Sync_Not_Synced_YetInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Not synced yet`)
+};
+
+export const sync_now = /** @type {(inputs: Sync_NowInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sync now`)
+};
+
+export const sync_pending = /** @type {(inputs: Sync_PendingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Pending`)
+};
+
+export const sync_rejected = /** @type {(inputs: Sync_RejectedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Rejected`)
+};
+
+export const sync_rejected_status = /** @type {(inputs: Sync_Rejected_StatusInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`The server rejected the change (${i?.status}).`)
+};
+
+export const sync_server_unreachable = /** @type {(inputs: Sync_Server_UnreachableInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The server can't be reached right now.`)
+};
+
+export const sync_status_failed = /** @type {(inputs: Sync_Status_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Some changes were rejected.`)
+};
+
+export const sync_status_offline = /** @type {(inputs: Sync_Status_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Offline – changes will be sent later.`)
+};
+
+export const sync_status_pending = /** @type {(inputs: Sync_Status_PendingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Syncing …`)
+};
+
+export const sync_status_synced = /** @type {(inputs: Sync_Status_SyncedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`All synced.`)
+};
+
+export const sync_title = /** @type {(inputs: Sync_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sync`)
+};
+
+export const transaction_amount = /** @type {(inputs: Transaction_AmountInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Amount`)
+};
+
+export const transaction_choose_date = /** @type {(inputs: Transaction_Choose_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Choose date`)
+};
+
+export const transaction_delete_description = /** @type {(inputs: Transaction_Delete_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This can't be undone. The transaction will be removed from the history.`)
+};
+
+export const transaction_delete_title = /** @type {(inputs: Transaction_Delete_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Delete transaction?`)
+};
+
+export const transaction_description = /** @type {(inputs: Transaction_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Description`)
+};
+
+export const transaction_edit = /** @type {(inputs: Transaction_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Edit transaction`)
+};
+
+export const transaction_exceptional = /** @type {(inputs: Transaction_ExceptionalInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Exceptional`)
+};
+
+export const transaction_expense_deleted = /** @type {(inputs: Transaction_Expense_DeletedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The expense was deleted.`)
+};
+
+export const transaction_expense_saved = /** @type {(inputs: Transaction_Expense_SavedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Expense at ${i?.name} saved`)
+};
+
+export const transaction_form_incomplete = /** @type {(inputs: Transaction_Form_IncompleteInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Please select a category and enter an amount and a name.`)
+};
+
+export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The income was deleted.`)
+};
+
+export const transaction_income_saved = /** @type {(inputs: Transaction_Income_SavedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Income from ${i?.name} saved`)
+};
+
+export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`No transactions (${i?.period})`)
+};
+
+export const transaction_new = /** @type {(inputs: Transaction_NewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`New transaction`)
+};
+
+export const transaction_no_description = /** @type {(inputs: Transaction_No_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`No description`)
+};
+
+export const transaction_not_found = /** @type {(inputs: Transaction_Not_FoundInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Transaction not found.`)
+};
+
+export const transaction_remove_category = /** @type {(inputs: Transaction_Remove_CategoryInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Remove category ${i?.name}`)
+};
+
+export const transaction_updated = /** @type {(inputs: Transaction_UpdatedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Transaction updated`)
+};

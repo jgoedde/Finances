@@ -17,6 +17,7 @@ import {
     type FixedCost,
     toFixedCost,
 } from "#/features/fixed-costs/fixed-cost.ts";
+import { m } from "#/paraglide/messages.js";
 
 const EMPTY: never[] = [];
 
@@ -60,7 +61,7 @@ function byName(a: FixedCostRecord, b: FixedCostRecord): number {
  * a toast on error and refetch once settled. Fixed costs are online-only, so
  * nothing is queued.
  */
-function useOptimisticFixedCosts(errorMessage: string) {
+function useOptimisticFixedCosts(errorMessage: () => string) {
     const queryClient = useQueryClient();
     return {
         async apply(update: (list: FixedCostRecord[]) => FixedCostRecord[]) {
@@ -81,7 +82,7 @@ function useOptimisticFixedCosts(errorMessage: string) {
                     context.previous,
                 );
             }
-            toast.error(errorMessage);
+            toast.error(errorMessage());
         },
         settle: () =>
             queryClient.invalidateQueries({ queryKey: ["fixed-costs"] }),
@@ -89,9 +90,7 @@ function useOptimisticFixedCosts(errorMessage: string) {
 }
 
 export function useCreateFixedCost() {
-    const optimistic = useOptimisticFixedCosts(
-        "Die Fixkosten konnten nicht gespeichert werden. Bitte versuche es erneut.",
-    );
+    const optimistic = useOptimisticFixedCosts(m.fixed_cost_save_failed);
     return useMutation({
         mutationFn: (input: FixedCostInput) =>
             apiFetch<FixedCostRecord>("/fixed-costs", {
@@ -111,9 +110,7 @@ export function useCreateFixedCost() {
 }
 
 export function useUpdateFixedCost() {
-    const optimistic = useOptimisticFixedCosts(
-        "Die Fixkosten konnten nicht aktualisiert werden. Bitte versuche es erneut.",
-    );
+    const optimistic = useOptimisticFixedCosts(m.fixed_cost_update_failed);
     return useMutation({
         mutationFn: ({ id, patch }: { id: string; patch: FixedCostPatch }) =>
             apiFetch<FixedCostRecord>(`/fixed-costs/${id}`, {
@@ -134,9 +131,7 @@ export function useUpdateFixedCost() {
 }
 
 export function useDeleteFixedCost() {
-    const optimistic = useOptimisticFixedCosts(
-        "Die Fixkosten konnten nicht gelöscht werden. Bitte versuche es erneut.",
-    );
+    const optimistic = useOptimisticFixedCosts(m.fixed_cost_delete_failed);
     return useMutation({
         mutationFn: (id: string) =>
             apiFetch<undefined>(`/fixed-costs/${id}`, { method: "DELETE" }),

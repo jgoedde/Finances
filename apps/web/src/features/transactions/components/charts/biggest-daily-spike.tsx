@@ -4,6 +4,8 @@ import { ChartContainer } from "#/components/ui/chart.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { useSpike, useTrend } from "#/features/transactions/insight-queries.ts";
+import { m } from "#/paraglide/messages.js";
+import { getLocale } from "#/paraglide/runtime.js";
 
 export function BiggestDailySpike() {
     const trend = useTrend();
@@ -21,19 +23,22 @@ export function BiggestDailySpike() {
     return (
         <Card className={"gap-2 p-4"}>
             <div className={"flex flex-col"}>
-                <h2 className={"font-brand text-title-large"}>30-Tage Trend</h2>
+                <h2 className={"font-brand text-title-large"}>
+                    {m.insights_trend_title()}
+                </h2>
                 <div className={"text-body-medium text-on-surface-variant"}>
-                    Teuerste Ausgaben für{" "}
+                    {m.insights_trend_spike_category()}{" "}
                     <span
                         className={"font-semibold"}
                         style={{ color: textColor }}
                     >
                         {spike.categoryName}
                     </span>
-                    , am{" "}
-                    {new Date(spike.day).toLocaleDateString("de-DE", {
-                        day: "2-digit",
-                        month: "2-digit",
+                    {m.insights_trend_spike_date({
+                        date: new Date(spike.day).toLocaleDateString(
+                            getLocale(),
+                            { day: "2-digit", month: "2-digit" },
+                        ),
                     })}
                 </div>
             </div>
@@ -49,7 +54,10 @@ export function BiggestDailySpike() {
                 <div className={"w-full grow"}>
                     <ChartContainer
                         config={{
-                            day: { label: "Tag", color: "text-primary" },
+                            day: {
+                                label: m.insights_trend_day(),
+                                color: "text-primary",
+                            },
                         }}
                     >
                         <LineChart accessibilityLayer data={trend}>
@@ -64,7 +72,7 @@ export function BiggestDailySpike() {
                                 axisLine={false}
                                 tickFormatter={(v: string) => {
                                     return new Date(v).toLocaleDateString(
-                                        "de-DE",
+                                        getLocale(),
                                         {
                                             day: "numeric",
                                             month: "numeric",

@@ -11,6 +11,7 @@ export default defineConfig(
             "**/dev-dist",
             "**/coverage",
             "**/routeTree.gen.ts",
+            "**/src/paraglide",
         ],
     },
     {

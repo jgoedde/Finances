@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cn } from "#/lib/cn.ts";
+import { getLocale } from "#/paraglide/runtime.js";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
@@ -287,7 +288,9 @@ function ChartTooltipContent({
                                                         text-inverse-on-surface
                                                         tabular-nums"
                                                 >
-                                                    {item.value.toLocaleString()}
+                                                    {item.value.toLocaleString(
+                                                        getLocale(),
+                                                    )}
                                                 </span>
                                             )}
                                         </div>
