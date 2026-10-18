@@ -1,5 +1,5 @@
 import { Card } from "#/components/ui/card.tsx";
-import { PatternRow } from "#/features/overview/pattern-row.tsx";
+import { PatternRow } from "#/features/overview/patterns/pattern-row.tsx";
 import { usePatterns } from "#/features/overview/overview-queries.ts";
 import { m } from "#/paraglide/messages.js";
 

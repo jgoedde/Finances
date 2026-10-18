@@ -8,7 +8,7 @@ import { MonthHero } from "#/features/overview/month-hero.tsx";
 import { IncomeExpensesCard } from "#/features/overview/income-expenses-card.tsx";
 import { CategoryBarsCard } from "#/features/overview/category-bars-card.tsx";
 import { TrendCard } from "#/features/overview/trend-card.tsx";
-import { PatternsCard } from "#/features/overview/patterns-card.tsx";
+import { PatternsCard } from "#/features/overview/patterns/patterns-card.tsx";
 import { ExportSankeyDialog } from "#/features/sankey/export-as-sankey.tsx";
 import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
 
