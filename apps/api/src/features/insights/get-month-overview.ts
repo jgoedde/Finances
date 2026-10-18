@@ -1,14 +1,15 @@
-import { overviewQuerySchema } from "@finances/shared";
+import { monthInsightQuerySchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
+import { toTransaction } from "#/features/transactions/transactions.ts";
 import {
     buildMonthOverview,
     overviewWindow,
 } from "#/features/insights/month-overview.ts";
 
 export const getMonthOverview = factory.createHandlers(
-    validate("query", overviewQuerySchema),
+    validate("query", monthInsightQuerySchema),
     async (c) => {
         const { db, userId } = c.var;
         const { month, timeZone } = c.req.valid("query");
@@ -17,13 +18,7 @@ export const getMonthOverview = factory.createHandlers(
         const [transactions, categories, fixedCosts] = await Promise.all([
             db
                 .selectFrom("transactions")
-                .select([
-                    "date",
-                    "kind",
-                    "amount",
-                    "exceptional",
-                    "category_id",
-                ])
+                .selectAll()
                 .where("user_id", "=", userId)
                 .where("date", ">=", from)
                 .where("date", "<", to)
@@ -45,7 +40,7 @@ export const getMonthOverview = factory.createHandlers(
                 month,
                 timeZone,
                 now: Date.now(),
-                transactions,
+                transactions: transactions.map(toTransaction),
                 categories,
                 fixedCosts: fixedCosts.map(toFixedCost),
             }),

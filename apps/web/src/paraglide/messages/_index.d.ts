@@ -1584,6 +1584,104 @@ export const page_title: ((inputs: Page_TitleInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "{category}: {change} per day vs. the 3 months before" |
+*
+* @param {Pattern_DriftInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_drift: ((inputs: Pattern_DriftInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Pattern_DriftInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "{name}: {count}× in 3 months, ⌀ {average}" |
+*
+* @param {Pattern_RecurringInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_recurring: ((inputs: Pattern_RecurringInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Pattern_RecurringInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "{share} of {category} spending falls on {first}–{last}" |
+*
+* @param {Pattern_RhythmInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_rhythm: ((inputs: Pattern_RhythmInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Pattern_RhythmInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "{count} purchases under {limit} add up to {total}" |
+*
+* @param {Pattern_SmallInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_small: ((inputs: Pattern_SmallInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Pattern_SmallInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "{count} purchases under {limit} add up to {total}, many at {name}" |
+*
+* @param {Pattern_Small_TopInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_small_top: ((inputs: Pattern_Small_TopInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Pattern_Small_TopInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Last 3 months, without exceptional transactions" |
+*
+* @param {Patterns_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const patterns_hint: ((inputs?: Patterns_HintInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Patterns_HintInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Patterns" |
+*
+* @param {Patterns_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const patterns_title: ((inputs?: Patterns_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Patterns_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Period" |
 *
 * @param {PeriodInputs} inputs
@@ -2898,6 +2996,34 @@ export type Overview_Vs_TypicalInputs = {
 export type Page_TitleInputs = {
     page: NonNullable<unknown>;
 };
+export type Pattern_DriftInputs = {
+    category: NonNullable<unknown>;
+    change: NonNullable<unknown>;
+};
+export type Pattern_RecurringInputs = {
+    name: NonNullable<unknown>;
+    count: NonNullable<unknown>;
+    average: NonNullable<unknown>;
+};
+export type Pattern_RhythmInputs = {
+    share: NonNullable<unknown>;
+    category: NonNullable<unknown>;
+    first: NonNullable<unknown>;
+    last: NonNullable<unknown>;
+};
+export type Pattern_SmallInputs = {
+    count: NonNullable<unknown>;
+    limit: NonNullable<unknown>;
+    total: NonNullable<unknown>;
+};
+export type Pattern_Small_TopInputs = {
+    count: NonNullable<unknown>;
+    limit: NonNullable<unknown>;
+    total: NonNullable<unknown>;
+    name: NonNullable<unknown>;
+};
+export type Patterns_HintInputs = {};
+export type Patterns_TitleInputs = {};
 export type PeriodInputs = {};
 export type Period_AnyInputs = {};
 export type Period_Choose_SearchInputs = {};

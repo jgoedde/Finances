@@ -113,6 +113,13 @@
 /** @typedef {{}} Overview_Trend_TitleInputs */
 /** @typedef {{ change: NonNullable<unknown> }} Overview_Vs_TypicalInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
+/** @typedef {{ category: NonNullable<unknown>, change: NonNullable<unknown> }} Pattern_DriftInputs */
+/** @typedef {{ name: NonNullable<unknown>, count: NonNullable<unknown>, average: NonNullable<unknown> }} Pattern_RecurringInputs */
+/** @typedef {{ share: NonNullable<unknown>, category: NonNullable<unknown>, first: NonNullable<unknown>, last: NonNullable<unknown> }} Pattern_RhythmInputs */
+/** @typedef {{ count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown> }} Pattern_SmallInputs */
+/** @typedef {{ count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown>, name: NonNullable<unknown> }} Pattern_Small_TopInputs */
+/** @typedef {{}} Patterns_HintInputs */
+/** @typedef {{}} Patterns_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
 /** @typedef {{}} Period_Choose_SearchInputs */
@@ -652,6 +659,34 @@ export const overview_vs_typical = /** @type {(inputs: Overview_Vs_TypicalInputs
 
 export const page_title = /** @type {(inputs: Page_TitleInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`${i?.page} · Expense Tracker`)
+};
+
+export const pattern_drift = /** @type {(inputs: Pattern_DriftInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.category}: ${i?.change} per day vs. the 3 months before`)
+};
+
+export const pattern_recurring = /** @type {(inputs: Pattern_RecurringInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name}: ${i?.count}× in 3 months, ⌀ ${i?.average}`)
+};
+
+export const pattern_rhythm = /** @type {(inputs: Pattern_RhythmInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.share} of ${i?.category} spending falls on ${i?.first}–${i?.last}`)
+};
+
+export const pattern_small = /** @type {(inputs: Pattern_SmallInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} purchases under ${i?.limit} add up to ${i?.total}`)
+};
+
+export const pattern_small_top = /** @type {(inputs: Pattern_Small_TopInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} purchases under ${i?.limit} add up to ${i?.total}, many at ${i?.name}`)
+};
+
+export const patterns_hint = /** @type {(inputs: Patterns_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Last 3 months, without exceptional transactions`)
+};
+
+export const patterns_title = /** @type {(inputs: Patterns_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Patterns`)
 };
 
 export const period = /** @type {(inputs: PeriodInputs) => LocalizedString} */ () => {

@@ -60,3 +60,13 @@ export function formatDayHeading(date: Date, locale: string): string {
 export function formatLongDate(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, { dateStyle: "long" });
 }
+
+/**
+ * A weekday's short name, 0 = Monday … 6 = Sunday, e.g. "Fr".
+ */
+export function formatWeekday(weekday: number, locale: string): string {
+    // 2024-01-01 was a Monday.
+    return new Date(2024, 0, 1 + weekday).toLocaleDateString(locale, {
+        weekday: "short",
+    });
+}

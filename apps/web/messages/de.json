@@ -190,6 +190,13 @@
     "overview_vs_typical": "{change} ggü. üblich",
     "overview_trend_title": "Letzte 12 Monate",
     "overview_trend_hint": "Netto-Ausgaben ohne außergewöhnliche Geldbewegungen",
+    "patterns_title": "Muster",
+    "patterns_hint": "Letzte 3 Monate, ohne außergewöhnliche Geldbewegungen",
+    "pattern_drift": "{category}: {change} pro Tag ggü. den 3 Monaten davor",
+    "pattern_rhythm": "{share} der Ausgaben für {category} fallen auf {first}–{last}",
+    "pattern_recurring": "{name}: {count}× in 3 Monaten, ⌀ {average}",
+    "pattern_small": "{count} Käufe unter {limit} ergeben zusammen {total}",
+    "pattern_small_top": "{count} Käufe unter {limit} ergeben zusammen {total}, viele bei {name}",
 
     "sankey_open": "Zusammenfassen",
     "sankey_title": "Monat als Sankey-Diagramm exportieren",

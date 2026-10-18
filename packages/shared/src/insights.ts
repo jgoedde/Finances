@@ -9,17 +9,21 @@ function isTimeZone(timeZone: string): boolean {
     }
 }
 
-export const overviewQuerySchema = z.object({
+/**
+ * The month and time zone an insight is about.
+ */
+export const monthInsightQuerySchema = z.object({
     /**
      * `YYYY-MM`.
      */
     month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+
     /**
      * IANA time zone that decides which month and day a transaction is on.
      */
     timeZone: z.string().refine(isTimeZone),
 });
-export interface OverviewQuery {
+export interface MonthInsightQuery {
     month: string;
     timeZone: string;
 }
@@ -33,6 +37,7 @@ export interface CategoryOverview {
     categoryColor: string;
     categoryIconName: string;
     total: number;
+
     /**
      * `null` without complete months to compare with.
      */
@@ -62,16 +67,19 @@ export interface MonthOverview {
          */
         day: number | null;
         netSpending: number;
+
         /**
          * Typical month up to `day`; `null` without complete months.
          */
         typical: number | null;
     };
+
     /**
      * Monthly amounts of the fixed costs running in the month.
      */
     fixedCosts: number;
     categories: CategoryOverview[];
+
     /**
      * Net spending of the twelve months ending with this one.
      */

@@ -5,3 +5,10 @@ export * from "./insights.ts";
 export * from "./links.ts";
 export * from "./export.ts";
 export * from "./formatting.ts";
+export * from "./calendar.ts";
+export * from "./spending.ts";
+export {
+    findPatterns,
+    firstPatternMonth,
+    type Pattern,
+} from "./patterns/patterns.ts";

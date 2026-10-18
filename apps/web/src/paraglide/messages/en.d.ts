@@ -111,6 +111,13 @@ export const overview_trend_hint: (inputs: Overview_Trend_HintInputs) => Localiz
 export const overview_trend_title: (inputs: Overview_Trend_TitleInputs) => LocalizedString;
 export const overview_vs_typical: (inputs: Overview_Vs_TypicalInputs) => LocalizedString;
 export const page_title: (inputs: Page_TitleInputs) => LocalizedString;
+export const pattern_drift: (inputs: Pattern_DriftInputs) => LocalizedString;
+export const pattern_recurring: (inputs: Pattern_RecurringInputs) => LocalizedString;
+export const pattern_rhythm: (inputs: Pattern_RhythmInputs) => LocalizedString;
+export const pattern_small: (inputs: Pattern_SmallInputs) => LocalizedString;
+export const pattern_small_top: (inputs: Pattern_Small_TopInputs) => LocalizedString;
+export const patterns_hint: (inputs: Patterns_HintInputs) => LocalizedString;
+export const patterns_title: (inputs: Patterns_TitleInputs) => LocalizedString;
 export const period: (inputs: PeriodInputs) => LocalizedString;
 export const period_any: (inputs: Period_AnyInputs) => LocalizedString;
 export const period_choose_search: (inputs: Period_Choose_SearchInputs) => LocalizedString;
@@ -335,6 +342,34 @@ export type Overview_Vs_TypicalInputs = {
 export type Page_TitleInputs = {
     page: NonNullable<unknown>;
 };
+export type Pattern_DriftInputs = {
+    category: NonNullable<unknown>;
+    change: NonNullable<unknown>;
+};
+export type Pattern_RecurringInputs = {
+    name: NonNullable<unknown>;
+    count: NonNullable<unknown>;
+    average: NonNullable<unknown>;
+};
+export type Pattern_RhythmInputs = {
+    share: NonNullable<unknown>;
+    category: NonNullable<unknown>;
+    first: NonNullable<unknown>;
+    last: NonNullable<unknown>;
+};
+export type Pattern_SmallInputs = {
+    count: NonNullable<unknown>;
+    limit: NonNullable<unknown>;
+    total: NonNullable<unknown>;
+};
+export type Pattern_Small_TopInputs = {
+    count: NonNullable<unknown>;
+    limit: NonNullable<unknown>;
+    total: NonNullable<unknown>;
+    name: NonNullable<unknown>;
+};
+export type Patterns_HintInputs = {};
+export type Patterns_TitleInputs = {};
 export type PeriodInputs = {};
 export type Period_AnyInputs = {};
 export type Period_Choose_SearchInputs = {};

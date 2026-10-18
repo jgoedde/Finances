@@ -190,6 +190,13 @@
     "overview_vs_typical": "{change} vs. typical",
     "overview_trend_title": "Last 12 months",
     "overview_trend_hint": "Net spending without exceptional transactions",
+    "patterns_title": "Patterns",
+    "patterns_hint": "Last 3 months, without exceptional transactions",
+    "pattern_drift": "{category}: {change} per day vs. the 3 months before",
+    "pattern_rhythm": "{share} of {category} spending falls on {first}–{last}",
+    "pattern_recurring": "{name}: {count}× in 3 months, ⌀ {average}",
+    "pattern_small": "{count} purchases under {limit} add up to {total}",
+    "pattern_small_top": "{count} purchases under {limit} add up to {total}, many at {name}",
 
     "sankey_open": "Summarize",
     "sankey_title": "Export Month as Sankey Diagram",
