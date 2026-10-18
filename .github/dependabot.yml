@@ -22,3 +22,10 @@ updates:
           - "jgoedde"
       schedule:
           interval: "weekly"
+
+    - package-ecosystem: "docker"
+      directory: "/"
+      assignees:
+          - "jgoedde"
+      schedule:
+          interval: "weekly"
