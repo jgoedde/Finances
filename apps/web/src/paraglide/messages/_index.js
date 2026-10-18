@@ -71,20 +71,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
 /** @typedef {{}} Fixed_Cost_UpdatedInputs */
 /** @typedef {{}} Fixed_Costs_TitleInputs */
-/** @typedef {{}} Insights_Distribution_TitleInputs */
-/** @typedef {{ count: NonNullable<unknown> }} Insights_Expense_CountInputs */
-/** @typedef {{}} Insights_MoreInputs */
-/** @typedef {{}} Insights_Newer_MonthInputs */
-/** @typedef {{}} Insights_Older_MonthInputs */
-/** @typedef {{ amount: NonNullable<unknown> }} Insights_Per_ExpenseInputs */
-/** @typedef {{}} Insights_Per_MonthInputs */
-/** @typedef {{}} Insights_Spent_This_MonthInputs */
-/** @typedef {{}} Insights_Spent_TodayInputs */
-/** @typedef {{}} Insights_Spent_YesterdayInputs */
-/** @typedef {{}} Insights_Trend_DayInputs */
-/** @typedef {{}} Insights_Trend_Spike_CategoryInputs */
-/** @typedef {{ date: NonNullable<unknown> }} Insights_Trend_Spike_DateInputs */
-/** @typedef {{}} Insights_Trend_TitleInputs */
 /** @typedef {{}} Kind_ExpenseInputs */
 /** @typedef {{}} Kind_IncomeInputs */
 /** @typedef {{}} Link_Create_AccountInputs */
@@ -110,6 +96,24 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Nav_OverviewInputs */
 /** @typedef {{}} Nav_TransactionsInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
+/** @typedef {{}} Overview_Categories_EmptyInputs */
+/** @typedef {{}} Overview_Categories_HintInputs */
+/** @typedef {{}} Overview_Categories_TitleInputs */
+/** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
+/** @typedef {{}} Overview_ExpensesInputs */
+/** @typedef {{}} Overview_Fixed_CostsInputs */
+/** @typedef {{}} Overview_IncomeInputs */
+/** @typedef {{}} Overview_Net_SpendingInputs */
+/** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Above_DayInputs */
+/** @typedef {{ percent: NonNullable<unknown> }} Overview_Pace_Above_MonthInputs */
+/** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Below_DayInputs */
+/** @typedef {{ percent: NonNullable<unknown> }} Overview_Pace_Below_MonthInputs */
+/** @typedef {{}} Overview_Pace_EvenInputs */
+/** @typedef {{}} Overview_Pace_NoneInputs */
+/** @typedef {{}} Overview_Total_OutflowInputs */
+/** @typedef {{}} Overview_Trend_HintInputs */
+/** @typedef {{}} Overview_Trend_TitleInputs */
+/** @typedef {{ change: NonNullable<unknown> }} Overview_Vs_TypicalInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
@@ -1166,203 +1170,6 @@ export const fixed_costs_title = /** @type {((inputs?: Fixed_Costs_TitleInputs, 
 /**
 * | output |
 * | --- |
-* | "Spending by category" |
-*
-* @param {Insights_Distribution_TitleInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_distribution_title = /** @type {((inputs?: Insights_Distribution_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Distribution_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_distribution_title(inputs)
-	return __en.insights_distribution_title(inputs)
-});
-/**
-* | countPlural | output |
-* | --- | --- |
-* | "one" | "{count} expense" |
-* | "other" | "{count} expenses" |
-*
-* @param {Insights_Expense_CountInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_expense_count = /** @type {((inputs: Insights_Expense_CountInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Expense_CountInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_expense_count(inputs)
-	return __en.insights_expense_count(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "More" |
-*
-* @param {Insights_MoreInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_more = /** @type {((inputs?: Insights_MoreInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_MoreInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_more(inputs)
-	return __en.insights_more(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Newer month" |
-*
-* @param {Insights_Newer_MonthInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_newer_month = /** @type {((inputs?: Insights_Newer_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Newer_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_newer_month(inputs)
-	return __en.insights_newer_month(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Older month" |
-*
-* @param {Insights_Older_MonthInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_older_month = /** @type {((inputs?: Insights_Older_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Older_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_older_month(inputs)
-	return __en.insights_older_month(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "{amount} per expense" |
-*
-* @param {Insights_Per_ExpenseInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_per_expense = /** @type {((inputs: Insights_Per_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Per_ExpenseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_per_expense(inputs)
-	return __en.insights_per_expense(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Per month" |
-*
-* @param {Insights_Per_MonthInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_per_month = /** @type {((inputs?: Insights_Per_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Per_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_per_month(inputs)
-	return __en.insights_per_month(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Spent this month" |
-*
-* @param {Insights_Spent_This_MonthInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_spent_this_month = /** @type {((inputs?: Insights_Spent_This_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Spent_This_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_spent_this_month(inputs)
-	return __en.insights_spent_this_month(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Spent today" |
-*
-* @param {Insights_Spent_TodayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_spent_today = /** @type {((inputs?: Insights_Spent_TodayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Spent_TodayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_spent_today(inputs)
-	return __en.insights_spent_today(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Spent yesterday" |
-*
-* @param {Insights_Spent_YesterdayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_spent_yesterday = /** @type {((inputs?: Insights_Spent_YesterdayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Spent_YesterdayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_spent_yesterday(inputs)
-	return __en.insights_spent_yesterday(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Day" |
-*
-* @param {Insights_Trend_DayInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_trend_day = /** @type {((inputs?: Insights_Trend_DayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Trend_DayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_trend_day(inputs)
-	return __en.insights_trend_day(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Most spent on" |
-*
-* @param {Insights_Trend_Spike_CategoryInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_trend_spike_category = /** @type {((inputs?: Insights_Trend_Spike_CategoryInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Trend_Spike_CategoryInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_trend_spike_category(inputs)
-	return __en.insights_trend_spike_category(inputs)
-});
-/**
-* | output |
-* | --- |
-* | ", on {date}" |
-*
-* @param {Insights_Trend_Spike_DateInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_trend_spike_date = /** @type {((inputs: Insights_Trend_Spike_DateInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Trend_Spike_DateInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_trend_spike_date(inputs)
-	return __en.insights_trend_spike_date(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "30-day trend" |
-*
-* @param {Insights_Trend_TitleInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const insights_trend_title = /** @type {((inputs?: Insights_Trend_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Insights_Trend_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.insights_trend_title(inputs)
-	return __en.insights_trend_title(inputs)
-});
-/**
-* | output |
-* | --- |
 * | "Expense" |
 *
 * @param {Kind_ExpenseInputs} inputs
@@ -1709,6 +1516,259 @@ export const offline_unavailable = /** @type {((inputs?: Offline_UnavailableInpu
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.offline_unavailable(inputs)
 	return __en.offline_unavailable(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No spending this month" |
+*
+* @param {Overview_Categories_EmptyInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_categories_empty = /** @type {((inputs?: Overview_Categories_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Categories_EmptyInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_categories_empty(inputs)
+	return __en.overview_categories_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Line: typical month" |
+*
+* @param {Overview_Categories_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_categories_hint = /** @type {((inputs?: Overview_Categories_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Categories_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_categories_hint(inputs)
+	return __en.overview_categories_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Categories" |
+*
+* @param {Overview_Categories_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_categories_title = /** @type {((inputs?: Overview_Categories_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Categories_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_categories_title(inputs)
+	return __en.overview_categories_title(inputs)
+});
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "Incl. {count} exceptional transaction: {amount}" |
+* | "other" | "Incl. {count} exceptional transactions: {amount}" |
+*
+* @param {Overview_ExceptionalInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_exceptional = /** @type {((inputs: Overview_ExceptionalInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_ExceptionalInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_exceptional(inputs)
+	return __en.overview_exceptional(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Expenses" |
+*
+* @param {Overview_ExpensesInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_expenses = /** @type {((inputs?: Overview_ExpensesInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_ExpensesInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_expenses(inputs)
+	return __en.overview_expenses(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "+ Fixed costs" |
+*
+* @param {Overview_Fixed_CostsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_fixed_costs = /** @type {((inputs?: Overview_Fixed_CostsInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Fixed_CostsInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_fixed_costs(inputs)
+	return __en.overview_fixed_costs(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Income" |
+*
+* @param {Overview_IncomeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_income = /** @type {((inputs?: Overview_IncomeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_IncomeInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_income(inputs)
+	return __en.overview_income(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Net spending" |
+*
+* @param {Overview_Net_SpendingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_net_spending = /** @type {((inputs?: Overview_Net_SpendingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Net_SpendingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_net_spending(inputs)
+	return __en.overview_net_spending(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{percent} above a typical month by day {day}" |
+*
+* @param {Overview_Pace_Above_DayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_above_day = /** @type {((inputs: Overview_Pace_Above_DayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_Above_DayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_above_day(inputs)
+	return __en.overview_pace_above_day(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{percent} above a typical month" |
+*
+* @param {Overview_Pace_Above_MonthInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_above_month = /** @type {((inputs: Overview_Pace_Above_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_Above_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_above_month(inputs)
+	return __en.overview_pace_above_month(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{percent} below a typical month by day {day}" |
+*
+* @param {Overview_Pace_Below_DayInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_below_day = /** @type {((inputs: Overview_Pace_Below_DayInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_Below_DayInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_below_day(inputs)
+	return __en.overview_pace_below_day(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{percent} below a typical month" |
+*
+* @param {Overview_Pace_Below_MonthInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_below_month = /** @type {((inputs: Overview_Pace_Below_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_Below_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_below_month(inputs)
+	return __en.overview_pace_below_month(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Like a typical month" |
+*
+* @param {Overview_Pace_EvenInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_even = /** @type {((inputs?: Overview_Pace_EvenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_EvenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_even(inputs)
+	return __en.overview_pace_even(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Not enough history for a typical month yet" |
+*
+* @param {Overview_Pace_NoneInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_pace_none = /** @type {((inputs?: Overview_Pace_NoneInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Pace_NoneInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_pace_none(inputs)
+	return __en.overview_pace_none(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "= Total outflow" |
+*
+* @param {Overview_Total_OutflowInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_total_outflow = /** @type {((inputs?: Overview_Total_OutflowInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Total_OutflowInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_total_outflow(inputs)
+	return __en.overview_total_outflow(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Net spending without exceptional transactions" |
+*
+* @param {Overview_Trend_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_trend_hint = /** @type {((inputs?: Overview_Trend_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Trend_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_trend_hint(inputs)
+	return __en.overview_trend_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Last 12 months" |
+*
+* @param {Overview_Trend_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_trend_title = /** @type {((inputs?: Overview_Trend_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Trend_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_trend_title(inputs)
+	return __en.overview_trend_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{change} vs. typical" |
+*
+* @param {Overview_Vs_TypicalInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_vs_typical = /** @type {((inputs: Overview_Vs_TypicalInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Vs_TypicalInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_vs_typical(inputs)
+	return __en.overview_vs_typical(inputs)
 });
 /**
 * | output |

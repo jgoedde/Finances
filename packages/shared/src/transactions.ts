@@ -34,7 +34,9 @@ export const transactionSchema = transactionInputSchema.extend({
 export type Transaction = z.infer<typeof transactionSchema>;
 
 /** The transaction's share of net spending: expenses add, incomes subtract. */
-export function netSpending(transaction: Transaction): number {
+export function netSpending(
+    transaction: Pick<Transaction, "kind" | "amount">,
+): number {
     return transaction.kind === "expense"
         ? transaction.amount
         : -transaction.amount;

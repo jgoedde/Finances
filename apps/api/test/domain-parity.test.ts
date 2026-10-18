@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
     matchesListQuery,
-    netSpending,
     type Transaction,
     type TransactionListQuery,
 } from "@finances/shared";
@@ -12,7 +11,7 @@ import {
     transactionBody,
 } from "./test-app.ts";
 
-// The API filters and sums in SQL; the shared functions are the reference.
+// The API filters in SQL; the shared function is the reference.
 
 const fixtures: Transaction[] = [
     tx({ id: "a", date: 1000, amount: 10.1, categoryId: "1" }),
@@ -77,19 +76,4 @@ describe("domain parity", () => {
             expected.map((t) => t.id).sort(),
         );
     });
-
-    it.each(queries.filter((q) => !q.categoryId && !q.excludeExceptional))(
-        "reports spent as the sum of netSpending: %o",
-        async (q) => {
-            const { total } = await json<{ total: number }>(
-                alice(`/api/insights/spent?${toSearchParams(q).toString()}`),
-            );
-
-            const sum = fixtures
-                .filter((t) => matchesListQuery(t, q))
-                .reduce((total, t) => total + netSpending(t), 0);
-            // Income alone is reported as a positive amount.
-            expect(total).toBeCloseTo(q.kind === "income" ? -sum : sum, 2);
-        },
-    );
 });

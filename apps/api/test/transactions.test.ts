@@ -100,27 +100,6 @@ describe("transactions", () => {
         expect(negative.status).toBe(400);
     });
 
-    it("reports net spending and income separately", async () => {
-        await alice("/api/transactions/e1", {
-            method: "PUT",
-            body: transactionBody({ amount: 30 }),
-        });
-        await alice("/api/transactions/i1", {
-            method: "PUT",
-            body: transactionBody({ kind: "income", amount: 100 }),
-        });
-        const spent = (kind?: string) =>
-            json(
-                alice(
-                    `/api/insights/spent?from=0&to=${Date.now() + 1000}${kind ? `&kind=${kind}` : ""}`,
-                ),
-            );
-
-        expect(await spent()).toEqual({ total: -70 });
-        expect(await spent("expense")).toEqual({ total: 30 });
-        expect(await spent("income")).toEqual({ total: 100 });
-    });
-
     describe("search", () => {
         function search(query: string, client: Client = alice) {
             return json<TransactionSearchPage>(

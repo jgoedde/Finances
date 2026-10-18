@@ -160,15 +160,14 @@
     "transaction_list_empty": "Keine Geldbewegungen für {period}",
     "transaction_list_today": "Heute",
 
-    "insights_spent_today": "Heute ausgegeben",
-    "insights_spent_this_month": "Diesen Monat ausgegeben",
-    "insights_spent_yesterday": "Gestern ausgegeben",
-    "insights_trend_title": "30-Tage Trend",
-    "insights_trend_spike_category": "Teuerste Ausgaben für",
-    "insights_trend_spike_date": ", am {date}",
-    "insights_trend_day": "Tag",
-    "insights_more": "Mehr",
-    "insights_expense_count": [
+    "overview_net_spending": "Netto-Ausgaben",
+    "overview_pace_above_day": "{percent} über einem üblichen Monat bis Tag {day}",
+    "overview_pace_below_day": "{percent} unter einem üblichen Monat bis Tag {day}",
+    "overview_pace_above_month": "{percent} über einem üblichen Monat",
+    "overview_pace_below_month": "{percent} unter einem üblichen Monat",
+    "overview_pace_even": "Wie ein üblicher Monat",
+    "overview_pace_none": "Noch zu wenig Verlauf für einen üblichen Monat",
+    "overview_exceptional": [
         {
             "declarations": [
                 "input count",
@@ -176,16 +175,21 @@
             ],
             "selectors": ["countPlural"],
             "match": {
-                "countPlural=one": "{count} Ausgabe",
-                "countPlural=other": "{count} Ausgaben"
+                "countPlural=one": "Inkl. {count} außergewöhnlicher Geldbewegung: {amount}",
+                "countPlural=other": "Inkl. {count} außergewöhnlicher Geldbewegungen: {amount}"
             }
         }
     ],
-    "insights_per_expense": "{amount} pro Ausgabe",
-    "insights_distribution_title": "Ausgabenverteilung",
-    "insights_per_month": "Pro Monat",
-    "insights_newer_month": "Neuerer Monat",
-    "insights_older_month": "Älterer Monat",
+    "overview_fixed_costs": "+ Fixkosten",
+    "overview_total_outflow": "= Gesamtabfluss",
+    "overview_income": "Einnahmen",
+    "overview_expenses": "Ausgaben",
+    "overview_categories_title": "Kategorien",
+    "overview_categories_hint": "Strich: üblicher Monat",
+    "overview_categories_empty": "Keine Ausgaben in diesem Monat",
+    "overview_vs_typical": "{change} ggü. üblich",
+    "overview_trend_title": "Letzte 12 Monate",
+    "overview_trend_hint": "Netto-Ausgaben ohne außergewöhnliche Geldbewegungen",
 
     "sankey_open": "Zusammenfassen",
     "sankey_title": "Monat als Sankey-Diagramm exportieren",

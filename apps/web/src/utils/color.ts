@@ -3,7 +3,6 @@ import {
     hexFromArgb,
     TonalPalette,
 } from "@material/material-color-utilities";
-import { useColorScheme } from "@mantine/hooks";
 
 export function convertHexToTonal(
     inputColorHex: string,
@@ -29,16 +28,4 @@ export function convertHexToTonal(
             onContainer: onContainerDark,
         },
     };
-}
-
-export function useTonalColor(
-    inputColorHex: string,
-    tone: { dark: number; light: number },
-) {
-    const theme = useColorScheme();
-    const isDark = theme === "dark";
-    const argb = argbFromHex(inputColorHex);
-    const tonalPalette = TonalPalette.fromInt(argb);
-
-    return hexFromArgb(tonalPalette.tone(isDark ? tone.dark : tone.light));
 }
