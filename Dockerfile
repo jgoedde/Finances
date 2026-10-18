@@ -3,7 +3,7 @@
 #  - install the API's production dependencies
 #  - run the API, which also serves the built client (same origin)
 
-FROM node:24-slim AS build
+FROM node:26-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/web/package.json apps/web/
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build -w @finances/web
 
 
-FROM node:24-slim AS deps
+FROM node:26-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/web/package.json apps/web/
@@ -23,7 +23,7 @@ COPY packages/shared/package.json packages/shared/
 RUN npm ci --omit=dev --workspace=@finances/api --no-audit --no-fund --no-progress
 
 
-FROM node:24-slim
+FROM node:26-slim
 ENV NODE_ENV=production \
     PORT=3000 \
     DATABASE_PATH=/data/finances.db \
