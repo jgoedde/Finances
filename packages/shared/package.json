@@ -15,9 +15,11 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "lodash": "^4.18.1",
         "zod": "^4.6.7"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.26",
         "typescript": "~6.0.3",
         "vitest": "^5.0.4"
     }

@@ -115,6 +115,13 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Overview_Trend_TitleInputs */
 /** @typedef {{ change: NonNullable<unknown> }} Overview_Vs_TypicalInputs */
 /** @typedef {{ page: NonNullable<unknown> }} Page_TitleInputs */
+/** @typedef {{ category: NonNullable<unknown>, change: NonNullable<unknown> }} Pattern_DriftInputs */
+/** @typedef {{ name: NonNullable<unknown>, count: NonNullable<unknown>, average: NonNullable<unknown> }} Pattern_RecurringInputs */
+/** @typedef {{ share: NonNullable<unknown>, category: NonNullable<unknown>, first: NonNullable<unknown>, last: NonNullable<unknown> }} Pattern_RhythmInputs */
+/** @typedef {{ count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown> }} Pattern_SmallInputs */
+/** @typedef {{ count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown>, name: NonNullable<unknown> }} Pattern_Small_TopInputs */
+/** @typedef {{}} Patterns_HintInputs */
+/** @typedef {{}} Patterns_TitleInputs */
 /** @typedef {{}} PeriodInputs */
 /** @typedef {{}} Period_AnyInputs */
 /** @typedef {{}} Period_Choose_SearchInputs */
@@ -1783,6 +1790,104 @@ export const page_title = /** @type {((inputs: Page_TitleInputs, options?: { loc
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.page_title(inputs)
 	return __en.page_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{category}: {change} per day vs. the 3 months before" |
+*
+* @param {Pattern_DriftInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_drift = /** @type {((inputs: Pattern_DriftInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pattern_DriftInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.pattern_drift(inputs)
+	return __en.pattern_drift(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{name}: {count}× in 3 months, ⌀ {average}" |
+*
+* @param {Pattern_RecurringInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_recurring = /** @type {((inputs: Pattern_RecurringInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pattern_RecurringInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.pattern_recurring(inputs)
+	return __en.pattern_recurring(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{share} of {category} spending falls on {first}–{last}" |
+*
+* @param {Pattern_RhythmInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_rhythm = /** @type {((inputs: Pattern_RhythmInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pattern_RhythmInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.pattern_rhythm(inputs)
+	return __en.pattern_rhythm(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{count} purchases under {limit} add up to {total}" |
+*
+* @param {Pattern_SmallInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_small = /** @type {((inputs: Pattern_SmallInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pattern_SmallInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.pattern_small(inputs)
+	return __en.pattern_small(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{count} purchases under {limit} add up to {total}, many at {name}" |
+*
+* @param {Pattern_Small_TopInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const pattern_small_top = /** @type {((inputs: Pattern_Small_TopInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pattern_Small_TopInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.pattern_small_top(inputs)
+	return __en.pattern_small_top(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Last 3 months, without exceptional transactions" |
+*
+* @param {Patterns_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const patterns_hint = /** @type {((inputs?: Patterns_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Patterns_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.patterns_hint(inputs)
+	return __en.patterns_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Patterns" |
+*
+* @param {Patterns_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const patterns_title = /** @type {((inputs?: Patterns_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Patterns_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.patterns_title(inputs)
+	return __en.patterns_title(inputs)
 });
 /**
 * | output |

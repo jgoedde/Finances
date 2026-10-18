@@ -62,5 +62,9 @@ export function DestinationLink({
                     {children}
                 </Link>
             );
+        default:
+            throw new Error(
+                `unreachable error - type ${String(id satisfies never)}`,
+            );
     }
 }

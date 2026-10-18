@@ -8,6 +8,7 @@ import { MonthHero } from "#/features/overview/month-hero.tsx";
 import { IncomeExpensesCard } from "#/features/overview/income-expenses-card.tsx";
 import { CategoryBarsCard } from "#/features/overview/category-bars-card.tsx";
 import { TrendCard } from "#/features/overview/trend-card.tsx";
+import { PatternsCard } from "#/features/overview/patterns-card.tsx";
 import { ExportSankeyDialog } from "#/features/sankey/export-as-sankey.tsx";
 import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
 
@@ -16,7 +17,8 @@ export const Route = createFileRoute("/_authed/_shell/")({
 });
 
 function RouteComponent() {
-    const overview = useMonthOverview(useSelectedMonth());
+    const month = useSelectedMonth();
+    const overview = useMonthOverview(month);
 
     return (
         <div className={"flex min-h-dvh flex-col"}>
@@ -40,6 +42,7 @@ function RouteComponent() {
                             <CategoryBarsCard overview={overview} />
                         </div>
                         <div className={"flex min-w-0 flex-col gap-3"}>
+                            <PatternsCard month={month} />
                             <TrendCard overview={overview} />
                             <div className={"flex justify-center py-2"}>
                                 <ExportSankeyDialog />

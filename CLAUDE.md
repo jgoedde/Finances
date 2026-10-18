@@ -69,6 +69,8 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 
 - Imports use the `#/` alias (pointing at the workspace's `src/`) and include the explicit `.ts`/`.tsx` extension. The alias is Node's subpath import, defined by `imports` in each app's `package.json` (not tsconfig `paths`, which Node and Vitest ignore), so it works in Node, Vite, Vitest and TypeScript alike.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
+- Every `switch` is exhaustive: end it with ``default: throw new Error(`unreachable error - type ${String(value satisfies never)}`)``, so a new union member fails to compile (`String()` because lint rejects `never` in a template literal).
+- Separate a JSDoc block from the code above it with one empty line (not needed directly after an opening `{`).
 - Knip is strict (`includeEntryExports`; it only ignores the generated `src/paraglide/` and the message-format plugin, which only `project.inlang` references): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.
 
 ## Agent skills

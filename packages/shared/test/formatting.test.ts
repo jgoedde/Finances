@@ -6,6 +6,7 @@ import {
     formatMonthYear,
     formatPercent,
     formatShortMonth,
+    formatWeekday,
 } from "#/formatting.ts";
 
 // Intl separates numbers and units with no-break spaces.
@@ -40,5 +41,11 @@ describe("formatting", () => {
         expect(formatDayHeading(date, "en")).toBe("Sun, October 18");
         expect(formatLongDate(date, "de")).toBe("18. Oktober 2026");
         expect(formatLongDate(date, "en")).toBe("October 18, 2026");
+    });
+
+    it("formats weekdays from Monday", () => {
+        expect(formatWeekday(0, "de")).toBe("Mo");
+        expect(formatWeekday(4, "en")).toBe("Fri");
+        expect(formatWeekday(6, "de")).toBe("So");
     });
 });
