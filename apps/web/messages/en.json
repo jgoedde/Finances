@@ -183,7 +183,6 @@
     "transaction_list_empty": "No transactions ({period})",
     "transaction_list_loading": "Loading transactions",
     "transaction_list_offline": "Offline – this month hasn't been loaded yet",
-    "transaction_list_today": "Today",
 
     "overview_net_spending": "Net spending",
     "overview_pace_above_day": "{percent} above a typical month by day {day}",

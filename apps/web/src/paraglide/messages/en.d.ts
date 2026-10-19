@@ -218,7 +218,6 @@ export const transaction_incomes_saved: (inputs: Transaction_Incomes_SavedInputs
 export const transaction_list_empty: (inputs: Transaction_List_EmptyInputs) => LocalizedString;
 export const transaction_list_loading: (inputs: Transaction_List_LoadingInputs) => LocalizedString;
 export const transaction_list_offline: (inputs: Transaction_List_OfflineInputs) => LocalizedString;
-export const transaction_list_today: (inputs: Transaction_List_TodayInputs) => LocalizedString;
 export const transaction_more: (inputs: Transaction_MoreInputs) => LocalizedString;
 export const transaction_new: (inputs: Transaction_NewInputs) => LocalizedString;
 export const transaction_no_description: (inputs: Transaction_No_DescriptionInputs) => LocalizedString;
@@ -533,7 +532,6 @@ export type Transaction_List_EmptyInputs = {
 };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
-export type Transaction_List_TodayInputs = {};
 export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
