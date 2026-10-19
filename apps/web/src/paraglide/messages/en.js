@@ -23,7 +23,6 @@
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
-/** @typedef {{}} Api_Error_Invalid_FileInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
@@ -159,6 +158,7 @@
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
 /** @typedef {{}} Settings_Import_FailedInputs */
+/** @typedef {{}} Settings_Import_Invalid_FileInputs */
 /** @typedef {{ issue: NonNullable<unknown> }} Settings_Import_Invalid_File_DetailInputs */
 /** @typedef {{}} Settings_Import_Replace_DescriptionInputs */
 /** @typedef {{}} Settings_Import_Replace_TitleInputs */
@@ -325,10 +325,6 @@ export const api_error_file_too_large = /** @type {(inputs: Api_Error_File_Too_L
 
 export const api_error_forbidden = /** @type {(inputs: Api_Error_ForbiddenInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`You aren't allowed to do that.`)
-};
-
-export const api_error_invalid_file = /** @type {(inputs: Api_Error_Invalid_FileInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`The file is not a valid backup.`)
 };
 
 export const api_error_invalid_link = /** @type {(inputs: Api_Error_Invalid_LinkInputs) => LocalizedString} */ () => {
@@ -866,11 +862,15 @@ export const settings_export_failed = /** @type {(inputs: Settings_Export_Failed
 };
 
 export const settings_import_description = /** @type {(inputs: Settings_Import_DescriptionInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Import an export or a backup of the old app (.db). This replaces your categories. If your account already has transactions or fixed costs, you can replace everything with the file.`)
+	return /** @type {LocalizedString} */ (`Import an export. This replaces your categories. If your account already has transactions or fixed costs, you can replace everything with the file.`)
 };
 
 export const settings_import_failed = /** @type {(inputs: Settings_Import_FailedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`The import failed. Please try again.`)
+};
+
+export const settings_import_invalid_file = /** @type {(inputs: Settings_Import_Invalid_FileInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The file is not a valid backup.`)
 };
 
 export const settings_import_invalid_file_detail = /** @type {(inputs: Settings_Import_Invalid_File_DetailInputs) => LocalizedString} */ (i) => {

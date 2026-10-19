@@ -25,7 +25,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
-/** @typedef {{}} Api_Error_Invalid_FileInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
@@ -161,6 +160,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
 /** @typedef {{}} Settings_Import_FailedInputs */
+/** @typedef {{}} Settings_Import_Invalid_FileInputs */
 /** @typedef {{ issue: NonNullable<unknown> }} Settings_Import_Invalid_File_DetailInputs */
 /** @typedef {{}} Settings_Import_Replace_DescriptionInputs */
 /** @typedef {{}} Settings_Import_Replace_TitleInputs */
@@ -557,20 +557,6 @@ export const api_error_forbidden = /** @type {((inputs?: Api_Error_ForbiddenInpu
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.api_error_forbidden(inputs)
 	return __en.api_error_forbidden(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "The file is not a valid backup." |
-*
-* @param {Api_Error_Invalid_FileInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const api_error_invalid_file = /** @type {((inputs?: Api_Error_Invalid_FileInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Invalid_FileInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.api_error_invalid_file(inputs)
-	return __en.api_error_invalid_file(inputs)
 });
 /**
 * | output |
@@ -2438,7 +2424,7 @@ export const settings_export_failed = /** @type {((inputs?: Settings_Export_Fail
 /**
 * | output |
 * | --- |
-* | "Import an export or a backup of the old app (.db). This replaces your categories. If your account already has transactions or fixed costs, you can replace ev..." |
+* | "Import an export. This replaces your categories. If your account already has transactions or fixed costs, you can replace everything with the file." |
 *
 * @param {Settings_Import_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -2462,6 +2448,20 @@ export const settings_import_failed = /** @type {((inputs?: Settings_Import_Fail
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.settings_import_failed(inputs)
 	return __en.settings_import_failed(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "The file is not a valid backup." |
+*
+* @param {Settings_Import_Invalid_FileInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_import_invalid_file = /** @type {((inputs?: Settings_Import_Invalid_FileInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Import_Invalid_FileInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_import_invalid_file(inputs)
+	return __en.settings_import_invalid_file(inputs)
 });
 /**
 * | output |

@@ -62,7 +62,7 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 - Request/response schemas live in `packages/shared` (zod) and are shared with the client.
 - `db/migrate.ts` first lets better-auth migrate its own tables, then runs our Kysely migrations from `db/migrations/`. Append new migrations; never edit applied ones.
 - Every app table is keyed by `(user_id, id)`, and every query must filter by the session's `userId`. Transactions are written with an idempotent `PUT /api/transactions/:id` (create or replace). Deletes leave a tombstone so late replays of a deleted id are ignored.
-- Export/import (`features/data-transfer/`): `GET /api/data/export` returns the versioned `DataExport` JSON (`packages/shared/src/export.ts`); `POST /api/data/import` takes that JSON or a legacy sql.js `.db` file (detected by its SQLite header and converted in `legacy-database.ts`) and only imports into an account without transactions and fixed costs. Changing the export shape means bumping `version` and still accepting old versions.
+- Export/import (`features/data-transfer/`): `GET /api/data/export` returns the versioned `DataExport` JSON (`packages/shared/src/export.ts`); `POST /api/data/import` takes that JSON and only imports into an account without transactions and fixed costs. Changing the export shape means bumping `version` and still accepting old versions.
 - Users are created only server-side (invites via the operator CLI, admin bootstrap from `ADMIN_USERNAME`/`ADMIN_PASSWORD`); public sign-up is disabled. In production `main.ts` also serves the built client from `STATIC_DIR` (`http/static.ts`). New users get the default categories via a better-auth `databaseHooks` hook.
 
 ### Conventions
