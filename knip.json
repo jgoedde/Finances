@@ -1,5 +1,5 @@
 {
-    "$schema": "https://unpkg.com/knip@5/schema.json",
+    "$schema": "https://unpkg.com/knip@6/schema.json",
     "ignoreExportsUsedInFile": {
         "interface": true,
         "type": true
@@ -7,5 +7,5 @@
     "tags": ["-lintignore"],
     "includeEntryExports": true,
     "ignore": ["apps/web/src/paraglide/**"],
-    "ignoreDependencies": ["@inlang/plugin-message-format"]
+    "ignoreDependencies": ["@inlang/plugin-message-format", "@types/recharts"]
 }
