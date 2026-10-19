@@ -18,6 +18,12 @@ export interface AuthConfig {
      * Extra origins allowed to call auth endpoints, e.g. a LAN address.
      */
     trustedOrigins?: string[];
+
+    /**
+     * Password hashing; defaults to better-auth's scrypt. Tests pass a cheap
+     * one: scrypt costs ~75 ms per sign-up and per sign-in.
+     */
+    password?: NonNullable<BetterAuthOptions["emailAndPassword"]>["password"];
 }
 
 export function authOptions(db: DB, config: AuthConfig) {
@@ -33,6 +39,7 @@ export function authOptions(db: DB, config: AuthConfig) {
             // bootstrap, both of which create them server-side.
             disableSignUp: true,
             minPasswordLength: 8,
+            password: config.password,
         },
         session: {
             // A PWA may stay offline for days; keep sessions alive long.
