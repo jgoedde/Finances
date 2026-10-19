@@ -92,7 +92,7 @@ export async function createTestApp({
 export function transactionBody(overrides: Record<string, unknown> = {}) {
     return JSON.stringify({
         date: Date.now(),
-        name: "Brot",
+        counterparty: "Brot",
         description: null,
         kind: "expense",
         amount: 3.5,

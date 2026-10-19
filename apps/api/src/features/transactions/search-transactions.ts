@@ -27,7 +27,7 @@ export const searchTransactions = factory.createHandlers(
             const pattern = toLikePattern(term);
             select = select.where((eb) =>
                 eb.or([
-                    sql<boolean>`name LIKE ${pattern} ESCAPE '\\'`,
+                    sql<boolean>`counterparty LIKE ${pattern} ESCAPE '\\'`,
                     sql<boolean>`description LIKE ${pattern} ESCAPE '\\'`,
                 ]),
             );

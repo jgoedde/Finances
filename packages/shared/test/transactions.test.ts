@@ -10,7 +10,7 @@ function transaction(overrides: Partial<Transaction> = {}): Transaction {
     return {
         id: "t1",
         date: 1000,
-        name: "Bäcker",
+        counterparty: "Bäcker",
         description: null,
         kind: "expense",
         amount: 12.5,

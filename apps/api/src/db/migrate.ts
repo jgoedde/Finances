@@ -4,10 +4,12 @@ import type { DB } from "./database.ts";
 import type { BetterAuthOptions } from "better-auth";
 import { logger } from "../log.ts";
 import { up as appTables } from "./migrations/0001-app-tables.ts";
+import { up as transactionCounterparty } from "./migrations/0002-transaction-counterparty.ts";
 
 // Append new migrations here. Never edit or reorder applied ones.
 const migrations: Record<string, Migration> = {
     "0001-app-tables": { up: appTables },
+    "0002-transaction-counterparty": { up: transactionCounterparty },
 };
 
 /**

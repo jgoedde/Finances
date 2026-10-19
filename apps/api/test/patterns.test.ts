@@ -31,7 +31,7 @@ describe("patterns", () => {
             method: "PUT",
             body: transactionBody({
                 date: Date.parse(`${day}T12:00:00Z`),
-                name: `Purchase ${id}`,
+                counterparty: `Purchase ${id}`,
                 amount: 20,
                 ...overrides,
             }),
@@ -54,24 +54,29 @@ describe("patterns", () => {
     }
 
     it("finds nothing in little data", async () => {
-        await add("2026-10-02", { name: "Lidl" });
-        await add("2026-10-03", { name: "Lidl", amount: 5 });
+        await add("2026-10-02", { counterparty: "Lidl" });
+        await add("2026-10-03", { counterparty: "Lidl", amount: 5 });
         await add("2026-09-12", { amount: 300 });
 
         expect(await patterns()).toEqual([]);
     });
 
-    it("finds names bought from again and again", async () => {
+    it("finds counterparties bought from again and again", async () => {
         for (const day of ["2026-08-04", "2026-09-01", "2026-09-15"]) {
-            await add(day, { name: "Lidl", amount: 12 });
+            await add(day, { counterparty: "Lidl", amount: 12 });
         }
-        await add("2026-10-06", { name: " lidl", amount: 16 });
+        await add("2026-10-06", { counterparty: " lidl", amount: 16 });
         for (const day of ["2026-08-05", "2026-09-02", "2026-10-07"]) {
-            await add(day, { name: "Rewe" });
+            await add(day, { counterparty: "Rewe" });
         }
 
         expect(await patterns()).toEqual([
-            { kind: "recurringName", name: "Lidl", count: 4, average: 13 },
+            {
+                kind: "recurringCounterparty",
+                counterparty: "Lidl",
+                count: 4,
+                average: 13,
+            },
         ]);
     });
 
@@ -105,7 +110,7 @@ describe("patterns", () => {
         const days = ["2026-08-03", "2026-08-11", "2026-08-19", "2026-08-27"];
         for (let i = 0; i < 12; i++) {
             await add(days[i % 4]!, {
-                name: i < 5 ? "Bäcker" : `Kiosk ${i}`,
+                counterparty: i < 5 ? "Bäcker" : `Kiosk ${i}`,
                 amount: 5,
             });
         }
@@ -117,7 +122,7 @@ describe("patterns", () => {
                 limit: 10,
                 count: 12,
                 total: 60,
-                topName: "Bäcker",
+                topCounterparty: "Bäcker",
             },
         ]);
     });
@@ -158,13 +163,22 @@ describe("patterns", () => {
             "2026-06-15",
             "2026-06-22",
         ]) {
-            await add(day, { name: "Kiosk" });
+            await add(day, { counterparty: "Kiosk" });
         }
 
-        expect(ofKind(await patterns("2026-07"), "recurringName")).toEqual([
-            { kind: "recurringName", name: "Kiosk", count: 4, average: 20 },
+        expect(
+            ofKind(await patterns("2026-07"), "recurringCounterparty"),
+        ).toEqual([
+            {
+                kind: "recurringCounterparty",
+                counterparty: "Kiosk",
+                count: 4,
+                average: 20,
+            },
         ]);
-        expect(ofKind(await patterns("2026-10"), "recurringName")).toEqual([]);
+        expect(
+            ofKind(await patterns("2026-10"), "recurringCounterparty"),
+        ).toEqual([]);
     });
 
     it("leaves out exceptional transactions", async () => {
@@ -174,7 +188,7 @@ describe("patterns", () => {
             "2026-10-09",
             "2026-10-13",
         ]) {
-            await add(day, { name: "Car", exceptional: true });
+            await add(day, { counterparty: "Car", exceptional: true });
         }
 
         expect(await patterns()).toEqual([]);

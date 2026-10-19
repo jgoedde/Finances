@@ -3,7 +3,7 @@ import { SparklesIcon } from "lucide-react";
 import Fuse from "fuse.js";
 import {
     type Counterparty,
-    nameKey,
+    counterpartyKey,
     rankCounterparties,
     type TransactionKind,
 } from "@finances/shared";
@@ -51,7 +51,7 @@ interface CounterpartyFieldProps {
 }
 
 /**
- * The transaction's counterparty (its `name`): where the money went or
+ * The transaction's counterparty: where the money went or
  * where it came from, with suggestions from recent transactions.
  */
 export function CounterpartyField({
@@ -77,11 +77,11 @@ export function CounterpartyField({
         if (value.trim() === "") {
             return rankCounterparties(counterparties, now, SUGGESTION_COUNT);
         }
-        const key = nameKey({ name: value });
+        const key = counterpartyKey(value);
         return fuse
             .search(value)
             .map((result) => result.item)
-            .filter((it) => nameKey(it) !== key && it !== match)
+            .filter((it) => counterpartyKey(it.name) !== key && it !== match)
             .slice(0, SUGGESTION_COUNT);
     }, [value, counterparties, fuse, match]);
 

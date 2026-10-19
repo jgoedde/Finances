@@ -1,5 +1,5 @@
 import { bodyLimit } from "hono/body-limit";
-import { dataExportSchema } from "@finances/shared";
+import { dataImportSchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { logger } from "#/log.ts";
 import {
@@ -38,7 +38,7 @@ export const importData = factory.createHandlers(
             return c.json({ error: "unreadable_file" }, 422);
         }
 
-        const parsed = dataExportSchema.safeParse(upload);
+        const parsed = dataImportSchema.safeParse(upload);
         if (!parsed.success) {
             logger.warn(
                 { userId, issues: parsed.error.issues.length },

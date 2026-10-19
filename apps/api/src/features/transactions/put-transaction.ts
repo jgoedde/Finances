@@ -46,7 +46,7 @@ export const putTransaction = factory.createHandlers(
 
             const values = {
                 date: input.date,
-                name: input.name,
+                counterparty: input.counterparty,
                 description: input.description,
                 kind: input.kind,
                 amount: input.amount,

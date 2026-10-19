@@ -4,18 +4,23 @@ import { PatternRowLayout } from "#/features/overview/patterns/pattern-row-layou
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
-interface RecurringNameRowProps {
-    pattern: Extract<Pattern, { kind: "recurringName" }>;
+interface RecurringCounterpartyRowProps {
+    pattern: Extract<Pattern, { kind: "recurringCounterparty" }>;
 }
 
 /**
- * "Lidl: 14× in 3 months, ⌀ 9 €", opening a search for the name.
+ * "Lidl: 14× in 3 months, ⌀ 9 €", opening a search for the counterparty.
  */
-export function RecurringNameRow({ pattern }: RecurringNameRowProps) {
+export function RecurringCounterpartyRow({
+    pattern,
+}: RecurringCounterpartyRowProps) {
     return (
-        <PatternRowLayout icon={<Repeat2 />} search={{ q: pattern.name }}>
+        <PatternRowLayout
+            icon={<Repeat2 />}
+            search={{ q: pattern.counterparty }}
+        >
             {m.pattern_recurring({
-                name: pattern.name,
+                name: pattern.counterparty,
                 count: pattern.count,
                 average: formatCurrency(pattern.average, getLocale()),
             })}

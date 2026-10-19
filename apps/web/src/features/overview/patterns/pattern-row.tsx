@@ -1,6 +1,6 @@
 import type { Pattern } from "@finances/shared";
 import { CategoryDriftRow } from "#/features/overview/patterns/category-drift-row.tsx";
-import { RecurringNameRow } from "#/features/overview/patterns/recurring-name-row.tsx";
+import { RecurringCounterpartyRow } from "#/features/overview/patterns/recurring-counterparty-row.tsx";
 import { SmallPurchasesRow } from "#/features/overview/patterns/small-purchases-row.tsx";
 import { WeekdayRhythmRow } from "#/features/overview/patterns/weekday-rhythm-row.tsx";
 
@@ -17,8 +17,8 @@ export function PatternRow({ pattern }: PatternRowProps) {
             return <CategoryDriftRow pattern={pattern} />;
         case "weekdayRhythm":
             return <WeekdayRhythmRow pattern={pattern} />;
-        case "recurringName":
-            return <RecurringNameRow pattern={pattern} />;
+        case "recurringCounterparty":
+            return <RecurringCounterpartyRow pattern={pattern} />;
         case "smallPurchases":
             return <SmallPurchasesRow pattern={pattern} />;
         default:
