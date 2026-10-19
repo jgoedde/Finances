@@ -3111,7 +3111,7 @@ export const transaction_split_description: ((inputs?: Transaction_Split_Descrip
 /**
 * | output |
 * | --- |
-* | "Remaining for the main category: {amount}" |
+* | "Stays in {category}: {amount}" |
 *
 * @param {Transaction_Split_RemainderInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -3120,6 +3120,20 @@ export const transaction_split_description: ((inputs?: Transaction_Split_Descrip
 export const transaction_split_remainder: ((inputs: Transaction_Split_RemainderInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_RemainderInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Stays in the main category: {amount}" |
+*
+* @param {Transaction_Split_Remainder_UncategorizedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remainder_uncategorized: ((inputs: Transaction_Split_Remainder_UncategorizedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_Remainder_UncategorizedInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3139,7 +3153,7 @@ export const transaction_split_remove: ((inputs?: Transaction_Split_RemoveInputs
 /**
 * | output |
 * | --- |
-* | "The parts must add up to less than the total." |
+* | "Nothing is left for the main category. Remove a part or lower its amount." |
 *
 * @param {Transaction_Split_Too_MuchInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -3468,6 +3482,10 @@ export type Transaction_Not_FoundInputs = {};
 export type Transaction_SplitInputs = {};
 export type Transaction_Split_DescriptionInputs = {};
 export type Transaction_Split_RemainderInputs = {
+    category: NonNullable<unknown>;
+    amount: NonNullable<unknown>;
+};
+export type Transaction_Split_Remainder_UncategorizedInputs = {
     amount: NonNullable<unknown>;
 };
 export type Transaction_Split_RemoveInputs = {};

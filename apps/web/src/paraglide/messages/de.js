@@ -222,7 +222,8 @@
 /** @typedef {{}} Transaction_Not_FoundInputs */
 /** @typedef {{}} Transaction_SplitInputs */
 /** @typedef {{}} Transaction_Split_DescriptionInputs */
-/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{ category: NonNullable<unknown>, amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_Remainder_UncategorizedInputs */
 /** @typedef {{}} Transaction_Split_RemoveInputs */
 /** @typedef {{}} Transaction_Split_Too_MuchInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
@@ -1122,7 +1123,11 @@ export const transaction_split_description = /** @type {(inputs: Transaction_Spl
 };
 
 export const transaction_split_remainder = /** @type {(inputs: Transaction_Split_RemainderInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Rest für die Hauptkategorie: ${i?.amount}`)
+	return /** @type {LocalizedString} */ (`Bleibt in ${i?.category}: ${i?.amount}`)
+};
+
+export const transaction_split_remainder_uncategorized = /** @type {(inputs: Transaction_Split_Remainder_UncategorizedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Bleibt in der Hauptkategorie: ${i?.amount}`)
 };
 
 export const transaction_split_remove = /** @type {(inputs: Transaction_Split_RemoveInputs) => LocalizedString} */ () => {
@@ -1130,7 +1135,7 @@ export const transaction_split_remove = /** @type {(inputs: Transaction_Split_Re
 };
 
 export const transaction_split_too_much = /** @type {(inputs: Transaction_Split_Too_MuchInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Die Teile müssen zusammen weniger als der Gesamtbetrag ergeben.`)
+	return /** @type {LocalizedString} */ (`Für die Hauptkategorie bleibt nichts übrig. Entferne einen Teil oder verringere seinen Betrag.`)
 };
 
 export const transaction_updated = /** @type {(inputs: Transaction_UpdatedInputs) => LocalizedString} */ () => {

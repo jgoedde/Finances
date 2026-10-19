@@ -456,6 +456,36 @@ export function TransactionForm({
 
                 {canSplit && (
                     <div className={"flex flex-col gap-3"}>
+                        {/* Above the parts: the main transaction keeps what they leave. */}
+                        {parts.length > 0 && remainder !== undefined && (
+                            <p
+                                className={cn(
+                                    "px-4 text-body-small",
+                                    isRemainderInvalid
+                                        ? "text-error"
+                                        : "text-on-surface-variant",
+                                )}
+                            >
+                                {isRemainderInvalid
+                                    ? m.transaction_split_too_much()
+                                    : selectedCategory
+                                      ? m.transaction_split_remainder({
+                                            category: selectedCategory.name,
+                                            amount: formatCurrency(
+                                                remainder,
+                                                getLocale(),
+                                            ),
+                                        })
+                                      : m.transaction_split_remainder_uncategorized(
+                                            {
+                                                amount: formatCurrency(
+                                                    remainder,
+                                                    getLocale(),
+                                                ),
+                                            },
+                                        )}
+                            </p>
+                        )}
                         {parts.map((part) => (
                             <SplitPartRow
                                 key={part.key}
@@ -470,25 +500,6 @@ export function TransactionForm({
                                 }
                             />
                         ))}
-                        {parts.length > 0 && remainder !== undefined && (
-                            <p
-                                className={cn(
-                                    "px-4 text-body-small",
-                                    isRemainderInvalid
-                                        ? "text-error"
-                                        : "text-on-surface-variant",
-                                )}
-                            >
-                                {isRemainderInvalid
-                                    ? m.transaction_split_too_much()
-                                    : m.transaction_split_remainder({
-                                          amount: formatCurrency(
-                                              remainder,
-                                              getLocale(),
-                                          ),
-                                      })}
-                            </p>
-                        )}
                         <Button
                             type={"button"}
                             variant={"text"}

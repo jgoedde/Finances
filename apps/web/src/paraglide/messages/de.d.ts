@@ -221,6 +221,7 @@ export const transaction_not_found: (inputs: Transaction_Not_FoundInputs) => Loc
 export const transaction_split: (inputs: Transaction_SplitInputs) => LocalizedString;
 export const transaction_split_description: (inputs: Transaction_Split_DescriptionInputs) => LocalizedString;
 export const transaction_split_remainder: (inputs: Transaction_Split_RemainderInputs) => LocalizedString;
+export const transaction_split_remainder_uncategorized: (inputs: Transaction_Split_Remainder_UncategorizedInputs) => LocalizedString;
 export const transaction_split_remove: (inputs: Transaction_Split_RemoveInputs) => LocalizedString;
 export const transaction_split_too_much: (inputs: Transaction_Split_Too_MuchInputs) => LocalizedString;
 export const transaction_updated: (inputs: Transaction_UpdatedInputs) => LocalizedString;
@@ -528,6 +529,10 @@ export type Transaction_Not_FoundInputs = {};
 export type Transaction_SplitInputs = {};
 export type Transaction_Split_DescriptionInputs = {};
 export type Transaction_Split_RemainderInputs = {
+    category: NonNullable<unknown>;
+    amount: NonNullable<unknown>;
+};
+export type Transaction_Split_Remainder_UncategorizedInputs = {
     amount: NonNullable<unknown>;
 };
 export type Transaction_Split_RemoveInputs = {};

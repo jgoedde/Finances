@@ -224,7 +224,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_Not_FoundInputs */
 /** @typedef {{}} Transaction_SplitInputs */
 /** @typedef {{}} Transaction_Split_DescriptionInputs */
-/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{ category: NonNullable<unknown>, amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_Remainder_UncategorizedInputs */
 /** @typedef {{}} Transaction_Split_RemoveInputs */
 /** @typedef {{}} Transaction_Split_Too_MuchInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
@@ -3343,7 +3344,7 @@ export const transaction_split_description = /** @type {((inputs?: Transaction_S
 /**
 * | output |
 * | --- |
-* | "Remaining for the main category: {amount}" |
+* | "Stays in {category}: {amount}" |
 *
 * @param {Transaction_Split_RemainderInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -3353,6 +3354,20 @@ export const transaction_split_remainder = /** @type {((inputs: Transaction_Spli
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_split_remainder(inputs)
 	return __en.transaction_split_remainder(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Stays in the main category: {amount}" |
+*
+* @param {Transaction_Split_Remainder_UncategorizedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remainder_uncategorized = /** @type {((inputs: Transaction_Split_Remainder_UncategorizedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_Remainder_UncategorizedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_remainder_uncategorized(inputs)
+	return __en.transaction_split_remainder_uncategorized(inputs)
 });
 /**
 * | output |
@@ -3371,7 +3386,7 @@ export const transaction_split_remove = /** @type {((inputs?: Transaction_Split_
 /**
 * | output |
 * | --- |
-* | "The parts must add up to less than the total." |
+* | "Nothing is left for the main category. Remove a part or lower its amount." |
 *
 * @param {Transaction_Split_Too_MuchInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
