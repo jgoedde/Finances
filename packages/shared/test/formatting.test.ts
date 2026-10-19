@@ -38,12 +38,52 @@ describe("formatting", () => {
     });
 
     it("formats days", () => {
-        expect(formatDayHeading(date, "de")).toBe("So., 18. Oktober");
-        expect(formatDayHeading(date, "en")).toBe("Sun, October 18");
         expect(formatLongDate(date, "de")).toBe("18. Oktober 2026");
         expect(formatLongDate(date, "en")).toBe("October 18, 2026");
         expect(formatShortDate(date, "de")).toBe("18. Okt.");
         expect(formatShortDate(date, "en")).toBe("Oct 18");
+    });
+
+    it("formats recent day headings relative to today", () => {
+        const daysAgo = (days: number) => new Date(2026, 9, 18 - days);
+        expect(formatDayHeading(daysAgo(0), date, "de")).toBe(
+            "Heute · 18. Oktober",
+        );
+        expect(formatDayHeading(daysAgo(1), date, "de")).toBe(
+            "Gestern · 17. Oktober",
+        );
+        expect(formatDayHeading(daysAgo(1), date, "en")).toBe(
+            "Yesterday · October 17",
+        );
+        expect(formatDayHeading(daysAgo(2), date, "de")).toBe(
+            "Freitag · 16. Oktober",
+        );
+        expect(formatDayHeading(daysAgo(6), date, "en")).toBe(
+            "Monday · October 12",
+        );
+    });
+
+    it("formats older and future day headings as dates", () => {
+        expect(formatDayHeading(new Date(2026, 9, 11), date, "de")).toBe(
+            "So., 11. Oktober",
+        );
+        expect(formatDayHeading(new Date(2026, 9, 11), date, "en")).toBe(
+            "Sun, October 11",
+        );
+        expect(formatDayHeading(new Date(2026, 9, 19), date, "de")).toBe(
+            "Mo., 19. Oktober",
+        );
+    });
+
+    it("counts calendar days across a DST switch", () => {
+        // Clocks go back on 2026-10-25 in Europe.
+        expect(
+            formatDayHeading(
+                new Date(2026, 9, 25, 23),
+                new Date(2026, 9, 26, 0, 30),
+                "en",
+            ),
+        ).toBe("Yesterday · October 25");
     });
 
     it("formats weekdays from Monday", () => {

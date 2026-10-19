@@ -220,7 +220,6 @@
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
-/** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
@@ -1117,10 +1116,6 @@ export const transaction_list_loading = /** @type {(inputs: Transaction_List_Loa
 
 export const transaction_list_offline = /** @type {(inputs: Transaction_List_OfflineInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Offline – dieser Monat wurde noch nicht geladen`)
-};
-
-export const transaction_list_today = /** @type {(inputs: Transaction_List_TodayInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Heute`)
 };
 
 export const transaction_more = /** @type {(inputs: Transaction_MoreInputs) => LocalizedString} */ () => {

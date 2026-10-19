@@ -43,15 +43,51 @@ export function formatShortMonth(date: Date, locale: string): string {
     return date.toLocaleDateString(locale, { month: "short" });
 }
 
+// Days back from today (today included) whose heading is relative.
+const RELATIVE_DAYS = 7;
+
+function startOfDay(date: Date): number {
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+    ).getTime();
+}
+
 /**
- * A day heading, e.g. "Sa., 18. Oktober".
+ * A day heading. Within the last week relative, then the date: "Heute · 18.
+ * Oktober", "Gestern · 17. Oktober", "Donnerstag · 16. Oktober"; older and
+ * future days e.g. "Sa., 11. Oktober".
  */
-export function formatDayHeading(date: Date, locale: string): string {
-    return date.toLocaleDateString(locale, {
-        weekday: "short",
+export function formatDayHeading(
+    date: Date,
+    today: Date,
+    locale: string,
+): string {
+    // Rounded, since a day across a DST switch is 23 or 25 hours.
+    const daysAgo = Math.round(
+        (startOfDay(today) - startOfDay(date)) / (24 * 60 * 60 * 1000),
+    );
+    if (daysAgo < 0 || daysAgo >= RELATIVE_DAYS) {
+        return date.toLocaleDateString(locale, {
+            weekday: "short",
+            day: "2-digit",
+            month: "long",
+        });
+    }
+
+    const relative =
+        daysAgo < 2
+            ? new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(
+                  -daysAgo,
+                  "day",
+              )
+            : date.toLocaleDateString(locale, { weekday: "long" });
+    const day = date.toLocaleDateString(locale, {
         day: "2-digit",
         month: "long",
     });
+    return `${relative.charAt(0).toLocaleUpperCase(locale)}${relative.slice(1)} · ${day}`;
 }
 
 /**

@@ -183,7 +183,6 @@
     "transaction_list_empty": "Keine Geldbewegungen für {period}",
     "transaction_list_loading": "Geldbewegungen werden geladen",
     "transaction_list_offline": "Offline – dieser Monat wurde noch nicht geladen",
-    "transaction_list_today": "Heute",
 
     "overview_net_spending": "Netto-Ausgaben",
     "overview_pace_above_day": "{percent} über einem üblichen Monat bis Tag {day}",
