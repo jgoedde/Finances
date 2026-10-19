@@ -13,7 +13,9 @@ export const transactionIdSchema = z
     .max(64)
     .regex(/^[A-Za-z0-9_-]+$/);
 
-export const transactionInputSchema = z.object({
+export const transactionSchema = z.object({
+    id: transactionIdSchema,
+
     /**
      * Unix timestamp in milliseconds.
      */
@@ -34,12 +36,10 @@ export const transactionInputSchema = z.object({
      */
     exceptional: z.boolean(),
 });
-export type TransactionInput = z.infer<typeof transactionInputSchema>;
-
-export const transactionSchema = transactionInputSchema.extend({
-    id: transactionIdSchema,
-});
 export type Transaction = z.infer<typeof transactionSchema>;
+
+export const transactionInputSchema = transactionSchema.omit({ id: true });
+export type TransactionInput = z.infer<typeof transactionInputSchema>;
 
 /**
  * The transaction's share of net spending: expenses add, incomes subtract.
@@ -63,13 +63,7 @@ export const transactionListQuerySchema = z.object({
     kind: transactionKindSchema.optional(),
     excludeExceptional: booleanQuery.optional(),
 });
-export interface TransactionListQuery {
-    from: number;
-    to: number;
-    categoryId?: string;
-    kind?: TransactionKind;
-    excludeExceptional?: boolean;
-}
+export type TransactionListQuery = z.infer<typeof transactionListQuerySchema>;
 
 /**
  * Whether the transaction is part of the list the query asks for.
@@ -111,16 +105,17 @@ export const transactionSearchQuerySchema = z.object({
     /**
      * Only transactions before this Unix timestamp in milliseconds.
      */
-    olderThan: z.coerce.number().int().optional(),
+    olderThan: z.coerce.number<number>().int().optional(),
     cursor: searchCursorSchema.optional(),
-    limit: z.coerce.number().int().min(1).max(100).default(50),
+    limit: z.coerce.number<number>().int().min(1).max(100).default(50),
 });
-export interface TransactionSearchQuery {
-    q?: string;
-    olderThan?: number;
-    cursor?: string;
-    limit?: number;
-}
+
+/**
+ * What the client sends: the cursor as a string and the limit optional.
+ */
+export type TransactionSearchQuery = z.input<
+    typeof transactionSearchQuerySchema
+>;
 
 /**
  * One page of search results, newest first.

@@ -23,10 +23,7 @@ export const monthInsightQuerySchema = z.object({
      */
     timeZone: z.string().refine(isTimeZone),
 });
-export interface MonthInsightQuery {
-    month: string;
-    timeZone: string;
-}
+export type MonthInsightQuery = z.infer<typeof monthInsightQuerySchema>;
 
 /**
  * A category's net spending in the month, next to its typical month.
