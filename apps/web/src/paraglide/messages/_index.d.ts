@@ -2312,6 +2312,48 @@ export const settings_language_description: ((inputs?: Settings_Language_Descrip
 /**
 * | output |
 * | --- |
+* | "Save location" |
+*
+* @param {Settings_LocationInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location: ((inputs?: Settings_LocationInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Settings_LocationInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Location access is blocked. Allow it for this app in your browser or system settings." |
+*
+* @param {Settings_Location_DeniedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location_denied: ((inputs?: Settings_Location_DeniedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Settings_Location_DeniedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "New transactions save where this device was when you created them. Applies to this device only." |
+*
+* @param {Settings_Location_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location_description: ((inputs?: Settings_Location_DescriptionInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Settings_Location_DescriptionInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Settings" |
 *
 * @param {Settings_TitleInputs} inputs
@@ -3466,6 +3508,9 @@ export type Settings_Import_SuccessInputs = {
 };
 export type Settings_LanguageInputs = {};
 export type Settings_Language_DescriptionInputs = {};
+export type Settings_LocationInputs = {};
+export type Settings_Location_DeniedInputs = {};
+export type Settings_Location_DescriptionInputs = {};
 export type Settings_TitleInputs = {};
 export type Sign_Out_Anyway_TitleInputs = {};
 export type Sign_Out_FailedInputs = {};

@@ -167,6 +167,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ transactions: NonNullable<unknown>, fixedCosts: NonNullable<unknown> }} Settings_Import_SuccessInputs */
 /** @typedef {{}} Settings_LanguageInputs */
 /** @typedef {{}} Settings_Language_DescriptionInputs */
+/** @typedef {{}} Settings_LocationInputs */
+/** @typedef {{}} Settings_Location_DeniedInputs */
+/** @typedef {{}} Settings_Location_DescriptionInputs */
 /** @typedef {{}} Settings_TitleInputs */
 /** @typedef {{}} Sign_Out_Anyway_TitleInputs */
 /** @typedef {{}} Sign_Out_FailedInputs */
@@ -2546,6 +2549,48 @@ export const settings_language_description = /** @type {((inputs?: Settings_Lang
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.settings_language_description(inputs)
 	return __en.settings_language_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Save location" |
+*
+* @param {Settings_LocationInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location = /** @type {((inputs?: Settings_LocationInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_LocationInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_location(inputs)
+	return __en.settings_location(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Location access is blocked. Allow it for this app in your browser or system settings." |
+*
+* @param {Settings_Location_DeniedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location_denied = /** @type {((inputs?: Settings_Location_DeniedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Location_DeniedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_location_denied(inputs)
+	return __en.settings_location_denied(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "New transactions save where this device was when you created them. Applies to this device only." |
+*
+* @param {Settings_Location_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_location_description = /** @type {((inputs?: Settings_Location_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Location_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_location_description(inputs)
+	return __en.settings_location_description(inputs)
 });
 /**
 * | output |

@@ -9,7 +9,7 @@ import { transactionSchema } from "./transactions.ts";
  */
 const dataExportSchema = z.object({
     format: z.literal("finances-export"),
-    version: z.literal(2),
+    version: z.literal(3),
     exportedAt: z.iso.datetime(),
     categories: z.array(categorySchema),
     fixedCostCategories: z.array(fixedCostCategorySchema),
@@ -19,13 +19,21 @@ const dataExportSchema = z.object({
 export type DataExport = z.infer<typeof dataExportSchema>;
 
 /**
- * Version 1: transactions had a `name` instead of a `counterparty`.
+ * Version 2: transactions had no `location`.
+ */
+const dataExportV2Schema = dataExportSchema.extend({
+    version: z.literal(2),
+    transactions: z.array(transactionSchema.omit({ location: true })),
+});
+
+/**
+ * Version 1: transactions also had a `name` instead of a `counterparty`.
  */
 const dataExportV1Schema = dataExportSchema.extend({
     version: z.literal(1),
     transactions: z.array(
         transactionSchema
-            .omit({ counterparty: true })
+            .omit({ counterparty: true, location: true })
             .extend({ name: transactionSchema.shape.counterparty }),
     ),
 });
@@ -35,21 +43,35 @@ const dataExportV1Schema = dataExportSchema.extend({
  * one.
  */
 export const dataImportSchema = z
-    .discriminatedUnion("version", [dataExportV1Schema, dataExportSchema])
+    .discriminatedUnion("version", [
+        dataExportV1Schema,
+        dataExportV2Schema,
+        dataExportSchema,
+    ])
     .transform((data): DataExport => {
         switch (data.version) {
             case 1:
                 return {
                     ...data,
-                    version: 2,
+                    version: 3,
                     transactions: data.transactions.map(
                         ({ name, ...transaction }) => ({
                             ...transaction,
                             counterparty: name,
+                            location: null,
                         }),
                     ),
                 };
             case 2:
+                return {
+                    ...data,
+                    version: 3,
+                    transactions: data.transactions.map((transaction) => ({
+                        ...transaction,
+                        location: null,
+                    })),
+                };
+            case 3:
                 return data;
             default:
                 throw new Error(

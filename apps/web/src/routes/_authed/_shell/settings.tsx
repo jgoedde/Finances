@@ -7,6 +7,7 @@ import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
+import { Switch } from "#/components/ui/switch.tsx";
 import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { ApiError } from "#/api/api-client.ts";
 import { apiErrorCode, apiErrorMessage } from "#/api/api-errors.ts";
@@ -18,6 +19,7 @@ import {
 import { m } from "#/paraglide/messages.js";
 import { getLocale, type Locale, locales } from "#/paraglide/runtime.js";
 import { chooseLocale } from "#/i18n.ts";
+import { useSaveLocation } from "#/features/transactions/device-location.ts";
 
 export const Route = createFileRoute("/_authed/_shell/settings")({
     head: () => ({
@@ -68,6 +70,12 @@ function RouteComponent() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isExporting, setIsExporting] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
+    const [savesLocation, setSavesLocation] = useSaveLocation();
+    const [isLocationDenied, setIsLocationDenied] = useState(false);
+
+    async function handleSaveLocationChange(enabled: boolean) {
+        setIsLocationDenied(!(await setSavesLocation(enabled)));
+    }
 
     async function handleExport() {
         setIsExporting(true);
@@ -148,6 +156,34 @@ function RouteComponent() {
                         value={getLocale()}
                         onChange={(locale) => chooseLocale(locale as Locale)}
                     />
+                </Card>
+
+                <Card className={"gap-3 p-4"}>
+                    <div className="flex items-center justify-between gap-4">
+                        <h2 className="font-brand text-title-large">
+                            <label htmlFor={"save-location"}>
+                                {m.settings_location()}
+                            </label>
+                        </h2>
+                        <Switch
+                            id={"save-location"}
+                            checked={savesLocation}
+                            onCheckedChange={(enabled) =>
+                                void handleSaveLocationChange(enabled)
+                            }
+                        />
+                    </div>
+                    <p className="text-body-medium text-on-surface-variant">
+                        {m.settings_location_description()}
+                    </p>
+                    {isLocationDenied && (
+                        <p
+                            role={"alert"}
+                            className="text-body-medium text-error"
+                        >
+                            {m.settings_location_denied()}
+                        </p>
+                    )}
                 </Card>
 
                 <Card className={"gap-3 p-4"}>

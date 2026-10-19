@@ -15,6 +15,27 @@ export function toTransaction(row: TransactionsTable): Transaction {
         currency: row.currency,
         categoryId: row.category_id,
         exceptional: row.exceptional === 1,
+        location:
+            row.location_lat !== null &&
+            row.location_lng !== null &&
+            row.location_accuracy !== null
+                ? {
+                      lat: row.location_lat,
+                      lng: row.location_lng,
+                      accuracy: row.location_accuracy,
+                  }
+                : null,
+    };
+}
+
+/**
+ * The location as stored in the `location_*` columns.
+ */
+export function toLocationColumns(location: Transaction["location"]) {
+    return {
+        location_lat: location?.lat ?? null,
+        location_lng: location?.lng ?? null,
+        location_accuracy: location?.accuracy ?? null,
     };
 }
 
