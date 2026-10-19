@@ -16,7 +16,9 @@ export interface PendingChange {
 export const TRANSACTION_MUTATION_KEY = ["transactions"] as const;
 
 /**
- * The queued changes, oldest first.
+ * The queued changes, oldest first. Saves queued by older versions, whose
+ * transactions have a `name` instead of a `counterparty`, are left out:
+ * merged into the lists, they would break whatever reads the counterparty.
  */
 export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
     return queryClient
@@ -26,7 +28,12 @@ export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
             action: mutation.options
                 .mutationKey?.[1] as PendingChange["action"],
             transaction: mutation.state.variables as Transaction,
-        }));
+        }))
+        .filter(
+            (change) =>
+                change.action === "delete" ||
+                "counterparty" in change.transaction,
+        );
 }
 
 /**
