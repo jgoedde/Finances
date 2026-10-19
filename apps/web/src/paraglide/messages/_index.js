@@ -217,6 +217,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_LoadingInputs */
+/** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
@@ -3242,6 +3244,34 @@ export const transaction_list_empty = /** @type {((inputs: Transaction_List_Empt
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_list_empty(inputs)
 	return __en.transaction_list_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Loading transactions" |
+*
+* @param {Transaction_List_LoadingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_loading = /** @type {((inputs?: Transaction_List_LoadingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_LoadingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_loading(inputs)
+	return __en.transaction_list_loading(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Offline – this month hasn't been loaded yet" |
+*
+* @param {Transaction_List_OfflineInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_offline = /** @type {((inputs?: Transaction_List_OfflineInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_OfflineInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_offline(inputs)
+	return __en.transaction_list_offline(inputs)
 });
 /**
 * | output |

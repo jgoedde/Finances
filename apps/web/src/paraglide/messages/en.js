@@ -215,6 +215,8 @@
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_LoadingInputs */
+/** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
@@ -1092,6 +1094,14 @@ export const transaction_incomes_saved = /** @type {(inputs: Transaction_Incomes
 
 export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`No transactions (${i?.period})`)
+};
+
+export const transaction_list_loading = /** @type {(inputs: Transaction_List_LoadingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Loading transactions`)
+};
+
+export const transaction_list_offline = /** @type {(inputs: Transaction_List_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Offline – this month hasn't been loaded yet`)
 };
 
 export const transaction_list_today = /** @type {(inputs: Transaction_List_TodayInputs) => LocalizedString} */ () => {

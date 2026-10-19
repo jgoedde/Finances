@@ -178,6 +178,8 @@
     "transaction_split_too_much": "Für die Hauptkategorie bleibt nichts übrig. Entferne einen Teil oder verringere seinen Betrag.",
     "transaction_no_description": "Keine Beschreibung",
     "transaction_list_empty": "Keine Geldbewegungen für {period}",
+    "transaction_list_loading": "Geldbewegungen werden geladen",
+    "transaction_list_offline": "Offline – dieser Monat wurde noch nicht geladen",
     "transaction_list_today": "Heute",
 
     "overview_net_spending": "Netto-Ausgaben",

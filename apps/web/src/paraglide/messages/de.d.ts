@@ -213,6 +213,8 @@ export const transaction_income_deleted: (inputs: Transaction_Income_DeletedInpu
 export const transaction_income_saved: (inputs: Transaction_Income_SavedInputs) => LocalizedString;
 export const transaction_incomes_saved: (inputs: Transaction_Incomes_SavedInputs) => LocalizedString;
 export const transaction_list_empty: (inputs: Transaction_List_EmptyInputs) => LocalizedString;
+export const transaction_list_loading: (inputs: Transaction_List_LoadingInputs) => LocalizedString;
+export const transaction_list_offline: (inputs: Transaction_List_OfflineInputs) => LocalizedString;
 export const transaction_list_today: (inputs: Transaction_List_TodayInputs) => LocalizedString;
 export const transaction_more: (inputs: Transaction_MoreInputs) => LocalizedString;
 export const transaction_new: (inputs: Transaction_NewInputs) => LocalizedString;
@@ -521,6 +523,8 @@ export type Transaction_Incomes_SavedInputs = {
 export type Transaction_List_EmptyInputs = {
     period: NonNullable<unknown>;
 };
+export type Transaction_List_LoadingInputs = {};
+export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_TodayInputs = {};
 export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
