@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, Cell, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from "recharts";
 import {
     formatCurrency,
     formatMonthYear,
@@ -31,7 +31,7 @@ interface TrendCardProps {
  */
 export function TrendCard({ overview }: TrendCardProps) {
     const { trend } = overview;
-    const selected = trend[trend.length - 1]?.month;
+    const selectedIndex = trend.length - 1;
 
     return (
         <Card className={"gap-3 p-4"}>
@@ -45,7 +45,7 @@ export function TrendCard({ overview }: TrendCardProps) {
             </div>
             <ChartContainer
                 config={{ total: { label: m.overview_net_spending() } }}
-                className={"aspect-[2/1] w-full"}
+                className={"aspect-2/1 w-full"}
             >
                 <BarChart data={trend} margin={{ left: 0, right: 0 }}>
                     <CartesianGrid vertical={false} />
@@ -80,18 +80,20 @@ export function TrendCard({ overview }: TrendCardProps) {
                             />
                         }
                     />
-                    <Bar dataKey={"total"} radius={4}>
-                        {trend.map(({ month }) => (
-                            <Cell
-                                key={month}
+                    <Bar
+                        dataKey={"total"}
+                        radius={4}
+                        shape={(props) => (
+                            <Rectangle
+                                {...props}
                                 className={
-                                    month === selected
+                                    props.index === selectedIndex
                                         ? "fill-primary"
                                         : "fill-primary/40"
                                 }
                             />
-                        ))}
-                    </Bar>
+                        )}
+                    />
                 </BarChart>
             </ChartContainer>
         </Card>
