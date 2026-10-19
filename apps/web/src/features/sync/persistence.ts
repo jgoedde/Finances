@@ -11,7 +11,7 @@ const QUERY_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 /**
  * Whether restored data, anywhere within it, still has a shape that older
  * versions cached: transactions with a `name` instead of a `counterparty`,
- * and the patterns named after it.
+ * the patterns named after it, and transactions without a `location`.
  */
 function hasOutdatedShape(value: unknown): boolean {
     if (Array.isArray(value)) {
@@ -23,7 +23,10 @@ function hasOutdatedShape(value: unknown): boolean {
     const isOutdated =
         ("amount" in value && "name" in value && !("counterparty" in value)) ||
         ("kind" in value && value.kind === "recurringName") ||
-        "topName" in value;
+        "topName" in value ||
+        ("counterparty" in value &&
+            "exceptional" in value &&
+            !("location" in value));
     return isOutdated || Object.values(value).some(hasOutdatedShape);
 }
 

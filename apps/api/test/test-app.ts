@@ -99,6 +99,7 @@ export function transactionBody(overrides: Record<string, unknown> = {}) {
         currency: "EUR",
         categoryId: "2",
         exceptional: false,
+        location: null,
         ...overrides,
     });
 }

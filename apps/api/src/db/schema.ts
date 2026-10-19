@@ -33,6 +33,13 @@ export interface TransactionsTable {
     currency: string;
     category_id: string;
     exceptional: 0 | 1;
+
+    /**
+     * All three set, or all three `null`.
+     */
+    location_lat: number | null;
+    location_lng: number | null;
+    location_accuracy: number | null;
     updated_at: number;
 }
 

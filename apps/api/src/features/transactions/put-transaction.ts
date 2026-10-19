@@ -3,6 +3,7 @@ import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { logger } from "#/log.ts";
 import {
+    toLocationColumns,
     toTransaction,
     transactionIdParam,
 } from "#/features/transactions/transactions.ts";
@@ -53,6 +54,7 @@ export const putTransaction = factory.createHandlers(
                 currency: input.currency,
                 category_id: input.categoryId,
                 exceptional: input.exceptional ? 1 : 0,
+                ...toLocationColumns(input.location),
                 updated_at: Date.now(),
             } as const;
 

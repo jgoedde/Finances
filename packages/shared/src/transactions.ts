@@ -13,6 +13,19 @@ export const transactionIdSchema = z
     .max(64)
     .regex(/^[A-Za-z0-9_-]+$/);
 
+/**
+ * Where the device was when the transaction was created.
+ */
+const transactionLocationSchema = z.object({
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
+
+    /**
+     * Radius in meters.
+     */
+    accuracy: z.number().nonnegative(),
+});
+
 export const transactionSchema = z.object({
     id: transactionIdSchema,
 
@@ -35,10 +48,18 @@ export const transactionSchema = z.object({
      * One-off large transaction, excluded from insights.
      */
     exceptional: z.boolean(),
+
+    /**
+     * `null` if not recorded.
+     */
+    location: transactionLocationSchema.nullable(),
 });
 export type Transaction = z.infer<typeof transactionSchema>;
 
-export const transactionInputSchema = transactionSchema.omit({ id: true });
+export const transactionInputSchema = transactionSchema
+    .omit({ id: true })
+    // Clients older than the location (or their queued writes) don't send it.
+    .extend({ location: transactionSchema.shape.location.default(null) });
 export type TransactionInput = z.infer<typeof transactionInputSchema>;
 
 /**

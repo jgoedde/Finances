@@ -165,6 +165,9 @@
 /** @typedef {{ transactions: NonNullable<unknown>, fixedCosts: NonNullable<unknown> }} Settings_Import_SuccessInputs */
 /** @typedef {{}} Settings_LanguageInputs */
 /** @typedef {{}} Settings_Language_DescriptionInputs */
+/** @typedef {{}} Settings_LocationInputs */
+/** @typedef {{}} Settings_Location_DeniedInputs */
+/** @typedef {{}} Settings_Location_DescriptionInputs */
 /** @typedef {{}} Settings_TitleInputs */
 /** @typedef {{}} Sign_Out_Anyway_TitleInputs */
 /** @typedef {{}} Sign_Out_FailedInputs */
@@ -895,6 +898,18 @@ export const settings_language = /** @type {(inputs: Settings_LanguageInputs) =>
 
 export const settings_language_description = /** @type {(inputs: Settings_Language_DescriptionInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Gilt nur für dieses Gerät.`)
+};
+
+export const settings_location = /** @type {(inputs: Settings_LocationInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Standort speichern`)
+};
+
+export const settings_location_denied = /** @type {(inputs: Settings_Location_DeniedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Der Standortzugriff ist blockiert. Erlaube ihn für diese App in den Browser- oder Systemeinstellungen.`)
+};
+
+export const settings_location_description = /** @type {(inputs: Settings_Location_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neue Geldbewegungen speichern, wo dieses Gerät beim Erfassen war. Gilt nur für dieses Gerät.`)
 };
 
 export const settings_title = /** @type {(inputs: Settings_TitleInputs) => LocalizedString} */ () => {

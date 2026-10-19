@@ -26,6 +26,18 @@ describe("migrations", () => {
             body: transactionBody({ counterparty: "Bäcker" }),
         });
         // Back to the schema before the rename.
+        for (const column of [
+            "location_lat",
+            "location_lng",
+            "location_accuracy",
+        ]) {
+            await sql`alter table transactions drop column ${sql.ref(column)}`.execute(
+                before.db,
+            );
+        }
+        await sql`delete from kysely_migration where name = '0003-transaction-location'`.execute(
+            before.db,
+        );
         await sql`alter table transactions rename column counterparty to name`.execute(
             before.db,
         );
