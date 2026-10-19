@@ -5,6 +5,7 @@ name: Tag release
 on:
     push:
         branches: [main]
+        paths: [package.json]
 
 concurrency: tag-release
 
