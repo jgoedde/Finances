@@ -4,7 +4,6 @@ import { TransactionListItem } from "#/features/transactions/components/list/tra
 import { cn } from "#/lib/cn.ts";
 import { getLocale } from "#/paraglide/runtime.js";
 
-// Set when the module loads; headings don't roll over at midnight.
 const today = new Date();
 
 interface TransactionGroupProps {
