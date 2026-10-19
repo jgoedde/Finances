@@ -1,0 +1,29 @@
+name: Tag release
+
+# Tags the commit on main whose package.json version has no tag yet, which triggers release.yml.
+# Pushes with RELEASE_TOKEN because a tag pushed with GITHUB_TOKEN triggers no workflows.
+on:
+    push:
+        branches: [main]
+
+concurrency: tag-release
+
+jobs:
+    tag:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  token: ${{ secrets.RELEASE_TOKEN }}
+
+            - name: Tag version
+              run: |
+                  tag="v$(node -p 'require("./package.json").version')"
+                  if git ls-remote --exit-code --tags origin "refs/tags/$tag" > /dev/null; then
+                      echo "$tag already exists."
+                      exit 0
+                  fi
+                  git tag "$tag" "$GITHUB_SHA"
+                  git push origin "refs/tags/$tag"
