@@ -7,6 +7,7 @@ import {
     formatPercent,
     formatShortDate,
     formatShortMonth,
+    formatUpcomingDay,
     formatWeekday,
 } from "#/formatting.ts";
 
@@ -84,6 +85,19 @@ describe("formatting", () => {
                 "en",
             ),
         ).toBe("Yesterday · October 25");
+    });
+
+    it("formats upcoming days relative to today", () => {
+        const daysAhead = (days: number) => new Date(2026, 9, 18 + days);
+        expect(formatUpcomingDay(daysAhead(1), date, "de")).toBe("Morgen");
+        expect(formatUpcomingDay(daysAhead(1), date, "en")).toBe("Tomorrow");
+        expect(formatUpcomingDay(daysAhead(2), date, "de")).toBe("Dienstag");
+        expect(formatUpcomingDay(daysAhead(6), date, "en")).toBe("Saturday");
+        expect(formatUpcomingDay(daysAhead(7), date, "de")).toBe("25. Okt.");
+        expect(formatUpcomingDay(daysAhead(7), date, "en")).toBe("Oct 25");
+        expect(formatUpcomingDay(new Date(2027, 0, 5), date, "de")).toBe(
+            "5. Jan. 2027",
+        );
     });
 
     it("formats weekdays from Monday", () => {

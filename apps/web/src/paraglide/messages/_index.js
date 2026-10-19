@@ -222,6 +222,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
+/** @typedef {{}} Transaction_List_UpcomingInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
@@ -3316,6 +3317,20 @@ export const transaction_list_offline = /** @type {((inputs?: Transaction_List_O
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_list_offline(inputs)
 	return __en.transaction_list_offline(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Upcoming" |
+*
+* @param {Transaction_List_UpcomingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_upcoming = /** @type {((inputs?: Transaction_List_UpcomingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_UpcomingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_upcoming(inputs)
+	return __en.transaction_list_upcoming(inputs)
 });
 /**
 * | output |

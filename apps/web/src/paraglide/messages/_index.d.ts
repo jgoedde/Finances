@@ -3083,6 +3083,20 @@ export const transaction_list_offline: ((inputs?: Transaction_List_OfflineInputs
 /**
 * | output |
 * | --- |
+* | "Upcoming" |
+*
+* @param {Transaction_List_UpcomingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_upcoming: ((inputs?: Transaction_List_UpcomingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_List_UpcomingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "More details" |
 *
 * @param {Transaction_MoreInputs} inputs
@@ -3537,6 +3551,7 @@ export type Transaction_List_EmptyInputs = {
 };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
+export type Transaction_List_UpcomingInputs = {};
 export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};

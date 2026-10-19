@@ -17,9 +17,18 @@ import { getLocale } from "#/paraglide/runtime.js";
 
 interface TransactionListItemProps {
     transaction: Transaction;
+
+    /**
+     * Shown before the supporting text, e.g. when an upcoming transaction is
+     * due.
+     */
+    dateLabel?: string;
 }
 
-export function TransactionListItem({ transaction }: TransactionListItemProps) {
+export function TransactionListItem({
+    transaction,
+    dateLabel,
+}: TransactionListItemProps) {
     const rippleHandlers = useRipple();
     const theme = useColorScheme();
 
@@ -124,7 +133,9 @@ export function TransactionListItem({ transaction }: TransactionListItemProps) {
                     className={`line-clamp-2 text-body-medium break-all
                         text-on-surface-variant`}
                 >
-                    {getSupportingText()}
+                    {dateLabel === undefined
+                        ? getSupportingText()
+                        : `${dateLabel} · ${getSupportingText()}`}
                 </div>
             </div>
             <div

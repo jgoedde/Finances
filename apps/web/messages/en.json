@@ -180,6 +180,7 @@
     "transaction_filter": "Filter by category",
     "transaction_filter_active": "Category filter active: {category}",
     "transaction_filter_all": "All categories",
+    "transaction_list_upcoming": "Upcoming",
     "transaction_list_empty": "No transactions ({period})",
     "transaction_list_loading": "Loading transactions",
     "transaction_list_offline": "Offline – this month hasn't been loaded yet",
