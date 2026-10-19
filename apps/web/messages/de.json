@@ -180,6 +180,7 @@
     "transaction_filter": "Nach Kategorie filtern",
     "transaction_filter_active": "Kategoriefilter aktiv: {category}",
     "transaction_filter_all": "Alle Kategorien",
+    "transaction_list_upcoming": "Geplant",
     "transaction_list_empty": "Keine Geldbewegungen für {period}",
     "transaction_list_loading": "Geldbewegungen werden geladen",
     "transaction_list_offline": "Offline – dieser Monat wurde noch nicht geladen",

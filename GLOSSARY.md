@@ -44,6 +44,10 @@ _Avoid_: Vendor, merchant, payee, name
 A one-off, unusually large transaction, such as buying a car. Left out of insights about typical spending so it doesn't distort them, but still counted in how much was spent.
 _Avoid_: Outlier, special purchase
 
+**Upcoming transaction**:
+A transaction dated after today, such as a bill already known. Shown in the UI as "Geplant" / "Upcoming".
+_Avoid_: Future transaction, scheduled transaction, planned transaction
+
 **Net spending**:
 What was spent minus what was received over a set of transactions. An expense adds to it and an income subtracts from it, so a negative value means more came in than went out.
 _Avoid_: Balance, total, signed amount
