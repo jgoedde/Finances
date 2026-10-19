@@ -63,23 +63,38 @@ describe("data transfer", () => {
         });
     });
 
-    it("imports a version 1 export, whose transactions have a name", async () => {
+    it("imports a version 2 export, whose transactions have no location", async () => {
         const exported = await json<DataExport>(alice("/api/data/export"));
-        const { counterparty, ...rest } = JSON.parse(
-            transactionBody({ counterparty: "Bäcker" }),
-        ) as Transaction;
-        const v1 = {
+        const transaction = JSON.parse(transactionBody()) as Transaction;
+        const v2 = {
             ...exported,
-            version: 1,
-            transactions: [{ ...rest, id: "t1", name: counterparty }],
+            version: 2,
+            transactions: [{ ...transaction, id: "t1", location: undefined }],
         };
-        expect((await upload(alice, JSON.stringify(v1))).status).toBe(200);
+        expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
         expect(reexported.version).toBe(3);
-        expect(reexported.transactions).toEqual([
-            { ...rest, id: "t1", counterparty: "Bäcker", location: null },
-        ]);
+        expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
+    });
+
+    it("rejects a version 1 export", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const v1Transaction = transactionBody({
+            counterparty: undefined,
+            location: undefined,
+            name: "Bäcker",
+        });
+        const v1 = {
+            ...exported,
+            version: 1,
+            transactions: [{ ...JSON.parse(v1Transaction), id: "t1" }],
+        };
+        const response = await upload(alice, JSON.stringify(v1));
+        expect(response.status).toBe(400);
+        expect(await json(response)).toMatchObject({
+            error: "invalid_request",
+        });
     });
 
     it("only imports into an account without data", async () => {

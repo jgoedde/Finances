@@ -27,41 +27,13 @@ const dataExportV2Schema = dataExportSchema.extend({
 });
 
 /**
- * Version 1: transactions also had a `name` instead of a `counterparty`.
- */
-const dataExportV1Schema = dataExportSchema.extend({
-    version: z.literal(1),
-    transactions: z.array(
-        transactionSchema
-            .omit({ counterparty: true, location: true })
-            .extend({ name: transactionSchema.shape.counterparty }),
-    ),
-});
-
-/**
- * What the import accepts: an export of any version, upgraded to the current
- * one.
+ * What the import accepts: an export of version 2 or later, upgraded to the
+ * current one.
  */
 export const dataImportSchema = z
-    .discriminatedUnion("version", [
-        dataExportV1Schema,
-        dataExportV2Schema,
-        dataExportSchema,
-    ])
+    .discriminatedUnion("version", [dataExportV2Schema, dataExportSchema])
     .transform((data): DataExport => {
         switch (data.version) {
-            case 1:
-                return {
-                    ...data,
-                    version: 3,
-                    transactions: data.transactions.map(
-                        ({ name, ...transaction }) => ({
-                            ...transaction,
-                            counterparty: name,
-                            location: null,
-                        }),
-                    ),
-                };
             case 2:
                 return {
                     ...data,
