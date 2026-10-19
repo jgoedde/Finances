@@ -19,7 +19,8 @@ export type FixedCostInterval = z.infer<typeof fixedCostIntervalSchema>;
  */
 const isoDate = z.iso.date();
 
-export const fixedCostInputSchema = z.object({
+export const fixedCostSchema = z.object({
+    id: z.string(),
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
     amount: z.number().nonnegative(),
@@ -30,15 +31,13 @@ export const fixedCostInputSchema = z.object({
     startDate: isoDate,
     endDate: isoDate.nullable(),
 });
+export type FixedCost = z.infer<typeof fixedCostSchema>;
+
+export const fixedCostInputSchema = fixedCostSchema.omit({ id: true });
 export type FixedCostInput = z.infer<typeof fixedCostInputSchema>;
 
 export const fixedCostPatchSchema = fixedCostInputSchema.partial();
 export type FixedCostPatch = z.infer<typeof fixedCostPatchSchema>;
-
-export const fixedCostSchema = fixedCostInputSchema.extend({
-    id: z.string(),
-});
-export type FixedCost = z.infer<typeof fixedCostSchema>;
 
 const MONTHS_PER_INTERVAL = {
     monthly: 1,
