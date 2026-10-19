@@ -3013,6 +3013,34 @@ export const transaction_list_empty: ((inputs: Transaction_List_EmptyInputs, opt
 /**
 * | output |
 * | --- |
+* | "Loading transactions" |
+*
+* @param {Transaction_List_LoadingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_loading: ((inputs?: Transaction_List_LoadingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_List_LoadingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Offline – this month hasn't been loaded yet" |
+*
+* @param {Transaction_List_OfflineInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_offline: ((inputs?: Transaction_List_OfflineInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_List_OfflineInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Today" |
 *
 * @param {Transaction_List_TodayInputs} inputs
@@ -3474,6 +3502,8 @@ export type Transaction_Incomes_SavedInputs = {
 export type Transaction_List_EmptyInputs = {
     period: NonNullable<unknown>;
 };
+export type Transaction_List_LoadingInputs = {};
+export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_TodayInputs = {};
 export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};

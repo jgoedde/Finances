@@ -1,10 +1,12 @@
 import { formatMonthYear } from "@finances/shared";
 import { endOfMonth, startOfDay } from "date-fns";
 import { groupBy } from "lodash";
+import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useSelectedMonth } from "#/features/month/month.ts";
-import { useTransactions } from "#/features/transactions/transaction-queries.ts";
+import { transactionsQuery } from "#/features/transactions/transaction-queries.ts";
 import { TransactionGroup } from "#/features/transactions/components/list/transaction-group.tsx";
+import { TransactionListSkeleton } from "#/features/transactions/components/list/transaction-list-skeleton.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
@@ -18,15 +20,33 @@ export function TransactionList() {
     const month = useSelectedMonth();
     const { category } = transactionsRoute.useSearch();
     // The whole month, so the category filter shares the cached list.
-    const transactions = useTransactions({
-        start: month,
-        end: endOfMonth(month),
-    }).filter((it) => !category || it.categoryId === category);
+    const { data, isPending, fetchStatus } = useQuery(
+        transactionsQuery({
+            from: month.getTime(),
+            to: endOfMonth(month).getTime(),
+        }),
+    );
+    const transactions = (data ?? []).filter(
+        (it) => !category || it.categoryId === category,
+    );
 
     const days = Object.entries(
         groupBy(transactions, (it) => startOfDay(it.date).getTime()),
     ).sort(([a], [b]) => Number(b) - Number(a));
 
+    if (isPending) {
+        // A paused query only resumes once the device is back online.
+        return fetchStatus === "paused" ? (
+            <p
+                className={`my-8 text-center text-body-medium
+                    text-on-surface-variant`}
+            >
+                {m.transaction_list_offline()}
+            </p>
+        ) : (
+            <TransactionListSkeleton />
+        );
+    }
     if (transactions.length === 0) {
         return (
             <p
