@@ -1,4 +1,5 @@
 import { formatMonthYear, formatShortMonth } from "@finances/shared";
+import { useLocalStorage } from "@mantine/hooks";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
@@ -29,6 +30,9 @@ function isFuture(month: Date) {
 // Swipes go back this far, or to the selected month if it's older.
 const SWIPEABLE_MONTHS = 18;
 
+// Set after the first swipe; until then the title peeks to hint at swiping.
+const SWIPED_KEY = "finances-month-swiped";
+
 /**
  * The title's label and dropdown arrow, shared by the picker trigger and the
  * other months it swipes to.
@@ -57,8 +61,9 @@ const current = startOfMonth(new Date());
 
 /**
  * `‹ October 2026 ›` for the top app bar. The title opens a month picker and
- * can be swiped (touch only) to the previous or next month. Months after the
- * current one can't be selected. Picking a month goes to `to`, the destination
+ * can be swiped (touch only) to the previous or next month. On touch the
+ * chevrons are hidden and the title peeks until the first swipe. Months after
+ * the current one can't be selected. Picking a month goes to `to`, the destination
  * showing the switcher; other params carry over.
  */
 export function MonthSwitcher({ to }: MonthSwitcherProps) {
@@ -68,6 +73,10 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
     const [pickerYear, setPickerYear] = useState(month);
 
     const trackRef = useRef<HTMLDivElement>(null);
+    const [hasSwiped, setHasSwiped] = useLocalStorage({
+        key: SWIPED_KEY,
+        defaultValue: false,
+    });
 
     const navigate = useNavigate();
 
@@ -108,6 +117,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
         }
         const target = slides[Math.round(track.scrollLeft / track.clientWidth)];
         if (target && target.getTime() !== month.getTime()) {
+            setHasSwiped(true);
             void navigate({ to, search: { month: toMonthParam(target) } });
         }
     }
@@ -117,6 +127,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
             <Button
                 variant={"ghost"}
                 size={"icon"}
+                className={"pointer-coarse:hidden"}
                 aria-label={m.month_previous()}
                 asChild
             >
@@ -134,8 +145,12 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
             >
                 <div
                     ref={trackRef}
-                    className={`flex w-56 min-w-0 shrink snap-x snap-mandatory
-                        scrollbar-none overflow-x-auto overscroll-x-contain`}
+                    className={cn(
+                        `flex w-56 min-w-0 shrink snap-x snap-mandatory
+                        scrollbar-none overflow-x-auto overscroll-x-contain`,
+                        !hasSwiped &&
+                            "pointer-coarse:motion-safe:*:animate-month-peek",
+                    )}
                     onScrollEnd={onScrollEnd}
                 >
                     {slides.map((slide) => (
@@ -253,6 +268,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                 <Button
                     variant={"ghost"}
                     size={"icon"}
+                    className={"pointer-coarse:hidden"}
                     aria-label={m.month_next()}
                     disabled
                 >
@@ -262,6 +278,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                 <Button
                     variant={"ghost"}
                     size={"icon"}
+                    className={"pointer-coarse:hidden"}
                     aria-label={m.month_next()}
                     asChild
                 >

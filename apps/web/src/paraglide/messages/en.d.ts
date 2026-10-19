@@ -209,6 +209,9 @@ export const transaction_expense_deleted: (inputs: Transaction_Expense_DeletedIn
 export const transaction_expense_saved: (inputs: Transaction_Expense_SavedInputs) => LocalizedString;
 export const transaction_expenses_saved: (inputs: Transaction_Expenses_SavedInputs) => LocalizedString;
 export const transaction_fab: (inputs: Transaction_FabInputs) => LocalizedString;
+export const transaction_filter: (inputs: Transaction_FilterInputs) => LocalizedString;
+export const transaction_filter_active: (inputs: Transaction_Filter_ActiveInputs) => LocalizedString;
+export const transaction_filter_all: (inputs: Transaction_Filter_AllInputs) => LocalizedString;
 export const transaction_income_deleted: (inputs: Transaction_Income_DeletedInputs) => LocalizedString;
 export const transaction_income_saved: (inputs: Transaction_Income_SavedInputs) => LocalizedString;
 export const transaction_incomes_saved: (inputs: Transaction_Incomes_SavedInputs) => LocalizedString;
@@ -512,6 +515,11 @@ export type Transaction_Expenses_SavedInputs = {
     name: NonNullable<unknown>;
 };
 export type Transaction_FabInputs = {};
+export type Transaction_FilterInputs = {};
+export type Transaction_Filter_ActiveInputs = {
+    category: NonNullable<unknown>;
+};
+export type Transaction_Filter_AllInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
     name: NonNullable<unknown>;
