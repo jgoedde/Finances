@@ -211,15 +211,23 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Expenses_SavedInputs */
 /** @typedef {{}} Transaction_FabInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
+/** @typedef {{}} Transaction_SplitInputs */
+/** @typedef {{}} Transaction_Split_DescriptionInputs */
+/** @typedef {{ category: NonNullable<unknown>, amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_Remainder_UncategorizedInputs */
+/** @typedef {{}} Transaction_Split_RemoveInputs */
+/** @typedef {{}} Transaction_Split_Too_MuchInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
 import * as __en from "./en.js"
 import * as __de from "./de.js"
@@ -3154,6 +3162,20 @@ export const transaction_expense_saved = /** @type {((inputs: Transaction_Expens
 /**
 * | output |
 * | --- |
+* | "{count} expenses at {name} saved" |
+*
+* @param {Transaction_Expenses_SavedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_expenses_saved = /** @type {((inputs: Transaction_Expenses_SavedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Expenses_SavedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_expenses_saved(inputs)
+	return __en.transaction_expenses_saved(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Track" |
 *
 * @param {Transaction_FabInputs} inputs
@@ -3192,6 +3214,20 @@ export const transaction_income_saved = /** @type {((inputs: Transaction_Income_
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_income_saved(inputs)
 	return __en.transaction_income_saved(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{count} incomes from {name} saved" |
+*
+* @param {Transaction_Incomes_SavedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_incomes_saved = /** @type {((inputs: Transaction_Incomes_SavedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Incomes_SavedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_incomes_saved(inputs)
+	return __en.transaction_incomes_saved(inputs)
 });
 /**
 * | output |
@@ -3276,6 +3312,90 @@ export const transaction_not_found = /** @type {((inputs?: Transaction_Not_Found
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_not_found(inputs)
 	return __en.transaction_not_found(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Split" |
+*
+* @param {Transaction_SplitInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split = /** @type {((inputs?: Transaction_SplitInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_SplitInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split(inputs)
+	return __en.transaction_split(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Description (optional)" |
+*
+* @param {Transaction_Split_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_description = /** @type {((inputs?: Transaction_Split_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_description(inputs)
+	return __en.transaction_split_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Stays in {category}: {amount}" |
+*
+* @param {Transaction_Split_RemainderInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remainder = /** @type {((inputs: Transaction_Split_RemainderInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_RemainderInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_remainder(inputs)
+	return __en.transaction_split_remainder(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Stays in the main category: {amount}" |
+*
+* @param {Transaction_Split_Remainder_UncategorizedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remainder_uncategorized = /** @type {((inputs: Transaction_Split_Remainder_UncategorizedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_Remainder_UncategorizedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_remainder_uncategorized(inputs)
+	return __en.transaction_split_remainder_uncategorized(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Remove part" |
+*
+* @param {Transaction_Split_RemoveInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remove = /** @type {((inputs?: Transaction_Split_RemoveInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_RemoveInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_remove(inputs)
+	return __en.transaction_split_remove(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Nothing is left for the main category. Remove a part or lower its amount." |
+*
+* @param {Transaction_Split_Too_MuchInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_too_much = /** @type {((inputs?: Transaction_Split_Too_MuchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Split_Too_MuchInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_split_too_much(inputs)
+	return __en.transaction_split_too_much(inputs)
 });
 /**
 * | output |

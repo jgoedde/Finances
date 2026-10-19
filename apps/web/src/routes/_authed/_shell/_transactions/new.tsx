@@ -32,29 +32,38 @@ function RouteComponent() {
     const saveTransaction = useSaveTransaction();
 
     const onTransactionFormSubmit = (data: TransactionFormSubmitData) => {
-        // Saved locally right away; sent now or once back online.
-        saveTransaction.mutate({
-            id: nanoid(8),
+        // Saved locally right away; sent now or once back online. A split
+        // becomes unlinked transactions sharing counterparty, date and kind.
+        const common = {
             date: data.date.getTime(),
-            categoryId: data.categoryId,
             kind: data.kind,
-            amount: data.amount,
             currency: "EUR",
             name: data.name,
-            description: data.description,
             exceptional: data.isExceptional,
-        });
+        } as const;
+        const drafts = [
+            {
+                categoryId: data.categoryId,
+                amount: data.amount,
+                description: data.description,
+            },
+            ...data.parts,
+        ];
+        for (const draft of drafts) {
+            saveTransaction.mutate({
+                id: nanoid(8),
+                ...common,
+                ...draft,
+            });
+        }
 
         void navigate({ to: "/transactions" });
-        const saved =
-            data.kind === "income"
-                ? m.transaction_income_saved({ name: data.name })
-                : m.transaction_expense_saved({ name: data.name });
-        toast.success(`${saved}${syncLaterHint()}`);
+        toast.success(`${savedMessage(data, drafts.length)}${syncLaterHint()}`);
     };
 
     return (
         <TransactionForm
+            canSplit
             onSubmit={onTransactionFormSubmit}
             title={m.transaction_new()}
             initialValues={{
@@ -69,4 +78,18 @@ function RouteComponent() {
             }}
         />
     );
+}
+
+function savedMessage(
+    { kind, name }: TransactionFormSubmitData,
+    count: number,
+): string {
+    if (count > 1) {
+        return kind === "income"
+            ? m.transaction_incomes_saved({ count, name })
+            : m.transaction_expenses_saved({ count, name });
+    }
+    return kind === "income"
+        ? m.transaction_income_saved({ name })
+        : m.transaction_expense_saved({ name });
 }

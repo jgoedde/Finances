@@ -1,16 +1,23 @@
 import { type SubmitEvent, useRef, useState } from "react";
 import { useBlocker } from "@tanstack/react-router";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, SplitIcon } from "lucide-react";
+import { nanoid } from "nanoid";
 import { Input } from "#/components/ui/input.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
 import { CounterpartyField } from "#/features/transactions/components/form/counterparty-field.tsx";
 import { CategoryChips } from "#/features/transactions/components/form/category-chips.tsx";
 import { DateChips } from "#/features/transactions/components/form/date-chips.tsx";
+import {
+    SplitPartRow,
+    type SplitPartDraft,
+    type SplitPartField,
+} from "#/features/transactions/components/form/split-part-row.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import {
     findCounterparty,
     formatCurrency,
     matchCounterparty,
+    splitRemainder,
     type TransactionKind,
 } from "@finances/shared";
 import { useCounterparties } from "#/features/transactions/use-counterparties.ts";
@@ -33,12 +40,29 @@ export interface TransactionFormSubmitData {
     name: string;
 
     /**
-     * Always positive; `kind` decides the direction.
+     * Always positive; `kind` decides the direction. With parts, the total
+     * minus the parts.
      */
     amount: number;
     date: Date;
     kind: TransactionKind;
     isExceptional: boolean;
+    description: string | null;
+
+    /**
+     * Split off the total; each becomes its own transaction with the same
+     * counterparty, date, kind and exceptional flag. Empty without a split.
+     */
+    parts: TransactionFormPart[];
+}
+
+interface TransactionFormPart {
+    categoryId: string;
+
+    /**
+     * Always positive.
+     */
+    amount: number;
     description: string | null;
 }
 
@@ -69,6 +93,11 @@ interface TransactionFormProps {
     onDelete?: VoidFunction;
     onSubmit: (data: TransactionFormSubmitData) => void;
     title: string;
+
+    /**
+     * Offer splitting the total across categories (new transactions only).
+     */
+    canSplit?: boolean;
 }
 
 /**
@@ -80,6 +109,7 @@ export function TransactionForm({
     onDelete,
     onSubmit,
     title,
+    canSplit = false,
 }: TransactionFormProps) {
     const categories = useCategories();
 
@@ -123,6 +153,8 @@ export function TransactionForm({
         initialValues.description !== "" || initialValues.isExceptional,
     );
     const [missingFields, setMissingFields] = useState<RequiredField[]>([]);
+    const [parts, setParts] = useState<SplitPartDraft[]>([]);
+    const [shouldShowSplitErrors, setShouldShowSplitErrors] = useState(false);
 
     const known = predict ? findCounterparty(counterparties, name) : undefined;
     const match =
@@ -138,6 +170,18 @@ export function TransactionForm({
     const transactionType = chosenKind ?? known?.kind ?? initialValues.kind;
     const lastAmount = amountStr === "" ? known?.lastAmount : undefined;
 
+    const total = parseAmount(amountStr);
+    const remainder = isNaN(total)
+        ? undefined
+        : splitRemainder(
+              total,
+              parts
+                  .map((part) => parseAmount(part.amountStr))
+                  .filter((amount) => amount > 0),
+          );
+    const isRemainderInvalid =
+        parts.length > 0 && remainder !== undefined && remainder <= 0;
+
     const selectedCategory = categories.find(
         (category) => category.id === categoryId,
     );
@@ -150,7 +194,8 @@ export function TransactionForm({
         chosenKind !== (predict ? undefined : initialValues.kind) ||
         description !== initialValues.description ||
         date.getTime() !== initialValues.date.getTime() ||
-        isExceptional !== initialValues.isExceptional;
+        isExceptional !== initialValues.isExceptional ||
+        parts.length > 0;
 
     // Asks before reloading or closing the tab with unsaved changes.
     useBlocker({
@@ -166,11 +211,10 @@ export function TransactionForm({
     function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const amount = parseFloat(amountStr.replace(",", "."));
         const trimmedName = name.trim();
 
         const missing: RequiredField[] = [];
-        if (isNaN(amount)) missing.push("amount");
+        if (isNaN(total)) missing.push("amount");
         if (trimmedName === "") missing.push("name");
         if (!selectedCategory) missing.push("category");
 
@@ -197,15 +241,58 @@ export function TransactionForm({
             return;
         }
 
+        const invalid = parts
+            .map((part) => ({ part, field: findMissingInPart(part) }))
+            .find(({ field }) => field !== undefined);
+        if (invalid || isRemainderInvalid) {
+            setShouldShowSplitErrors(true);
+            // The parts are a dynamic list, so they are found by id.
+            const [first] = parts;
+            const focusId = invalid
+                ? `${invalid.part.key}-${invalid.field}`
+                : `${first?.key}-amount`;
+            document.getElementById(focusId)?.focus();
+            return;
+        }
+
         onSubmit({
             isExceptional,
             date,
-            description: description.trim() === "" ? null : description.trim(),
-            amount,
+            description: trimOrNull(description),
+            amount: remainder ?? total,
             categoryId: selectedCategory.id,
             kind: transactionType,
             name: trimmedName,
+            parts: parts.map((part) => ({
+                amount: parseAmount(part.amountStr),
+                categoryId: part.categoryId ?? selectedCategory.id,
+                description: trimOrNull(part.description),
+            })),
         });
+    }
+
+    function addPart() {
+        // A new, empty part isn't an error yet.
+        setShouldShowSplitErrors(false);
+        setParts((current) => [
+            ...current,
+            {
+                key: `part-${nanoid(6)}`,
+                amountStr: "",
+                categoryId: undefined,
+                description: "",
+            },
+        ]);
+    }
+
+    function updatePart(updated: SplitPartDraft) {
+        setParts((current) =>
+            current.map((part) => (part.key === updated.key ? updated : part)),
+        );
+    }
+
+    function removePart(key: string) {
+        setParts((current) => current.filter((part) => part.key !== key));
     }
 
     function onCategorySelect(id: string) {
@@ -367,6 +454,64 @@ export function TransactionForm({
                     }
                 />
 
+                {canSplit && (
+                    <div className={"flex flex-col gap-3"}>
+                        {/* Above the parts: the main transaction keeps what they leave. */}
+                        {parts.length > 0 && remainder !== undefined && (
+                            <p
+                                className={cn(
+                                    "px-4 text-body-small",
+                                    isRemainderInvalid
+                                        ? "text-error"
+                                        : "text-on-surface-variant",
+                                )}
+                            >
+                                {isRemainderInvalid
+                                    ? m.transaction_split_too_much()
+                                    : selectedCategory
+                                      ? m.transaction_split_remainder({
+                                            category: selectedCategory.name,
+                                            amount: formatCurrency(
+                                                remainder,
+                                                getLocale(),
+                                            ),
+                                        })
+                                      : m.transaction_split_remainder_uncategorized(
+                                            {
+                                                amount: formatCurrency(
+                                                    remainder,
+                                                    getLocale(),
+                                                ),
+                                            },
+                                        )}
+                            </p>
+                        )}
+                        {parts.map((part) => (
+                            <SplitPartRow
+                                key={part.key}
+                                part={part}
+                                categories={categories}
+                                onChange={updatePart}
+                                onRemove={() => removePart(part.key)}
+                                missing={
+                                    shouldShowSplitErrors
+                                        ? findMissingInPart(part)
+                                        : undefined
+                                }
+                            />
+                        ))}
+                        <Button
+                            type={"button"}
+                            variant={"text"}
+                            className={"-ml-3 self-start"}
+                            onClick={addPart}
+                        >
+                            <SplitIcon aria-hidden />
+                            {m.transaction_split()}
+                        </Button>
+                    </div>
+                )}
+
                 <DateChips date={date} onChange={setDate} />
 
                 <div className={"flex flex-col gap-4"}>
@@ -449,4 +594,21 @@ export function TransactionForm({
             </footer>
         </form>
     );
+}
+
+/**
+ * An entered amount, `NaN` when it isn't a number.
+ */
+function parseAmount(amountStr: string): number {
+    return parseFloat(amountStr.replace(",", "."));
+}
+
+function trimOrNull(text: string): string | null {
+    return text.trim() === "" ? null : text.trim();
+}
+
+function findMissingInPart(part: SplitPartDraft): SplitPartField | undefined {
+    if (!(parseAmount(part.amountStr) > 0)) return "amount";
+    if (part.categoryId === undefined) return "category";
+    return undefined;
 }

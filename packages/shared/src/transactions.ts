@@ -133,3 +133,16 @@ export interface TransactionSearchPage {
      */
     nextCursor: string | null;
 }
+
+/**
+ * What remains of `total` for the main transaction once the parts are taken
+ * out, in whole cents so `50 - 12.3 - 0.1` is `37.6`. Zero or below means the
+ * parts cover the total.
+ */
+export function splitRemainder(total: number, partAmounts: number[]): number {
+    const cents = partAmounts.reduce(
+        (rest, amount) => rest - Math.round(amount * 100),
+        Math.round(total * 100),
+    );
+    return cents / 100;
+}
