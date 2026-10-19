@@ -139,9 +139,9 @@ describe("data transfer", () => {
         expect((await upload(alice, JSON.stringify(v1))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(2);
+        expect(reexported.version).toBe(3);
         expect(reexported.transactions).toEqual([
-            { ...rest, id: "t1", counterparty: "Bäcker" },
+            { ...rest, id: "t1", counterparty: "Bäcker", location: null },
         ]);
     });
 

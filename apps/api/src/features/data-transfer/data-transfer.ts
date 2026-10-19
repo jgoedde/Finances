@@ -1,7 +1,10 @@
 import type { DataExport, ImportResult } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
 import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
-import { toTransaction } from "#/features/transactions/transactions.ts";
+import {
+    toLocationColumns,
+    toTransaction,
+} from "#/features/transactions/transactions.ts";
 import {
     isSqliteFile,
     readLegacyDatabase,
@@ -41,7 +44,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 2,
+        version: 3,
         exportedAt: new Date().toISOString(),
         categories: categories.map((c) => ({
             id: c.id,
@@ -195,6 +198,7 @@ export async function replaceData(
                         currency: t.currency,
                         category_id: t.categoryId,
                         exceptional: t.exceptional ? 1 : 0,
+                        ...toLocationColumns(t.location),
                         updated_at: now,
                     })),
                 )

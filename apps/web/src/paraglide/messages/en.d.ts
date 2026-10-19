@@ -163,6 +163,9 @@ export const settings_import_replace_title: (inputs: Settings_Import_Replace_Tit
 export const settings_import_success: (inputs: Settings_Import_SuccessInputs) => LocalizedString;
 export const settings_language: (inputs: Settings_LanguageInputs) => LocalizedString;
 export const settings_language_description: (inputs: Settings_Language_DescriptionInputs) => LocalizedString;
+export const settings_location: (inputs: Settings_LocationInputs) => LocalizedString;
+export const settings_location_denied: (inputs: Settings_Location_DeniedInputs) => LocalizedString;
+export const settings_location_description: (inputs: Settings_Location_DescriptionInputs) => LocalizedString;
 export const settings_title: (inputs: Settings_TitleInputs) => LocalizedString;
 export const sign_out_anyway_title: (inputs: Sign_Out_Anyway_TitleInputs) => LocalizedString;
 export const sign_out_failed: (inputs: Sign_Out_FailedInputs) => LocalizedString;
@@ -448,6 +451,9 @@ export type Settings_Import_SuccessInputs = {
 };
 export type Settings_LanguageInputs = {};
 export type Settings_Language_DescriptionInputs = {};
+export type Settings_LocationInputs = {};
+export type Settings_Location_DeniedInputs = {};
+export type Settings_Location_DescriptionInputs = {};
 export type Settings_TitleInputs = {};
 export type Sign_Out_Anyway_TitleInputs = {};
 export type Sign_Out_FailedInputs = {};

@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
+import { useCurrentLocation } from "#/features/transactions/device-location.ts";
 import { m } from "#/paraglide/messages.js";
 
 const prefilledSchema = z.object({
@@ -30,6 +31,7 @@ function RouteComponent() {
     const { vendor, amount } = Route.useSearch();
     const navigate = useNavigate();
     const saveTransaction = useSaveTransaction();
+    const deviceLocation = useCurrentLocation();
 
     const onTransactionFormSubmit = (data: TransactionFormSubmitData) => {
         // Saved locally right away; sent now or once back online. A split
@@ -40,6 +42,8 @@ function RouteComponent() {
             currency: "EUR",
             counterparty: data.counterparty,
             exceptional: data.isExceptional,
+            // Whatever is known by now; saving never waits for it.
+            location: deviceLocation,
         } as const;
         const drafts = [
             {

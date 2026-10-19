@@ -70,6 +70,7 @@ function RouteComponent() {
             date: updated.date.getTime(),
             exceptional: updated.isExceptional,
             currency: "EUR",
+            location: transaction.location,
         });
         void navigate({ to: "/transactions" });
         toast.success(`${m.transaction_updated()}${syncLaterHint()}`, {
