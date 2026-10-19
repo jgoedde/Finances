@@ -34,7 +34,7 @@ describe("transactions", () => {
     it("keeps users' data apart, even with the same id", async () => {
         await alice("/api/transactions/same-id", {
             method: "PUT",
-            body: transactionBody({ name: "Alice" }),
+            body: transactionBody({ counterparty: "Alice" }),
         });
 
         expect((await bob("/api/transactions/same-id")).status).toBe(404);
@@ -42,19 +42,19 @@ describe("transactions", () => {
 
         await bob("/api/transactions/same-id", {
             method: "PUT",
-            body: transactionBody({ name: "Bob" }),
+            body: transactionBody({ counterparty: "Bob" }),
         });
         await bob("/api/transactions/same-id", { method: "DELETE" });
 
         const own = await json<Transaction>(alice("/api/transactions/same-id"));
-        expect(own.name).toBe("Alice");
+        expect(own.counterparty).toBe("Alice");
     });
 
     it("treats a replayed PUT as one transaction, last write wins", async () => {
         const put = (name: string) =>
             alice("/api/transactions/t1", {
                 method: "PUT",
-                body: transactionBody({ name }),
+                body: transactionBody({ counterparty: name }),
             });
 
         expect((await put("first")).status).toBe(200);
@@ -63,7 +63,7 @@ describe("transactions", () => {
 
         const rows = await list(alice);
         expect(rows).toHaveLength(1);
-        expect(rows[0]?.name).toBe("second");
+        expect(rows[0]?.counterparty).toBe("second");
     });
 
     it("ignores writes to a deleted transaction", async () => {
@@ -80,7 +80,7 @@ describe("transactions", () => {
 
         const late = await alice("/api/transactions/t1", {
             method: "PUT",
-            body: transactionBody({ name: "late edit" }),
+            body: transactionBody({ counterparty: "late edit" }),
         });
         expect(late.status).toBe(204);
         expect((await alice("/api/transactions/t1")).status).toBe(404);
@@ -129,21 +129,24 @@ describe("transactions", () => {
             expect(second.nextCursor).toBeNull();
         });
 
-        it("matches name and description, ignoring ASCII case", async () => {
-            await put("name", { name: "Brotladen" });
-            await put("desc", { name: "Markt", description: "frisches BROT" });
-            await put("other", { name: "Tanken" });
+        it("matches counterparty and description, ignoring ASCII case", async () => {
+            await put("counterparty", { counterparty: "Brotladen" });
+            await put("desc", {
+                counterparty: "Markt",
+                description: "frisches BROT",
+            });
+            await put("other", { counterparty: "Tanken" });
 
             const page = await search(`q=${encodeURIComponent("brot")}`);
             expect(page.items.map((t) => t.id).sort()).toEqual([
+                "counterparty",
                 "desc",
-                "name",
             ]);
         });
 
         it("treats LIKE wildcards literally", async () => {
-            await put("percent", { name: "50% Rabatt" });
-            await put("plain", { name: "500 Rabatt" });
+            await put("percent", { counterparty: "50% Rabatt" });
+            await put("plain", { counterparty: "500 Rabatt" });
 
             const page = await search(`q=${encodeURIComponent("0%")}`);
             expect(page.items.map((t) => t.id)).toEqual(["percent"]);

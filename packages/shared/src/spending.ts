@@ -21,7 +21,7 @@ export interface DatedTransaction {
      * 0 = Monday … 6 = Sunday.
      */
     weekday: number;
-    name: string;
+    counterparty: string;
     categoryId: string;
     kind: Transaction["kind"];
     amount: number;
@@ -31,7 +31,7 @@ export interface DatedTransaction {
 
 export type SpendingInput = Pick<
     Transaction,
-    "date" | "name" | "kind" | "amount" | "exceptional" | "categoryId"
+    "date" | "counterparty" | "kind" | "amount" | "exceptional" | "categoryId"
 >;
 
 /**
@@ -48,7 +48,7 @@ export function placeInTimeZone(
             day,
             dayOfMonth: Number(day.slice(8)),
             weekday: (new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7,
-            name: transaction.name,
+            counterparty: transaction.counterparty,
             categoryId: transaction.categoryId,
             kind: transaction.kind,
             amount: transaction.amount,
@@ -81,8 +81,8 @@ export function roundToCents(value: number): number {
 }
 
 /**
- * Groups names regardless of case and surrounding spaces.
+ * Groups counterparties regardless of case and surrounding spaces.
  */
-export function nameKey(transaction: Pick<DatedTransaction, "name">): string {
-    return transaction.name.trim().toLocaleLowerCase("de");
+export function counterpartyKey(counterparty: string): string {
+    return counterparty.trim().toLocaleLowerCase("de");
 }

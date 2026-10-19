@@ -124,7 +124,7 @@ export function TransactionListItem({
                     className={`inline-flex items-center gap-x-1 text-body-large
                         text-on-surface`}
                 >
-                    {transaction.name}
+                    {transaction.counterparty}
                     <ChevronRight
                         className={"size-4 shrink-0 text-on-surface-variant"}
                     />

@@ -8,7 +8,7 @@ export function toTransaction(row: TransactionsTable): Transaction {
     return {
         id: row.id,
         date: row.date,
-        name: row.name,
+        counterparty: row.counterparty,
         description: row.description,
         kind: row.kind,
         amount: Number(row.amount),

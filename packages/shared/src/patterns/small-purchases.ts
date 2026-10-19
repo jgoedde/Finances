@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { nameKey, roundToCents, sumNetSpending } from "../spending.ts";
+import { counterpartyKey, roundToCents, sumNetSpending } from "../spending.ts";
 import type { PatternDetector } from "./pattern-detector.ts";
 
 /**
@@ -23,9 +23,9 @@ export interface SmallPurchasesPattern {
     total: number;
 
     /**
-     * The name at least a third of them share, if any.
+     * The counterparty at least a third of them share, if any.
      */
-    topName: string | null;
+    topCounterparty: string | null;
 }
 
 export const smallPurchases: PatternDetector<SmallPurchasesPattern> = {
@@ -40,15 +40,20 @@ export const smallPurchases: PatternDetector<SmallPurchasesPattern> = {
         ) {
             return [];
         }
-        const top = _.maxBy(_.values(_.groupBy(small, nameKey)), "length")!;
+        const top = _.maxBy(
+            _.values(_.groupBy(small, (t) => counterpartyKey(t.counterparty))),
+            "length",
+        )!;
         return [
             {
                 kind: "smallPurchases",
                 limit: LIMIT,
                 count: small.length,
                 total: roundToCents(total),
-                topName:
-                    top.length * 3 >= small.length ? top[0]!.name.trim() : null,
+                topCounterparty:
+                    top.length * 3 >= small.length
+                        ? top[0]!.counterparty.trim()
+                        : null,
             },
         ];
     },

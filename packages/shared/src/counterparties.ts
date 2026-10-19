@@ -1,10 +1,10 @@
 import _ from "lodash";
-import { nameKey } from "./spending.ts";
+import { counterpartyKey } from "./spending.ts";
 import type { Transaction, TransactionKind } from "./transactions.ts";
 
 /**
  * What the history says about one counterparty: where money went or where
- * it came from, i.e. a transaction name regardless of case.
+ * it came from, i.e. a transaction counterparty regardless of case.
  */
 export interface Counterparty {
     /**
@@ -33,7 +33,7 @@ export interface Counterparty {
 
 type CounterpartySource = Pick<
     Transaction,
-    "name" | "date" | "categoryId" | "kind" | "amount"
+    "counterparty" | "date" | "categoryId" | "kind" | "amount"
 >;
 
 /**
@@ -45,14 +45,16 @@ function mostFrequent<T>(values: T[]): T {
 }
 
 /**
- * Groups transactions by name into counterparties, most frequent first.
+ * Groups transactions by counterparty, most frequent first.
  */
 export function summarizeCounterparties(
     transactions: CounterpartySource[],
 ): Counterparty[] {
-    const groups = _.groupBy(_.orderBy(transactions, "date", "desc"), nameKey);
+    const groups = _.groupBy(_.orderBy(transactions, "date", "desc"), (it) =>
+        counterpartyKey(it.counterparty),
+    );
     const counterparties = Object.values(groups).map((group) => ({
-        name: group[0]!.name.trim(),
+        name: group[0]!.counterparty.trim(),
         count: group.length,
         categoryId: mostFrequent(group.map((it) => it.categoryId)),
         kind: mostFrequent(group.map((it) => it.kind)),
@@ -69,8 +71,8 @@ export function findCounterparty(
     counterparties: Counterparty[],
     name: string,
 ): Counterparty | undefined {
-    const key = nameKey({ name });
-    return counterparties.find((it) => nameKey(it) === key);
+    const key = counterpartyKey(name);
+    return counterparties.find((it) => counterpartyKey(it.name) === key);
 }
 
 /**

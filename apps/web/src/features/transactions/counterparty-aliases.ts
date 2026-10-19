@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import { nameKey } from "@finances/shared";
+import { counterpartyKey } from "@finances/shared";
 
 // What the user turned a raw counterparty (e.g. "ALDI NORD 1234 HAMBURG"
 // from a card statement) into, applied the next time the same raw name comes
@@ -26,13 +26,13 @@ function store(aliases: Record<string, string>): void {
 
 export const counterpartyAliases = {
     get(raw: string): string | undefined {
-        return load()[nameKey({ name: raw })];
+        return load()[counterpartyKey(raw)];
     },
     set(raw: string, name: string): void {
-        store({ ...load(), [nameKey({ name: raw })]: name });
+        store({ ...load(), [counterpartyKey(raw)]: name });
     },
     remove(raw: string): void {
-        store(omit(load(), nameKey({ name: raw })));
+        store(omit(load(), counterpartyKey(raw)));
     },
     clear(): void {
         store({});

@@ -9,6 +9,25 @@ import { del, get, set } from "idb-keyval";
 const QUERY_CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 /**
+ * Whether restored data, anywhere within it, still has a shape that older
+ * versions cached: transactions with a `name` instead of a `counterparty`,
+ * and the patterns named after it.
+ */
+function hasOutdatedShape(value: unknown): boolean {
+    if (Array.isArray(value)) {
+        return value.some(hasOutdatedShape);
+    }
+    if (typeof value !== "object" || value === null) {
+        return false;
+    }
+    const isOutdated =
+        ("amount" in value && "name" in value && !("counterparty" in value)) ||
+        ("kind" in value && value.kind === "recurringName") ||
+        "topName" in value;
+    return isOutdated || Object.values(value).some(hasOutdatedShape);
+}
+
+/**
  * Restores the query cache and the queue of pending changes from IndexedDB,
  * then keeps saving them. Resolves once restored, so the app can start
  * offline with the last known data and session.
@@ -46,6 +65,21 @@ export async function restoreQueryClient(
         await restored;
     } catch {
         // The persister already discarded the unreadable cache; start empty.
+    }
+
+    // Data cached by an older version in a shape this one can't render is
+    // dropped, so it's fetched again.
+    for (const query of queryClient.getQueryCache().getAll()) {
+        const [scope] = query.queryKey;
+        if (
+            (scope === "transactions" || scope === "insights") &&
+            hasOutdatedShape(query.state.data)
+        ) {
+            queryClient.removeQueries({
+                queryKey: query.queryKey,
+                exact: true,
+            });
+        }
     }
 
     // Restored mutations are not running yet. Continuing them in order lets

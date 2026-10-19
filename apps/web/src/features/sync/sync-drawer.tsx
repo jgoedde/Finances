@@ -53,7 +53,7 @@ function failureReason({ error, reason }: SyncFailure): string {
 
 function describe(transaction: Transaction): string {
     const sign = transaction.kind === "income" ? "+" : "";
-    return `${transaction.name} · ${sign}${formatCurrency(transaction.amount, getLocale())}`;
+    return `${transaction.counterparty} · ${sign}${formatCurrency(transaction.amount, getLocale())}`;
 }
 
 interface SyncDrawerProps {

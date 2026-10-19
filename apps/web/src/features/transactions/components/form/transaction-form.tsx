@@ -37,7 +37,7 @@ import { getLocale } from "#/paraglide/runtime.js";
 
 export interface TransactionFormSubmitData {
     categoryId: string;
-    name: string;
+    counterparty: string;
 
     /**
      * Always positive; `kind` decides the direction. With parts, the total
@@ -67,7 +67,7 @@ interface TransactionFormPart {
 }
 
 interface InitialFormValues {
-    name: string;
+    counterparty: string;
     description: string;
     date: Date;
     kind: TransactionKind;
@@ -86,7 +86,7 @@ interface InitialFormValues {
 /**
  * The fields that can be missing, in the order of the form.
  */
-type RequiredField = "amount" | "name" | "category";
+type RequiredField = "amount" | "counterparty" | "category";
 
 interface TransactionFormProps {
     initialValues: InitialFormValues;
@@ -114,21 +114,21 @@ export function TransactionForm({
     const categories = useCategories();
 
     const amountInputRef = useRef<HTMLInputElement>(null);
-    const nameInputRef = useRef<HTMLInputElement>(null);
+    const counterpartyInputRef = useRef<HTMLInputElement>(null);
     const categoryChipsRef = useRef<HTMLDivElement>(null);
 
     const { predict } = initialValues;
     const counterparties = useCounterparties();
 
-    // The name as it came in, e.g. "ALDI NORD 1234 HAMBURG" from a link.
-    const rawName = initialValues.name;
-    const [learnedName] = useState(() =>
-        predict && rawName.trim() !== ""
-            ? counterpartyAliases.get(rawName)
+    // The counterparty as it came in, e.g. "ALDI NORD 1234 HAMBURG" from a link.
+    const rawCounterparty = initialValues.counterparty;
+    const [learnedCounterparty] = useState(() =>
+        predict && rawCounterparty.trim() !== ""
+            ? counterpartyAliases.get(rawCounterparty)
             : undefined,
     );
     const [aliasedFrom, setAliasedFrom] = useState(
-        learnedName !== undefined ? rawName : undefined,
+        learnedCounterparty !== undefined ? rawCounterparty : undefined,
     );
     const [isMatchDismissed, setIsMatchDismissed] = useState(false);
 
@@ -141,9 +141,9 @@ export function TransactionForm({
     );
     const [description, setDescription] = useState(initialValues.description);
     const [date, setDate] = useState(initialValues.date);
-    const initialName = learnedName ?? rawName;
+    const initialCounterparty = learnedCounterparty ?? rawCounterparty;
     const initialAmountStr = initialValues.amount?.toFixed(2) ?? "";
-    const [name, setName] = useState(initialName);
+    const [counterparty, setCounterparty] = useState(initialCounterparty);
     const [amountStr, setAmountStr] = useState(initialAmountStr);
     const [shouldShowSuggestions, setShouldShowSuggestions] = useState(predict);
     const [isExceptional, setIsExceptional] = useState(
@@ -156,14 +156,16 @@ export function TransactionForm({
     const [parts, setParts] = useState<SplitPartDraft[]>([]);
     const [shouldShowSplitErrors, setShouldShowSplitErrors] = useState(false);
 
-    const known = predict ? findCounterparty(counterparties, name) : undefined;
+    const known = predict
+        ? findCounterparty(counterparties, counterparty)
+        : undefined;
     const match =
         predict &&
         !isMatchDismissed &&
         aliasedFrom === undefined &&
-        name === rawName &&
-        rawName.trim() !== ""
-            ? matchCounterparty(counterparties, rawName)
+        counterparty === rawCounterparty &&
+        rawCounterparty.trim() !== ""
+            ? matchCounterparty(counterparties, rawCounterparty)
             : undefined;
 
     const categoryId = chosenCategoryId ?? known?.categoryId;
@@ -188,7 +190,7 @@ export function TransactionForm({
 
     // Values prefilled from a link don't count as changes.
     const isDirty =
-        name !== initialName ||
+        counterparty !== initialCounterparty ||
         amountStr !== initialAmountStr ||
         chosenCategoryId !== initialValues.categoryId ||
         chosenKind !== (predict ? undefined : initialValues.kind) ||
@@ -211,11 +213,11 @@ export function TransactionForm({
     function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const trimmedName = name.trim();
+        const trimmedCounterparty = counterparty.trim();
 
         const missing: RequiredField[] = [];
         if (isNaN(total)) missing.push("amount");
-        if (trimmedName === "") missing.push("name");
+        if (trimmedCounterparty === "") missing.push("counterparty");
         if (!selectedCategory) missing.push("category");
 
         setMissingFields(missing);
@@ -225,8 +227,8 @@ export function TransactionForm({
             case "amount":
                 amountInputRef.current?.focus();
                 return;
-            case "name":
-                nameInputRef.current?.focus();
+            case "counterparty":
+                counterpartyInputRef.current?.focus();
                 return;
             case "category":
                 categoryChipsRef.current?.querySelector("button")?.focus();
@@ -262,7 +264,7 @@ export function TransactionForm({
             amount: remainder ?? total,
             categoryId: selectedCategory.id,
             kind: transactionType,
-            name: trimmedName,
+            counterparty: trimmedCounterparty,
             parts: parts.map((part) => ({
                 amount: parseAmount(part.amountStr),
                 categoryId: part.categoryId ?? selectedCategory.id,
@@ -300,9 +302,9 @@ export function TransactionForm({
         clearMissing("category");
     }
 
-    function pickName(picked: string) {
-        setName(picked);
-        clearMissing("name");
+    function pickCounterparty(picked: string) {
+        setCounterparty(picked);
+        clearMissing("counterparty");
         setShouldShowSuggestions(false);
     }
 
@@ -310,14 +312,14 @@ export function TransactionForm({
         if (!match) {
             return;
         }
-        pickName(match.name);
-        counterpartyAliases.set(rawName, match.name);
-        setAliasedFrom(rawName);
+        pickCounterparty(match.name);
+        counterpartyAliases.set(rawCounterparty, match.name);
+        setAliasedFrom(rawCounterparty);
     }
 
     function undoAlias() {
-        setName(rawName);
-        counterpartyAliases.remove(rawName);
+        setCounterparty(rawCounterparty);
+        counterpartyAliases.remove(rawCounterparty);
         setAliasedFrom(undefined);
         setIsMatchDismissed(true);
     }
@@ -418,25 +420,25 @@ export function TransactionForm({
                 </Field>
 
                 <CounterpartyField
-                    ref={nameInputRef}
+                    ref={counterpartyInputRef}
                     shouldShowSuggestions={shouldShowSuggestions}
-                    value={name}
+                    value={counterparty}
                     counterparties={counterparties}
                     onInputChange={(e) => {
-                        setName(e.target.value);
-                        clearMissing("name");
+                        setCounterparty(e.target.value);
+                        clearMissing("counterparty");
                         setAliasedFrom(undefined);
 
                         setShouldShowSuggestions(true);
                     }}
-                    onPick={pickName}
+                    onPick={pickCounterparty}
                     match={match}
                     onAcceptMatch={acceptMatch}
                     aliasedFrom={aliasedFrom}
                     onUndoAlias={undoAlias}
                     kind={transactionType}
                     error={
-                        missingFields.includes("name")
+                        missingFields.includes("counterparty")
                             ? m.transaction_counterparty_missing()
                             : undefined
                     }

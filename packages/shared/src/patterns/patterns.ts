@@ -4,7 +4,7 @@ import type { Category } from "../categories.ts";
 import { placeInTimeZone, type SpendingInput } from "../spending.ts";
 import { categoryDrift } from "./category-drift.ts";
 import type { PatternContext } from "./pattern-detector.ts";
-import { recurringName } from "./recurring-name.ts";
+import { recurringCounterparty } from "./recurring-counterparty.ts";
 import { smallPurchases } from "./small-purchases.ts";
 import { weekdayRhythm } from "./weekday-rhythm.ts";
 
@@ -20,7 +20,7 @@ const WINDOW_MONTHS = 3;
 const DETECTORS = [
     categoryDrift,
     weekdayRhythm,
-    recurringName,
+    recurringCounterparty,
     smallPurchases,
 ] as const;
 

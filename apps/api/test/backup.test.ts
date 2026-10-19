@@ -50,7 +50,7 @@ describe("backup and restore", () => {
         const { client } = await source.app.signUp("alice");
         await client("/api/transactions/t1", {
             method: "PUT",
-            body: transactionBody({ name: "Brot" }),
+            body: transactionBody({ counterparty: "Brot" }),
         });
         return source;
     }
@@ -71,7 +71,7 @@ describe("backup and restore", () => {
         const restored = await json<Transaction>(
             client("/api/transactions/t1"),
         );
-        expect(restored.name).toBe("Brot");
+        expect(restored.counterparty).toBe("Brot");
     });
 
     it("only replaces an instance with data when forced", async () => {

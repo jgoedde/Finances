@@ -20,7 +20,7 @@ export const transactionSchema = z.object({
      * Unix timestamp in milliseconds.
      */
     date: z.number().int(),
-    name: z.string().trim().min(1).max(200),
+    counterparty: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
     kind: transactionKindSchema,
 
@@ -98,7 +98,7 @@ const searchCursorSchema = z
 
 export const transactionSearchQuerySchema = z.object({
     /**
-     * Matched against name and description (case-insensitive for ASCII).
+     * Matched against counterparty and description (case-insensitive for ASCII).
      */
     q: z.string().max(200).optional(),
 

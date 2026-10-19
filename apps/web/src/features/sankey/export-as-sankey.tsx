@@ -168,7 +168,7 @@ export function ExportSankeyDialog() {
                 amount: parseFloat(s.amount) || 0,
             })),
             transactions: transactions.map((it) => ({
-                name: it.name,
+                name: it.counterparty,
                 category_id: it.categoryId,
                 amount: netSpending(it),
             })),

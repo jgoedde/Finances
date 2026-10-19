@@ -26,7 +26,7 @@ export interface TransactionsTable {
      * Unix timestamp in milliseconds.
      */
     date: number;
-    name: string;
+    counterparty: string;
     description: string | null;
     kind: TransactionKind;
     amount: number;

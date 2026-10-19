@@ -88,6 +88,7 @@ describe("data transfer", () => {
             }),
             expect.objectContaining({
                 id: "abc12345",
+                counterparty: "Pizza",
                 kind: "expense",
                 amount: 12.5,
                 categoryId: "1",
@@ -123,6 +124,25 @@ describe("data transfer", () => {
             ...exported,
             exportedAt: "",
         });
+    });
+
+    it("imports a version 1 export, whose transactions have a name", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const { counterparty, ...rest } = JSON.parse(
+            transactionBody({ counterparty: "Bäcker" }),
+        ) as Transaction;
+        const v1 = {
+            ...exported,
+            version: 1,
+            transactions: [{ ...rest, id: "t1", name: counterparty }],
+        };
+        expect((await upload(alice, JSON.stringify(v1))).status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        expect(reexported.version).toBe(2);
+        expect(reexported.transactions).toEqual([
+            { ...rest, id: "t1", counterparty: "Bäcker" },
+        ]);
     });
 
     it("only imports into an account without data", async () => {

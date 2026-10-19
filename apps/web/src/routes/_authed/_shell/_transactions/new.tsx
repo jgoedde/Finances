@@ -38,7 +38,7 @@ function RouteComponent() {
             date: data.date.getTime(),
             kind: data.kind,
             currency: "EUR",
-            name: data.name,
+            counterparty: data.counterparty,
             exceptional: data.isExceptional,
         } as const;
         const drafts = [
@@ -67,7 +67,7 @@ function RouteComponent() {
             onSubmit={onTransactionFormSubmit}
             title={m.transaction_new()}
             initialValues={{
-                name: vendor ?? "",
+                counterparty: vendor ?? "",
                 description: "",
                 date: now,
                 kind: "expense",
@@ -81,15 +81,15 @@ function RouteComponent() {
 }
 
 function savedMessage(
-    { kind, name }: TransactionFormSubmitData,
+    { kind, counterparty }: TransactionFormSubmitData,
     count: number,
 ): string {
     if (count > 1) {
         return kind === "income"
-            ? m.transaction_incomes_saved({ count, name })
-            : m.transaction_expenses_saved({ count, name });
+            ? m.transaction_incomes_saved({ count, name: counterparty })
+            : m.transaction_expenses_saved({ count, name: counterparty });
     }
     return kind === "income"
-        ? m.transaction_income_saved({ name })
-        : m.transaction_expense_saved({ name });
+        ? m.transaction_income_saved({ name: counterparty })
+        : m.transaction_expense_saved({ name: counterparty });
 }

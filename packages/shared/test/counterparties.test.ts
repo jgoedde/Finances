@@ -9,9 +9,12 @@ import type { Transaction } from "#/transactions.ts";
 
 function transaction(
     overrides: Partial<Transaction> = {},
-): Pick<Transaction, "name" | "date" | "categoryId" | "kind" | "amount"> {
+): Pick<
+    Transaction,
+    "counterparty" | "date" | "categoryId" | "kind" | "amount"
+> {
     return {
-        name: "Bäcker",
+        counterparty: "Bäcker",
         date: new Date(2026, 9, 18, 8).getTime(),
         categoryId: "food",
         kind: "expense",
@@ -23,8 +26,8 @@ function transaction(
 describe("summarizeCounterparties", () => {
     it("groups names regardless of case and keeps the newest spelling", () => {
         const [counterparty] = summarizeCounterparties([
-            transaction({ name: "aldi nord", date: 1 }),
-            transaction({ name: "Aldi Nord ", date: 2, amount: 20 }),
+            transaction({ counterparty: "aldi nord", date: 1 }),
+            transaction({ counterparty: "Aldi Nord ", date: 2, amount: 20 }),
         ]);
         expect(counterparty).toMatchObject({
             name: "Aldi Nord",
@@ -52,9 +55,9 @@ describe("summarizeCounterparties", () => {
 
     it("sorts the most frequent first", () => {
         const names = summarizeCounterparties([
-            transaction({ name: "Rewe" }),
-            transaction({ name: "Aldi" }),
-            transaction({ name: "Aldi" }),
+            transaction({ counterparty: "Rewe" }),
+            transaction({ counterparty: "Aldi" }),
+            transaction({ counterparty: "Aldi" }),
         ]).map((it) => it.name);
         expect(names).toEqual(["Aldi", "Rewe"]);
     });
@@ -63,7 +66,7 @@ describe("summarizeCounterparties", () => {
 describe("findCounterparty", () => {
     it("finds a counterparty regardless of case", () => {
         const counterparties = summarizeCounterparties([
-            transaction({ name: "Aldi Nord" }),
+            transaction({ counterparty: "Aldi Nord" }),
         ]);
         expect(findCounterparty(counterparties, " ALDI NORD")?.name).toBe(
             "Aldi Nord",
@@ -78,15 +81,15 @@ describe("rankCounterparties", () => {
         const now = new Date(2026, 9, 18, 8);
         const counterparties = summarizeCounterparties([
             transaction({
-                name: "Bar",
+                counterparty: "Bar",
                 date: new Date(2026, 9, 16, 23).getTime(),
             }),
             transaction({
-                name: "Bar",
+                counterparty: "Bar",
                 date: new Date(2026, 9, 15, 23).getTime(),
             }),
             transaction({
-                name: "Bäcker",
+                counterparty: "Bäcker",
                 date: new Date(2026, 9, 11, 8).getTime(),
             }),
         ]);
@@ -99,9 +102,9 @@ describe("rankCounterparties", () => {
 
 describe("matchCounterparty", () => {
     const counterparties = summarizeCounterparties([
-        transaction({ name: "Aldi" }),
-        transaction({ name: "Aldi Nord" }),
-        transaction({ name: "Rewe" }),
+        transaction({ counterparty: "Aldi" }),
+        transaction({ counterparty: "Aldi Nord" }),
+        transaction({ counterparty: "Rewe" }),
     ]);
 
     it("matches the most specific counterparty within the raw name", () => {

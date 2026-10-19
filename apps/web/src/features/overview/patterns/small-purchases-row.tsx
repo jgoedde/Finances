@@ -22,8 +22,11 @@ export function SmallPurchasesRow({ pattern }: SmallPurchasesRowProps) {
 
     return (
         <PatternRowLayout icon={<Coins />}>
-            {pattern.topName
-                ? m.pattern_small_top({ ...values, name: pattern.topName })
+            {pattern.topCounterparty
+                ? m.pattern_small_top({
+                      ...values,
+                      name: pattern.topCounterparty,
+                  })
                 : m.pattern_small(values)}
         </PatternRowLayout>
     );

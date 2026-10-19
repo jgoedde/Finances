@@ -41,7 +41,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 1,
+        version: 2,
         exportedAt: new Date().toISOString(),
         categories: categories.map((c) => ({
             id: c.id,
@@ -188,7 +188,7 @@ export async function replaceData(
                         user_id: userId,
                         id: t.id,
                         date: t.date,
-                        name: t.name,
+                        counterparty: t.counterparty,
                         description: t.description,
                         kind: t.kind,
                         amount: t.amount,

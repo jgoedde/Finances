@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
         meta: [
             {
                 title: m.page_title({
-                    page: loaderData?.name ?? m.transaction_edit(),
+                    page: loaderData?.counterparty ?? m.transaction_edit(),
                 }),
             },
         ],
@@ -65,7 +65,7 @@ function RouteComponent() {
             categoryId: updated.categoryId,
             kind: updated.kind,
             amount: updated.amount,
-            name: updated.name,
+            counterparty: updated.counterparty,
             description: updated.description,
             date: updated.date.getTime(),
             exceptional: updated.isExceptional,
@@ -107,7 +107,7 @@ function RouteComponent() {
                 isExceptional: transaction.exceptional,
                 date: new Date(transaction.date),
                 description: transaction.description ?? "",
-                name: transaction.name,
+                counterparty: transaction.counterparty,
                 amount: transaction.amount,
                 categoryId: transaction.categoryId,
                 kind: transaction.kind,
