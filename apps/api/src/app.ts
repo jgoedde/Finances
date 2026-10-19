@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import type { Auth } from "./auth/auth.ts";
 import type { DB } from "./db/database.ts";
 import {
@@ -17,7 +18,12 @@ export function createApp(db: DB, auth: Auth) {
 
     // Replaces Hono's default handler, which writes to `console.error`; the
     // request logger logs the error (`c.error`) with the request line.
-    app.onError((_error, c) => c.text("Internal Server Error", 500));
+    // Hono's own errors (e.g. malformed JSON, 400) keep their status.
+    app.onError((error, c) =>
+        error instanceof HTTPException
+            ? c.json({ error: "invalid_request" }, error.status)
+            : c.text("Internal Server Error", 500),
+    );
 
     // Endpoints take their dependencies from the context.
     app.use(async (c, next) => {

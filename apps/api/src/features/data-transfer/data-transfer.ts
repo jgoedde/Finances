@@ -5,10 +5,6 @@ import {
     toLocationColumns,
     toTransaction,
 } from "#/features/transactions/transactions.ts";
-import {
-    isSqliteFile,
-    readLegacyDatabase,
-} from "#/features/data-transfer/legacy-database.ts";
 
 /**
  * All of the user's data in the export format.
@@ -211,14 +207,4 @@ export async function replaceData(
         fixedCosts: data.fixedCosts.length,
         transactions: data.transactions.length,
     };
-}
-
-/**
- * A JSON export or a legacy `.db` file, as uploaded.
- */
-export function parseUpload(bytes: Uint8Array): unknown {
-    if (isSqliteFile(bytes)) {
-        return readLegacyDatabase(bytes);
-    }
-    return JSON.parse(new TextDecoder().decode(bytes));
 }

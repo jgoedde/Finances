@@ -323,20 +323,6 @@ export const api_error_forbidden: ((inputs?: Api_Error_ForbiddenInputs, options?
 /**
 * | output |
 * | --- |
-* | "The file is not a valid backup." |
-*
-* @param {Api_Error_Invalid_FileInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const api_error_invalid_file: ((inputs?: Api_Error_Invalid_FileInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Api_Error_Invalid_FileInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "This link is invalid, has expired or has already been used." |
 *
 * @param {Api_Error_Invalid_LinkInputs} inputs
@@ -2200,7 +2186,7 @@ export const settings_export_failed: ((inputs?: Settings_Export_FailedInputs, op
 /**
 * | output |
 * | --- |
-* | "Import an export or a backup of the old app (.db). This replaces your categories. If your account already has transactions or fixed costs, you can replace ev..." |
+* | "Import an export. This replaces your categories. If your account already has transactions or fixed costs, you can replace everything with the file." |
 *
 * @param {Settings_Import_DescriptionInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -2223,6 +2209,20 @@ export const settings_import_description: ((inputs?: Settings_Import_Description
 export const settings_import_failed: ((inputs?: Settings_Import_FailedInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Settings_Import_FailedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "The file is not a valid backup." |
+*
+* @param {Settings_Import_Invalid_FileInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_import_invalid_file: ((inputs?: Settings_Import_Invalid_FileInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Settings_Import_Invalid_FileInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3319,7 +3319,6 @@ export type Action_UpdateInputs = {};
 export type Api_Error_Account_Not_EmptyInputs = {};
 export type Api_Error_File_Too_LargeInputs = {};
 export type Api_Error_ForbiddenInputs = {};
-export type Api_Error_Invalid_FileInputs = {};
 export type Api_Error_Invalid_LinkInputs = {};
 export type Api_Error_Invalid_RequestInputs = {};
 export type Api_Error_Not_FoundInputs = {};
@@ -3497,6 +3496,7 @@ export type Settings_Export_DescriptionInputs = {};
 export type Settings_Export_FailedInputs = {};
 export type Settings_Import_DescriptionInputs = {};
 export type Settings_Import_FailedInputs = {};
+export type Settings_Import_Invalid_FileInputs = {};
 export type Settings_Import_Invalid_File_DetailInputs = {
     issue: NonNullable<unknown>;
 };

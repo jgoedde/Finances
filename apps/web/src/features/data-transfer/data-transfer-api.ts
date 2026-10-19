@@ -1,5 +1,5 @@
 import type { ImportResult } from "@finances/shared";
-import { ApiError } from "#/api/api-client.ts";
+import { ApiError, apiFetch } from "#/api/api-client.ts";
 
 async function throwIfFailed(response: Response): Promise<void> {
     if (!response.ok) {
@@ -32,20 +32,32 @@ export async function downloadExport(): Promise<void> {
 }
 
 /**
- * Uploads a JSON export or a legacy `.db` file. Without `replace` the account
- * must be empty (409 otherwise); with it, all existing data is replaced.
+ * The file isn't JSON, so it can't be an export.
+ */
+export class UnreadableFileError extends Error {
+    constructor() {
+        super("The file is not JSON");
+        this.name = "UnreadableFileError";
+    }
+}
+
+/**
+ * Uploads an export; the API validates it. Without `replace` the account must
+ * be empty (409 otherwise); with it, all existing data is replaced.
  */
 export async function importFile(
     file: File,
     { replace = false } = {},
 ): Promise<ImportResult> {
+    let data: unknown;
+    try {
+        data = JSON.parse(await file.text());
+    } catch {
+        throw new UnreadableFileError();
+    }
     const query = replace ? "?replace=true" : "";
-    const response = await fetch(`/api/data/import${query}`, {
+    return apiFetch<ImportResult>(`/data/import${query}`, {
         method: "POST",
-        credentials: "same-origin",
-        headers: { "content-type": "application/octet-stream" },
-        body: file,
+        body: data,
     });
-    await throwIfFailed(response);
-    return (await response.json()) as ImportResult;
 }

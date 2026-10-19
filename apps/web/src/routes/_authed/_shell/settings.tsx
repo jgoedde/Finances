@@ -14,6 +14,7 @@ import { apiErrorCode, apiErrorMessage } from "#/api/api-errors.ts";
 import {
     downloadExport,
     importFile,
+    UnreadableFileError,
 } from "#/features/data-transfer/data-transfer-api.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale, type Locale, locales } from "#/paraglide/runtime.js";
@@ -46,9 +47,12 @@ function firstIssue(body: unknown): string | undefined {
 }
 
 function importErrorMessage(error: unknown): string {
+    if (error instanceof UnreadableFileError) {
+        return m.settings_import_invalid_file();
+    }
     const code = apiErrorCode(error);
     const issue =
-        error instanceof ApiError && code === "invalid_file"
+        error instanceof ApiError && code === "invalid_request"
             ? firstIssue(error.body)
             : undefined;
     if (issue) {
@@ -56,7 +60,7 @@ function importErrorMessage(error: unknown): string {
     }
     // The file references a category it doesn't contain.
     if (code === "unknown_category") {
-        return m.api_error_invalid_file();
+        return m.settings_import_invalid_file();
     }
     return apiErrorMessage(code) ?? m.settings_import_failed();
 }
@@ -219,7 +223,7 @@ function RouteComponent() {
                     <input
                         ref={fileInputRef}
                         type={"file"}
-                        accept={".json,.db,application/json"}
+                        accept={".json,application/json"}
                         className={"hidden"}
                         onChange={handleFileChange}
                     />
