@@ -30,6 +30,12 @@ export async function createTestApp({
     const config = {
         secret: "test-secret-that-is-long-enough-123",
         baseURL: BASE_URL,
+        // Plain text instead of scrypt, which would dominate the test time.
+        password: {
+            hash: (password: string) => Promise.resolve(password),
+            verify: ({ hash, password }: { hash: string; password: string }) =>
+                Promise.resolve(hash === password),
+        },
     };
     await migrate(db, authOptions(db, config));
     const auth = createAuth(db, config);

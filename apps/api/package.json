@@ -10,7 +10,7 @@
         "build": "tsc -b",
         "test": "vitest run",
         "cli": "node --env-file-if-exists=.env src/cli/index.ts",
-        "lint": "eslint ."
+        "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
         "@finances/shared": "*",
