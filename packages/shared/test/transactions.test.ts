@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
     matchesListQuery,
     netSpending,
+    splitRemainder,
     type Transaction,
 } from "#/transactions.ts";
 
@@ -69,5 +70,20 @@ describe("matchesListQuery filters", () => {
         expect(
             matchesListQuery(groceries, { ...all, excludeExceptional: true }),
         ).toBe(true);
+    });
+});
+
+describe("splitRemainder", () => {
+    it("leaves the total minus the parts for the main transaction", () => {
+        expect(splitRemainder(50, [12])).toBe(38);
+    });
+
+    it("rounds to cents", () => {
+        expect(splitRemainder(50, [12.3, 0.1])).toBe(37.6);
+    });
+
+    it("goes to zero or below when the parts cover the total", () => {
+        expect(splitRemainder(50, [30, 20])).toBe(0);
+        expect(splitRemainder(50, [30, 25.5])).toBe(-5.5);
     });
 });

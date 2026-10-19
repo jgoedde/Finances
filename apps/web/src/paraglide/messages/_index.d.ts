@@ -2929,6 +2929,20 @@ export const transaction_expense_saved: ((inputs: Transaction_Expense_SavedInput
 /**
 * | output |
 * | --- |
+* | "{count} expenses at {name} saved" |
+*
+* @param {Transaction_Expenses_SavedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_expenses_saved: ((inputs: Transaction_Expenses_SavedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Expenses_SavedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Track" |
 *
 * @param {Transaction_FabInputs} inputs
@@ -2966,6 +2980,20 @@ export const transaction_income_deleted: ((inputs?: Transaction_Income_DeletedIn
 export const transaction_income_saved: ((inputs: Transaction_Income_SavedInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Income_SavedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "{count} incomes from {name} saved" |
+*
+* @param {Transaction_Incomes_SavedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_incomes_saved: ((inputs: Transaction_Incomes_SavedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Incomes_SavedInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3050,6 +3078,76 @@ export const transaction_no_description: ((inputs?: Transaction_No_DescriptionIn
 export const transaction_not_found: ((inputs?: Transaction_Not_FoundInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Not_FoundInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Split" |
+*
+* @param {Transaction_SplitInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split: ((inputs?: Transaction_SplitInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_SplitInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Description (optional)" |
+*
+* @param {Transaction_Split_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_description: ((inputs?: Transaction_Split_DescriptionInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_DescriptionInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Remaining for the main category: {amount}" |
+*
+* @param {Transaction_Split_RemainderInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remainder: ((inputs: Transaction_Split_RemainderInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_RemainderInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Remove part" |
+*
+* @param {Transaction_Split_RemoveInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_remove: ((inputs?: Transaction_Split_RemoveInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_RemoveInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "The parts must add up to less than the total." |
+*
+* @param {Transaction_Split_Too_MuchInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_split_too_much: ((inputs?: Transaction_Split_Too_MuchInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Transaction_Split_Too_MuchInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3346,9 +3444,17 @@ export type Transaction_Expense_DeletedInputs = {};
 export type Transaction_Expense_SavedInputs = {
     name: NonNullable<unknown>;
 };
+export type Transaction_Expenses_SavedInputs = {
+    count: NonNullable<unknown>;
+    name: NonNullable<unknown>;
+};
 export type Transaction_FabInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = {
+    name: NonNullable<unknown>;
+};
+export type Transaction_Incomes_SavedInputs = {
+    count: NonNullable<unknown>;
     name: NonNullable<unknown>;
 };
 export type Transaction_List_EmptyInputs = {
@@ -3359,4 +3465,11 @@ export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};
+export type Transaction_SplitInputs = {};
+export type Transaction_Split_DescriptionInputs = {};
+export type Transaction_Split_RemainderInputs = {
+    amount: NonNullable<unknown>;
+};
+export type Transaction_Split_RemoveInputs = {};
+export type Transaction_Split_Too_MuchInputs = {};
 export type Transaction_UpdatedInputs = {};

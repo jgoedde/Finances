@@ -209,15 +209,22 @@
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Expenses_SavedInputs */
 /** @typedef {{}} Transaction_FabInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_TodayInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
+/** @typedef {{}} Transaction_SplitInputs */
+/** @typedef {{}} Transaction_Split_DescriptionInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
+/** @typedef {{}} Transaction_Split_RemoveInputs */
+/** @typedef {{}} Transaction_Split_Too_MuchInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
 import * as registry from "../registry.js"
 
@@ -1062,6 +1069,10 @@ export const transaction_expense_saved = /** @type {(inputs: Transaction_Expense
 	return /** @type {LocalizedString} */ (`Expense at ${i?.name} saved`)
 };
 
+export const transaction_expenses_saved = /** @type {(inputs: Transaction_Expenses_SavedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} expenses at ${i?.name} saved`)
+};
+
 export const transaction_fab = /** @type {(inputs: Transaction_FabInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Track`)
 };
@@ -1072,6 +1083,10 @@ export const transaction_income_deleted = /** @type {(inputs: Transaction_Income
 
 export const transaction_income_saved = /** @type {(inputs: Transaction_Income_SavedInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`Income from ${i?.name} saved`)
+};
+
+export const transaction_incomes_saved = /** @type {(inputs: Transaction_Incomes_SavedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.count} incomes from ${i?.name} saved`)
 };
 
 export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
@@ -1096,6 +1111,26 @@ export const transaction_no_description = /** @type {(inputs: Transaction_No_Des
 
 export const transaction_not_found = /** @type {(inputs: Transaction_Not_FoundInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Transaction not found.`)
+};
+
+export const transaction_split = /** @type {(inputs: Transaction_SplitInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Split`)
+};
+
+export const transaction_split_description = /** @type {(inputs: Transaction_Split_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Description (optional)`)
+};
+
+export const transaction_split_remainder = /** @type {(inputs: Transaction_Split_RemainderInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Remaining for the main category: ${i?.amount}`)
+};
+
+export const transaction_split_remove = /** @type {(inputs: Transaction_Split_RemoveInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Remove part`)
+};
+
+export const transaction_split_too_much = /** @type {(inputs: Transaction_Split_Too_MuchInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The parts must add up to less than the total.`)
 };
 
 export const transaction_updated = /** @type {(inputs: Transaction_UpdatedInputs) => LocalizedString} */ () => {
