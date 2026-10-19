@@ -303,6 +303,9 @@
     --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
     --ease-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
     --ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+    /* Hints that the month title can be swiped (`animate-month-peek`). */
+    --animate-month-peek: month-peek 1200ms var(--ease-emphasized) 600ms both;
 }
 
 @layer base {
@@ -384,6 +387,12 @@
     animation: ripple-animation 600ms linear;
     opacity: 0.5;
     pointer-events: none;
+}
+
+@keyframes month-peek {
+    40% {
+        transform: translateX(2.5rem);
+    }
 }
 
 @keyframes ripple-animation {

@@ -211,6 +211,9 @@
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Expenses_SavedInputs */
 /** @typedef {{}} Transaction_FabInputs */
+/** @typedef {{}} Transaction_FilterInputs */
+/** @typedef {{ category: NonNullable<unknown> }} Transaction_Filter_ActiveInputs */
+/** @typedef {{}} Transaction_Filter_AllInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
@@ -1078,6 +1081,18 @@ export const transaction_expenses_saved = /** @type {(inputs: Transaction_Expens
 
 export const transaction_fab = /** @type {(inputs: Transaction_FabInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Track`)
+};
+
+export const transaction_filter = /** @type {(inputs: Transaction_FilterInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Filter by category`)
+};
+
+export const transaction_filter_active = /** @type {(inputs: Transaction_Filter_ActiveInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Category filter active: ${i?.category}`)
+};
+
+export const transaction_filter_all = /** @type {(inputs: Transaction_Filter_AllInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`All categories`)
 };
 
 export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {

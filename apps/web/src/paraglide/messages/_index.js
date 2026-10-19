@@ -213,6 +213,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Expense_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Expenses_SavedInputs */
 /** @typedef {{}} Transaction_FabInputs */
+/** @typedef {{}} Transaction_FilterInputs */
+/** @typedef {{ category: NonNullable<unknown> }} Transaction_Filter_ActiveInputs */
+/** @typedef {{}} Transaction_Filter_AllInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
@@ -3188,6 +3191,48 @@ export const transaction_fab = /** @type {((inputs?: Transaction_FabInputs, opti
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_fab(inputs)
 	return __en.transaction_fab(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Filter by category" |
+*
+* @param {Transaction_FilterInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_filter = /** @type {((inputs?: Transaction_FilterInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_FilterInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_filter(inputs)
+	return __en.transaction_filter(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Category filter active: {category}" |
+*
+* @param {Transaction_Filter_ActiveInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_filter_active = /** @type {((inputs: Transaction_Filter_ActiveInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Filter_ActiveInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_filter_active(inputs)
+	return __en.transaction_filter_active(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "All categories" |
+*
+* @param {Transaction_Filter_AllInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_filter_all = /** @type {((inputs?: Transaction_Filter_AllInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Filter_AllInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_filter_all(inputs)
+	return __en.transaction_filter_all(inputs)
 });
 /**
 * | output |
