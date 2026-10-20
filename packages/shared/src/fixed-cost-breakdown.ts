@@ -2,7 +2,7 @@ import { groupBy, partition, sumBy } from "lodash";
 import {
     type FixedCost,
     getMonthlyAmount,
-    isRunningOn,
+    isRunningBetween,
 } from "#/fixed-costs.ts";
 
 /**
@@ -45,17 +45,19 @@ export interface FixedCostCategoryShare {
 
 /**
  * Groups the fixed costs by fixed cost category, largest monthly amount
- * first. Only fixed costs running on `day` (`YYYY-MM-DD`) count: shares are
+ * first. Only fixed costs running on at least one day from `from` to `to`
+ * (`YYYY-MM-DD`, both included; a single day by default) count: shares are
  * of their monthly total, so they add up to 1 (or are all 0 when that total
  * is 0). The others follow in their group without a share, and groups
  * without running fixed costs come last. Ties are ordered by name.
  */
 export function groupByFixedCostCategory(
     fixedCosts: FixedCost[],
-    day: string,
+    from: string,
+    to: string = from,
 ): FixedCostCategoryShare[] {
     const [running, stopped] = partition(fixedCosts, (it) =>
-        isRunningOn(it, day),
+        isRunningBetween(it, from, to),
     );
     const total = sumBy(running, getMonthlyAmount);
     // Fixed costs may cost 0, so the total may be 0.

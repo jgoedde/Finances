@@ -62,6 +62,36 @@ describe("groupByFixedCostCategory", () => {
         ]);
     });
 
+    it("counts the fixed costs running on at least one day of a range", () => {
+        const groups = groupByFixedCostCategory(
+            [
+                fixedCost({ id: "rent", categoryId: "housing", amount: 300 }),
+                fixedCost({
+                    id: "ended",
+                    categoryId: "media",
+                    endDate: "2026-06-03",
+                }),
+                fixedCost({
+                    id: "later",
+                    categoryId: "mobility",
+                    startDate: "2026-06-28",
+                }),
+                fixedCost({ id: "next", startDate: "2026-07-01" }),
+                fixedCost({ id: "past", endDate: "2026-05-31" }),
+            ],
+            "2026-06-01",
+            "2026-06-30",
+        );
+
+        expect(
+            groups.map((g) => [g.categoryId, g.monthlyAmount, g.share]),
+        ).toEqual([
+            ["housing", 300, 0.6],
+            ["media", 100, 0.2],
+            ["mobility", 100, 0.2],
+        ]);
+    });
+
     it("lists fixed costs not running on the day without a share, after the running ones", () => {
         const housing = groupByFixedCostCategory(
             [

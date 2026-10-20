@@ -131,6 +131,45 @@ describe("month overview", () => {
         expect(fixedCosts).toBe(22);
     });
 
+    it("breaks the fixed costs running in the month down by fixed cost category, largest first", async () => {
+        await addFixedCost({ amount: 12 });
+        await addFixedCost({ name: "Power", amount: 3 });
+        await addFixedCost({
+            name: "Liability",
+            amount: 240,
+            interval: "yearly",
+            categoryId: "7",
+            startDate: "2026-10-31",
+        });
+        await addFixedCost({ categoryId: "7", endDate: "2026-09-30" });
+        await addFixedCost({ categoryId: "9", active: false });
+
+        const { fixedCosts, fixedCostCategories } = await json<MonthOverview>(
+            overview(alice, "2026-10"),
+        );
+
+        expect(fixedCosts).toBe(35);
+        expect(fixedCostCategories).toEqual([
+            {
+                categoryId: "7",
+                categoryName: "Versicherungen",
+                total: 20,
+                fixedCosts: [
+                    { id: expect.any(String), name: "Liability", total: 20 },
+                ],
+            },
+            {
+                categoryId: "1",
+                categoryName: "Miete / Wohnung",
+                total: 15,
+                fixedCosts: [
+                    { id: expect.any(String), name: "Rent", total: 12 },
+                    { id: expect.any(String), name: "Power", total: 3 },
+                ],
+            },
+        ]);
+    });
+
     it("trends twelve months without exceptional transactions", async () => {
         const { trend } = await json<MonthOverview>(overview(alice, "2026-10"));
 

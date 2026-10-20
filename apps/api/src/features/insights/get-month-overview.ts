@@ -15,25 +15,31 @@ export const getMonthOverview = factory.createHandlers(
         const { month, timeZone } = c.req.valid("query");
         const { from, to } = overviewWindow(month);
 
-        const [transactions, categories, fixedCosts] = await Promise.all([
-            db
-                .selectFrom("transactions")
-                .selectAll()
-                .where("user_id", "=", userId)
-                .where("date", ">=", from)
-                .where("date", "<", to)
-                .execute(),
-            db
-                .selectFrom("categories")
-                .select(["id", "name", "color", "icon_name"])
-                .where("user_id", "=", userId)
-                .execute(),
-            db
-                .selectFrom("fixed_costs")
-                .selectAll()
-                .where("user_id", "=", userId)
-                .execute(),
-        ]);
+        const [transactions, categories, fixedCosts, fixedCostCategories] =
+            await Promise.all([
+                db
+                    .selectFrom("transactions")
+                    .selectAll()
+                    .where("user_id", "=", userId)
+                    .where("date", ">=", from)
+                    .where("date", "<", to)
+                    .execute(),
+                db
+                    .selectFrom("categories")
+                    .select(["id", "name", "color", "icon_name"])
+                    .where("user_id", "=", userId)
+                    .execute(),
+                db
+                    .selectFrom("fixed_costs")
+                    .selectAll()
+                    .where("user_id", "=", userId)
+                    .execute(),
+                db
+                    .selectFrom("fixed_cost_categories")
+                    .select(["id", "name"])
+                    .where("user_id", "=", userId)
+                    .execute(),
+            ]);
 
         return c.json(
             buildMonthOverview({
@@ -43,6 +49,7 @@ export const getMonthOverview = factory.createHandlers(
                 transactions: transactions.map(toTransaction),
                 categories,
                 fixedCosts: fixedCosts.map(toFixedCost),
+                fixedCostCategories,
             }),
         );
     },

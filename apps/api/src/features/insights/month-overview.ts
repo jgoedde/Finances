@@ -2,7 +2,8 @@ import _ from "lodash";
 import {
     type CategoryOverview,
     type FixedCost,
-    getMonthlyAmount,
+    type FixedCostCategoryOverview,
+    groupByFixedCostCategory,
     type DatedTransaction,
     lastDayOf,
     median,
@@ -14,7 +15,7 @@ import {
     sumNetSpending,
     toIsoDate,
 } from "@finances/shared";
-import type { CategoriesTable } from "#/db/schema.ts";
+import type { CategoriesTable, FixedCostCategoriesTable } from "#/db/schema.ts";
 import { loadWindow } from "#/features/insights/insights.ts";
 
 // Pure: the endpoint loads the rows, this aggregates them.
@@ -54,6 +55,7 @@ interface MonthOverviewInput {
     transactions: SpendingInput[];
     categories: Pick<CategoriesTable, "id" | "name" | "color" | "icon_name">[];
     fixedCosts: FixedCost[];
+    fixedCostCategories: Pick<FixedCostCategoriesTable, "id" | "name">[];
 }
 
 /**
@@ -66,6 +68,7 @@ export function buildMonthOverview({
     transactions: rows,
     categories: categoryRows,
     fixedCosts: allFixedCosts,
+    fixedCostCategories: fixedCostCategoryRows,
 }: MonthOverviewInput): MonthOverview {
     const firstMonth = shiftMonth(month, -(TREND_MONTHS - 1));
     const transactions = placeInTimeZone(rows, timeZone);
@@ -119,18 +122,25 @@ export function buildMonthOverview({
         "desc",
     );
 
-    const firstDay = `${month}-01`;
-    const lastDay = lastDayOf(month);
-    const fixedCosts = _.sumBy(
-        // Running on at least one day of the month.
-        allFixedCosts.filter(
-            (fixedCost) =>
-                fixedCost.active &&
-                fixedCost.startDate <= lastDay &&
-                (fixedCost.endDate === null || fixedCost.endDate >= firstDay),
-        ),
-        getMonthlyAmount,
-    );
+    const fixedCostCategories: FixedCostCategoryOverview[] =
+        groupByFixedCostCategory(allFixedCosts, `${month}-01`, lastDayOf(month))
+            // Not running in the month: counts nowhere.
+            .filter((group) => group.share !== null)
+            .map((group) => ({
+                categoryId: group.categoryId,
+                categoryName:
+                    fixedCostCategoryRows.find(
+                        (row) => row.id === group.categoryId,
+                    )?.name ?? "",
+                total: roundToCents(group.monthlyAmount),
+                fixedCosts: group.fixedCosts
+                    .filter((it) => it.share !== null)
+                    .map((it) => ({
+                        id: it.fixedCost.id,
+                        name: it.fixedCost.name,
+                        total: roundToCents(it.monthlyAmount),
+                    })),
+            }));
 
     const exceptional = inMonth.filter((t) => t.exceptional);
     return {
@@ -162,7 +172,10 @@ export function buildMonthOverview({
             ),
             typical: typicalOf(() => true),
         },
-        fixedCosts: roundToCents(fixedCosts),
+        fixedCosts: roundToCents(
+            _.sumBy(fixedCostCategories, (group) => group.total),
+        ),
+        fixedCostCategories,
         categories,
         trend: _.range(TREND_MONTHS).map((i) => {
             const m = shiftMonth(firstMonth, i);
