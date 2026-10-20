@@ -1442,6 +1442,77 @@ export const overview_fixed_costs: ((inputs?: Overview_Fixed_CostsInputs, option
     locale?: "en" | "de";
 }, {}>;
 /**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "Excl. {count} exceptional transaction ({amount})" |
+* | "other" | "Excl. {count} exceptional transactions ({amount})" |
+*
+* @param {Overview_Gross_Outflow_ExceptionalInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_exceptional: ((inputs: Overview_Gross_Outflow_ExceptionalInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Overview_Gross_Outflow_ExceptionalInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Fixed costs and spending, without income" |
+*
+* @param {Overview_Gross_Outflow_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_hint: ((inputs?: Overview_Gross_Outflow_HintInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Overview_Gross_Outflow_HintInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "So far this month" |
+*
+* @param {Overview_Gross_Outflow_So_FarInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_so_far: ((inputs?: Overview_Gross_Outflow_So_FarInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Overview_Gross_Outflow_So_FarInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Spending" |
+*
+* @param {Overview_Gross_Outflow_SpendingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_spending: ((inputs?: Overview_Gross_Outflow_SpendingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Overview_Gross_Outflow_SpendingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Where the money goes" |
+*
+* @param {Overview_Gross_Outflow_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_title: ((inputs?: Overview_Gross_Outflow_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Overview_Gross_Outflow_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
 * | output |
 * | --- |
 * | "Income" |
@@ -3420,6 +3491,14 @@ export type Overview_ExceptionalInputs = {
 };
 export type Overview_ExpensesInputs = {};
 export type Overview_Fixed_CostsInputs = {};
+export type Overview_Gross_Outflow_ExceptionalInputs = {
+    count: NonNullable<unknown>;
+    amount: NonNullable<unknown>;
+};
+export type Overview_Gross_Outflow_HintInputs = {};
+export type Overview_Gross_Outflow_So_FarInputs = {};
+export type Overview_Gross_Outflow_SpendingInputs = {};
+export type Overview_Gross_Outflow_TitleInputs = {};
 export type Overview_IncomeInputs = {};
 export type Overview_Net_SpendingInputs = {};
 export type Overview_Pace_Above_DayInputs = {

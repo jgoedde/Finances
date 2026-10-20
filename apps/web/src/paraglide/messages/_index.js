@@ -105,6 +105,11 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
 /** @typedef {{}} Overview_ExpensesInputs */
 /** @typedef {{}} Overview_Fixed_CostsInputs */
+/** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_Gross_Outflow_ExceptionalInputs */
+/** @typedef {{}} Overview_Gross_Outflow_HintInputs */
+/** @typedef {{}} Overview_Gross_Outflow_So_FarInputs */
+/** @typedef {{}} Overview_Gross_Outflow_SpendingInputs */
+/** @typedef {{}} Overview_Gross_Outflow_TitleInputs */
 /** @typedef {{}} Overview_IncomeInputs */
 /** @typedef {{}} Overview_Net_SpendingInputs */
 /** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Above_DayInputs */
@@ -1682,6 +1687,77 @@ export const overview_fixed_costs = /** @type {((inputs?: Overview_Fixed_CostsIn
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.overview_fixed_costs(inputs)
 	return __en.overview_fixed_costs(inputs)
+});
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "Excl. {count} exceptional transaction ({amount})" |
+* | "other" | "Excl. {count} exceptional transactions ({amount})" |
+*
+* @param {Overview_Gross_Outflow_ExceptionalInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_exceptional = /** @type {((inputs: Overview_Gross_Outflow_ExceptionalInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Gross_Outflow_ExceptionalInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_gross_outflow_exceptional(inputs)
+	return __en.overview_gross_outflow_exceptional(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Fixed costs and spending, without income" |
+*
+* @param {Overview_Gross_Outflow_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_hint = /** @type {((inputs?: Overview_Gross_Outflow_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Gross_Outflow_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_gross_outflow_hint(inputs)
+	return __en.overview_gross_outflow_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "So far this month" |
+*
+* @param {Overview_Gross_Outflow_So_FarInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_so_far = /** @type {((inputs?: Overview_Gross_Outflow_So_FarInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Gross_Outflow_So_FarInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_gross_outflow_so_far(inputs)
+	return __en.overview_gross_outflow_so_far(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Spending" |
+*
+* @param {Overview_Gross_Outflow_SpendingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_spending = /** @type {((inputs?: Overview_Gross_Outflow_SpendingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Gross_Outflow_SpendingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_gross_outflow_spending(inputs)
+	return __en.overview_gross_outflow_spending(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Where the money goes" |
+*
+* @param {Overview_Gross_Outflow_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_gross_outflow_title = /** @type {((inputs?: Overview_Gross_Outflow_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Gross_Outflow_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_gross_outflow_title(inputs)
+	return __en.overview_gross_outflow_title(inputs)
 });
 /**
 * | output |

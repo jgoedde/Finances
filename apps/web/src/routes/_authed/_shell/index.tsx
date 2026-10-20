@@ -6,6 +6,7 @@ import { useSelectedMonth } from "#/features/month/month.ts";
 import { useMonthOverview } from "#/features/overview/overview-queries.ts";
 import { MonthHero } from "#/features/overview/month-hero.tsx";
 import { IncomeExpensesCard } from "#/features/overview/income-expenses-card.tsx";
+import { GrossOutflowCard } from "#/features/overview/gross-outflow/gross-outflow-card.tsx";
 import { CategoryBarsCard } from "#/features/overview/category-bars-card.tsx";
 import { TrendCard } from "#/features/overview/trend-card.tsx";
 import { PatternsCard } from "#/features/overview/patterns/patterns-card.tsx";
@@ -29,7 +30,7 @@ function RouteComponent() {
                 actions={<AccountMenu className={"medium:hidden"} />}
             />
             {/* Compact and medium: one column in reading order. Expanded:
-                hero and categories left, patterns and trend right. */}
+                hero, gross outflow and categories left, patterns and trend right. */}
             <main
                 className={`mx-auto grid w-full max-w-6xl gap-3 px-3 pb-24
                     medium:pb-6 expanded:grid-cols-2 expanded:items-start`}
@@ -38,6 +39,7 @@ function RouteComponent() {
                     <>
                         <div className={"flex min-w-0 flex-col gap-3"}>
                             <MonthHero overview={overview} />
+                            <GrossOutflowCard overview={overview} />
                             <IncomeExpensesCard overview={overview} />
                             <CategoryBarsCard overview={overview} />
                         </div>

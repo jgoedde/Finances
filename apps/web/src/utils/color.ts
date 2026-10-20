@@ -69,3 +69,18 @@ export function getRankedToneStyle(rank: number, count: number): CSSProperties {
         "--on-tone-dark": onHex(tone("dark")),
     } as CSSProperties;
 }
+
+/**
+ * A category color's container tones (see `convertHexToTonal`) in the shape
+ * of `getRankedToneStyle`, so the `ranked-tone` utility applies it too.
+ */
+export function getCategoryToneStyle(colorHex: string): CSSProperties {
+    const { light, dark } = convertHexToTonal(colorHex);
+
+    return {
+        "--tone-light": light.container,
+        "--on-tone-light": light.onContainer,
+        "--tone-dark": dark.container,
+        "--on-tone-dark": dark.onContainer,
+    } as CSSProperties;
+}
