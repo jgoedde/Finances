@@ -113,6 +113,15 @@ describe("groupByFixedCostCategory", () => {
         expect(groups.map((g) => g.categoryId)).toEqual(["y", "x"]);
     });
 
+    it("gives running fixed costs a share of 0 when the total is 0", () => {
+        const [group] = groupByFixedCostCategory(
+            [fixedCost({ id: "free", amount: 0 })],
+            TODAY,
+        );
+
+        expect([group?.share, group?.fixedCosts[0]?.share]).toEqual([0, 0]);
+    });
+
     it("is empty without running fixed costs", () => {
         expect(
             groupByFixedCostCategory([fixedCost({ active: false })], TODAY),

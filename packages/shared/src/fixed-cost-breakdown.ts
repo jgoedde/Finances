@@ -47,11 +47,13 @@ export function groupByFixedCostCategory(
 ): FixedCostCategoryShare[] {
     const running = fixedCosts.filter((it) => isRunningOn(it, day));
     const total = sumBy(running, getMonthlyAmount);
+    // Fixed costs may cost 0, so the total may be 0.
+    const shareOf = (amount: number) => (total > 0 ? amount / total : 0);
 
     const shares = running
         .map((fixedCost) => {
             const monthlyAmount = getMonthlyAmount(fixedCost);
-            return { fixedCost, monthlyAmount, share: monthlyAmount / total };
+            return { fixedCost, monthlyAmount, share: shareOf(monthlyAmount) };
         })
         .sort(
             (a, b) =>
@@ -67,7 +69,7 @@ export function groupByFixedCostCategory(
             return {
                 categoryId,
                 monthlyAmount,
-                share: monthlyAmount / total,
+                share: shareOf(monthlyAmount),
                 fixedCosts: group,
             };
         })
