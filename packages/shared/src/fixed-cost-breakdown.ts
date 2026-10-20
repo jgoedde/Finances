@@ -1,9 +1,9 @@
-import { groupBy, partition, sumBy } from "lodash";
 import {
     type FixedCost,
     getMonthlyAmount,
-    isRunningOn,
+    isRunningBetween,
 } from "#/fixed-costs.ts";
+import _ from "lodash";
 
 /**
  * A fixed cost's part of the monthly fixed-cost total.
@@ -45,19 +45,21 @@ export interface FixedCostCategoryShare {
 
 /**
  * Groups the fixed costs by fixed cost category, largest monthly amount
- * first. Only fixed costs running on `day` (`YYYY-MM-DD`) count: shares are
+ * first. Only fixed costs running on at least one day from `from` to `to`
+ * (`YYYY-MM-DD`, both included; a single day by default) count: shares are
  * of their monthly total, so they add up to 1 (or are all 0 when that total
  * is 0). The others follow in their group without a share, and groups
  * without running fixed costs come last. Ties are ordered by name.
  */
 export function groupByFixedCostCategory(
     fixedCosts: FixedCost[],
-    day: string,
+    from: string,
+    to: string = from,
 ): FixedCostCategoryShare[] {
-    const [running, stopped] = partition(fixedCosts, (it) =>
-        isRunningOn(it, day),
+    const [running, stopped] = _.partition(fixedCosts, (it) =>
+        isRunningBetween(it, from, to),
     );
-    const total = sumBy(running, getMonthlyAmount);
+    const total = _.sumBy(running, getMonthlyAmount);
     // Fixed costs may cost 0, so the total may be 0.
     const shareOf = (amount: number) => (total > 0 ? amount / total : 0);
 
@@ -88,10 +90,10 @@ export function groupByFixedCostCategory(
     // `groupBy` keeps the order, so each group's first fixed cost is its
     // largest running one (or its first by name) and breaks ties between
     // groups.
-    return Object.entries(groupBy(shares, (it) => it.fixedCost.categoryId))
+    return Object.entries(_.groupBy(shares, (it) => it.fixedCost.categoryId))
         .map(([categoryId, group]): FixedCostCategoryShare => {
             const runningInGroup = group.filter((it) => it.share !== null);
-            const monthlyAmount = sumBy(
+            const monthlyAmount = _.sumBy(
                 runningInGroup,
                 (it) => it.monthlyAmount,
             );

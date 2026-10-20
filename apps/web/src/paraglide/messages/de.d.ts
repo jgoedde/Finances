@@ -101,6 +101,11 @@ export const overview_categories_title: (inputs: Overview_Categories_TitleInputs
 export const overview_exceptional: (inputs: Overview_ExceptionalInputs) => LocalizedString;
 export const overview_expenses: (inputs: Overview_ExpensesInputs) => LocalizedString;
 export const overview_fixed_costs: (inputs: Overview_Fixed_CostsInputs) => LocalizedString;
+export const overview_gross_outflow_exceptional: (inputs: Overview_Gross_Outflow_ExceptionalInputs) => LocalizedString;
+export const overview_gross_outflow_hint: (inputs: Overview_Gross_Outflow_HintInputs) => LocalizedString;
+export const overview_gross_outflow_so_far: (inputs: Overview_Gross_Outflow_So_FarInputs) => LocalizedString;
+export const overview_gross_outflow_spending: (inputs: Overview_Gross_Outflow_SpendingInputs) => LocalizedString;
+export const overview_gross_outflow_title: (inputs: Overview_Gross_Outflow_TitleInputs) => LocalizedString;
 export const overview_income: (inputs: Overview_IncomeInputs) => LocalizedString;
 export const overview_net_spending: (inputs: Overview_Net_SpendingInputs) => LocalizedString;
 export const overview_pace_above_day: (inputs: Overview_Pace_Above_DayInputs) => LocalizedString;
@@ -350,6 +355,14 @@ export type Overview_ExceptionalInputs = {
 };
 export type Overview_ExpensesInputs = {};
 export type Overview_Fixed_CostsInputs = {};
+export type Overview_Gross_Outflow_ExceptionalInputs = {
+    count: NonNullable<unknown>;
+    amount: NonNullable<unknown>;
+};
+export type Overview_Gross_Outflow_HintInputs = {};
+export type Overview_Gross_Outflow_So_FarInputs = {};
+export type Overview_Gross_Outflow_SpendingInputs = {};
+export type Overview_Gross_Outflow_TitleInputs = {};
 export type Overview_IncomeInputs = {};
 export type Overview_Net_SpendingInputs = {};
 export type Overview_Pace_Above_DayInputs = {

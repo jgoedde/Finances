@@ -103,6 +103,11 @@
 /** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
 /** @typedef {{}} Overview_ExpensesInputs */
 /** @typedef {{}} Overview_Fixed_CostsInputs */
+/** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_Gross_Outflow_ExceptionalInputs */
+/** @typedef {{}} Overview_Gross_Outflow_HintInputs */
+/** @typedef {{}} Overview_Gross_Outflow_So_FarInputs */
+/** @typedef {{}} Overview_Gross_Outflow_SpendingInputs */
+/** @typedef {{}} Overview_Gross_Outflow_TitleInputs */
 /** @typedef {{}} Overview_IncomeInputs */
 /** @typedef {{}} Overview_Net_SpendingInputs */
 /** @typedef {{ percent: NonNullable<unknown>, day: NonNullable<unknown> }} Overview_Pace_Above_DayInputs */
@@ -651,6 +656,28 @@ export const overview_expenses = /** @type {(inputs: Overview_ExpensesInputs) =>
 
 export const overview_fixed_costs = /** @type {(inputs: Overview_Fixed_CostsInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`+ Fixkosten`)
+};
+
+export const overview_gross_outflow_exceptional = /** @type {(inputs: Overview_Gross_Outflow_ExceptionalInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("de", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`Ohne ${i?.count} außergewöhnliche Geldbewegung (${i?.amount})`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`Ohne ${i?.count} außergewöhnliche Geldbewegungen (${i?.amount})`);
+	return /** @type {LocalizedString} */ ("overview_gross_outflow_exceptional");
+};
+
+export const overview_gross_outflow_hint = /** @type {(inputs: Overview_Gross_Outflow_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixkosten und Ausgaben, ohne Einnahmen`)
+};
+
+export const overview_gross_outflow_so_far = /** @type {(inputs: Overview_Gross_Outflow_So_FarInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixkosten des ganzen Monats, Ausgaben bisher, ohne Einnahmen`)
+};
+
+export const overview_gross_outflow_spending = /** @type {(inputs: Overview_Gross_Outflow_SpendingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ausgaben`)
+};
+
+export const overview_gross_outflow_title = /** @type {(inputs: Overview_Gross_Outflow_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wohin das Geld geht`)
 };
 
 export const overview_income = /** @type {(inputs: Overview_IncomeInputs) => LocalizedString} */ () => {

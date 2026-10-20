@@ -216,6 +216,23 @@
     "overview_categories_hint": "Strich: üblicher Monat",
     "overview_categories_empty": "Keine Ausgaben in diesem Monat",
     "overview_vs_typical": "{change} ggü. üblich",
+    "overview_gross_outflow_title": "Wohin das Geld geht",
+    "overview_gross_outflow_hint": "Fixkosten und Ausgaben, ohne Einnahmen",
+    "overview_gross_outflow_so_far": "Fixkosten des ganzen Monats, Ausgaben bisher, ohne Einnahmen",
+    "overview_gross_outflow_spending": "Ausgaben",
+    "overview_gross_outflow_exceptional": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "Ohne {count} außergewöhnliche Geldbewegung ({amount})",
+                "countPlural=other": "Ohne {count} außergewöhnliche Geldbewegungen ({amount})"
+            }
+        }
+    ],
     "overview_trend_title": "Letzte 12 Monate",
     "overview_trend_hint": "Netto-Ausgaben ohne außergewöhnliche Geldbewegungen",
     "patterns_title": "Muster",

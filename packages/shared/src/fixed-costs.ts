@@ -63,10 +63,22 @@ export function getYearlyAmount(fixedCost: FixedCost): number {
  * Whether the fixed cost is active and `day` (`YYYY-MM-DD`) is in its range.
  */
 export function isRunningOn(fixedCost: FixedCost, day: string): boolean {
+    return isRunningBetween(fixedCost, day, day);
+}
+
+/**
+ * Whether the fixed cost is running on at least one day from `from` to `to`
+ * (`YYYY-MM-DD`, both included).
+ */
+export function isRunningBetween(
+    fixedCost: FixedCost,
+    from: string,
+    to: string,
+): boolean {
     return (
         fixedCost.active &&
-        fixedCost.startDate <= day &&
-        (fixedCost.endDate === null || fixedCost.endDate >= day)
+        fixedCost.startDate <= to &&
+        (fixedCost.endDate === null || fixedCost.endDate >= from)
     );
 }
 

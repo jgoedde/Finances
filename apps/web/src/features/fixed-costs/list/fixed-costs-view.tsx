@@ -1,4 +1,3 @@
-import { sumBy } from "lodash";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { AccountMenu } from "#/features/account/account-menu.tsx";
 import { FixedCostShareBar } from "#/features/fixed-costs/breakdown/fixed-cost-share-bar.tsx";
@@ -8,6 +7,7 @@ import { FixedCostCategorySection } from "#/features/fixed-costs/list/fixed-cost
 import { FixedCostsHero } from "#/features/fixed-costs/list/fixed-costs-hero.tsx";
 import { useIsMediumWindow } from "#/hooks/use-is-medium-window.ts";
 import { m } from "#/paraglide/messages.js";
+import _ from "lodash";
 
 /**
  * The Fixed costs destination: the running monthly total on top, its
@@ -30,7 +30,7 @@ export function FixedCostsView() {
             <main className={"flex flex-col gap-2 pb-6"}>
                 <div className={"flex flex-col gap-4 px-3"}>
                     <FixedCostsHero
-                        monthlyTotal={sumBy(groups, (it) => it.monthlyAmount)}
+                        monthlyTotal={_.sumBy(groups, (it) => it.monthlyAmount)}
                     />
                     {runningGroups.length > 0 &&
                         (isMediumWindow ? (

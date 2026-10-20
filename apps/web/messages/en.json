@@ -216,6 +216,23 @@
     "overview_categories_hint": "Line: typical month",
     "overview_categories_empty": "No spending this month",
     "overview_vs_typical": "{change} vs. typical",
+    "overview_gross_outflow_title": "Where the money goes",
+    "overview_gross_outflow_hint": "Fixed costs and spending, without income",
+    "overview_gross_outflow_so_far": "Whole month's fixed costs, spending so far, without income",
+    "overview_gross_outflow_spending": "Spending",
+    "overview_gross_outflow_exceptional": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "Excl. {count} exceptional transaction ({amount})",
+                "countPlural=other": "Excl. {count} exceptional transactions ({amount})"
+            }
+        }
+    ],
     "overview_trend_title": "Last 12 months",
     "overview_trend_hint": "Net spending without exceptional transactions",
     "patterns_title": "Patterns",

@@ -41,6 +41,24 @@ export interface CategoryOverview {
     typical: number | null;
 }
 
+/**
+ * A fixed cost category's fixed costs running in the month.
+ */
+export interface FixedCostCategoryOverview {
+    categoryId: string;
+    categoryName: string;
+
+    /**
+     * Monthly amount of its fixed costs running in the month.
+     */
+    total: number;
+
+    /**
+     * Largest monthly amount first.
+     */
+    fixedCosts: { id: string; name: string; total: number }[];
+}
+
 export interface MonthlyTotal {
     /**
      * `YYYY-MM`.
@@ -75,6 +93,12 @@ export interface MonthOverview {
      * Monthly amounts of the fixed costs running in the month.
      */
     fixedCosts: number;
+
+    /**
+     * The fixed costs running in the month by fixed cost category, largest
+     * first.
+     */
+    fixedCostCategories: FixedCostCategoryOverview[];
     categories: CategoryOverview[];
 
     /**
