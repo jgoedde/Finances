@@ -15,7 +15,7 @@ export interface GrossOutflowFixedCost {
 
 /**
  * A category of the gross outflow with its tone for the `ranked-tone`
- * utility: fixed cost categories fade through the primary palette by rank,
+ * utility: fixed cost categories fade through a teal palette by rank,
  * spending categories keep their own color.
  */
 export type GrossOutflowCategory = {
