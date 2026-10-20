@@ -1,9 +1,9 @@
-import { sumBy } from "lodash";
 import type {
     CategoryOverview,
     FixedCostCategoryOverview,
     MonthOverview,
 } from "#/insights.ts";
+import _ from "lodash";
 
 /**
  * Fraction (0–1) of the gross outflow.
@@ -61,8 +61,8 @@ export function breakDownGrossOutflow({
             fixedCosts: category.fixedCosts.filter((it) => it.total > 0),
         }));
     const spending = categories.filter((category) => category.total > 0);
-    const fixedCostsTotal = sumBy(fixedCostCategories, (it) => it.total);
-    const spendingTotal = sumBy(spending, (it) => it.total);
+    const fixedCostsTotal = _.sumBy(fixedCostCategories, (it) => it.total);
+    const spendingTotal = _.sumBy(spending, (it) => it.total);
     const total = fixedCostsTotal + spendingTotal;
     // Fixed costs may cost 0, so the total may be 0.
     const shareOf = (amount: number) => (total > 0 ? amount / total : 0);

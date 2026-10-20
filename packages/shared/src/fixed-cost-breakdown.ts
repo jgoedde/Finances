@@ -1,9 +1,9 @@
-import { groupBy, partition, sumBy } from "lodash";
 import {
     type FixedCost,
     getMonthlyAmount,
     isRunningBetween,
 } from "#/fixed-costs.ts";
+import _ from "lodash";
 
 /**
  * A fixed cost's part of the monthly fixed-cost total.
@@ -56,10 +56,10 @@ export function groupByFixedCostCategory(
     from: string,
     to: string = from,
 ): FixedCostCategoryShare[] {
-    const [running, stopped] = partition(fixedCosts, (it) =>
+    const [running, stopped] = _.partition(fixedCosts, (it) =>
         isRunningBetween(it, from, to),
     );
-    const total = sumBy(running, getMonthlyAmount);
+    const total = _.sumBy(running, getMonthlyAmount);
     // Fixed costs may cost 0, so the total may be 0.
     const shareOf = (amount: number) => (total > 0 ? amount / total : 0);
 
@@ -90,10 +90,10 @@ export function groupByFixedCostCategory(
     // `groupBy` keeps the order, so each group's first fixed cost is its
     // largest running one (or its first by name) and breaks ties between
     // groups.
-    return Object.entries(groupBy(shares, (it) => it.fixedCost.categoryId))
+    return Object.entries(_.groupBy(shares, (it) => it.fixedCost.categoryId))
         .map(([categoryId, group]): FixedCostCategoryShare => {
             const runningInGroup = group.filter((it) => it.share !== null);
-            const monthlyAmount = sumBy(
+            const monthlyAmount = _.sumBy(
                 runningInGroup,
                 (it) => it.monthlyAmount,
             );

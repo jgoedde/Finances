@@ -1,6 +1,5 @@
 import { formatMonthYear, type Transaction } from "@finances/shared";
 import { addDays, endOfMonth, isSameMonth, startOfDay } from "date-fns";
-import { groupBy } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useSelectedMonth } from "#/features/month/month.ts";
@@ -10,6 +9,7 @@ import { UpcomingTransactions } from "#/features/transactions/components/list/up
 import { TransactionListSkeleton } from "#/features/transactions/components/list/transaction-list-skeleton.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import _ from "lodash";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
@@ -49,7 +49,7 @@ export function TransactionList() {
         : [];
 
     const days = Object.entries(
-        groupBy(transactions, (it) => startOfDay(it.date).getTime()),
+        _.groupBy(transactions, (it) => startOfDay(it.date).getTime()),
     ).sort(([a], [b]) => Number(b) - Number(a));
 
     if (isPending) {
