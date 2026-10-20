@@ -1,5 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
     fixedCostCategoriesQuery,
@@ -7,7 +8,10 @@ import {
     useDeleteFixedCost,
     useUpdateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { toFixedCost } from "#/features/fixed-costs/fixed-cost.ts";
+import {
+    toFixedCost,
+    toLocalIsoDate,
+} from "#/features/fixed-costs/fixed-cost.ts";
 import {
     FixedCostWizard,
     type FixedCostWizardValues,
@@ -56,7 +60,8 @@ function RouteComponent() {
     const { id } = Route.useParams();
     const { data: record } = useSuspenseQuery(fixedCostQuery(id));
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
-    const fixedCost = toFixedCost(record, categories);
+    const [today] = useState(() => toLocalIsoDate(new Date()));
+    const fixedCost = toFixedCost(record, categories, today);
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
 

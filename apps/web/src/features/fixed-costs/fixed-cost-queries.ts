@@ -11,11 +11,13 @@ import type {
     FixedCostPatch,
 } from "@finances/shared";
 import { nanoid } from "nanoid";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { apiFetch } from "#/api/api-client.ts";
 import {
     type FixedCostCategoryGroup,
     toCategoryGroups,
+    toLocalIsoDate,
 } from "#/features/fixed-costs/fixed-cost.ts";
 import { m } from "#/paraglide/messages.js";
 
@@ -39,7 +41,12 @@ export const fixedCostsQuery = queryOptions({
 export function useFixedCostCategoryGroups(): FixedCostCategoryGroup[] {
     const records = useQuery(fixedCostsQuery).data ?? EMPTY;
     const categories = useFixedCostCategories();
-    return toCategoryGroups(records, categories);
+    // Once per mount: "running" is about today.
+    const [today] = useState(() => toLocalIsoDate(new Date()));
+    return useMemo(
+        () => toCategoryGroups(records, categories, today),
+        [records, categories, today],
+    );
 }
 
 export function fixedCostQuery(id: string) {

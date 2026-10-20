@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
     type FixedCost as FixedCostRecord,
     type FixedCostCategory,
@@ -9,6 +10,7 @@ import {
     toIsoDate,
 } from "@finances/shared";
 import { m } from "#/paraglide/messages.js";
+import { getRankedToneStyle } from "#/utils/color.ts";
 
 export const INTERVAL_LABELS = {
     monthly: m.fixed_cost_interval_monthly,
@@ -40,9 +42,13 @@ export interface FixedCost {
     isRunning: boolean;
 }
 
+/**
+ * Hydrates a fixed cost; `today` (`YYYY-MM-DD`) decides `isRunning`.
+ */
 export function toFixedCost(
     record: FixedCostRecord,
     categories: FixedCostCategory[],
+    today: string,
 ): FixedCost {
     return {
         id: record.id,
@@ -57,7 +63,7 @@ export function toFixedCost(
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
         monthlyAmount: getMonthlyAmount(record),
         yearlyAmount: getYearlyAmount(record),
-        isRunning: isRunningOn(record, toLocalIsoDate(new Date())),
+        isRunning: isRunningOn(record, today),
     };
 }
 
@@ -82,59 +88,45 @@ export interface FixedCostCategoryGroup {
     monthlyAmount: number;
 
     /**
-     * Rank among the groups with running fixed costs (0 = largest) and its
-     * share of their monthly total; `null` when none of its fixed costs
-     * runs.
+     * Share of the monthly total of the running fixed costs; `null` when
+     * none of its fixed costs runs.
      */
-    rank: number | null;
     share: number | null;
+
+    /**
+     * Its tone among the groups with running fixed costs, by rank (see
+     * `getRankedToneStyle`); `null` when none of its fixed costs runs.
+     */
+    toneStyle: CSSProperties | null;
 
     fixedCosts: FixedCostEntry[];
 }
 
 /**
  * Groups the fixed costs by fixed cost category, largest monthly amount
- * first (see `groupByFixedCostCategory`). Fixed costs not running today
- * follow in their group, or in groups of their own at the end.
+ * first (see `groupByFixedCostCategory`); fixed costs not running on
+ * `today` (`YYYY-MM-DD`) have no share.
  */
 export function toCategoryGroups(
     records: FixedCostRecord[],
     categories: FixedCostCategory[],
+    today: string,
 ): FixedCostCategoryGroup[] {
-    const today = toLocalIsoDate(new Date());
-    const groups = new Map<string, FixedCostCategoryGroup>(
-        groupByFixedCostCategory(records, today).map((group, rank) => [
-            group.categoryId,
-            {
-                category: findCategory(group.categoryId, categories),
-                monthlyAmount: group.monthlyAmount,
-                rank,
-                share: group.share,
-                fixedCosts: group.fixedCosts.map((it) => ({
-                    fixedCost: toFixedCost(it.fixedCost, categories),
-                    share: it.share,
-                })),
-            },
-        ]),
-    );
+    const groups = groupByFixedCostCategory(records, today);
+    const rankCount = groups.filter((it) => it.share !== null).length;
 
-    // Records come sorted by name.
-    for (const record of records.filter((it) => !isRunningOn(it, today))) {
-        const group = groups.get(record.categoryId) ?? {
-            category: findCategory(record.categoryId, categories),
-            monthlyAmount: 0,
-            rank: null,
-            share: null,
-            fixedCosts: [],
-        };
-        group.fixedCosts.push({
-            fixedCost: toFixedCost(record, categories),
-            share: null,
-        });
-        groups.set(record.categoryId, group);
-    }
-
-    return [...groups.values()];
+    // Groups with running fixed costs come first, so the index is the rank.
+    return groups.map((group, rank) => ({
+        category: findCategory(group.categoryId, categories),
+        monthlyAmount: group.monthlyAmount,
+        share: group.share,
+        toneStyle:
+            group.share === null ? null : getRankedToneStyle(rank, rankCount),
+        fixedCosts: group.fixedCosts.map((it) => ({
+            fixedCost: toFixedCost(it.fixedCost, categories, today),
+            share: it.share,
+        })),
+    }));
 }
 
 /**
@@ -153,7 +145,8 @@ function findCategory(
 ): FixedCostCategory {
     return (
         categories.find((c) => c.id === id) ?? {
-            id: "",
+            // Keeps keys and element ids unique while categories load.
+            id,
             name: m.fixed_cost_unknown_category(),
             description: null,
         }

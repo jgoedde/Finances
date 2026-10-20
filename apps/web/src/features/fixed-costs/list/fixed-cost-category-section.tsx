@@ -5,15 +5,9 @@ import type { FixedCostCategoryGroup } from "#/features/fixed-costs/fixed-cost.t
 import { FixedCostListItem } from "#/features/fixed-costs/list/fixed-cost-list-item.tsx";
 import { cn } from "#/lib/cn.ts";
 import { getLocale } from "#/paraglide/runtime.js";
-import { getRankedToneStyle } from "#/utils/color.ts";
 
 interface FixedCostCategorySectionProps {
     group: FixedCostCategoryGroup;
-
-    /**
-     * Number of groups with running fixed costs, for the tone.
-     */
-    rankCount: number;
 }
 
 /**
@@ -23,7 +17,6 @@ interface FixedCostCategorySectionProps {
  */
 export function FixedCostCategorySection({
     group,
-    rankCount,
 }: FixedCostCategorySectionProps) {
     const [isExpanded, setIsExpanded] = useState(true);
     const contentId = `fixed-cost-category-${group.category.id}`;
@@ -43,15 +36,11 @@ export function FixedCostCategorySection({
                         aria-hidden
                         className={cn(
                             "size-3 shrink-0 rounded-full",
-                            group.rank === null
+                            group.toneStyle === null
                                 ? "border border-outline"
                                 : "bg-(--tone) ranked-tone",
                         )}
-                        style={
-                            group.rank === null
-                                ? undefined
-                                : getRankedToneStyle(group.rank, rankCount)
-                        }
+                        style={group.toneStyle ?? undefined}
                     />
                     <span
                         title={group.category.name}

@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { Treemap } from "recharts";
 import { ChartContainer, ChartTooltip } from "#/components/ui/chart.tsx";
 import { FixedCostTreemapTile } from "#/features/fixed-costs/breakdown/fixed-cost-treemap-tile.tsx";
@@ -8,7 +7,6 @@ import type {
     FixedCostEntry,
 } from "#/features/fixed-costs/fixed-cost.ts";
 import { m } from "#/paraglide/messages.js";
-import { getRankedToneStyle } from "#/utils/color.ts";
 
 /**
  * A node of the treemap: a fixed cost category, or one of its fixed costs
@@ -19,7 +17,6 @@ export type FixedCostTreemapDatum = {
     value?: number;
     group: FixedCostCategoryGroup;
     entry?: FixedCostEntry;
-    toneStyle: CSSProperties;
     children?: FixedCostTreemapDatum[];
 };
 
@@ -37,24 +34,19 @@ interface FixedCostTreemapProps {
  * rest. Fixed cost tiles open their detail.
  */
 export function FixedCostTreemap({ groups }: FixedCostTreemapProps) {
-    const data = groups.map((group, rank): FixedCostTreemapDatum => {
-        const toneStyle = getRankedToneStyle(rank, groups.length);
-        return {
-            name: group.category.name,
-            group,
-            toneStyle,
-            // Fixed costs not running today have no share and no tile.
-            children: group.fixedCosts
-                .filter((entry) => entry.share !== null)
-                .map((entry) => ({
-                    name: entry.fixedCost.name,
-                    value: entry.fixedCost.monthlyAmount,
-                    group,
-                    entry,
-                    toneStyle,
-                })),
-        };
-    });
+    const data = groups.map((group): FixedCostTreemapDatum => ({
+        name: group.category.name,
+        group,
+        // Fixed costs not running today have no share and no tile.
+        children: group.fixedCosts
+            .filter((entry) => entry.share !== null)
+            .map((entry) => ({
+                name: entry.fixedCost.name,
+                value: entry.fixedCost.monthlyAmount,
+                group,
+                entry,
+            })),
+    }));
 
     return (
         <ChartContainer

@@ -22,8 +22,8 @@ export function FixedCostTreemapTooltip({
     }
 
     const { group, entry } = datum;
-    const line = (amount: number, share: number | null) =>
-        `${formatCurrency(amount, getLocale())} ${m.fixed_cost_per_month()} · ${formatPercent(share ?? 0, getLocale())}`;
+    const line = (amount: number, share: number | null, currency?: string) =>
+        `${formatCurrency(amount, getLocale(), currency)} ${m.fixed_cost_per_month()} · ${formatPercent(share ?? 0, getLocale())}`;
 
     return (
         <div
@@ -37,7 +37,11 @@ export function FixedCostTreemapTooltip({
                         {entry.fixedCost.name}
                     </span>
                     <span>
-                        {line(entry.fixedCost.monthlyAmount, entry.share)}
+                        {line(
+                            entry.fixedCost.monthlyAmount,
+                            entry.share,
+                            entry.fixedCost.currency,
+                        )}
                     </span>
                 </div>
             )}
@@ -47,7 +51,7 @@ export function FixedCostTreemapTooltip({
                     className={
                         "size-2.5 shrink-0 rounded-xs bg-(--tone) ranked-tone"
                     }
-                    style={datum.toneStyle}
+                    style={group.toneStyle ?? undefined}
                 />
                 <div className={"flex flex-col"}>
                     <span className={"text-label-medium"}>

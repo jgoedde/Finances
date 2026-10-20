@@ -49,7 +49,6 @@ describe("groupByFixedCostCategory", () => {
                 fixedCost({ id: "off", categoryId: "housing", active: false }),
                 fixedCost({ id: "later", startDate: "2026-07-01" }),
                 fixedCost({ id: "ended", endDate: "2026-06-14" }),
-                fixedCost({ id: "gym", categoryId: "sports", active: false }),
                 fixedCost({ id: "car", categoryId: "mobility", amount: 100 }),
             ],
             TODAY,
@@ -60,6 +59,54 @@ describe("groupByFixedCostCategory", () => {
         ).toEqual([
             ["housing", 300, 0.75],
             ["mobility", 100, 0.25],
+        ]);
+    });
+
+    it("lists fixed costs not running on the day without a share, after the running ones", () => {
+        const housing = groupByFixedCostCategory(
+            [
+                fixedCost({ id: "rent", name: "Miete", amount: 300 }),
+                fixedCost({ id: "off", name: "Strom", active: false }),
+                fixedCost({ id: "ended", name: "Gas", endDate: "2026-06-14" }),
+            ],
+            TODAY,
+        ).find((g) => g.categoryId === "housing");
+
+        expect(
+            housing?.fixedCosts.map((it) => [it.fixedCost.id, it.share]),
+        ).toEqual([
+            ["rent", 1],
+            ["ended", null],
+            ["off", null],
+        ]);
+    });
+
+    it("puts fixed cost categories without running fixed costs last, without amount and share", () => {
+        const groups = groupByFixedCostCategory(
+            [
+                fixedCost({
+                    id: "tv",
+                    name: "TV",
+                    categoryId: "media",
+                    active: false,
+                }),
+                fixedCost({
+                    id: "gym",
+                    name: "Gym",
+                    categoryId: "sports",
+                    active: false,
+                }),
+                fixedCost({ id: "rent", categoryId: "housing" }),
+            ],
+            TODAY,
+        );
+
+        expect(
+            groups.map((g) => [g.categoryId, g.monthlyAmount, g.share]),
+        ).toEqual([
+            ["housing", 100, 1],
+            ["sports", 0, null],
+            ["media", 0, null],
         ]);
     });
 
@@ -122,9 +169,7 @@ describe("groupByFixedCostCategory", () => {
         expect([group?.share, group?.fixedCosts[0]?.share]).toEqual([0, 0]);
     });
 
-    it("is empty without running fixed costs", () => {
-        expect(
-            groupByFixedCostCategory([fixedCost({ active: false })], TODAY),
-        ).toEqual([]);
+    it("is empty without fixed costs", () => {
+        expect(groupByFixedCostCategory([], TODAY)).toEqual([]);
     });
 });

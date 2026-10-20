@@ -1,6 +1,5 @@
 import type { FixedCostCategoryGroup } from "#/features/fixed-costs/fixed-cost.ts";
 import { m } from "#/paraglide/messages.js";
-import { getRankedToneStyle } from "#/utils/color.ts";
 
 interface FixedCostShareBarProps {
     /**
@@ -21,12 +20,12 @@ export function FixedCostShareBar({ groups }: FixedCostShareBarProps) {
             aria-label={m.fixed_cost_breakdown_title()}
             className={"flex h-4 gap-0.5 overflow-hidden rounded-xs"}
         >
-            {groups.map((group, rank) => (
+            {groups.map((group) => (
                 <div
                     key={group.category.id}
                     className={"min-w-0.5 bg-(--tone) ranked-tone"}
                     style={{
-                        ...getRankedToneStyle(rank, groups.length),
+                        ...group.toneStyle,
                         flex: `${group.monthlyAmount} 0 0`,
                     }}
                 />

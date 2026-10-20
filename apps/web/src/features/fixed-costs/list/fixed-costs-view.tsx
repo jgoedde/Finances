@@ -17,7 +17,7 @@ import { m } from "#/paraglide/messages.js";
  */
 export function FixedCostsView() {
     const groups = useFixedCostCategoryGroups();
-    const runningGroups = groups.filter((it) => it.rank !== null);
+    const runningGroups = groups.filter((it) => it.share !== null);
     const isMediumWindow = useIsMediumWindow();
 
     return (
@@ -53,7 +53,6 @@ export function FixedCostsView() {
                         <FixedCostCategorySection
                             key={group.category.id}
                             group={group}
-                            rankCount={runningGroups.length}
                         />
                     ))
                 )}
