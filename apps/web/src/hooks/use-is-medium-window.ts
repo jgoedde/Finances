@@ -5,8 +5,19 @@ import { useSyncExternalStore } from "react";
  */
 const MEDIUM_WINDOW = "(min-width: 37.5rem)";
 
+let mediumWindowQuery: MediaQueryList | undefined;
+
+/**
+ * The media query, created on first use (not at import, so modules load
+ * without a window).
+ */
+function getMediumWindowQuery(): MediaQueryList {
+    mediumWindowQuery ??= window.matchMedia(MEDIUM_WINDOW);
+    return mediumWindowQuery;
+}
+
 function subscribe(onChange: () => void) {
-    const query = window.matchMedia(MEDIUM_WINDOW);
+    const query = getMediumWindowQuery();
     query.addEventListener("change", onChange);
 
     return () => query.removeEventListener("change", onChange);
@@ -19,6 +30,6 @@ function subscribe(onChange: () => void) {
 export function useIsMediumWindow() {
     return useSyncExternalStore(
         subscribe,
-        () => window.matchMedia(MEDIUM_WINDOW).matches,
+        () => getMediumWindowQuery().matches,
     );
 }
