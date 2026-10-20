@@ -1473,7 +1473,7 @@ export const overview_gross_outflow_hint: ((inputs?: Overview_Gross_Outflow_Hint
 /**
 * | output |
 * | --- |
-* | "So far this month" |
+* | "Whole month's fixed costs, spending so far, without income" |
 *
 * @param {Overview_Gross_Outflow_So_FarInputs} inputs
 * @param {{ locale?: "en" | "de" }} options

@@ -46,13 +46,20 @@ export interface GrossOutflow {
 
 /**
  * Breaks a month's gross outflow down into fixed costs and spending, by
- * category. Categories with net spending of 0 or less are left out; the
- * overview already leaves out exceptional transactions.
+ * category. Categories and fixed costs of 0 and categories with net
+ * spending below 0 are left out; the overview already leaves out exceptional
+ * transactions.
  */
 export function breakDownGrossOutflow({
-    fixedCostCategories,
+    fixedCostCategories: allFixedCostCategories,
     categories,
 }: Pick<MonthOverview, "fixedCostCategories" | "categories">): GrossOutflow {
+    const fixedCostCategories = allFixedCostCategories
+        .filter((category) => category.total > 0)
+        .map((category) => ({
+            ...category,
+            fixedCosts: category.fixedCosts.filter((it) => it.total > 0),
+        }));
     const spending = categories.filter((category) => category.total > 0);
     const fixedCostsTotal = sumBy(fixedCostCategories, (it) => it.total);
     const spendingTotal = sumBy(spending, (it) => it.total);

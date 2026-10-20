@@ -62,7 +62,8 @@ export function GrossOutflowCard({ overview }: GrossOutflowCardProps) {
                     ))}
                 </>
             )}
-            {exceptional.count > 0 && (
+            {/* Exceptional income isn't outflow either; only name spending. */}
+            {exceptional.count > 0 && exceptional.netSpending > 0 && (
                 <p className={"px-3 text-body-small text-on-surface-variant"}>
                     {m.overview_gross_outflow_exceptional({
                         count: exceptional.count,

@@ -88,14 +88,31 @@ describe("breakDownGrossOutflow", () => {
         });
     });
 
+    it("leaves out fixed costs and fixed cost categories of 0", () => {
+        const outflow = breakDownGrossOutflow({
+            fixedCostCategories: [
+                fixedCostCategory("housing", 100, 0),
+                fixedCostCategory("free", 0),
+            ],
+            categories: [],
+        });
+
+        expect(
+            outflow.fixedCosts.categories.map((it) => [
+                it.categoryId,
+                it.fixedCosts.map((fixedCost) => fixedCost.id),
+            ]),
+        ).toEqual([["housing", ["housing0"]]]);
+    });
+
     it("has shares of 0 when there is no gross outflow", () => {
         const outflow = breakDownGrossOutflow({
             fixedCostCategories: [fixedCostCategory("free", 0)],
-            categories: [],
+            categories: [category("refunds", -10)],
         });
 
         expect(outflow.total).toBe(0);
         expect(outflow.fixedCosts.share).toBe(0);
-        expect(outflow.fixedCosts.categories[0]?.share).toBe(0);
+        expect(outflow.spending.share).toBe(0);
     });
 });

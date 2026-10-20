@@ -39,21 +39,23 @@ export function GrossOutflowFixedCostCategoryRow({
                     )}
                 />
             </button>
-            {isExpanded && (
-                <div id={contentId} className={"flex flex-col pl-6"}>
-                    {category.fixedCosts.map((fixedCost) => (
-                        <Link
-                            key={fixedCost.id}
-                            to={"/fixed-costs/$id"}
-                            params={{ id: fixedCost.id }}
-                            className={`state-layer flex min-h-12 items-center
-                            gap-3 rounded-md px-3 py-2 focus-ring`}
-                        >
-                            <GrossOutflowRowLabel {...fixedCost} />
-                        </Link>
-                    ))}
-                </div>
-            )}
+            <div
+                id={contentId}
+                hidden={!isExpanded}
+                className={"flex flex-col pl-6"}
+            >
+                {category.fixedCosts.map((fixedCost) => (
+                    <Link
+                        key={fixedCost.id}
+                        to={"/fixed-costs/$id"}
+                        params={{ id: fixedCost.id }}
+                        className={`state-layer flex min-h-12 items-center gap-3
+                        rounded-md px-3 py-2 focus-ring`}
+                    >
+                        <GrossOutflowRowLabel {...fixedCost} />
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }

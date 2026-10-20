@@ -218,7 +218,7 @@
     "overview_vs_typical": "{change} vs. typical",
     "overview_gross_outflow_title": "Where the money goes",
     "overview_gross_outflow_hint": "Fixed costs and spending, without income",
-    "overview_gross_outflow_so_far": "So far this month",
+    "overview_gross_outflow_so_far": "Whole month's fixed costs, spending so far, without income",
     "overview_gross_outflow_spending": "Spending",
     "overview_gross_outflow_exceptional": [
         {

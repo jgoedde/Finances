@@ -59,7 +59,11 @@ export interface GrossOutflowView {
  */
 export function useGrossOutflow(overview: MonthOverview): GrossOutflowView {
     return useMemo(() => {
-        const { total, fixedCosts, spending } = breakDownGrossOutflow(overview);
+        const { total, fixedCosts, spending } = breakDownGrossOutflow({
+            categories: overview.categories,
+            // Missing in overviews cached by an older version.
+            fixedCostCategories: overview.fixedCostCategories ?? [],
+        });
         const count = fixedCosts.categories.length;
         const sides: GrossOutflowSide[] = [
             {

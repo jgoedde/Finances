@@ -122,25 +122,33 @@ export function buildMonthOverview({
         "desc",
     );
 
-    const fixedCostCategories: FixedCostCategoryOverview[] =
-        groupByFixedCostCategory(allFixedCosts, `${month}-01`, lastDayOf(month))
-            // Not running in the month: counts nowhere.
-            .filter((group) => group.share !== null)
-            .map((group) => ({
+    const runningFixedCosts = groupByFixedCostCategory(
+        allFixedCosts,
+        `${month}-01`,
+        lastDayOf(month),
+    )
+        // Not running in the month: counts nowhere.
+        .filter((group) => group.share !== null);
+    const fixedCostCategoryNames = _.keyBy(fixedCostCategoryRows, "id");
+    const fixedCostCategories = runningFixedCosts.map(
+        (group): FixedCostCategoryOverview => {
+            const fixedCosts = group.fixedCosts
+                .filter((it) => it.share !== null)
+                .map((it) => ({
+                    id: it.fixedCost.id,
+                    name: it.fixedCost.name,
+                    total: roundToCents(it.monthlyAmount),
+                }));
+            return {
                 categoryId: group.categoryId,
                 categoryName:
-                    fixedCostCategoryRows.find(
-                        (row) => row.id === group.categoryId,
-                    )?.name ?? "",
-                total: roundToCents(group.monthlyAmount),
-                fixedCosts: group.fixedCosts
-                    .filter((it) => it.share !== null)
-                    .map((it) => ({
-                        id: it.fixedCost.id,
-                        name: it.fixedCost.name,
-                        total: roundToCents(it.monthlyAmount),
-                    })),
-            }));
+                    fixedCostCategoryNames[group.categoryId]?.name ?? "",
+                // The sum of its rounded fixed costs, so they add up.
+                total: roundToCents(_.sumBy(fixedCosts, (it) => it.total)),
+                fixedCosts,
+            };
+        },
+    );
 
     const exceptional = inMonth.filter((t) => t.exceptional);
     return {
@@ -173,7 +181,7 @@ export function buildMonthOverview({
             typical: typicalOf(() => true),
         },
         fixedCosts: roundToCents(
-            _.sumBy(fixedCostCategories, (group) => group.total),
+            _.sumBy(runningFixedCosts, (group) => group.monthlyAmount),
         ),
         fixedCostCategories,
         categories,

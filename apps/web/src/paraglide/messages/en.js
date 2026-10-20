@@ -669,7 +669,7 @@ export const overview_gross_outflow_hint = /** @type {(inputs: Overview_Gross_Ou
 };
 
 export const overview_gross_outflow_so_far = /** @type {(inputs: Overview_Gross_Outflow_So_FarInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`So far this month`)
+	return /** @type {LocalizedString} */ (`Whole month's fixed costs, spending so far, without income`)
 };
 
 export const overview_gross_outflow_spending = /** @type {(inputs: Overview_Gross_Outflow_SpendingInputs) => LocalizedString} */ () => {

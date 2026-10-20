@@ -177,6 +177,21 @@ describe("month overview", () => {
         ]);
     });
 
+    it("rounds the fixed costs' total from their monthly amounts", async () => {
+        for (const categoryId of ["1", "2", "3"]) {
+            await addFixedCost({ amount: 100, interval: "yearly", categoryId });
+        }
+
+        const { fixedCosts, fixedCostCategories } = await json<MonthOverview>(
+            overview(alice, "2026-10"),
+        );
+
+        expect(fixedCosts).toBe(25);
+        expect(fixedCostCategories.map((category) => category.total)).toEqual([
+            8.33, 8.33, 8.33,
+        ]);
+    });
+
     it("trends twelve months without exceptional transactions", async () => {
         const { trend } = await json<MonthOverview>(overview(alice, "2026-10"));
 
