@@ -269,6 +269,7 @@
     "fixed_cost_per_month": "/ Monat",
     "fixed_cost_active": "Aktiv",
     "fixed_cost_monthly_total": "Monatlich gesamt",
+    "fixed_cost_breakdown_title": "Fixkosten nach Kategorie",
     "fixed_cost_list_empty": "Noch keine Fixkosten.",
     "fixed_cost_start_date": "Startdatum",
     "fixed_cost_choose_start_date": "Startdatum auswählen",

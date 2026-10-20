@@ -1,28 +1,25 @@
 import { formatCurrency } from "@finances/shared";
-import { sumBy } from "lodash";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { Button } from "#/components/ui/button.tsx";
 import { Card } from "#/components/ui/card.tsx";
-import type { FixedCost } from "#/features/fixed-costs/fixed-cost.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
 interface FixedCostsHeroProps {
-    fixedCosts: FixedCost[];
+    /**
+     * Monthly amount of the running fixed costs.
+     */
+    monthlyTotal: number;
 }
 
 /**
  * The monthly total of the running fixed costs, with the add button.
  * Fixed costs are read-only offline.
  */
-export function FixedCostsHero({ fixedCosts }: FixedCostsHeroProps) {
-    const monthlyTotal = sumBy(
-        fixedCosts.filter((it) => it.isRunning),
-        (it) => it.monthlyAmount,
-    );
+export function FixedCostsHero({ monthlyTotal }: FixedCostsHeroProps) {
     const isOnline = useIsOnline();
 
     return (

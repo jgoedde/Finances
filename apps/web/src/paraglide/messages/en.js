@@ -41,6 +41,7 @@
 /** @typedef {{}} Fixed_Cost_AddInputs */
 /** @typedef {{}} Fixed_Cost_AmountInputs */
 /** @typedef {{}} Fixed_Cost_Amount_EurInputs */
+/** @typedef {{}} Fixed_Cost_Breakdown_TitleInputs */
 /** @typedef {{}} Fixed_Cost_CategoriesInputs */
 /** @typedef {{}} Fixed_Cost_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
@@ -400,6 +401,10 @@ export const fixed_cost_amount = /** @type {(inputs: Fixed_Cost_AmountInputs) =>
 
 export const fixed_cost_amount_eur = /** @type {(inputs: Fixed_Cost_Amount_EurInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Amount (EUR)`)
+};
+
+export const fixed_cost_breakdown_title = /** @type {(inputs: Fixed_Cost_Breakdown_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Fixed costs by category`)
 };
 
 export const fixed_cost_categories = /** @type {(inputs: Fixed_Cost_CategoriesInputs) => LocalizedString} */ () => {

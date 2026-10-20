@@ -1,7 +1,10 @@
-import { formatCurrency } from "@finances/shared";
+import { formatCurrency, formatPercent } from "@finances/shared";
 import { Link, useParams } from "@tanstack/react-router";
 import { Switch } from "#/components/ui/switch.tsx";
-import type { FixedCost } from "#/features/fixed-costs/fixed-cost.ts";
+import {
+    type FixedCost,
+    INTERVAL_LABELS,
+} from "#/features/fixed-costs/fixed-cost.ts";
 import { useUpdateFixedCost } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
@@ -11,14 +14,22 @@ import { getLocale } from "#/paraglide/runtime.js";
 
 interface FixedCostListItemProps {
     fixedCost: FixedCost;
+
+    /**
+     * Share of the monthly total; `null` while not running.
+     */
+    share: number | null;
 }
 
 /**
- * One fixed cost: name, category (and the amount per interval unless
- * monthly), the monthly amount and the active switch. Opens the edit view;
- * dimmed while not running.
+ * One fixed cost: name, interval (and the amount per interval unless
+ * monthly), share, the monthly amount and the active switch. Opens the
+ * edit view; dimmed while not running.
  */
-export function FixedCostListItem({ fixedCost }: FixedCostListItemProps) {
+export function FixedCostListItem({
+    fixedCost,
+    share,
+}: FixedCostListItemProps) {
     const updateFixedCost = useUpdateFixedCost();
     // Fixed costs are read-only offline.
     const isOnline = useIsOnline();
@@ -29,14 +40,14 @@ export function FixedCostListItem({ fixedCost }: FixedCostListItemProps) {
             shouldThrow: false,
         })?.id === fixedCost.id;
 
-    const supportingText =
-        fixedCost.interval === "monthly"
-            ? fixedCost.category.name
-            : `${fixedCost.category.name} · ${formatCurrency(
-                  fixedCost.amount,
-                  getLocale(),
-                  fixedCost.currency,
-              )}`;
+    const supportingText = [
+        INTERVAL_LABELS[fixedCost.interval](),
+        fixedCost.interval !== "monthly" &&
+            formatCurrency(fixedCost.amount, getLocale(), fixedCost.currency),
+        share !== null && formatPercent(share, getLocale()),
+    ]
+        .filter(Boolean)
+        .join(" · ");
 
     return (
         <div
@@ -57,6 +68,7 @@ export function FixedCostListItem({ fixedCost }: FixedCostListItemProps) {
             >
                 <div className={"flex min-w-0 flex-1 flex-col"}>
                     <span
+                        title={fixedCost.name}
                         className={"truncate text-body-large text-on-surface"}
                     >
                         {fixedCost.name}

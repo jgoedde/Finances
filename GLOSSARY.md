@@ -70,6 +70,10 @@ _Avoid_: Burn rate, budget status
 A recurring expense of a fixed amount, such as rent or a subscription, charged every interval between its start date and optional end date. Never also recorded as a transaction.
 _Avoid_: Subscription, recurring transaction, standing order
 
+**Fixed cost category**:
+What kind of obligation a fixed cost is, such as housing, insurance or mobility. Separate from the categories of transactions.
+_Avoid_: Category (unqualified), fixed category
+
 **Interval**:
 How often a fixed cost is charged: monthly, quarterly or yearly.
 _Avoid_: Frequency, period, cycle
@@ -81,6 +85,10 @@ _Avoid_: Monthly rate, average
 **Total outflow**:
 A month's net spending plus the monthly amounts of the fixed costs running in it.
 _Avoid_: Total spending, expenses
+
+**Gross outflow**:
+What a month's money went to: the monthly amounts of the fixed costs running in it plus, for each category, its net spending where that is above zero. Leaves out exceptional transactions and income, so it shows what spending is made of rather than how the month ended.
+_Avoid_: Spending mix, total spending
 
 **Active**:
 A fixed cost the user has not switched off. An inactive fixed cost is kept but counts nowhere.

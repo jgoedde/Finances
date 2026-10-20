@@ -374,6 +374,20 @@
     }
 }
 
+/*
+ * Picks the scheme's step of a ranked tone (`getRankedToneStyle` in
+ * utils/color.ts) as `--tone` and `--on-tone`.
+ */
+@utility ranked-tone {
+    --tone: var(--tone-light);
+    --on-tone: var(--on-tone-light);
+
+    &:where(.dark, .dark *) {
+        --tone: var(--tone-dark);
+        --on-tone: var(--on-tone-dark);
+    }
+}
+
 /* ripple effect styles */
 .ripple-container {
     position: relative;
