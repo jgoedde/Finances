@@ -43,6 +43,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_AddInputs */
 /** @typedef {{}} Fixed_Cost_AmountInputs */
 /** @typedef {{}} Fixed_Cost_Amount_EurInputs */
+/** @typedef {{}} Fixed_Cost_Breakdown_TitleInputs */
 /** @typedef {{}} Fixed_Cost_CategoriesInputs */
 /** @typedef {{}} Fixed_Cost_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
@@ -812,6 +813,20 @@ export const fixed_cost_amount_eur = /** @type {((inputs?: Fixed_Cost_Amount_Eur
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_amount_eur(inputs)
 	return __en.fixed_cost_amount_eur(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Fixed costs by category" |
+*
+* @param {Fixed_Cost_Breakdown_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_breakdown_title = /** @type {((inputs?: Fixed_Cost_Breakdown_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Breakdown_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_breakdown_title(inputs)
+	return __en.fixed_cost_breakdown_title(inputs)
 });
 /**
 * | output |

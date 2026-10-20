@@ -14,8 +14,8 @@ import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { apiFetch } from "#/api/api-client.ts";
 import {
-    type FixedCost,
-    toFixedCost,
+    type FixedCostCategoryGroup,
+    toCategoryGroups,
 } from "#/features/fixed-costs/fixed-cost.ts";
 import { m } from "#/paraglide/messages.js";
 
@@ -36,10 +36,10 @@ export const fixedCostsQuery = queryOptions({
     queryFn: () => apiFetch<FixedCostRecord[]>("/fixed-costs"),
 });
 
-export function useFixedCosts(): FixedCost[] {
+export function useFixedCostCategoryGroups(): FixedCostCategoryGroup[] {
     const records = useQuery(fixedCostsQuery).data ?? EMPTY;
     const categories = useFixedCostCategories();
-    return records.map((record) => toFixedCost(record, categories));
+    return toCategoryGroups(records, categories);
 }
 
 export function fixedCostQuery(id: string) {

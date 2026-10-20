@@ -575,6 +575,20 @@ export const fixed_cost_amount_eur: ((inputs?: Fixed_Cost_Amount_EurInputs, opti
 /**
 * | output |
 * | --- |
+* | "Fixed costs by category" |
+*
+* @param {Fixed_Cost_Breakdown_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_breakdown_title: ((inputs?: Fixed_Cost_Breakdown_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Breakdown_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Categories" |
 *
 * @param {Fixed_Cost_CategoriesInputs} inputs
@@ -3337,6 +3351,7 @@ export type Fixed_Cost_ActiveInputs = {};
 export type Fixed_Cost_AddInputs = {};
 export type Fixed_Cost_AmountInputs = {};
 export type Fixed_Cost_Amount_EurInputs = {};
+export type Fixed_Cost_Breakdown_TitleInputs = {};
 export type Fixed_Cost_CategoriesInputs = {};
 export type Fixed_Cost_CategoryInputs = {};
 export type Fixed_Cost_Choose_CategoryInputs = {};

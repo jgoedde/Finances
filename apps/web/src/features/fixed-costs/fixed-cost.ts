@@ -4,6 +4,7 @@ import {
     type FixedCostInterval,
     getMonthlyAmount,
     getYearlyAmount,
+    groupByFixedCostCategory,
     isRunningOn,
     toIsoDate,
 } from "@finances/shared";
@@ -50,11 +51,7 @@ export function toFixedCost(
         amount: record.amount,
         currency: record.currency,
         interval: record.interval,
-        category: categories.find((c) => c.id === record.categoryId) ?? {
-            id: "",
-            name: m.fixed_cost_unknown_category(),
-            description: null,
-        },
+        category: findCategory(record.categoryId, categories),
         active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
@@ -65,12 +62,101 @@ export function toFixedCost(
 }
 
 /**
+ * A fixed cost with its share of the monthly total of the running fixed
+ * costs; `null` while not running.
+ */
+export interface FixedCostEntry {
+    fixedCost: FixedCost;
+    share: number | null;
+}
+
+/**
+ * A fixed cost category with its fixed costs, the running ones first.
+ */
+export interface FixedCostCategoryGroup {
+    category: FixedCostCategory;
+
+    /**
+     * Monthly amount of its running fixed costs.
+     */
+    monthlyAmount: number;
+
+    /**
+     * Rank among the groups with running fixed costs (0 = largest) and its
+     * share of their monthly total; `null` when none of its fixed costs
+     * runs.
+     */
+    rank: number | null;
+    share: number | null;
+
+    fixedCosts: FixedCostEntry[];
+}
+
+/**
+ * Groups the fixed costs by fixed cost category, largest monthly amount
+ * first (see `groupByFixedCostCategory`). Fixed costs not running today
+ * follow in their group, or in groups of their own at the end.
+ */
+export function toCategoryGroups(
+    records: FixedCostRecord[],
+    categories: FixedCostCategory[],
+): FixedCostCategoryGroup[] {
+    const today = toLocalIsoDate(new Date());
+    const groups = new Map<string, FixedCostCategoryGroup>(
+        groupByFixedCostCategory(records, today).map((group, rank) => [
+            group.categoryId,
+            {
+                category: findCategory(group.categoryId, categories),
+                monthlyAmount: group.monthlyAmount,
+                rank,
+                share: group.share,
+                fixedCosts: group.fixedCosts.map((it) => ({
+                    fixedCost: toFixedCost(it.fixedCost, categories),
+                    share: it.share,
+                })),
+            },
+        ]),
+    );
+
+    // Records come sorted by name.
+    for (const record of records.filter((it) => !isRunningOn(it, today))) {
+        const group = groups.get(record.categoryId) ?? {
+            category: findCategory(record.categoryId, categories),
+            monthlyAmount: 0,
+            rank: null,
+            share: null,
+            fixedCosts: [],
+        };
+        group.fixedCosts.push({
+            fixedCost: toFixedCost(record, categories),
+            share: null,
+        });
+        groups.set(record.categoryId, group);
+    }
+
+    return [...groups.values()];
+}
+
+/**
  * The date's calendar day in the device's time zone, as `YYYY-MM-DD`.
  */
 export function toLocalIsoDate(date: Date): string {
     return toIsoDate(
         date.getTime(),
         Intl.DateTimeFormat().resolvedOptions().timeZone,
+    );
+}
+
+function findCategory(
+    id: string,
+    categories: FixedCostCategory[],
+): FixedCostCategory {
+    return (
+        categories.find((c) => c.id === id) ?? {
+            id: "",
+            name: m.fixed_cost_unknown_category(),
+            description: null,
+        }
     );
 }
 
