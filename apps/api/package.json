@@ -15,11 +15,11 @@
     "dependencies": {
         "@finances/shared": "*",
         "@hono/node-server": "^2.1.5",
-        "better-auth": "~1.7.9",
+        "better-auth": "~1.7.12",
         "better-sqlite3": "^13.0.3",
         "commander": "^15.0.0",
         "hono": "^4.13.12",
-        "kysely": "^0.29.6",
+        "kysely": "^0.29.7",
         "lodash": "^4.18.1",
         "nanoid": "^6.0.2",
         "pino": "^10.4.0",
