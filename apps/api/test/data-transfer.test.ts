@@ -1,8 +1,14 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { DataExport, ImportResult, Transaction } from "@finances/shared";
+import type {
+    DataExport,
+    FixedCost,
+    ImportResult,
+    Transaction,
+} from "@finances/shared";
 import {
     type Client,
     createTestApp,
+    fixedCostBody,
     json,
     transactionBody,
 } from "./test-app.ts";
@@ -51,6 +57,10 @@ describe("data transfer", () => {
             method: "PUT",
             body: transactionBody({ categoryId: "3" }),
         });
+        await alice("/api/fixed-costs", {
+            method: "POST",
+            body: fixedCostBody(),
+        });
         const exported = await json<DataExport>(alice("/api/data/export"));
 
         const bob = (await app.signUp("bob")).client;
@@ -74,8 +84,60 @@ describe("data transfer", () => {
         expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(3);
+        expect(reexported.version).toBe(4);
         expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
+    });
+
+    it("imports a version 3 export, ending inactive fixed costs on the export's day", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const legacy = (
+            name: string,
+            active: boolean,
+            endDate: string | null,
+        ) => ({
+            id: name,
+            name,
+            description: null,
+            amount: 30,
+            currency: "EUR",
+            interval: "quarterly",
+            categoryId: "1",
+            active,
+            startDate: "2026-01-01",
+            endDate,
+        });
+        const v3 = {
+            ...exported,
+            version: 3,
+            exportedAt: "2026-05-20T10:00:00.000Z",
+            fixedCosts: [
+                legacy("running", true, null),
+                legacy("paused", false, null),
+                legacy("paused-later", false, "2026-12-31"),
+                legacy("paused-ended", false, "2026-02-28"),
+            ],
+        };
+        expect((await upload(alice, JSON.stringify(v3))).status).toBe(200);
+
+        const fixedCosts = await list<FixedCost>(alice, "/api/fixed-costs");
+        expect(fixedCosts.map((it) => [it.id, it.endDate, it.amounts])).toEqual(
+            [
+                ["paused", "2026-05-20"],
+                ["paused-ended", "2026-02-28"],
+                ["paused-later", "2026-05-20"],
+                ["running", null],
+            ].map(([id, endDate]) => [
+                id,
+                endDate,
+                [
+                    {
+                        validFrom: "2026-01-01",
+                        amount: 30,
+                        interval: "quarterly",
+                    },
+                ],
+            ]),
+        );
     });
 
     it("rejects a version 1 export", async () => {

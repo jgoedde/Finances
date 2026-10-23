@@ -3,6 +3,7 @@ import {
     type FixedCost as FixedCostRecord,
     type FixedCostCategory,
     type FixedCostInterval,
+    currentAmount,
     getMonthlyAmount,
     getYearlyAmount,
     groupByFixedCostCategory,
@@ -25,11 +26,14 @@ export interface FixedCost {
     id: string;
     name: string;
     description: string | null;
+
+    /**
+     * Valid today (see `currentAmount`), like `interval`.
+     */
     amount: number;
     currency: string;
     interval: FixedCostInterval;
     category: FixedCostCategory;
-    active: boolean;
     startDate: Date;
     endDate: Date | null;
 
@@ -37,32 +41,33 @@ export interface FixedCost {
     yearlyAmount: number;
 
     /**
-     * Active and within its start/end range today.
+     * Within its start/end range today.
      */
     isRunning: boolean;
 }
 
 /**
- * Hydrates a fixed cost; `today` (`YYYY-MM-DD`) decides `isRunning`.
+ * Hydrates a fixed cost; `today` (`YYYY-MM-DD`) decides the amounts and
+ * `isRunning`.
  */
 export function toFixedCost(
     record: FixedCostRecord,
     categories: FixedCostCategory[],
     today: string,
 ): FixedCost {
+    const { amount, interval } = currentAmount(record, today);
     return {
         id: record.id,
         name: record.name,
         description: record.description,
-        amount: record.amount,
+        amount,
         currency: record.currency,
-        interval: record.interval,
+        interval,
         category: findCategory(record.categoryId, categories),
-        active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
-        monthlyAmount: getMonthlyAmount(record),
-        yearlyAmount: getYearlyAmount(record),
+        monthlyAmount: getMonthlyAmount(record, today),
+        yearlyAmount: getYearlyAmount(record, today),
         isRunning: isRunningOn(record, today),
     };
 }

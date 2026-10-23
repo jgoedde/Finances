@@ -48,6 +48,21 @@ export async function restoreQueryClient(
         // The persister already discarded the unreadable cache; start empty.
     }
 
+    // Fixed costs cached before they had an amount history can't be shown;
+    // drop them so they're fetched again.
+    queryClient.removeQueries({
+        queryKey: ["fixed-costs"],
+        predicate: (query) =>
+            [query.state.data]
+                .flat()
+                .some(
+                    (it) =>
+                        typeof it === "object" &&
+                        it !== null &&
+                        !("amounts" in it),
+                ),
+    });
+
     // Restored mutations are not running yet. Continuing them in order lets
     // their scope run them one after another.
     for (const mutation of queryClient.getMutationCache().getAll()) {

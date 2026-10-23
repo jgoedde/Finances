@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { MonthOverview } from "@finances/shared";
+import type { FixedCost, MonthOverview } from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -34,23 +34,31 @@ describe("month overview", () => {
         expect(response.ok).toBe(true);
     }
 
-    async function addFixedCost(overrides: Record<string, unknown>) {
+    /**
+     * Adds a fixed cost with one amount (`amount`, `interval`) unless
+     * `amounts` is given; returns its id.
+     */
+    async function addFixedCost({
+        amount = 12,
+        interval = "monthly",
+        ...overrides
+    }: Record<string, unknown>) {
+        const startDate = overrides.startDate ?? "2026-01-01";
         const response = await alice("/api/fixed-costs", {
             method: "POST",
             body: JSON.stringify({
                 name: "Rent",
                 description: null,
-                amount: 12,
                 currency: "EUR",
-                interval: "monthly",
                 categoryId: "1",
-                active: true,
-                startDate: "2026-01-01",
+                startDate,
                 endDate: null,
+                amounts: [{ validFrom: startDate, amount, interval }],
                 ...overrides,
             }),
         });
         expect(response.ok).toBe(true);
+        return (await json<FixedCost>(response)).id;
     }
 
     function overview(client: Client, month: string, timeZone = TIME_ZONE) {
@@ -122,13 +130,40 @@ describe("month overview", () => {
             startDate: "2026-10-15",
         });
         await addFixedCost({ endDate: "2026-09-30" });
-        await addFixedCost({ active: false });
 
         const { fixedCosts } = await json<MonthOverview>(
             overview(alice, "2026-10"),
         );
 
         expect(fixedCosts).toBe(22);
+    });
+
+    it("keeps a changed amount's old value for the months before the change", async () => {
+        const id = await addFixedCost({ amount: 800 });
+        const updated = await alice(`/api/fixed-costs/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify({
+                startDate: "2026-01-01",
+                amounts: [
+                    {
+                        validFrom: "2026-01-01",
+                        amount: 800,
+                        interval: "monthly",
+                    },
+                    {
+                        validFrom: "2026-10-01",
+                        amount: 850,
+                        interval: "monthly",
+                    },
+                ],
+            }),
+        });
+        expect(updated.ok).toBe(true);
+
+        const fixedCostsIn = async (month: string) =>
+            (await json<MonthOverview>(overview(alice, month))).fixedCosts;
+        expect(await fixedCostsIn("2026-09")).toBe(800);
+        expect(await fixedCostsIn("2026-10")).toBe(850);
     });
 
     it("breaks the fixed costs running in the month down by fixed cost category, largest first", async () => {
@@ -142,7 +177,7 @@ describe("month overview", () => {
             startDate: "2026-10-31",
         });
         await addFixedCost({ categoryId: "7", endDate: "2026-09-30" });
-        await addFixedCost({ categoryId: "9", active: false });
+        await addFixedCost({ categoryId: "9", endDate: "2026-08-31" });
 
         const { fixedCosts, fixedCostCategories } = await json<MonthOverview>(
             overview(alice, "2026-10"),

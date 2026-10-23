@@ -32,10 +32,19 @@ function RouteComponent() {
 
     function save(values: FixedCostWizardValues) {
         createFixedCost.mutate({
-            ...values,
+            name: values.name,
             description: null,
             currency: "EUR",
-            active: true,
+            categoryId: values.categoryId,
+            startDate: values.startDate,
+            endDate: values.endDate,
+            amounts: [
+                {
+                    validFrom: values.startDate,
+                    amount: values.amount,
+                    interval: values.interval,
+                },
+            ],
         });
         toast.success(m.fixed_cost_created({ name: values.name }));
         void navigate({ to: "/fixed-costs" });

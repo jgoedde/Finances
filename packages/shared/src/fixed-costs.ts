@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { z } from "zod";
 
 export const fixedCostCategorySchema = z.object({
@@ -19,24 +20,85 @@ export type FixedCostInterval = z.infer<typeof fixedCostIntervalSchema>;
  */
 const isoDate = z.iso.date();
 
-export const fixedCostSchema = z.object({
+export const fixedCostAmountSchema = z.object({
+    /**
+     * First day the amount and interval apply.
+     */
+    validFrom: isoDate,
+    amount: z.number().nonnegative(),
+    interval: fixedCostIntervalSchema,
+});
+export type FixedCostAmount = z.infer<typeof fixedCostAmountSchema>;
+
+const fixedCostObject = z.object({
     id: z.string(),
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
-    amount: z.number().nonnegative(),
     currency: z.string().length(3),
-    interval: fixedCostIntervalSchema,
     categoryId: z.string().min(1),
-    active: z.boolean(),
     startDate: isoDate,
     endDate: isoDate.nullable(),
-});
-export type FixedCost = z.infer<typeof fixedCostSchema>;
 
-export const fixedCostInputSchema = fixedCostSchema.omit({ id: true });
+    /**
+     * The amount history, ascending by `validFrom`; the first entry is valid
+     * from `startDate`.
+     */
+    amounts: z
+        .array(fixedCostAmountSchema)
+        .min(1)
+        .refine(
+            (amounts) =>
+                amounts.every(
+                    (it, i) =>
+                        i === 0 || amounts[i - 1]!.validFrom < it.validFrom,
+                ),
+            "Amounts must be ascending by validFrom",
+        ),
+});
+export type FixedCost = z.infer<typeof fixedCostObject>;
+
+const startsOnStartDate = {
+    check: (it: Partial<Pick<FixedCost, "amounts" | "startDate">>) =>
+        it.amounts?.[0]?.validFrom === it.startDate,
+    message: "The first amount must be valid from the start date",
+};
+
+export const fixedCostSchema = fixedCostObject.refine(
+    startsOnStartDate.check,
+    startsOnStartDate.message,
+);
+
+/**
+ * Fixed costs before the amount history (export version 3 and older): one
+ * amount and interval, and an `active` switch.
+ */
+export const legacyFixedCostSchema = fixedCostObject
+    .omit({ amounts: true })
+    .extend({
+        amount: z.number().nonnegative(),
+        interval: fixedCostIntervalSchema,
+        active: z.boolean(),
+    });
+
+export const fixedCostInputSchema = fixedCostObject
+    .omit({ id: true })
+    .refine(startsOnStartDate.check, startsOnStartDate.message);
 export type FixedCostInput = z.infer<typeof fixedCostInputSchema>;
 
-export const fixedCostPatchSchema = fixedCostInputSchema.partial();
+/**
+ * `amounts` and `startDate` change together, so the history keeps starting
+ * on the start date.
+ */
+export const fixedCostPatchSchema = fixedCostObject
+    .omit({ id: true })
+    .partial()
+    .refine(
+        (patch) =>
+            patch.amounts === undefined && patch.startDate === undefined
+                ? true
+                : startsOnStartDate.check(patch),
+        startsOnStartDate.message,
+    );
 export type FixedCostPatch = z.infer<typeof fixedCostPatchSchema>;
 
 const MONTHS_PER_INTERVAL = {
@@ -46,21 +108,74 @@ const MONTHS_PER_INTERVAL = {
 } as const satisfies Record<FixedCostInterval, number>;
 
 /**
- * The amount spread evenly over the months of its interval, unrounded.
+ * The amount history's entry valid on `day` (`YYYY-MM-DD`); the first one
+ * before the start date.
  */
-export function getMonthlyAmount(fixedCost: FixedCost): number {
-    return fixedCost.amount / MONTHS_PER_INTERVAL[fixedCost.interval];
+export function currentAmount(
+    fixedCost: Pick<FixedCost, "amounts">,
+    day: string,
+): FixedCostAmount {
+    const { amounts } = fixedCost;
+    return _.findLast(amounts, (it) => it.validFrom <= day) ?? amounts[0]!;
 }
 
 /**
- * Twelve monthly amounts, unrounded.
+ * The amount valid on `day` (`YYYY-MM-DD`) spread evenly over the months of
+ * its interval, unrounded.
  */
-export function getYearlyAmount(fixedCost: FixedCost): number {
-    return getMonthlyAmount(fixedCost) * 12;
+export function getMonthlyAmount(
+    fixedCost: Pick<FixedCost, "amounts">,
+    day: string,
+): number {
+    const { amount, interval } = currentAmount(fixedCost, day);
+    return amount / MONTHS_PER_INTERVAL[interval];
 }
 
 /**
- * Whether the fixed cost is active and `day` (`YYYY-MM-DD`) is in its range.
+ * Twelve monthly amounts as of `day` (`YYYY-MM-DD`), unrounded.
+ */
+export function getYearlyAmount(
+    fixedCost: Pick<FixedCost, "amounts">,
+    day: string,
+): number {
+    return getMonthlyAmount(fixedCost, day) * 12;
+}
+
+/**
+ * The amount history after changing the amount and interval from
+ * `change.validFrom` on. A change from the last entry's day or before
+ * corrects that entry instead of adding one.
+ */
+export function changeAmount(
+    amounts: FixedCostAmount[],
+    change: FixedCostAmount,
+): FixedCostAmount[] {
+    const last = _.last(amounts);
+    if (last === undefined || change.validFrom > last.validFrom) {
+        return [...amounts, change];
+    }
+    return [...amounts.slice(0, -1), { ...change, validFrom: last.validFrom }];
+}
+
+/**
+ * The amount history for a new start date (`YYYY-MM-DD`): it starts with the
+ * entry valid on that day and drops the ones before.
+ */
+export function rebaseAmounts(
+    amounts: FixedCostAmount[],
+    startDate: string,
+): FixedCostAmount[] {
+    const first = Math.max(
+        0,
+        _.findLastIndex(amounts, (it) => it.validFrom <= startDate),
+    );
+    return amounts
+        .slice(first)
+        .map((it, i) => (i === 0 ? { ...it, validFrom: startDate } : it));
+}
+
+/**
+ * Whether `day` (`YYYY-MM-DD`) is in the fixed cost's range.
  */
 export function isRunningOn(fixedCost: FixedCost, day: string): boolean {
     return isRunningBetween(fixedCost, day, day);
@@ -76,7 +191,6 @@ export function isRunningBetween(
     to: string,
 ): boolean {
     return (
-        fixedCost.active &&
         fixedCost.startDate <= to &&
         (fixedCost.endDate === null || fixedCost.endDate >= from)
     );

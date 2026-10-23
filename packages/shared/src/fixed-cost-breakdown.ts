@@ -46,7 +46,8 @@ export interface FixedCostCategoryShare {
 /**
  * Groups the fixed costs by fixed cost category, largest monthly amount
  * first. Only fixed costs running on at least one day from `from` to `to`
- * (`YYYY-MM-DD`, both included; a single day by default) count: shares are
+ * (`YYYY-MM-DD`, both included; a single day by default) count, with the
+ * amount valid on the last of those days: shares are
  * of their monthly total, so they add up to 1 (or are all 0 when that total
  * is 0). The others follow in their group without a share, and groups
  * without running fixed costs come last. Ties are ordered by name.
@@ -59,14 +60,23 @@ export function groupByFixedCostCategory(
     const [running, stopped] = _.partition(fixedCosts, (it) =>
         isRunningBetween(it, from, to),
     );
-    const total = _.sumBy(running, getMonthlyAmount);
+    // The amount valid on the last day it runs in the range (or, while not
+    // running, at the range's end).
+    const monthlyAmountOf = (fixedCost: FixedCost) =>
+        getMonthlyAmount(
+            fixedCost,
+            fixedCost.endDate !== null && fixedCost.endDate < to
+                ? fixedCost.endDate
+                : to,
+        );
+    const total = _.sumBy(running, monthlyAmountOf);
     // Fixed costs may cost 0, so the total may be 0.
     const shareOf = (amount: number) => (total > 0 ? amount / total : 0);
 
     const shares: FixedCostShare[] = [
         ...running
             .map((fixedCost) => {
-                const monthlyAmount = getMonthlyAmount(fixedCost);
+                const monthlyAmount = monthlyAmountOf(fixedCost);
                 return {
                     fixedCost,
                     monthlyAmount,
@@ -81,7 +91,7 @@ export function groupByFixedCostCategory(
         ...stopped
             .map((fixedCost) => ({
                 fixedCost,
-                monthlyAmount: getMonthlyAmount(fixedCost),
+                monthlyAmount: monthlyAmountOf(fixedCost),
                 share: null,
             }))
             .sort((a, b) => compareNames(a.fixedCost.name, b.fixedCost.name)),

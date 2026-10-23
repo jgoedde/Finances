@@ -1,7 +1,7 @@
 import { monthInsightQuerySchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
-import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
+import { loadFixedCosts } from "#/features/fixed-costs/fixed-costs.ts";
 import { toTransaction } from "#/features/transactions/transactions.ts";
 import {
     buildMonthOverview,
@@ -29,11 +29,7 @@ export const getMonthOverview = factory.createHandlers(
                     .select(["id", "name", "color", "icon_name"])
                     .where("user_id", "=", userId)
                     .execute(),
-                db
-                    .selectFrom("fixed_costs")
-                    .selectAll()
-                    .where("user_id", "=", userId)
-                    .execute(),
+                loadFixedCosts(db, userId),
                 db
                     .selectFrom("fixed_cost_categories")
                     .select(["id", "name"])
@@ -48,7 +44,7 @@ export const getMonthOverview = factory.createHandlers(
                 now: Date.now(),
                 transactions: transactions.map(toTransaction),
                 categories,
-                fixedCosts: fixedCosts.map(toFixedCost),
+                fixedCosts,
                 fixedCostCategories,
             }),
         );

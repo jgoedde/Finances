@@ -79,7 +79,7 @@ How often a fixed cost is charged: monthly, quarterly or yearly.
 _Avoid_: Frequency, period, cycle
 
 **Monthly amount**:
-A fixed cost's amount spread evenly over the months of its interval. A yearly amount is twelve monthly amounts.
+A fixed cost's amount valid on a day spread evenly over the months of its interval. A yearly amount is twelve monthly amounts.
 _Avoid_: Monthly rate, average
 
 **Total outflow**:
@@ -90,12 +90,12 @@ _Avoid_: Total spending, expenses
 What a month's money went to: the monthly amounts of the fixed costs running in it plus, for each category, its net spending where that is above zero. Leaves out exceptional transactions and income, so it shows what spending is made of rather than how the month ended.
 _Avoid_: Spending mix, total spending
 
-**Active**:
-A fixed cost the user has not switched off. An inactive fixed cost is kept but counts nowhere.
-_Avoid_: Enabled, paused
+**Amount history**:
+A fixed cost's amounts and intervals, each valid from a day on, the first from its start date. A change applies from its day on, so earlier months keep the previous amount. Name, category and description have none.
+_Avoid_: Price history, versions
 
 **Running**:
-A fixed cost is running on a day when it is active and the day falls within its start and end date.
+A fixed cost is running on a day when the day falls within its start and end date. Pausing a fixed cost means ending it.
 _Avoid_: Current, ongoing, valid
 
 ## Sync

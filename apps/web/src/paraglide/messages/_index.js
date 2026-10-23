@@ -39,7 +39,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
-/** @typedef {{}} Fixed_Cost_ActiveInputs */
 /** @typedef {{}} Fixed_Cost_AddInputs */
 /** @typedef {{}} Fixed_Cost_AmountInputs */
 /** @typedef {{}} Fixed_Cost_Amount_EurInputs */
@@ -73,6 +72,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
 /** @typedef {{}} Fixed_Cost_UpdatedInputs */
+/** @typedef {{}} Fixed_Cost_Valid_FromInputs */
+/** @typedef {{}} Fixed_Cost_Valid_From_HintInputs */
 /** @typedef {{}} Fixed_Costs_TitleInputs */
 /** @typedef {{}} Kind_ExpenseInputs */
 /** @typedef {{}} Kind_IncomeInputs */
@@ -766,20 +767,6 @@ export const error_unknown = /** @type {((inputs?: Error_UnknownInputs, options?
 /**
 * | output |
 * | --- |
-* | "Active" |
-*
-* @param {Fixed_Cost_ActiveInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const fixed_cost_active = /** @type {((inputs?: Fixed_Cost_ActiveInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_ActiveInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.fixed_cost_active(inputs)
-	return __en.fixed_cost_active(inputs)
-});
-/**
-* | output |
-* | --- |
 * | "Add fixed cost" |
 *
 * @param {Fixed_Cost_AddInputs} inputs
@@ -1238,6 +1225,34 @@ export const fixed_cost_updated = /** @type {((inputs?: Fixed_Cost_UpdatedInputs
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_updated(inputs)
 	return __en.fixed_cost_updated(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Valid from" |
+*
+* @param {Fixed_Cost_Valid_FromInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_valid_from = /** @type {((inputs?: Fixed_Cost_Valid_FromInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Valid_FromInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_valid_from(inputs)
+	return __en.fixed_cost_valid_from(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Earlier months keep the previous amount." |
+*
+* @param {Fixed_Cost_Valid_From_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_valid_from_hint = /** @type {((inputs?: Fixed_Cost_Valid_From_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Valid_From_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_valid_from_hint(inputs)
+	return __en.fixed_cost_valid_from_hint(inputs)
 });
 /**
 * | output |

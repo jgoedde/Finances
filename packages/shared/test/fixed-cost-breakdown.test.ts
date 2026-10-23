@@ -1,22 +1,33 @@
 import { describe, expect, it } from "vitest";
 import { groupByFixedCostCategory } from "#/fixed-cost-breakdown.ts";
-import type { FixedCost } from "#/fixed-costs.ts";
+import type { FixedCost, FixedCostAmount } from "#/fixed-costs.ts";
 
-function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
+/**
+ * A fixed cost with one amount, unless `amounts` is given.
+ */
+function fixedCost({
+    amount = 100,
+    interval = "monthly",
+    ...overrides
+}: Partial<FixedCost & Omit<FixedCostAmount, "validFrom">> = {}): FixedCost {
+    const startDate = overrides.startDate ?? "2026-01-01";
     return {
         id: "f1",
         name: "Miete",
         description: null,
-        amount: 100,
         currency: "EUR",
-        interval: "monthly",
         categoryId: "housing",
-        active: true,
-        startDate: "2026-01-01",
+        startDate,
         endDate: null,
+        amounts: [{ validFrom: startDate, amount, interval }],
         ...overrides,
     };
 }
+
+/**
+ * Ended before `TODAY`.
+ */
+const ENDED = "2026-05-31";
 
 const TODAY = "2026-06-15";
 
@@ -46,7 +57,7 @@ describe("groupByFixedCostCategory", () => {
         const groups = groupByFixedCostCategory(
             [
                 fixedCost({ id: "rent", categoryId: "housing", amount: 300 }),
-                fixedCost({ id: "off", categoryId: "housing", active: false }),
+                fixedCost({ id: "off", categoryId: "housing", endDate: ENDED }),
                 fixedCost({ id: "later", startDate: "2026-07-01" }),
                 fixedCost({ id: "ended", endDate: "2026-06-14" }),
                 fixedCost({ id: "car", categoryId: "mobility", amount: 100 }),
@@ -96,7 +107,7 @@ describe("groupByFixedCostCategory", () => {
         const housing = groupByFixedCostCategory(
             [
                 fixedCost({ id: "rent", name: "Miete", amount: 300 }),
-                fixedCost({ id: "off", name: "Strom", active: false }),
+                fixedCost({ id: "off", name: "Strom", endDate: ENDED }),
                 fixedCost({ id: "ended", name: "Gas", endDate: "2026-06-14" }),
             ],
             TODAY,
@@ -118,13 +129,13 @@ describe("groupByFixedCostCategory", () => {
                     id: "tv",
                     name: "TV",
                     categoryId: "media",
-                    active: false,
+                    endDate: ENDED,
                 }),
                 fixedCost({
                     id: "gym",
                     name: "Gym",
                     categoryId: "sports",
-                    active: false,
+                    endDate: ENDED,
                 }),
                 fixedCost({ id: "rent", categoryId: "housing" }),
             ],
@@ -188,6 +199,28 @@ describe("groupByFixedCostCategory", () => {
         );
 
         expect(groups.map((g) => g.categoryId)).toEqual(["y", "x"]);
+    });
+
+    it("counts the amount valid on the last day of the range it runs on", () => {
+        const rent = fixedCost({
+            amounts: [
+                { validFrom: "2026-01-01", amount: 800, interval: "monthly" },
+                { validFrom: "2026-06-15", amount: 850, interval: "monthly" },
+            ],
+        });
+        const monthlyAmount = (from: string, to: string) =>
+            groupByFixedCostCategory([rent], from, to)[0]?.monthlyAmount;
+
+        expect(monthlyAmount("2026-05-01", "2026-05-31")).toBe(800);
+        expect(monthlyAmount("2026-06-01", "2026-06-30")).toBe(850);
+        expect(monthlyAmount("2026-06-14", "2026-06-14")).toBe(800);
+        expect(
+            groupByFixedCostCategory(
+                [{ ...rent, endDate: "2026-06-10" }],
+                "2026-06-01",
+                "2026-06-30",
+            )[0]?.monthlyAmount,
+        ).toBe(800);
     });
 
     it("gives running fixed costs a share of 0 when the total is 0", () => {

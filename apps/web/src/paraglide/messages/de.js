@@ -37,7 +37,6 @@
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
-/** @typedef {{}} Fixed_Cost_ActiveInputs */
 /** @typedef {{}} Fixed_Cost_AddInputs */
 /** @typedef {{}} Fixed_Cost_AmountInputs */
 /** @typedef {{}} Fixed_Cost_Amount_EurInputs */
@@ -71,6 +70,8 @@
 /** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
 /** @typedef {{}} Fixed_Cost_UpdatedInputs */
+/** @typedef {{}} Fixed_Cost_Valid_FromInputs */
+/** @typedef {{}} Fixed_Cost_Valid_From_HintInputs */
 /** @typedef {{}} Fixed_Costs_TitleInputs */
 /** @typedef {{}} Kind_ExpenseInputs */
 /** @typedef {{}} Kind_IncomeInputs */
@@ -392,10 +393,6 @@ export const error_unknown = /** @type {(inputs: Error_UnknownInputs) => Localiz
 	return /** @type {LocalizedString} */ (`Unbekannter Fehler.`)
 };
 
-export const fixed_cost_active = /** @type {(inputs: Fixed_Cost_ActiveInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Aktiv`)
-};
-
 export const fixed_cost_add = /** @type {(inputs: Fixed_Cost_AddInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Fixkosten erfassen`)
 };
@@ -526,6 +523,14 @@ export const fixed_cost_update_failed = /** @type {(inputs: Fixed_Cost_Update_Fa
 
 export const fixed_cost_updated = /** @type {(inputs: Fixed_Cost_UpdatedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Fixkosten aktualisiert`)
+};
+
+export const fixed_cost_valid_from = /** @type {(inputs: Fixed_Cost_Valid_FromInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Gültig ab`)
+};
+
+export const fixed_cost_valid_from_hint = /** @type {(inputs: Fixed_Cost_Valid_From_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Frühere Monate behalten den bisherigen Betrag.`)
 };
 
 export const fixed_costs_title = /** @type {(inputs: Fixed_Costs_TitleInputs) => LocalizedString} */ () => {

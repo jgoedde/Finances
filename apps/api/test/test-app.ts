@@ -103,3 +103,22 @@ export function transactionBody(overrides: Record<string, unknown> = {}) {
         ...overrides,
     });
 }
+
+/**
+ * Rent of 800 from January, 850 from October 2026.
+ */
+export function fixedCostBody(overrides: Record<string, unknown> = {}) {
+    return JSON.stringify({
+        name: "Rent",
+        description: null,
+        currency: "EUR",
+        categoryId: "1",
+        startDate: "2026-01-01",
+        endDate: null,
+        amounts: [
+            { validFrom: "2026-01-01", amount: 800, interval: "monthly" },
+            { validFrom: "2026-10-01", amount: 850, interval: "monthly" },
+        ],
+        ...overrides,
+    });
+}

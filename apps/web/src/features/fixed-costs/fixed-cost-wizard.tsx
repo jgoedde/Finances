@@ -40,13 +40,20 @@ const dateTriggerClassName = `border-outline text-on-surface text-body-large
     text-left [&_svg]:text-on-surface-variant`;
 
 type StepId =
-    "name" | "amount" | "interval" | "startDate" | "endDate" | "category";
+    | "name"
+    | "amount"
+    | "interval"
+    | "validFrom"
+    | "startDate"
+    | "endDate"
+    | "category";
 
 const STEPS: StepId[] = [
     "name",
     "amount",
     "category",
     "interval",
+    "validFrom",
     "startDate",
     "endDate",
 ];
@@ -55,6 +62,12 @@ export interface FixedCostWizardValues {
     name: string;
     amount: number;
     interval: FixedCostInterval;
+
+    /**
+     * From when on `amount` and `interval` apply (`YYYY-MM-DD`); `null` when
+     * they're unchanged or `asksValidFrom` is off.
+     */
+    validFrom: string | null;
 
     /**
      * `YYYY-MM-DD`
@@ -90,6 +103,12 @@ interface FixedCostWizardProps {
     categories: FixedCostCategory[];
 
     /**
+     * Asks from when on a changed amount or interval applies, for editing a
+     * fixed cost with an amount history.
+     */
+    asksValidFrom?: boolean;
+
+    /**
      * Saves the fixed cost optimistically; errors are the caller's to report.
      */
     onSubmit: (values: FixedCostWizardValues) => void;
@@ -109,6 +128,7 @@ export function FixedCostWizard({
     submitLabel,
     initialValues,
     categories,
+    asksValidFrom = false,
     onSubmit,
     onDelete,
 }: FixedCostWizardProps) {
@@ -127,10 +147,21 @@ export function FixedCostWizard({
     const [endDate, setEndDate] = useState<Date | undefined>(
         initialValues.endDate ?? undefined,
     );
+    const [validFrom, setValidFrom] = useState<Date>(() => new Date());
     const [categoryId, setCategoryId] = useState(initialValues.categoryId);
 
-    const stepId = STEPS[step];
-    const isLastStep = step === STEPS.length - 1;
+    const amount = parseFloat(amountStr.replace(",", ".")) || 0;
+    const isAmountChanged =
+        asksValidFrom &&
+        (amount !== initialValues.amount ||
+            interval !== initialValues.interval);
+    // The valid-from step follows the amount and interval steps, so showing
+    // it never moves the current step.
+    const steps = isAmountChanged
+        ? STEPS
+        : STEPS.filter((it) => it !== "validFrom");
+    const stepId = steps[step];
+    const isLastStep = step === steps.length - 1;
     // Fixed costs are read-only offline; only saving needs the server.
     const isOnline = useIsOnline();
     const isSaveBlocked = isLastStep && !isOnline;
@@ -147,7 +178,7 @@ export function FixedCostWizard({
 
     function goNext() {
         if (!canNext || isSaveBlocked) return;
-        if (step < STEPS.length - 1) {
+        if (step < steps.length - 1) {
             setStep((s) => s + 1);
             return;
         }
@@ -164,8 +195,9 @@ export function FixedCostWizard({
         }
         onSubmit({
             name: name.trim(),
-            amount: parseFloat(amountStr.replace(",", ".")) || 0,
+            amount,
             interval,
+            validFrom: isAmountChanged ? toLocalIsoDate(validFrom) : null,
             startDate: toLocalIsoDate(startDate),
             endDate: endDate === undefined ? null : toLocalIsoDate(endDate),
             categoryId,
@@ -232,6 +264,43 @@ export function FixedCostWizard({
                                 setInterval(v as FixedCostInterval)
                             }
                         />
+                    </Field>
+                );
+            case "validFrom":
+                return (
+                    <Field>
+                        <FieldLabel htmlFor={"valid-from"}>
+                            {m.fixed_cost_valid_from()}
+                        </FieldLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id={"valid-from"}
+                                    variant="ghost"
+                                    shape="square"
+                                    className={dateTriggerClassName}
+                                >
+                                    {formatLongDate(validFrom, getLocale())}
+                                    <ChevronDownIcon />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                            >
+                                <Calendar
+                                    mode="single"
+                                    selected={validFrom}
+                                    onSelect={(d) =>
+                                        setValidFrom(d ?? new Date())
+                                    }
+                                    defaultMonth={validFrom}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <FieldDescription>
+                            {m.fixed_cost_valid_from_hint()}
+                        </FieldDescription>
                     </Field>
                 );
             case "startDate":

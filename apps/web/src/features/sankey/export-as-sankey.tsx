@@ -150,6 +150,7 @@ export function ExportSankeyDialog() {
             return;
         }
 
+        const lastDay = toLocalIsoDate(endDate);
         const csv = buildSankeyCSV({
             monthIndex: parseInt(month) - 1,
             year: parseInt(year),
@@ -158,10 +159,10 @@ export function ExportSankeyDialog() {
                 amount: parseFloat(s.amount) || 0,
             })),
             fixedCosts: fixedCosts
-                .filter((it) => isRunningOn(it, toLocalIsoDate(endDate)))
+                .filter((it) => isRunningOn(it, lastDay))
                 .map((it) => ({
                     name: it.name,
-                    amount: getMonthlyAmount(it),
+                    amount: getMonthlyAmount(it, lastDay),
                 })),
             savingsTargets: savingsTargets.map((s) => ({
                 name: s.name,

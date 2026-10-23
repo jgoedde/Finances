@@ -519,20 +519,6 @@ export const error_unknown: ((inputs?: Error_UnknownInputs, options?: {
 /**
 * | output |
 * | --- |
-* | "Active" |
-*
-* @param {Fixed_Cost_ActiveInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const fixed_cost_active: ((inputs?: Fixed_Cost_ActiveInputs, options?: {
-    locale?: "en" | "de";
-}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_ActiveInputs, {
-    locale?: "en" | "de";
-}, {}>;
-/**
-* | output |
-* | --- |
 * | "Add fixed cost" |
 *
 * @param {Fixed_Cost_AddInputs} inputs
@@ -990,6 +976,34 @@ export const fixed_cost_update_failed: ((inputs?: Fixed_Cost_Update_FailedInputs
 export const fixed_cost_updated: ((inputs?: Fixed_Cost_UpdatedInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_UpdatedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Valid from" |
+*
+* @param {Fixed_Cost_Valid_FromInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_valid_from: ((inputs?: Fixed_Cost_Valid_FromInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Valid_FromInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Earlier months keep the previous amount." |
+*
+* @param {Fixed_Cost_Valid_From_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_valid_from_hint: ((inputs?: Fixed_Cost_Valid_From_HintInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Valid_From_HintInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3418,7 +3432,6 @@ export type Auth_UsernameInputs = {};
 export type Error_Try_AgainInputs = {};
 export type Error_UnexpectedInputs = {};
 export type Error_UnknownInputs = {};
-export type Fixed_Cost_ActiveInputs = {};
 export type Fixed_Cost_AddInputs = {};
 export type Fixed_Cost_AmountInputs = {};
 export type Fixed_Cost_Amount_EurInputs = {};
@@ -3454,6 +3467,8 @@ export type Fixed_Cost_Start_DateInputs = {};
 export type Fixed_Cost_Unknown_CategoryInputs = {};
 export type Fixed_Cost_Update_FailedInputs = {};
 export type Fixed_Cost_UpdatedInputs = {};
+export type Fixed_Cost_Valid_FromInputs = {};
+export type Fixed_Cost_Valid_From_HintInputs = {};
 export type Fixed_Costs_TitleInputs = {};
 export type Kind_ExpenseInputs = {};
 export type Kind_IncomeInputs = {};

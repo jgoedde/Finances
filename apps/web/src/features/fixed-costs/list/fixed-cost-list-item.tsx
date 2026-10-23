@@ -1,13 +1,9 @@
 import { formatCurrency, formatPercent } from "@finances/shared";
 import { Link, useParams } from "@tanstack/react-router";
-import { Switch } from "#/components/ui/switch.tsx";
 import {
     type FixedCost,
     INTERVAL_LABELS,
 } from "#/features/fixed-costs/fixed-cost.ts";
-import { useUpdateFixedCost } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { useIsOnline } from "#/features/sync/connectivity.ts";
-import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
@@ -23,16 +19,13 @@ interface FixedCostListItemProps {
 
 /**
  * One fixed cost: name, interval (and the amount per interval unless
- * monthly), share, the monthly amount and the active switch. Opens the
- * edit view; dimmed while not running.
+ * monthly), share and the monthly amount. Opens the edit view; dimmed while
+ * not running.
  */
 export function FixedCostListItem({
     fixedCost,
     share,
 }: FixedCostListItemProps) {
-    const updateFixedCost = useUpdateFixedCost();
-    // Fixed costs are read-only offline.
-    const isOnline = useIsOnline();
     // Open in the detail pane beside the list.
     const isSelected =
         useParams({
@@ -52,7 +45,7 @@ export function FixedCostListItem({
     return (
         <div
             className={cn(
-                "flex items-center gap-2 rounded-md pr-3",
+                "flex items-center rounded-md",
                 isSelected && "bg-secondary-container",
             )}
         >
@@ -96,20 +89,6 @@ export function FixedCostListItem({
                     </span>
                 </div>
             </Link>
-            <OfflineHint active={!isOnline}>
-                <Switch
-                    aria-label={m.fixed_cost_active()}
-                    checked={fixedCost.active}
-                    disabled={!isOnline}
-                    // Optimistic: the hook updates the list and rolls back with a toast.
-                    onCheckedChange={() =>
-                        updateFixedCost.mutate({
-                            id: fixedCost.id,
-                            patch: { active: !fixedCost.active },
-                        })
-                    }
-                />
-            </OfflineHint>
         </div>
     );
 }

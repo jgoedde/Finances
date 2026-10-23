@@ -3,9 +3,10 @@ import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import {
     categoryExists,
-    toColumns,
-    toFixedCost,
     fixedCostIdParam,
+    loadFixedCost,
+    replaceAmounts,
+    toColumns,
 } from "#/features/fixed-costs/fixed-costs.ts";
 
 export const updateFixedCost = factory.createHandlers(
@@ -13,6 +14,7 @@ export const updateFixedCost = factory.createHandlers(
     validate("json", fixedCostPatchSchema),
     async (c) => {
         const { db, userId } = c.var;
+        const { id } = c.req.valid("param");
         const patch = c.req.valid("json");
         if (
             patch.categoryId !== undefined &&
@@ -25,24 +27,32 @@ export const updateFixedCost = factory.createHandlers(
                 ([, value]) => value !== undefined,
             ),
         );
-        const row =
-            Object.keys(columns).length > 0
-                ? await db
-                      .updateTable("fixed_costs")
-                      .set(columns)
-                      .where("user_id", "=", userId)
-                      .where("id", "=", c.req.valid("param").id)
-                      .returningAll()
-                      .executeTakeFirst()
-                : await db
-                      .selectFrom("fixed_costs")
-                      .selectAll()
-                      .where("user_id", "=", userId)
-                      .where("id", "=", c.req.valid("param").id)
-                      .executeTakeFirst();
-        if (!row) {
+        const found = await db.transaction().execute(async (trx) => {
+            const row = await trx
+                .selectFrom("fixed_costs")
+                .select("id")
+                .where("user_id", "=", userId)
+                .where("id", "=", id)
+                .executeTakeFirst();
+            if (!row) {
+                return false;
+            }
+            if (Object.keys(columns).length > 0) {
+                await trx
+                    .updateTable("fixed_costs")
+                    .set(columns)
+                    .where("user_id", "=", userId)
+                    .where("id", "=", id)
+                    .execute();
+            }
+            if (patch.amounts !== undefined) {
+                await replaceAmounts(trx, userId, id, patch.amounts);
+            }
+            return true;
+        });
+        if (!found) {
             return c.json({ error: "not_found" }, 404);
         }
-        return c.json(toFixedCost(row));
+        return c.json((await loadFixedCost(db, userId, id))!);
     },
 );

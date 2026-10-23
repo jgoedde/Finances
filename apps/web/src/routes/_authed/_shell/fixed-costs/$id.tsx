@@ -1,5 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { changeAmount, rebaseAmounts } from "@finances/shared";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -62,11 +63,27 @@ function RouteComponent() {
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
     const [today] = useState(() => toLocalIsoDate(new Date()));
     const fixedCost = toFixedCost(record, categories, today);
+    const latest = record.amounts[record.amounts.length - 1]!;
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
 
-    function save(values: FixedCostWizardValues) {
-        updateFixedCost.mutate({ id, patch: values });
+    function save({
+        amount,
+        interval,
+        validFrom,
+        ...values
+    }: FixedCostWizardValues) {
+        const amounts =
+            validFrom === null
+                ? record.amounts
+                : changeAmount(record.amounts, { validFrom, amount, interval });
+        updateFixedCost.mutate({
+            id,
+            patch: {
+                ...values,
+                amounts: rebaseAmounts(amounts, values.startDate),
+            },
+        });
         toast.success(m.fixed_cost_updated());
         void navigate({ to: "/fixed-costs" });
     }
@@ -83,13 +100,15 @@ function RouteComponent() {
             submitLabel={m.action_update()}
             initialValues={{
                 name: fixedCost.name,
-                amount: fixedCost.amount,
-                interval: fixedCost.interval,
+                // A change from the last entry's day or before corrects it.
+                amount: latest.amount,
+                interval: latest.interval,
                 startDate: fixedCost.startDate,
                 endDate: fixedCost.endDate,
                 categoryId: record.categoryId,
             }}
             categories={categories}
+            asksValidFrom
             onSubmit={save}
             onDelete={remove}
         />

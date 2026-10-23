@@ -1,6 +1,9 @@
 import type { DataExport, ImportResult } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
-import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
+import {
+    loadFixedCosts,
+    toAmountRows,
+} from "#/features/fixed-costs/fixed-costs.ts";
 import {
     toLocationColumns,
     toTransaction,
@@ -24,12 +27,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
                 .where("user_id", "=", userId)
                 .orderBy("id")
                 .execute(),
-            db
-                .selectFrom("fixed_costs")
-                .selectAll()
-                .where("user_id", "=", userId)
-                .orderBy("id")
-                .execute(),
+            loadFixedCosts(db, userId),
             db
                 .selectFrom("transactions")
                 .selectAll()
@@ -40,7 +38,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 3,
+        version: 4,
         exportedAt: new Date().toISOString(),
         categories: categories.map((c) => ({
             id: c.id,
@@ -53,7 +51,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
             name: c.name,
             description: c.description,
         })),
-        fixedCosts: fixedCosts.map(toFixedCost),
+        fixedCosts,
         transactions: transactions.map(toTransaction),
     };
 }
@@ -168,16 +166,20 @@ export async function replaceData(
                         id: f.id,
                         name: f.name,
                         description: f.description,
-                        amount: f.amount,
                         currency: f.currency,
-                        interval: f.interval,
                         category_id: f.categoryId,
-                        active: f.active ? 1 : 0,
                         start_date: f.startDate,
                         end_date: f.endDate,
                     })),
                 )
                 .execute(),
+        );
+        await insertChunked(
+            data.fixedCosts.flatMap((f) =>
+                toAmountRows(userId, f.id, f.amounts),
+            ),
+            (chunk) =>
+                trx.insertInto("fixed_cost_amounts").values(chunk).execute(),
         );
         await insertChunked(data.transactions, (chunk) =>
             trx
