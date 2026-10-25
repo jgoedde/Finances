@@ -701,6 +701,48 @@ export const fixed_cost_category: ((inputs?: Fixed_Cost_CategoryInputs, options?
 /**
 * | output |
 * | --- |
+* | "Color of {name}" |
+*
+* @param {Fixed_Cost_Category_ColorInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_color: ((inputs: Fixed_Cost_Category_ColorInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Category_ColorInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "The color couldn't be changed. Please try again." |
+*
+* @param {Fixed_Cost_Category_Color_FailedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_color_failed: ((inputs?: Fixed_Cost_Category_Color_FailedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Category_Color_FailedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Hue {hue}°" |
+*
+* @param {Fixed_Cost_Category_HueInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_hue: ((inputs: Fixed_Cost_Category_HueInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Category_HueInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Choose a category" |
 *
 * @param {Fixed_Cost_Choose_CategoryInputs} inputs
@@ -3603,6 +3645,13 @@ export type Fixed_Cost_Amount_EurInputs = {};
 export type Fixed_Cost_Breakdown_TitleInputs = {};
 export type Fixed_Cost_CategoriesInputs = {};
 export type Fixed_Cost_CategoryInputs = {};
+export type Fixed_Cost_Category_ColorInputs = {
+    name: NonNullable<unknown>;
+};
+export type Fixed_Cost_Category_Color_FailedInputs = {};
+export type Fixed_Cost_Category_HueInputs = {
+    hue: NonNullable<unknown>;
+};
 export type Fixed_Cost_Choose_CategoryInputs = {};
 export type Fixed_Cost_Choose_Start_DateInputs = {};
 export type Fixed_Cost_CreatedInputs = {

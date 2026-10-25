@@ -48,9 +48,7 @@ export function FixedCostTreemapTooltip({
             <div className={"flex items-center gap-2"}>
                 <span
                     aria-hidden
-                    className={
-                        "size-2.5 shrink-0 rounded-xs bg-(--tone) ranked-tone"
-                    }
+                    className={"size-2.5 shrink-0 rounded-xs bg-(--tone) tone"}
                     style={group.toneStyle ?? undefined}
                 />
                 <div className={"flex flex-col"}>

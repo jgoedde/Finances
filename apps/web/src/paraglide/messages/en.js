@@ -50,6 +50,9 @@
 /** @typedef {{}} Fixed_Cost_Breakdown_TitleInputs */
 /** @typedef {{}} Fixed_Cost_CategoriesInputs */
 /** @typedef {{}} Fixed_Cost_CategoryInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Category_ColorInputs */
+/** @typedef {{}} Fixed_Cost_Category_Color_FailedInputs */
+/** @typedef {{ hue: NonNullable<unknown> }} Fixed_Cost_Category_HueInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
@@ -454,6 +457,18 @@ export const fixed_cost_categories = /** @type {(inputs: Fixed_Cost_CategoriesIn
 
 export const fixed_cost_category = /** @type {(inputs: Fixed_Cost_CategoryInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Category`)
+};
+
+export const fixed_cost_category_color = /** @type {(inputs: Fixed_Cost_Category_ColorInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Color of ${i?.name}`)
+};
+
+export const fixed_cost_category_color_failed = /** @type {(inputs: Fixed_Cost_Category_Color_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The color couldn't be changed. Please try again.`)
+};
+
+export const fixed_cost_category_hue = /** @type {(inputs: Fixed_Cost_Category_HueInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Hue ${i?.hue}°`)
 };
 
 export const fixed_cost_choose_category = /** @type {(inputs: Fixed_Cost_Choose_CategoryInputs) => LocalizedString} */ () => {

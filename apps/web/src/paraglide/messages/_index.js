@@ -52,6 +52,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Breakdown_TitleInputs */
 /** @typedef {{}} Fixed_Cost_CategoriesInputs */
 /** @typedef {{}} Fixed_Cost_CategoryInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Category_ColorInputs */
+/** @typedef {{}} Fixed_Cost_Category_Color_FailedInputs */
+/** @typedef {{ hue: NonNullable<unknown> }} Fixed_Cost_Category_HueInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
@@ -956,6 +959,48 @@ export const fixed_cost_category = /** @type {((inputs?: Fixed_Cost_CategoryInpu
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_category(inputs)
 	return __en.fixed_cost_category(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Color of {name}" |
+*
+* @param {Fixed_Cost_Category_ColorInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_color = /** @type {((inputs: Fixed_Cost_Category_ColorInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Category_ColorInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_category_color(inputs)
+	return __en.fixed_cost_category_color(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "The color couldn't be changed. Please try again." |
+*
+* @param {Fixed_Cost_Category_Color_FailedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_color_failed = /** @type {((inputs?: Fixed_Cost_Category_Color_FailedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Category_Color_FailedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_category_color_failed(inputs)
+	return __en.fixed_cost_category_color_failed(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Hue {hue}°" |
+*
+* @param {Fixed_Cost_Category_HueInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_category_hue = /** @type {((inputs: Fixed_Cost_Category_HueInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Category_HueInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_category_hue(inputs)
+	return __en.fixed_cost_category_hue(inputs)
 });
 /**
 * | output |

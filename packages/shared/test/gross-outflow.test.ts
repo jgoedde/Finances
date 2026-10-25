@@ -23,6 +23,7 @@ function fixedCostCategory(
     return {
         categoryId: id,
         categoryName: id,
+        categoryHue: 0,
         total: totals.reduce((sum, total) => sum + total, 0),
         fixedCosts: totals.map((total, i) => ({
             id: `${id}${i}`,

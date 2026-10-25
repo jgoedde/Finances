@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { CheckIcon } from "lucide-react";
 import { cn } from "#/lib/cn.ts";
 
 function RadioGroup({
@@ -44,4 +45,29 @@ function RadioGroupItem({
     );
 }
 
-export { RadioGroup, RadioGroupItem };
+// A color choice: a 40dp circle in `--tone` (set it with the `tone` utility's
+// style) with a check in `--on-tone` when selected.
+function RadioGroupSwatch({
+    className,
+    ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+    return (
+        <RadioGroupPrimitive.Item
+            data-slot="radio-group-swatch"
+            className={cn(
+                `state-layer flex size-10 shrink-0 cursor-pointer items-center
+                justify-center rounded-full bg-(--tone) text-(--on-tone)
+                focus-ring tone outline-none disabled:cursor-not-allowed
+                disabled:opacity-38`,
+                className,
+            )}
+            {...props}
+        >
+            <RadioGroupPrimitive.Indicator data-slot="radio-group-indicator">
+                <CheckIcon className="size-5" />
+            </RadioGroupPrimitive.Indicator>
+        </RadioGroupPrimitive.Item>
+    );
+}
+
+export { RadioGroup, RadioGroupItem, RadioGroupSwatch };

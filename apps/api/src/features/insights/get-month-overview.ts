@@ -32,7 +32,7 @@ export const getMonthOverview = factory.createHandlers(
                 readFixedCosts(db, userId),
                 db
                     .selectFrom("fixed_cost_categories")
-                    .select(["id", "name"])
+                    .select(["id", "name", "hue"])
                     .where("user_id", "=", userId)
                     .execute(),
             ]);

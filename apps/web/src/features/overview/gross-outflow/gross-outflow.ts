@@ -1,7 +1,7 @@
 import { useMemo, type CSSProperties } from "react";
 import { breakDownGrossOutflow, type MonthOverview } from "@finances/shared";
 import { m } from "#/paraglide/messages.js";
-import { getCategoryToneStyle, getRankedToneStyle } from "#/utils/color.ts";
+import { paletteFromHex, paletteFromHue, toneStyle } from "#/utils/color.ts";
 
 /**
  * A fixed cost within its fixed cost category.
@@ -14,9 +14,8 @@ export interface GrossOutflowFixedCost {
 }
 
 /**
- * A category of the gross outflow with its tone for the `ranked-tone`
- * utility: fixed cost categories fade through a teal palette by rank,
- * spending categories keep their own color.
+ * A category of the gross outflow with its tone for the `tone`
+ * utility, from its category's hue or color.
  */
 export type GrossOutflowCategory = {
     id: string;
@@ -64,19 +63,18 @@ export function useGrossOutflow(overview: MonthOverview): GrossOutflowView {
             // Missing in overviews cached by an older version.
             fixedCostCategories: overview.fixedCostCategories ?? [],
         });
-        const count = fixedCosts.categories.length;
         const sides: GrossOutflowSide[] = [
             {
                 kind: "fixedCosts",
                 total: fixedCosts.total,
                 share: fixedCosts.share,
-                categories: fixedCosts.categories.map((category, rank) => ({
+                categories: fixedCosts.categories.map((category) => ({
                     kind: "fixedCosts",
                     id: category.categoryId,
                     name: category.categoryName,
                     total: category.total,
                     share: category.share,
-                    toneStyle: getRankedToneStyle(rank, count),
+                    toneStyle: toneStyle(paletteFromHue(category.categoryHue)),
                     fixedCosts: category.fixedCosts,
                 })),
             },
@@ -90,7 +88,9 @@ export function useGrossOutflow(overview: MonthOverview): GrossOutflowView {
                     name: category.categoryName,
                     total: category.total,
                     share: category.share,
-                    toneStyle: getCategoryToneStyle(category.categoryColor),
+                    toneStyle: toneStyle(
+                        paletteFromHex(category.categoryColor),
+                    ),
                 })),
             },
         ];

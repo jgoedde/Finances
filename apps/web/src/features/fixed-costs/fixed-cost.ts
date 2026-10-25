@@ -13,7 +13,7 @@ import {
     toIsoDate,
 } from "@finances/shared";
 import { m } from "#/paraglide/messages.js";
-import { getRankedToneStyle } from "#/utils/color.ts";
+import { paletteFromHue, toneStyle } from "#/utils/color.ts";
 
 export const INTERVAL_LABELS = {
     monthly: m.fixed_cost_interval_monthly,
@@ -141,8 +141,8 @@ export interface FixedCostCategoryGroup {
     share: number | null;
 
     /**
-     * Its tone among the groups with running fixed costs, by rank (see
-     * `getRankedToneStyle`); `null` when none of its fixed costs runs.
+     * Its category's tone (see `toneStyle`); `null` when none of its fixed
+     * costs runs.
      */
     toneStyle: CSSProperties | null;
 
@@ -159,21 +159,22 @@ export function toCategoryGroups(
     categories: FixedCostCategory[],
     today: string,
 ): FixedCostCategoryGroup[] {
-    const groups = groupByFixedCostCategory(records, today);
-    const rankCount = groups.filter((it) => it.share !== null).length;
-
-    // Groups with running fixed costs come first, so the index is the rank.
-    return groups.map((group, rank) => ({
-        category: findCategory(group.categoryId, categories),
-        monthlyAmount: group.monthlyAmount,
-        share: group.share,
-        toneStyle:
-            group.share === null ? null : getRankedToneStyle(rank, rankCount),
-        fixedCosts: group.fixedCosts.map((it) => ({
-            fixedCost: toFixedCost(it.fixedCost, categories, today),
-            share: it.share,
-        })),
-    }));
+    return groupByFixedCostCategory(records, today).map((group) => {
+        const category = findCategory(group.categoryId, categories);
+        return {
+            category,
+            monthlyAmount: group.monthlyAmount,
+            share: group.share,
+            toneStyle:
+                group.share === null
+                    ? null
+                    : toneStyle(paletteFromHue(category.hue)),
+            fixedCosts: group.fixedCosts.map((it) => ({
+                fixedCost: toFixedCost(it.fixedCost, categories, today),
+                share: it.share,
+            })),
+        };
+    });
 }
 
 /**
@@ -196,6 +197,7 @@ function findCategory(
             id,
             name: m.fixed_cost_unknown_category(),
             description: null,
+            hue: 0,
         }
     );
 }

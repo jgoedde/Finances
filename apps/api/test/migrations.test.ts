@@ -2,15 +2,30 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { sql } from "kysely";
-import type { FixedCost, Transaction } from "@finances/shared";
+import type {
+    FixedCost,
+    FixedCostCategory,
+    Transaction,
+} from "@finances/shared";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { DB } from "#/db/database.ts";
 import { createTestApp, json, transactionBody } from "./test-app.ts";
 
 /**
+ * Back to the schema before `0005-fixed-cost-category-hue`.
+ */
+async function undoCategoryHue(db: DB) {
+    await sql`alter table fixed_cost_categories drop column hue`.execute(db);
+    await sql`delete from kysely_migration where name = '0005-fixed-cost-category-hue'`.execute(
+        db,
+    );
+}
+
+/**
  * Back to the schema before `0004-fixed-cost-price-changes`.
  */
 async function undoPriceChanges(db: DB) {
+    await undoCategoryHue(db);
     await sql`drop table fixed_cost_price_changes`.execute(db);
     await sql`alter table fixed_costs rename column initial_amount to amount`.execute(
         db,
@@ -102,6 +117,25 @@ describe("migrations", () => {
             initialAmount: 500,
             priceChanges: [],
         });
+        await after.db.destroy();
+    });
+
+    it("seeds fixed cost category hues", async () => {
+        const filename = join(dir, "finances.db");
+        const before = await createTestApp({ filename });
+        await before.signUp("alice");
+        await undoCategoryHue(before.db);
+        await before.db.destroy();
+
+        const after = await createTestApp({ filename });
+        const alice = await after.login("alice");
+        const categories = await json<FixedCostCategory[]>(
+            alice("/api/fixed-cost-categories"),
+        );
+        expect(categories.find((it) => it.id === "1")?.hue).toBe(30);
+        expect(new Set(categories.map((it) => it.hue)).size).toBe(
+            categories.length,
+        );
         await after.db.destroy();
     });
 });

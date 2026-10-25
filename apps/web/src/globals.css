@@ -379,10 +379,10 @@
 }
 
 /*
- * Picks the scheme's step of a ranked tone (`getRankedToneStyle` in
- * utils/color.ts) as `--tone` and `--on-tone`.
+ * Picks the scheme's step of a tone style (`toneStyle` in utils/color.ts) as
+ * `--tone` and `--on-tone`.
  */
-@utility ranked-tone {
+@utility tone {
     --tone: var(--tone-light);
     --on-tone: var(--on-tone-light);
 

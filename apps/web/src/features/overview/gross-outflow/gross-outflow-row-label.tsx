@@ -8,7 +8,7 @@ interface GrossOutflowRowLabelProps {
     share: number;
 
     /**
-     * Tone of the dot (see `ranked-tone`); no dot without it.
+     * Tone of the dot (see `tone`); no dot without it.
      */
     toneStyle?: CSSProperties;
 }
@@ -28,9 +28,7 @@ export function GrossOutflowRowLabel({
             {toneStyle && (
                 <span
                     aria-hidden
-                    className={
-                        "size-3 shrink-0 rounded-full bg-(--tone) ranked-tone"
-                    }
+                    className={"size-3 shrink-0 rounded-full bg-(--tone) tone"}
                     style={toneStyle}
                 />
             )}

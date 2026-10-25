@@ -1,12 +1,51 @@
 import { z } from "zod";
 import { lastDayOf, shiftMonth } from "./calendar.ts";
 
+/**
+ * A color as a hue of the HCT color space; clients derive the tones.
+ */
+const hueSchema = z.number().int().min(0).max(359);
+
 export const fixedCostCategorySchema = z.object({
     id: z.string(),
     name: z.string(),
     description: z.string().nullable(),
+    hue: hueSchema,
 });
 export type FixedCostCategory = z.infer<typeof fixedCostCategorySchema>;
+
+export const updateFixedCostCategorySchema = z.object({ hue: hueSchema });
+export type UpdateFixedCostCategory = z.infer<
+    typeof updateFixedCostCategorySchema
+>;
+
+/**
+ * Hues of the default fixed cost categories, by id: one per 30° step, with
+ * those that tend to be large far apart.
+ */
+const DEFAULT_HUES: Partial<Record<string, number>> = {
+    "1": 30,
+    "2": 90,
+    "3": 210,
+    "4": 300,
+    "5": 180,
+    "6": 0,
+    "7": 150,
+    "8": 270,
+    "9": 120,
+    "10": 330,
+    "11": 60,
+    "12": 240,
+};
+
+/**
+ * The hue a fixed cost category starts with: its default one, else one a
+ * golden angle on from the previous of the user's categories (`index` in id
+ * order), so neighbors stay far apart.
+ */
+export function initialHue(id: string, index: number): number {
+    return DEFAULT_HUES[id] ?? Math.round(index * 137.508) % 360;
+}
 
 export const fixedCostIntervalSchema = z.enum([
     "monthly",
