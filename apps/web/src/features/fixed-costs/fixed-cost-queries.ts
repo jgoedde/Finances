@@ -4,12 +4,16 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
-import type {
-    FixedCost as FixedCostRecord,
-    FixedCostCategory,
-    FixedCostInput,
-    FixedCostPatch,
-    UpdateFixedCostCategory,
+import {
+    type FixedCost as FixedCostRecord,
+    type FixedCostCategory,
+    type FixedCostChange,
+    type FixedCostInput,
+    type FixedCostPatch,
+    getFixedCostChanges,
+    getMonthlyTotals,
+    type MonthlyFixedCostTotal,
+    type UpdateFixedCostCategory,
 } from "@finances/shared";
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
@@ -47,6 +51,26 @@ export function useFixedCostCategoryGroups(): FixedCostCategoryGroup[] {
     return useMemo(
         () => toCategoryGroups(records, categories, today),
         [records, categories, today],
+    );
+}
+
+/**
+ * The monthly fixed-cost total of every month up to today's, and the
+ * starts, price changes and ends behind it, newest first.
+ */
+export function useFixedCostHistory(): {
+    totals: MonthlyFixedCostTotal[];
+    changes: FixedCostChange[];
+} {
+    const records = useQuery(fixedCostsQuery).data ?? EMPTY;
+    // Once per mount, like `useFixedCostCategoryGroups`.
+    const [today] = useState(() => toLocalIsoDate(new Date()));
+    return useMemo(
+        () => ({
+            totals: getMonthlyTotals(records, today),
+            changes: getFixedCostChanges(records, today),
+        }),
+        [records, today],
     );
 }
 

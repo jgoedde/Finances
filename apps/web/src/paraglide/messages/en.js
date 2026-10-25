@@ -53,6 +53,13 @@
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Category_ColorInputs */
 /** @typedef {{}} Fixed_Cost_Category_Color_FailedInputs */
 /** @typedef {{ hue: NonNullable<unknown> }} Fixed_Cost_Category_HueInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_EndedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_Price_ChangeInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_StartedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Fixed_Cost_ChangesInputs */
+/** @typedef {{}} Fixed_Cost_Changes_DeltaInputs */
+/** @typedef {{}} Fixed_Cost_Changes_MonthInputs */
+/** @typedef {{}} Fixed_Cost_Changes_WhatInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
@@ -64,6 +71,12 @@
 /** @typedef {{}} Fixed_Cost_End_DateInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_HintInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_OptionalInputs */
+/** @typedef {{}} Fixed_Cost_History_LabelInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Fixed_Cost_History_MoreInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_1yInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_3yInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_AllInputs */
+/** @typedef {{ amount: NonNullable<unknown>, month: NonNullable<unknown> }} Fixed_Cost_History_SinceInputs */
 /** @typedef {{}} Fixed_Cost_IntervalInputs */
 /** @typedef {{}} Fixed_Cost_Interval_MonthlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
@@ -471,6 +484,34 @@ export const fixed_cost_category_hue = /** @type {(inputs: Fixed_Cost_Category_H
 	return /** @type {LocalizedString} */ (`Hue ${i?.hue}°`)
 };
 
+export const fixed_cost_change_ended = /** @type {(inputs: Fixed_Cost_Change_EndedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Ended: ${i?.name}`)
+};
+
+export const fixed_cost_change_price_change = /** @type {(inputs: Fixed_Cost_Change_Price_ChangeInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Price change: ${i?.name}`)
+};
+
+export const fixed_cost_change_started = /** @type {(inputs: Fixed_Cost_Change_StartedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Started: ${i?.name}`)
+};
+
+export const fixed_cost_changes = /** @type {(inputs: Fixed_Cost_ChangesInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Changes (${i?.count})`)
+};
+
+export const fixed_cost_changes_delta = /** @type {(inputs: Fixed_Cost_Changes_DeltaInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Per month`)
+};
+
+export const fixed_cost_changes_month = /** @type {(inputs: Fixed_Cost_Changes_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Month`)
+};
+
+export const fixed_cost_changes_what = /** @type {(inputs: Fixed_Cost_Changes_WhatInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`What happened`)
+};
+
 export const fixed_cost_choose_category = /** @type {(inputs: Fixed_Cost_Choose_CategoryInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Choose a category`)
 };
@@ -513,6 +554,30 @@ export const fixed_cost_end_date_hint = /** @type {(inputs: Fixed_Cost_End_Date_
 
 export const fixed_cost_end_date_optional = /** @type {(inputs: Fixed_Cost_End_Date_OptionalInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`End date (optional)`)
+};
+
+export const fixed_cost_history_label = /** @type {(inputs: Fixed_Cost_History_LabelInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Monthly total over time`)
+};
+
+export const fixed_cost_history_more = /** @type {(inputs: Fixed_Cost_History_MoreInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`+${i?.count} more`)
+};
+
+export const fixed_cost_history_range_1y = /** @type {(inputs: Fixed_Cost_History_Range_1yInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`1Y`)
+};
+
+export const fixed_cost_history_range_3y = /** @type {(inputs: Fixed_Cost_History_Range_3yInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`3Y`)
+};
+
+export const fixed_cost_history_range_all = /** @type {(inputs: Fixed_Cost_History_Range_AllInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`All`)
+};
+
+export const fixed_cost_history_since = /** @type {(inputs: Fixed_Cost_History_SinceInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.amount} since ${i?.month}`)
 };
 
 export const fixed_cost_interval = /** @type {(inputs: Fixed_Cost_IntervalInputs) => LocalizedString} */ () => {

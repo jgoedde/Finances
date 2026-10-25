@@ -51,6 +51,13 @@ export const fixed_cost_category: (inputs: Fixed_Cost_CategoryInputs) => Localiz
 export const fixed_cost_category_color: (inputs: Fixed_Cost_Category_ColorInputs) => LocalizedString;
 export const fixed_cost_category_color_failed: (inputs: Fixed_Cost_Category_Color_FailedInputs) => LocalizedString;
 export const fixed_cost_category_hue: (inputs: Fixed_Cost_Category_HueInputs) => LocalizedString;
+export const fixed_cost_change_ended: (inputs: Fixed_Cost_Change_EndedInputs) => LocalizedString;
+export const fixed_cost_change_price_change: (inputs: Fixed_Cost_Change_Price_ChangeInputs) => LocalizedString;
+export const fixed_cost_change_started: (inputs: Fixed_Cost_Change_StartedInputs) => LocalizedString;
+export const fixed_cost_changes: (inputs: Fixed_Cost_ChangesInputs) => LocalizedString;
+export const fixed_cost_changes_delta: (inputs: Fixed_Cost_Changes_DeltaInputs) => LocalizedString;
+export const fixed_cost_changes_month: (inputs: Fixed_Cost_Changes_MonthInputs) => LocalizedString;
+export const fixed_cost_changes_what: (inputs: Fixed_Cost_Changes_WhatInputs) => LocalizedString;
 export const fixed_cost_choose_category: (inputs: Fixed_Cost_Choose_CategoryInputs) => LocalizedString;
 export const fixed_cost_choose_start_date: (inputs: Fixed_Cost_Choose_Start_DateInputs) => LocalizedString;
 export const fixed_cost_created: (inputs: Fixed_Cost_CreatedInputs) => LocalizedString;
@@ -62,6 +69,12 @@ export const fixed_cost_edit: (inputs: Fixed_Cost_EditInputs) => LocalizedString
 export const fixed_cost_end_date: (inputs: Fixed_Cost_End_DateInputs) => LocalizedString;
 export const fixed_cost_end_date_hint: (inputs: Fixed_Cost_End_Date_HintInputs) => LocalizedString;
 export const fixed_cost_end_date_optional: (inputs: Fixed_Cost_End_Date_OptionalInputs) => LocalizedString;
+export const fixed_cost_history_label: (inputs: Fixed_Cost_History_LabelInputs) => LocalizedString;
+export const fixed_cost_history_more: (inputs: Fixed_Cost_History_MoreInputs) => LocalizedString;
+export const fixed_cost_history_range_1y: (inputs: Fixed_Cost_History_Range_1yInputs) => LocalizedString;
+export const fixed_cost_history_range_3y: (inputs: Fixed_Cost_History_Range_3yInputs) => LocalizedString;
+export const fixed_cost_history_range_all: (inputs: Fixed_Cost_History_Range_AllInputs) => LocalizedString;
+export const fixed_cost_history_since: (inputs: Fixed_Cost_History_SinceInputs) => LocalizedString;
 export const fixed_cost_interval: (inputs: Fixed_Cost_IntervalInputs) => LocalizedString;
 export const fixed_cost_interval_monthly: (inputs: Fixed_Cost_Interval_MonthlyInputs) => LocalizedString;
 export const fixed_cost_interval_quarterly: (inputs: Fixed_Cost_Interval_QuarterlyInputs) => LocalizedString;
@@ -319,6 +332,21 @@ export type Fixed_Cost_Category_Color_FailedInputs = {};
 export type Fixed_Cost_Category_HueInputs = {
     hue: NonNullable<unknown>;
 };
+export type Fixed_Cost_Change_EndedInputs = {
+    name: NonNullable<unknown>;
+};
+export type Fixed_Cost_Change_Price_ChangeInputs = {
+    name: NonNullable<unknown>;
+};
+export type Fixed_Cost_Change_StartedInputs = {
+    name: NonNullable<unknown>;
+};
+export type Fixed_Cost_ChangesInputs = {
+    count: NonNullable<unknown>;
+};
+export type Fixed_Cost_Changes_DeltaInputs = {};
+export type Fixed_Cost_Changes_MonthInputs = {};
+export type Fixed_Cost_Changes_WhatInputs = {};
 export type Fixed_Cost_Choose_CategoryInputs = {};
 export type Fixed_Cost_Choose_Start_DateInputs = {};
 export type Fixed_Cost_CreatedInputs = {
@@ -332,6 +360,17 @@ export type Fixed_Cost_EditInputs = {};
 export type Fixed_Cost_End_DateInputs = {};
 export type Fixed_Cost_End_Date_HintInputs = {};
 export type Fixed_Cost_End_Date_OptionalInputs = {};
+export type Fixed_Cost_History_LabelInputs = {};
+export type Fixed_Cost_History_MoreInputs = {
+    count: NonNullable<unknown>;
+};
+export type Fixed_Cost_History_Range_1yInputs = {};
+export type Fixed_Cost_History_Range_3yInputs = {};
+export type Fixed_Cost_History_Range_AllInputs = {};
+export type Fixed_Cost_History_SinceInputs = {
+    amount: NonNullable<unknown>;
+    month: NonNullable<unknown>;
+};
 export type Fixed_Cost_IntervalInputs = {};
 export type Fixed_Cost_Interval_MonthlyInputs = {};
 export type Fixed_Cost_Interval_QuarterlyInputs = {};

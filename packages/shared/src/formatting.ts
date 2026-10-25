@@ -1,16 +1,19 @@
 // Display formatting. Pure: the caller passes the UI locale.
 
 /**
- * `12.5` as "12,50 €" (de) or "€12.50" (en).
+ * `12.5` as "12,50 €" (de) or "€12.50" (en); with `signed`, "+12,50 €" and
+ * "-12,50 €".
  */
 export function formatCurrency(
     amount: number,
     locale: string,
     currency = "EUR",
+    { signed = false }: { signed?: boolean } = {},
 ): string {
     return new Intl.NumberFormat(locale, {
         style: "currency",
         currency,
+        signDisplay: signed ? "exceptZero" : "auto",
     }).format(amount);
 }
 
