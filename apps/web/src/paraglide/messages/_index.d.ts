@@ -113,6 +113,20 @@ export const action_discard: ((inputs?: Action_DiscardInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "Edit" |
+*
+* @param {Action_EditInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_edit: ((inputs?: Action_EditInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_EditInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Export" |
 *
 * @param {Action_ExportInputs} inputs
@@ -925,6 +939,20 @@ export const fixed_cost_new: ((inputs?: Fixed_Cost_NewInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "→ {amount} from {date}" |
+*
+* @param {Fixed_Cost_Next_Price_ChangeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_next_price_change: ((inputs: Fixed_Cost_Next_Price_ChangeInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Next_Price_ChangeInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Fixed cost not found." |
 *
 * @param {Fixed_Cost_Not_FoundInputs} inputs
@@ -967,6 +995,20 @@ export const fixed_cost_save_failed: ((inputs?: Fixed_Cost_Save_FailedInputs, op
 /**
 * | output |
 * | --- |
+* | "since {date}" |
+*
+* @param {Fixed_Cost_SinceInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_since: ((inputs: Fixed_Cost_SinceInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_SinceInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Start date" |
 *
 * @param {Fixed_Cost_Start_DateInputs} inputs
@@ -990,6 +1032,20 @@ export const fixed_cost_start_date: ((inputs?: Fixed_Cost_Start_DateInputs, opti
 export const fixed_cost_unknown_category: ((inputs?: Fixed_Cost_Unknown_CategoryInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Unknown_CategoryInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "until {date}" |
+*
+* @param {Fixed_Cost_UntilInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_until: ((inputs: Fixed_Cost_UntilInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_UntilInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -1930,6 +1986,216 @@ export const period_older_than_week: ((inputs?: Period_Older_Than_WeekInputs, op
 export const period_older_than_year: ((inputs?: Period_Older_Than_YearInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Period_Older_Than_YearInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Price change" |
+*
+* @param {Price_Change_AddInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_add: ((inputs?: Price_Change_AddInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_AddInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "A price change can't be after the end date." |
+*
+* @param {Price_Change_After_EndInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_after_end: ((inputs?: Price_Change_After_EndInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_After_EndInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "New amount (EUR)" |
+*
+* @param {Price_Change_AmountInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_amount: ((inputs?: Price_Change_AmountInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_AmountInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "A price change must be after the start date." |
+*
+* @param {Price_Change_Before_StartInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_before_start: ((inputs?: Price_Change_Before_StartInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_Before_StartInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "From" |
+*
+* @param {Price_Change_DateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_date: ((inputs?: Price_Change_DateInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_DateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Price change deleted" |
+*
+* @param {Price_Change_DeletedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_deleted: ((inputs?: Price_Change_DeletedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_DeletedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "There's already a price change on this day." |
+*
+* @param {Price_Change_Duplicate_DateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_duplicate_date: ((inputs?: Price_Change_Duplicate_DateInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_Duplicate_DateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Edit price change" |
+*
+* @param {Price_Change_EditInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_edit: ((inputs?: Price_Change_EditInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_EditInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "New price change" |
+*
+* @param {Price_Change_NewInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_new: ((inputs?: Price_Change_NewInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_NewInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Price change saved" |
+*
+* @param {Price_Change_SavedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_change_saved: ((inputs?: Price_Change_SavedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_Change_SavedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Current" |
+*
+* @param {Price_History_CurrentInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_history_current: ((inputs?: Price_History_CurrentInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_History_CurrentInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "From {date}" |
+*
+* @param {Price_History_FromInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_history_from: ((inputs: Price_History_FromInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_History_FromInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Start · {date}" |
+*
+* @param {Price_History_StartInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_history_start: ((inputs: Price_History_StartInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_History_StartInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Price history" |
+*
+* @param {Price_History_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_history_title: ((inputs?: Price_History_TitleInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_History_TitleInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Upcoming" |
+*
+* @param {Price_History_UpcomingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const price_history_upcoming: ((inputs?: Price_History_UpcomingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Price_History_UpcomingInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3251,6 +3517,7 @@ export type Action_CancelInputs = {};
 export type Action_DeleteInputs = {};
 export type Action_DetailsInputs = {};
 export type Action_DiscardInputs = {};
+export type Action_EditInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
 export type Action_NextInputs = {};
@@ -3311,11 +3578,21 @@ export type Fixed_Cost_Monthly_TotalInputs = {};
 export type Fixed_Cost_NameInputs = {};
 export type Fixed_Cost_Name_PlaceholderInputs = {};
 export type Fixed_Cost_NewInputs = {};
+export type Fixed_Cost_Next_Price_ChangeInputs = {
+    amount: NonNullable<unknown>;
+    date: NonNullable<unknown>;
+};
 export type Fixed_Cost_Not_FoundInputs = {};
 export type Fixed_Cost_Per_MonthInputs = {};
 export type Fixed_Cost_Save_FailedInputs = {};
+export type Fixed_Cost_SinceInputs = {
+    date: NonNullable<unknown>;
+};
 export type Fixed_Cost_Start_DateInputs = {};
 export type Fixed_Cost_Unknown_CategoryInputs = {};
+export type Fixed_Cost_UntilInputs = {
+    date: NonNullable<unknown>;
+};
 export type Fixed_Cost_Update_FailedInputs = {};
 export type Fixed_Cost_UpdatedInputs = {};
 export type Fixed_Costs_TitleInputs = {};
@@ -3426,6 +3703,25 @@ export type Period_Older_Than_Half_YearInputs = {};
 export type Period_Older_Than_MonthInputs = {};
 export type Period_Older_Than_WeekInputs = {};
 export type Period_Older_Than_YearInputs = {};
+export type Price_Change_AddInputs = {};
+export type Price_Change_After_EndInputs = {};
+export type Price_Change_AmountInputs = {};
+export type Price_Change_Before_StartInputs = {};
+export type Price_Change_DateInputs = {};
+export type Price_Change_DeletedInputs = {};
+export type Price_Change_Duplicate_DateInputs = {};
+export type Price_Change_EditInputs = {};
+export type Price_Change_NewInputs = {};
+export type Price_Change_SavedInputs = {};
+export type Price_History_CurrentInputs = {};
+export type Price_History_FromInputs = {
+    date: NonNullable<unknown>;
+};
+export type Price_History_StartInputs = {
+    date: NonNullable<unknown>;
+};
+export type Price_History_TitleInputs = {};
+export type Price_History_UpcomingInputs = {};
 export type Pwa_Offline_ReadyInputs = {};
 export type Pwa_Update_AvailableInputs = {};
 export type Pwa_Wait_For_SyncInputs = {};

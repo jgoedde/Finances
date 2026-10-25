@@ -65,33 +65,78 @@ function byName(a: FixedCostRecord, b: FixedCostRecord): number {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
 }
 
+interface OptimisticContext {
+    previous: FixedCostList;
+
+    /**
+     * The detail of the updated fixed cost, if one was updated.
+     */
+    previousDetail?: { id: string; record: FixedCostRecord | undefined };
+}
+
 /**
- * Optimistic mutation helpers: update the list right away, roll it back with
- * a toast on error and refetch once settled. Fixed costs are online-only, so
- * nothing is queued.
+ * Optimistic mutation helpers: update the list (and the detail of an
+ * updated fixed cost) right away, roll back with a toast on error and
+ * refetch once settled. Fixed costs are online-only, so nothing is queued.
+ * `isShownInline` skips the toast for errors the caller shows itself.
  */
-function useOptimisticFixedCosts(errorMessage: () => string) {
+function useOptimisticFixedCosts(
+    errorMessage: () => string,
+    isShownInline: (error: Error) => boolean = () => false,
+) {
     const queryClient = useQueryClient();
+
+    async function apply(
+        update: (list: FixedCostRecord[]) => FixedCostRecord[],
+    ): Promise<OptimisticContext> {
+        await queryClient.cancelQueries({ queryKey: ["fixed-costs"] });
+        const previous = queryClient.getQueryData<FixedCostRecord[]>(
+            fixedCostsQuery.queryKey,
+        );
+        queryClient.setQueryData<FixedCostRecord[]>(
+            fixedCostsQuery.queryKey,
+            (list) => list && update(list),
+        );
+        return { previous };
+    }
+
     return {
-        async apply(update: (list: FixedCostRecord[]) => FixedCostRecord[]) {
-            await queryClient.cancelQueries({ queryKey: ["fixed-costs"] });
-            const previous = queryClient.getQueryData<FixedCostRecord[]>(
-                fixedCostsQuery.queryKey,
+        apply,
+        async applyToDetail(
+            id: string,
+            patch: FixedCostPatch,
+        ): Promise<OptimisticContext> {
+            const context = await apply((list) =>
+                list
+                    .map((record) =>
+                        record.id === id ? { ...record, ...patch } : record,
+                    )
+                    .sort(byName),
             );
-            queryClient.setQueryData<FixedCostRecord[]>(
-                fixedCostsQuery.queryKey,
-                (list) => list && update(list),
+            const { queryKey } = fixedCostQuery(id);
+            const record = queryClient.getQueryData(queryKey);
+            queryClient.setQueryData(
+                queryKey,
+                (detail) => detail && { ...detail, ...patch },
             );
-            return { previous };
+            return { ...context, previousDetail: { id, record } };
         },
-        rollback(context: { previous: FixedCostList } | undefined) {
+        rollback(error: Error, context: OptimisticContext | undefined) {
             if (context) {
                 queryClient.setQueryData(
                     fixedCostsQuery.queryKey,
                     context.previous,
                 );
+                if (context.previousDetail) {
+                    queryClient.setQueryData(
+                        fixedCostQuery(context.previousDetail.id).queryKey,
+                        context.previousDetail.record,
+                    );
+                }
             }
-            toast.error(errorMessage());
+            if (!isShownInline(error)) {
+                toast.error(errorMessage());
+            }
         },
         settle: () =>
             queryClient.invalidateQueries({ queryKey: ["fixed-costs"] }),
@@ -113,28 +158,29 @@ export function useCreateFixedCost() {
                     byName,
                 ),
             ),
-        onError: (_error, _input, context) => optimistic.rollback(context),
+        onError: (error, _input, context) =>
+            optimistic.rollback(error, context),
         onSettled: optimistic.settle,
     });
 }
 
-export function useUpdateFixedCost() {
-    const optimistic = useOptimisticFixedCosts(m.fixed_cost_update_failed);
+/**
+ * `isShownInline` skips the error toast for errors the caller shows itself.
+ */
+export function useUpdateFixedCost(isShownInline?: (error: Error) => boolean) {
+    const optimistic = useOptimisticFixedCosts(
+        m.fixed_cost_update_failed,
+        isShownInline,
+    );
     return useMutation({
         mutationFn: ({ id, patch }: { id: string; patch: FixedCostPatch }) =>
             apiFetch<FixedCostRecord>(`/fixed-costs/${id}`, {
                 method: "PATCH",
                 body: patch,
             }),
-        onMutate: ({ id, patch }) =>
-            optimistic.apply((list) =>
-                list
-                    .map((record) =>
-                        record.id === id ? { ...record, ...patch } : record,
-                    )
-                    .sort(byName),
-            ),
-        onError: (_error, _variables, context) => optimistic.rollback(context),
+        onMutate: ({ id, patch }) => optimistic.applyToDetail(id, patch),
+        onError: (error, _variables, context) =>
+            optimistic.rollback(error, context),
         onSettled: optimistic.settle,
     });
 }
@@ -148,7 +194,7 @@ export function useDeleteFixedCost() {
             optimistic.apply((list) =>
                 list.filter((record) => record.id !== id),
             ),
-        onError: (_error, _id, context) => optimistic.rollback(context),
+        onError: (error, _id, context) => optimistic.rollback(error, context),
         onSettled: optimistic.settle,
     });
 }

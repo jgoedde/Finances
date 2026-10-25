@@ -8,6 +8,7 @@
 /** @typedef {{}} Action_DeleteInputs */
 /** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
+/** @typedef {{}} Action_EditInputs */
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
 /** @typedef {{}} Action_NextInputs */
@@ -66,11 +67,14 @@
 /** @typedef {{}} Fixed_Cost_NameInputs */
 /** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
 /** @typedef {{}} Fixed_Cost_NewInputs */
+/** @typedef {{ amount: NonNullable<unknown>, date: NonNullable<unknown> }} Fixed_Cost_Next_Price_ChangeInputs */
 /** @typedef {{}} Fixed_Cost_Not_FoundInputs */
 /** @typedef {{}} Fixed_Cost_Per_MonthInputs */
 /** @typedef {{}} Fixed_Cost_Save_FailedInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_SinceInputs */
 /** @typedef {{}} Fixed_Cost_Start_DateInputs */
 /** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_UntilInputs */
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
 /** @typedef {{}} Fixed_Cost_UpdatedInputs */
 /** @typedef {{}} Fixed_Costs_TitleInputs */
@@ -138,6 +142,21 @@
 /** @typedef {{}} Period_Older_Than_MonthInputs */
 /** @typedef {{}} Period_Older_Than_WeekInputs */
 /** @typedef {{}} Period_Older_Than_YearInputs */
+/** @typedef {{}} Price_Change_AddInputs */
+/** @typedef {{}} Price_Change_After_EndInputs */
+/** @typedef {{}} Price_Change_AmountInputs */
+/** @typedef {{}} Price_Change_Before_StartInputs */
+/** @typedef {{}} Price_Change_DateInputs */
+/** @typedef {{}} Price_Change_DeletedInputs */
+/** @typedef {{}} Price_Change_Duplicate_DateInputs */
+/** @typedef {{}} Price_Change_EditInputs */
+/** @typedef {{}} Price_Change_NewInputs */
+/** @typedef {{}} Price_Change_SavedInputs */
+/** @typedef {{}} Price_History_CurrentInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Price_History_FromInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Price_History_StartInputs */
+/** @typedef {{}} Price_History_TitleInputs */
+/** @typedef {{}} Price_History_UpcomingInputs */
 /** @typedef {{}} Pwa_Offline_ReadyInputs */
 /** @typedef {{}} Pwa_Update_AvailableInputs */
 /** @typedef {{}} Pwa_Wait_For_SyncInputs */
@@ -264,6 +283,10 @@ export const action_details = /** @type {(inputs: Action_DetailsInputs) => Local
 
 export const action_discard = /** @type {(inputs: Action_DiscardInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Verwerfen`)
+};
+
+export const action_edit = /** @type {(inputs: Action_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Bearbeiten`)
 };
 
 export const action_export = /** @type {(inputs: Action_ExportInputs) => LocalizedString} */ () => {
@@ -498,6 +521,10 @@ export const fixed_cost_new = /** @type {(inputs: Fixed_Cost_NewInputs) => Local
 	return /** @type {LocalizedString} */ (`Neue Fixkosten`)
 };
 
+export const fixed_cost_next_price_change = /** @type {(inputs: Fixed_Cost_Next_Price_ChangeInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`→ ${i?.amount} ab ${i?.date}`)
+};
+
 export const fixed_cost_not_found = /** @type {(inputs: Fixed_Cost_Not_FoundInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Fixkostenstelle nicht gefunden.`)
 };
@@ -510,12 +537,20 @@ export const fixed_cost_save_failed = /** @type {(inputs: Fixed_Cost_Save_Failed
 	return /** @type {LocalizedString} */ (`Die Fixkosten konnten nicht gespeichert werden. Bitte versuche es erneut.`)
 };
 
+export const fixed_cost_since = /** @type {(inputs: Fixed_Cost_SinceInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`seit ${i?.date}`)
+};
+
 export const fixed_cost_start_date = /** @type {(inputs: Fixed_Cost_Start_DateInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Startdatum`)
 };
 
 export const fixed_cost_unknown_category = /** @type {(inputs: Fixed_Cost_Unknown_CategoryInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Unbekannt`)
+};
+
+export const fixed_cost_until = /** @type {(inputs: Fixed_Cost_UntilInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`bis ${i?.date}`)
 };
 
 export const fixed_cost_update_failed = /** @type {(inputs: Fixed_Cost_Update_FailedInputs) => LocalizedString} */ () => {
@@ -790,6 +825,66 @@ export const period_older_than_week = /** @type {(inputs: Period_Older_Than_Week
 
 export const period_older_than_year = /** @type {(inputs: Period_Older_Than_YearInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Älter als ein Jahr`)
+};
+
+export const price_change_add = /** @type {(inputs: Price_Change_AddInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Preisänderung`)
+};
+
+export const price_change_after_end = /** @type {(inputs: Price_Change_After_EndInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Eine Preisänderung darf nicht nach dem Enddatum liegen.`)
+};
+
+export const price_change_amount = /** @type {(inputs: Price_Change_AmountInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neuer Betrag (EUR)`)
+};
+
+export const price_change_before_start = /** @type {(inputs: Price_Change_Before_StartInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Eine Preisänderung muss nach dem Startdatum liegen.`)
+};
+
+export const price_change_date = /** @type {(inputs: Price_Change_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ab`)
+};
+
+export const price_change_deleted = /** @type {(inputs: Price_Change_DeletedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Preisänderung gelöscht`)
+};
+
+export const price_change_duplicate_date = /** @type {(inputs: Price_Change_Duplicate_DateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`An diesem Tag gibt es schon eine Preisänderung.`)
+};
+
+export const price_change_edit = /** @type {(inputs: Price_Change_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Preisänderung bearbeiten`)
+};
+
+export const price_change_new = /** @type {(inputs: Price_Change_NewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neue Preisänderung`)
+};
+
+export const price_change_saved = /** @type {(inputs: Price_Change_SavedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Preisänderung gespeichert`)
+};
+
+export const price_history_current = /** @type {(inputs: Price_History_CurrentInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Aktuell`)
+};
+
+export const price_history_from = /** @type {(inputs: Price_History_FromInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Ab ${i?.date}`)
+};
+
+export const price_history_start = /** @type {(inputs: Price_History_StartInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Start · ${i?.date}`)
+};
+
+export const price_history_title = /** @type {(inputs: Price_History_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Preisverlauf`)
+};
+
+export const price_history_upcoming = /** @type {(inputs: Price_History_UpcomingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Geplant`)
 };
 
 export const pwa_offline_ready = /** @type {(inputs: Pwa_Offline_ReadyInputs) => LocalizedString} */ () => {

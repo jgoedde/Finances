@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+    findPriceChangeProblem,
     type FixedCost,
     getAmountOn,
     getMonthlyAmount,
+    getNextPriceChange,
+    getPriceHistory,
     getYearlyAmount,
     isRunningOn,
     toIsoDate,
+    withPriceChange,
 } from "#/fixed-costs.ts";
 
 function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
@@ -129,5 +133,163 @@ describe("toIsoDate", () => {
 
     it("pads months and days", () => {
         expect(toIsoDate(Date.UTC(2026, 0, 5, 12), "UTC")).toBe("2026-01-05");
+    });
+});
+
+describe("getPriceHistory", () => {
+    it("is only the start while there are no price changes", () => {
+        expect(getPriceHistory(fixedCost(), DAY)).toEqual([
+            {
+                date: "2026-01-01",
+                amount: 120,
+                change: null,
+                status: "current",
+                isStart: true,
+            },
+        ]);
+    });
+
+    it("lists upcoming, current and past amounts, newest first", () => {
+        const history = getPriceHistory(
+            fixedCost({
+                priceChanges: [
+                    { date: "2026-03-15", amount: 150 },
+                    { date: "2026-07-01", amount: 120 },
+                ],
+            }),
+            DAY,
+        );
+        expect(history).toEqual([
+            {
+                date: "2026-07-01",
+                amount: 120,
+                change: -0.2,
+                status: "upcoming",
+                isStart: false,
+            },
+            {
+                date: "2026-03-15",
+                amount: 150,
+                change: 0.25,
+                status: "current",
+                isStart: false,
+            },
+            {
+                date: "2026-01-01",
+                amount: 120,
+                change: null,
+                status: "past",
+                isStart: true,
+            },
+        ]);
+    });
+});
+
+describe("getNextPriceChange", () => {
+    it("is the first price change after the day", () => {
+        const withChanges = fixedCost({
+            priceChanges: [
+                { date: "2026-03-15", amount: 130 },
+                { date: "2026-07-01", amount: 150 },
+                { date: "2027-01-01", amount: 160 },
+            ],
+        });
+        expect(getNextPriceChange(withChanges, DAY)).toEqual({
+            date: "2026-07-01",
+            amount: 150,
+        });
+        expect(getNextPriceChange(withChanges, "2026-07-01")).toEqual({
+            date: "2027-01-01",
+            amount: 160,
+        });
+    });
+
+    it("is null without upcoming price changes", () => {
+        expect(getNextPriceChange(fixedCost(), DAY)).toBeNull();
+        expect(
+            getNextPriceChange(
+                fixedCost({
+                    priceChanges: [{ date: "2026-03-15", amount: 130 }],
+                }),
+                DAY,
+            ),
+        ).toBeNull();
+    });
+});
+
+describe("findPriceChangeProblem", () => {
+    const withChange = fixedCost({
+        startDate: "2026-01-01",
+        endDate: "2026-12-31",
+        priceChanges: [{ date: "2026-03-15", amount: 130 }],
+    });
+
+    it("accepts a date after the start and on or before the end", () => {
+        expect(
+            findPriceChangeProblem(withChange, "2026-01-02", null),
+        ).toBeNull();
+        expect(
+            findPriceChangeProblem(withChange, "2026-12-31", null),
+        ).toBeNull();
+        expect(
+            findPriceChangeProblem(fixedCost(), "2030-01-01", null),
+        ).toBeNull();
+    });
+
+    it("rejects a date on or before the start", () => {
+        expect(findPriceChangeProblem(withChange, "2026-01-01", null)).toBe(
+            "before_start",
+        );
+        expect(findPriceChangeProblem(withChange, "2025-06-01", null)).toBe(
+            "before_start",
+        );
+    });
+
+    it("rejects a date after the end", () => {
+        expect(findPriceChangeProblem(withChange, "2027-01-01", null)).toBe(
+            "after_end",
+        );
+    });
+
+    it("rejects the date of another price change", () => {
+        expect(findPriceChangeProblem(withChange, "2026-03-15", null)).toBe(
+            "duplicate_date",
+        );
+    });
+
+    it("lets the edited price change keep its date", () => {
+        expect(
+            findPriceChangeProblem(withChange, "2026-03-15", "2026-03-15"),
+        ).toBeNull();
+    });
+});
+
+describe("withPriceChange", () => {
+    const changes = [
+        { date: "2026-03-15", amount: 130 },
+        { date: "2026-07-01", amount: 150 },
+    ];
+
+    it("adds a price change in date order", () => {
+        expect(
+            withPriceChange(changes, { date: "2026-05-01", amount: 140 }, null),
+        ).toEqual([
+            { date: "2026-03-15", amount: 130 },
+            { date: "2026-05-01", amount: 140 },
+            { date: "2026-07-01", amount: 150 },
+        ]);
+    });
+
+    it("replaces the edited price change, also when its date moves", () => {
+        expect(
+            withPriceChange(
+                changes,
+                { date: "2026-08-01", amount: 135 },
+                "2026-03-15",
+            ),
+        ).toEqual([
+            { date: "2026-07-01", amount: 150 },
+            { date: "2026-08-01", amount: 135 },
+        ]);
     });
 });

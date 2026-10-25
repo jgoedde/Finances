@@ -103,6 +103,126 @@ export function getAmountOn(
 }
 
 /**
+ * One amount of a fixed cost's price history.
+ */
+export interface PriceHistoryEntry {
+    /**
+     * From when the amount applies (`YYYY-MM-DD`): the start date or a
+     * price change's date.
+     */
+    date: string;
+    amount: number;
+
+    /**
+     * Ratio of the change against the previous amount (`0.25` is +25 %);
+     * `null` for the start and after an amount of 0.
+     */
+    change: number | null;
+
+    /**
+     * `current` is the amount that applies on the given day.
+     */
+    status: "upcoming" | "current" | "past";
+
+    /**
+     * The initial amount from the start date.
+     */
+    isStart: boolean;
+}
+
+/**
+ * The initial amount and every price change, newest first: upcoming, the
+ * current one on `day` (`YYYY-MM-DD`), then past ones, the start last.
+ */
+export function getPriceHistory(
+    fixedCost: Pick<FixedCost, "startDate" | "initialAmount" | "priceChanges">,
+    day: string,
+): PriceHistoryEntry[] {
+    const amounts = [
+        { date: fixedCost.startDate, amount: fixedCost.initialAmount },
+        ...fixedCost.priceChanges,
+    ];
+    // Sorted by date, so the last one on or before `day` applies.
+    const currentIndex = amounts.filter((it) => it.date <= day).length - 1;
+    return amounts
+        .map((it, index): PriceHistoryEntry => {
+            const previous = amounts[index - 1]?.amount;
+            return {
+                date: it.date,
+                amount: it.amount,
+                change:
+                    previous === undefined || previous === 0
+                        ? null
+                        : (it.amount - previous) / previous,
+                status:
+                    index === currentIndex
+                        ? "current"
+                        : index > currentIndex
+                          ? "upcoming"
+                          : "past",
+                isStart: index === 0,
+            };
+        })
+        .reverse();
+}
+
+/**
+ * The first price change after `day` (`YYYY-MM-DD`), if any.
+ */
+export function getNextPriceChange(
+    fixedCost: Pick<FixedCost, "priceChanges">,
+    day: string,
+): PriceChange | null {
+    return fixedCost.priceChanges.find((change) => change.date > day) ?? null;
+}
+
+/**
+ * Why a price change can't be on `date`.
+ */
+export type PriceChangeProblem =
+    "duplicate_date" | "before_start" | "after_end";
+
+/**
+ * Why a price change on `date` (`YYYY-MM-DD`) is invalid, or `null`. A
+ * price change is after the start date, on or before the end date and on
+ * a day without another one; `replacing` is the date of the price change
+ * being edited, `null` for a new one.
+ */
+export function findPriceChangeProblem(
+    fixedCost: Pick<FixedCost, "startDate" | "endDate" | "priceChanges">,
+    date: string,
+    replacing: string | null,
+): PriceChangeProblem | null {
+    if (date <= fixedCost.startDate) {
+        return "before_start";
+    }
+    if (fixedCost.endDate !== null && date > fixedCost.endDate) {
+        return "after_end";
+    }
+    if (
+        date !== replacing &&
+        fixedCost.priceChanges.some((change) => change.date === date)
+    ) {
+        return "duplicate_date";
+    }
+    return null;
+}
+
+/**
+ * The price changes with `change` added, sorted by date; `replacing` is the
+ * date of the price change it replaces, `null` for a new one.
+ */
+export function withPriceChange(
+    priceChanges: PriceChange[],
+    change: PriceChange,
+    replacing: string | null,
+): PriceChange[] {
+    return [...priceChanges.filter((it) => it.date !== replacing), change].sort(
+        (a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0),
+    );
+}
+
+/**
  * The amount on `day` (`YYYY-MM-DD`) spread evenly over the months of its
  * interval, unrounded.
  */

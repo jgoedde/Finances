@@ -3,7 +3,6 @@ import { type KeyboardEvent, useMemo, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
-import { DeleteButton } from "#/components/delete-button.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { Input } from "#/components/ui/input.tsx";
@@ -35,7 +34,7 @@ import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
 // Popover triggers styled like an MD3 outlined text field.
-const dateTriggerClassName = `border-outline text-on-surface text-body-large
+export const dateTriggerClassName = `border-outline text-on-surface text-body-large
     hover:border-on-surface h-14 w-full justify-between rounded-xs border px-4
     text-left [&_svg]:text-on-surface-variant`;
 
@@ -93,12 +92,6 @@ interface FixedCostWizardProps {
      * Saves the fixed cost optimistically; errors are the caller's to report.
      */
     onSubmit: (values: FixedCostWizardValues) => void;
-
-    /**
-     * Deletes the fixed cost; shows a delete button in the top app bar
-     * when set.
-     */
-    onDelete?: VoidFunction;
 }
 
 /**
@@ -110,7 +103,6 @@ export function FixedCostWizard({
     initialValues,
     categories,
     onSubmit,
-    onDelete,
 }: FixedCostWizardProps) {
     const [step, setStep] = useState<number>(0);
 
@@ -368,21 +360,7 @@ export function FixedCostWizard({
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <TopAppBar
-                title={title}
-                actions={
-                    onDelete && (
-                        <OfflineHint active={!isOnline}>
-                            <DeleteButton
-                                title={m.fixed_cost_delete_title()}
-                                description={m.fixed_cost_delete_description()}
-                                disabled={!isOnline}
-                                onDelete={onDelete}
-                            />
-                        </OfflineHint>
-                    )
-                }
-            />
+            <TopAppBar title={title} />
 
             <main className="flex flex-1 items-center justify-center">
                 <div
