@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { DeleteButton } from "#/components/delete-button.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import { AmountSparkline } from "#/features/fixed-costs/detail/amount-sparkline.tsx";
 import { PriceChangeSheet } from "#/features/fixed-costs/detail/price-change-sheet.tsx";
 import { PriceHistoryList } from "#/features/fixed-costs/detail/price-history-list.tsx";
 import {
@@ -121,6 +122,9 @@ export function FixedCostDetail({ record, categories }: FixedCostDetailProps) {
                     </div>
                     <div className={"text-body-medium text-on-surface-variant"}>
                         {supportingText}
+                    </div>
+                    <div className={"pt-4"}>
+                        <AmountSparkline record={record} today={today} />
                     </div>
                 </section>
 

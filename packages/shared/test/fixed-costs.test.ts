@@ -3,6 +3,7 @@ import {
     findPriceChangeProblem,
     type FixedCost,
     getAmountOn,
+    getAmountTimeline,
     getMonthlyAmount,
     getNextPriceChange,
     getPriceHistory,
@@ -291,5 +292,98 @@ describe("withPriceChange", () => {
             { date: "2026-07-01", amount: 150 },
             { date: "2026-08-01", amount: 135 },
         ]);
+    });
+});
+
+describe("getAmountTimeline", () => {
+    it("runs daily from the start to one month after today", () => {
+        const days = getAmountTimeline(
+            fixedCost({ startDate: "2026-05-30" }),
+            "2026-06-01",
+        );
+        expect(days.map((it) => it.date)).toEqual([
+            "2026-05-30",
+            "2026-05-31",
+            ...Array.from(
+                { length: 30 },
+                (_, i) => `2026-06-${String(i + 1).padStart(2, "0")}`,
+            ),
+            "2026-07-01",
+        ]);
+        expect(new Set(days.map((it) => it.amount))).toEqual(new Set([120]));
+    });
+
+    it("runs to one month after a later price change", () => {
+        const days = getAmountTimeline(
+            fixedCost({ priceChanges: [{ date: "2026-08-31", amount: 150 }] }),
+            DAY,
+        );
+        expect(days.at(-1)).toMatchObject({ date: "2026-09-30", amount: 150 });
+        expect(days.find((it) => it.date === "2026-08-30")?.amount).toBe(120);
+    });
+
+    it("stops at the end date", () => {
+        const days = getAmountTimeline(
+            fixedCost({ endDate: "2026-03-31" }),
+            DAY,
+        );
+        expect(days.at(-1)?.date).toBe("2026-03-31");
+    });
+
+    it("tells since when each amount applies", () => {
+        const days = getAmountTimeline(
+            fixedCost({ priceChanges: [{ date: "2026-03-15", amount: 130 }] }),
+            DAY,
+        );
+        const on = (date: string) => days.find((it) => it.date === date);
+        expect(on("2026-03-14")?.since).toBe("2026-01-01");
+        expect(on("2026-03-15")?.since).toBe("2026-03-15");
+        expect(on("2026-06-01")?.since).toBe("2026-03-15");
+    });
+
+    it("is day-precise only in a month with a change after the 1st", () => {
+        const days = getAmountTimeline(
+            fixedCost({
+                priceChanges: [
+                    { date: "2026-03-01", amount: 130 },
+                    { date: "2026-06-15", amount: 150 },
+                ],
+            }),
+            "2026-06-10",
+        );
+        const on = (date: string) => days.find((it) => it.date === date);
+        expect(on("2026-03-10")?.dayPrecision).toBe(false);
+        expect(on("2026-06-01")?.dayPrecision).toBe(true);
+        expect(on("2026-06-30")?.dayPrecision).toBe(true);
+        expect(on("2026-07-01")?.dayPrecision).toBe(false);
+    });
+
+    it("is upcoming after today, by month unless day-precise", () => {
+        const days = getAmountTimeline(
+            fixedCost({ priceChanges: [{ date: "2026-07-15", amount: 150 }] }),
+            "2026-06-10",
+        );
+        const on = (date: string) => days.find((it) => it.date === date);
+        expect(on("2026-06-10")?.upcoming).toBe(false);
+        expect(on("2026-06-30")?.upcoming).toBe(false);
+        expect(on("2026-07-01")?.upcoming).toBe(true);
+
+        const precise = getAmountTimeline(
+            fixedCost({ priceChanges: [{ date: "2026-06-15", amount: 150 }] }),
+            "2026-06-10",
+        );
+        const onPrecise = (date: string) =>
+            precise.find((it) => it.date === date);
+        expect(onPrecise("2026-06-10")?.upcoming).toBe(false);
+        expect(onPrecise("2026-06-11")?.upcoming).toBe(true);
+    });
+
+    it("runs to one month after a future start", () => {
+        const days = getAmountTimeline(
+            fixedCost({ startDate: "2026-09-15" }),
+            DAY,
+        );
+        expect(days[0]?.date).toBe("2026-09-15");
+        expect(days.at(-1)?.date).toBe("2026-10-15");
     });
 });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { lastDayOf, shiftMonth } from "./calendar.ts";
 
 export const fixedCostCategorySchema = z.object({
     id: z.string(),
@@ -164,6 +165,97 @@ export function getPriceHistory(
             };
         })
         .reverse();
+}
+
+/**
+ * One day of a fixed cost's amount timeline.
+ */
+export interface AmountDay {
+    /**
+     * `YYYY-MM-DD`.
+     */
+    date: string;
+    amount: number;
+
+    /**
+     * From when the amount applies: the start date or a price change's date.
+     */
+    since: string;
+
+    /**
+     * Its month has a price change after the 1st, so the day matters; else
+     * the month is precise enough.
+     */
+    dayPrecision: boolean;
+
+    /**
+     * After `today`: by day when day-precise, else by month.
+     */
+    upcoming: boolean;
+}
+
+/**
+ * The fixed cost's amount per interval on every day from its start to its
+ * end date; without one, to a month after the latest of `today`
+ * (`YYYY-MM-DD`), its start and its last price change.
+ */
+export function getAmountTimeline(
+    fixedCost: Pick<
+        FixedCost,
+        "startDate" | "endDate" | "initialAmount" | "priceChanges"
+    >,
+    today: string,
+): AmountDay[] {
+    const latest = [
+        today,
+        fixedCost.startDate,
+        ...fixedCost.priceChanges.map((it) => it.date),
+    ]
+        .sort()
+        .pop()!;
+    const end = fixedCost.endDate ?? addMonth(latest);
+    const steps = [
+        { date: fixedCost.startDate, amount: fixedCost.initialAmount },
+        ...fixedCost.priceChanges,
+    ];
+    const preciseMonths = new Set(
+        fixedCost.priceChanges
+            .filter((it) => !it.date.endsWith("-01"))
+            .map((it) => it.date.slice(0, 7)),
+    );
+    const days: AmountDay[] = [];
+    for (let day = fixedCost.startDate; day <= end; day = nextDay(day)) {
+        // Sorted by date, so the last one on or before `day` applies.
+        const { date, amount } =
+            steps.filter((it) => it.date <= day).pop() ?? steps[0]!;
+        const dayPrecision = preciseMonths.has(day.slice(0, 7));
+        days.push({
+            date: day,
+            amount,
+            since: date,
+            dayPrecision,
+            upcoming: dayPrecision
+                ? day > today
+                : day.slice(0, 7) > today.slice(0, 7),
+        });
+    }
+    return days;
+}
+
+/**
+ * `day` a month later, clamped to the end of that month.
+ */
+function addMonth(day: string): string {
+    const month = shiftMonth(day.slice(0, 7), 1);
+    const sameDay = `${month}${day.slice(7)}`;
+    const last = lastDayOf(month);
+    return sameDay > last ? last : sameDay;
+}
+
+function nextDay(day: string): string {
+    return new Date(Date.parse(`${day}T00:00:00Z`) + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10);
 }
 
 /**
