@@ -9,6 +9,13 @@ export default mergeConfig(
         test: {
             environment: "jsdom",
             setupFiles: ["./test/setup.ts"],
+            server: {
+                deps: {
+                    // Its ESM build imports without file extensions, which
+                    // Node can't resolve; Vite can.
+                    inline: ["@material/material-color-utilities"],
+                },
+            },
         },
     }),
 );

@@ -1,102 +1,38 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
+import { FixedCostDetail } from "#/features/fixed-costs/detail/fixed-cost-detail.tsx";
 import {
     fixedCostCategoriesQuery,
     fixedCostQuery,
-    useDeleteFixedCost,
-    useUpdateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import {
-    correctAmountOn,
-    toFixedCost,
-    toLocalIsoDate,
-} from "#/features/fixed-costs/fixed-cost.ts";
-import {
-    FixedCostWizard,
-    type FixedCostWizardValues,
-} from "#/features/fixed-costs/fixed-cost-wizard.tsx";
-import { apiErrorCode } from "#/api/api-errors.ts";
+    loadFixedCost,
+    redirectToFixedCosts,
+} from "#/features/fixed-costs/fixed-cost-route.ts";
 import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/_shell/fixed-costs/$id")({
     staticData: { detail: true },
     component: RouteComponent,
     loader: ({ context, params }) =>
-        Promise.all([
-            context.queryClient.query({
-                ...fixedCostQuery(params.id),
-                staleTime: "static",
-            }),
-            context.queryClient.query({
-                ...fixedCostCategoriesQuery,
-                staleTime: "static",
-            }),
-        ]),
+        loadFixedCost(context.queryClient, params.id),
     // After `loader`, so `loaderData` is typed.
     head: ({ loaderData }) => ({
         meta: [
             {
                 title: m.page_title({
-                    page: loaderData?.[0].name ?? m.fixed_cost_edit(),
+                    page: loaderData?.[0].name ?? m.fixed_costs_title(),
                 }),
             },
         ],
     }),
-    onError: (error) => {
-        if (apiErrorCode(error) === "not_found") {
-            toast.error(m.fixed_cost_not_found());
-            throw redirect({ to: "/fixed-costs" });
-        }
-
-        toast.error(m.error_unexpected());
-        throw redirect({ to: "/fixed-costs" });
-    },
+    onError: redirectToFixedCosts,
 });
 
 function RouteComponent() {
-    const navigate = useNavigate();
-
     const { id } = Route.useParams();
     const { data: record } = useSuspenseQuery(fixedCostQuery(id));
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
-    const [today] = useState(() => toLocalIsoDate(new Date()));
-    const fixedCost = toFixedCost(record, categories, today);
-    const updateFixedCost = useUpdateFixedCost();
-    const deleteFixedCost = useDeleteFixedCost();
 
-    // The form shows today's amount, so it corrects that one.
-    function save({ amount, ...values }: FixedCostWizardValues) {
-        updateFixedCost.mutate({
-            id,
-            patch: { ...values, ...correctAmountOn(record, today, amount) },
-        });
-        toast.success(m.fixed_cost_updated());
-        void navigate({ to: "/fixed-costs" });
-    }
-
-    function remove() {
-        deleteFixedCost.mutate(id);
-        toast.success(m.fixed_cost_deleted());
-        void navigate({ to: "/fixed-costs" });
-    }
-
-    return (
-        <FixedCostWizard
-            title={m.fixed_cost_edit()}
-            submitLabel={m.action_update()}
-            initialValues={{
-                name: fixedCost.name,
-                amount: fixedCost.amount,
-                interval: fixedCost.interval,
-                startDate: fixedCost.startDate,
-                endDate: fixedCost.endDate,
-                categoryId: record.categoryId,
-            }}
-            categories={categories}
-            onSubmit={save}
-            onDelete={remove}
-        />
-    );
+    return <FixedCostDetail record={record} categories={categories} />;
 }

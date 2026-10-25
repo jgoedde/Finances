@@ -1,4 +1,8 @@
-import { formatCurrency, formatPercent } from "@finances/shared";
+import {
+    formatCurrency,
+    formatLongDate,
+    formatPercent,
+} from "@finances/shared";
 import { Link, useParams } from "@tanstack/react-router";
 import { Switch } from "#/components/ui/switch.tsx";
 import {
@@ -23,8 +27,8 @@ interface FixedCostListItemProps {
 
 /**
  * One fixed cost: name, interval (and the amount per interval unless
- * monthly), share, the monthly amount and the active switch. Opens the
- * edit view; dimmed while not running.
+ * monthly), share, the next price change, the monthly amount and the active
+ * switch. Opens the detail view; dimmed while not running.
  */
 export function FixedCostListItem({
     fixedCost,
@@ -33,12 +37,8 @@ export function FixedCostListItem({
     const updateFixedCost = useUpdateFixedCost();
     // Fixed costs are read-only offline.
     const isOnline = useIsOnline();
-    // Open in the detail pane beside the list.
-    const isSelected =
-        useParams({
-            from: "/_authed/_shell/fixed-costs/$id",
-            shouldThrow: false,
-        })?.id === fixedCost.id;
+    // Open in the detail pane beside the list (detail or edit).
+    const isSelected = useParams({ strict: false }).id === fixedCost.id;
 
     const supportingText = [
         INTERVAL_LABELS[fixedCost.interval](),
@@ -80,6 +80,24 @@ export function FixedCostListItem({
                     >
                         {supportingText}
                     </span>
+                    {fixedCost.nextPriceChange && (
+                        <span
+                            className={`truncate text-body-medium
+                            text-on-surface-variant`}
+                        >
+                            {m.fixed_cost_next_price_change({
+                                amount: formatCurrency(
+                                    fixedCost.nextPriceChange.amount,
+                                    getLocale(),
+                                    fixedCost.currency,
+                                ),
+                                date: formatLongDate(
+                                    fixedCost.nextPriceChange.date,
+                                    getLocale(),
+                                ),
+                            })}
+                        </span>
+                    )}
                 </div>
                 <div className={"flex shrink-0 flex-col items-end"}>
                     <span className={"text-label-large text-on-surface"}>

@@ -6,6 +6,7 @@ import {
     type FixedCostPatch,
     getAmountOn,
     getMonthlyAmount,
+    getNextPriceChange,
     getYearlyAmount,
     groupByFixedCostCategory,
     isRunningOn,
@@ -49,6 +50,11 @@ export interface FixedCost {
      * Active and within its start/end range today.
      */
     isRunning: boolean;
+
+    /**
+     * The first price change after today, if any.
+     */
+    nextPriceChange: { date: Date; amount: number } | null;
 }
 
 /**
@@ -74,7 +80,16 @@ export function toFixedCost(
         monthlyAmount: getMonthlyAmount(record, today),
         yearlyAmount: getYearlyAmount(record, today),
         isRunning: isRunningOn(record, today),
+        nextPriceChange: toNextPriceChange(record, today),
     };
+}
+
+function toNextPriceChange(
+    record: FixedCostRecord,
+    today: string,
+): FixedCost["nextPriceChange"] {
+    const change = getNextPriceChange(record, today);
+    return change && { date: fromIsoDate(change.date), amount: change.amount };
 }
 
 /**
@@ -188,7 +203,7 @@ function findCategory(
 /**
  * Parses `YYYY-MM-DD` as a local date (not UTC midnight).
  */
-function fromIsoDate(value: string): Date {
+export function fromIsoDate(value: string): Date {
     const [year = 0, month = 1, day = 1] = value.split("-").map(Number);
     return new Date(year, month - 1, day);
 }
