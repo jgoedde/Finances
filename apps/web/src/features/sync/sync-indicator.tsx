@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { toast } from "sonner";
-import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
+import { setSyncDrawerOpen } from "#/features/sync/sync-drawer-state.ts";
 import {
     type SyncIndicatorState,
     useSyncIndicator,
@@ -24,14 +23,11 @@ const OUTCOME_TEXT = {
 >;
 
 /**
- * A thin strip at the top edge once pending changes have been synced after
- * the app was offline: green when all went through, red with a toast when
- * the server rejected changes. Screen readers hear the result instead.
+ * A thin strip at the top edge: green once pending changes have been synced
+ * after the app was offline, red with a toast whenever the server rejected
+ * changes. Screen readers hear the result instead.
  */
 export function SyncIndicator() {
-    // Its own drawer, opened from the toast; the account menu has another.
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
     const state = useSyncIndicator({
         onRejected: (count) => {
             // One toast, updated by every further rejection.
@@ -39,7 +35,7 @@ export function SyncIndicator() {
                 id: REJECTED_TOAST_ID,
                 action: {
                     label: m.action_details(),
-                    onClick: () => setIsDrawerOpen(true),
+                    onClick: () => setSyncDrawerOpen(true),
                 },
             });
         },
@@ -65,7 +61,6 @@ export function SyncIndicator() {
             <div role={"status"} aria-live={"polite"} className={"sr-only"}>
                 {state && OUTCOME_TEXT[state.outcome]({ count: state.count })}
             </div>
-            <SyncDrawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen} />
         </>
     );
 }

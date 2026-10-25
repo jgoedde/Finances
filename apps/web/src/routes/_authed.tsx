@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { sessionQuery } from "#/auth/auth-client.ts";
+import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
 import { SyncIndicator } from "#/features/sync/sync-indicator.tsx";
 
 // Every route below requires a signed-in user.
@@ -24,8 +25,9 @@ function RouteComponent() {
     return (
         <>
             <Outlet />
-            {/* On every app page, also full-screen details. */}
+            {/* Sync feedback on every app page, above the page itself. */}
             <SyncIndicator />
+            <SyncDrawer />
         </>
     );
 }

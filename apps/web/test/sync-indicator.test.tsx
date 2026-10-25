@@ -8,6 +8,8 @@ import { Toaster } from "sonner";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Transaction } from "@finances/shared";
 import { createQueryClient } from "#/api/query-client.ts";
+import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
+import { setSyncDrawerOpen } from "#/features/sync/sync-drawer-state.ts";
 import { SyncIndicator } from "#/features/sync/sync-indicator.tsx";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
 import { registerTransactionMutations } from "#/features/transactions/transaction-mutations.ts";
@@ -65,6 +67,7 @@ function renderIndicator() {
     render(
         <QueryClientProvider client={queryClient}>
             <SyncIndicator />
+            <SyncDrawer />
             <Toaster />
         </QueryClientProvider>,
     );
@@ -130,6 +133,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    setSyncDrawerOpen(false);
     vi.useRealTimers();
     vi.unstubAllGlobals();
 });
@@ -143,6 +147,18 @@ describe("SyncIndicator", () => {
 
         expect(strip()).not.toBeInTheDocument();
         expect(announcement()).toBe("");
+    });
+
+    it("shows a red strip and a toast when the server rejects a save while online", async () => {
+        const { save } = renderIndicator();
+        server.answer(422);
+
+        await save();
+        await wait(100);
+
+        expect(strip()).toHaveAttribute("data-state", "rejected");
+        expect(announcement()).toBe("1 Änderung abgelehnt");
+        expect(rejectionToasts()).toHaveLength(1);
     });
 
     it("shows a green strip once changes made offline are synced", async () => {
@@ -226,7 +242,11 @@ describe("SyncIndicator", () => {
         await syncOffline(save);
 
         await wait(1500);
-        await syncOffline(save);
+        await setOnline(false);
+        await save();
+        await save();
+        await setOnline(true);
+        await wait(100);
 
         expect(announcement()).toBe("1 Änderung synchronisiert");
         await wait(1200);
@@ -261,6 +281,21 @@ describe("SyncIndicator", () => {
 
         expect(strip()).toHaveAttribute("data-state", "rejected");
         expect(announcement()).toBe("1 Änderung abgelehnt");
+    });
+
+    it("keeps the red strip for its full time after a further rejection", async () => {
+        const { save } = renderIndicator();
+        server.answer(422);
+        await syncOffline(save);
+
+        await wait(4000);
+        server.answer(422);
+        await syncOffline(save);
+
+        await wait(5800);
+        expect(strip()).toHaveAttribute("data-state", "rejected");
+        await wait(200);
+        expect(strip()).not.toBeInTheDocument();
     });
 
     it("updates the toast for a further rejection instead of adding one", async () => {

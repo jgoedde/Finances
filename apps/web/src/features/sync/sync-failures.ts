@@ -67,6 +67,6 @@ export function useSyncFailures(): SyncFailure[] {
             listeners.add(listener);
             return () => listeners.delete(listener);
         },
-        () => failures,
+        () => syncFailures.getAll(),
     );
 }

@@ -57,7 +57,8 @@ interface UseSyncIndicatorOptions {
 
 /**
  * Reports when pending changes have been synced after the app was offline
- * or requests had to be retried. Normal online saves report nothing.
+ * or requests had to be retried, and whenever the server rejects changes.
+ * Normal successful online saves report nothing.
  */
 export function useSyncIndicator({
     onRejected,
@@ -89,18 +90,16 @@ export function useSyncIndicator({
             ];
         }
 
-        // While visible, a success changes nothing and a rejection turns a
-        // green strip red from now on; an error is never hidden by a success.
+        // While visible, a success changes nothing and a rejection turns the
+        // strip red and restarts its time; an error is never hidden early.
         function show(outcome: SyncOutcome, count: number) {
-            if (shown?.outcome === "rejected" && outcome === "rejected") {
-                update({ ...shown, count });
-            } else if (!shown || outcome === "rejected") {
+            if (!shown || outcome === "rejected") {
                 update({ outcome, count, isFading: false });
                 scheduleHide(outcome);
             }
         }
 
-        function check() {
+        function trackSyncPeriod() {
             const pending = mutationCache.findAll({
                 mutationKey: TRANSACTION_MUTATION_KEY,
                 status: "pending",
@@ -125,33 +124,34 @@ export function useSyncIndicator({
                 return;
             }
 
-            const ended = period;
+            const finishedPeriod = period;
             period = undefined;
-            if (!ended?.wasDisrupted) {
+            if (!finishedPeriod) {
                 return;
             }
 
             // Sync failures are added before their mutation leaves the queue.
+            // A rejection always shows, even for a save made while online.
             const failures = syncFailures.getAll();
             const isRejected = failures.some(
-                (failure) => !ended.failuresBefore.has(failure.id),
+                (failure) => !finishedPeriod.failuresBefore.has(failure.id),
             );
             if (isRejected) {
                 show("rejected", failures.length);
                 reportRejected(failures.length);
-            } else {
-                show("synced", ended.changes.size);
+            } else if (finishedPeriod.wasDisrupted) {
+                show("synced", finishedPeriod.changes.size);
             }
         }
 
         // Changes restored from the last session are pending from the start.
-        check();
-        const unsubscribe = [
-            mutationCache.subscribe(check),
-            onlineManager.subscribe(check),
+        trackSyncPeriod();
+        const unsubscribeAll = [
+            mutationCache.subscribe(trackSyncPeriod),
+            onlineManager.subscribe(trackSyncPeriod),
         ];
         return () => {
-            unsubscribe.forEach((fn) => fn());
+            unsubscribeAll.forEach((unsubscribe) => unsubscribe());
             timers.forEach((timer) => window.clearTimeout(timer));
         };
     }, [queryClient]);

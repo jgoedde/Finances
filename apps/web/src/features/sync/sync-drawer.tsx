@@ -17,6 +17,10 @@ import {
     syncFailures,
 } from "#/features/sync/sync-failures.ts";
 import {
+    setSyncDrawerOpen,
+    useIsSyncDrawerOpen,
+} from "#/features/sync/sync-drawer-state.ts";
+import {
     type SyncStatus,
     useSyncStatus,
 } from "#/features/sync/use-sync-status.ts";
@@ -56,12 +60,12 @@ function describe(transaction: Transaction): string {
     return `${transaction.counterparty} · ${sign}${formatCurrency(transaction.amount, getLocale())}`;
 }
 
-interface SyncDrawerProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-}
-
-export function SyncDrawer({ open, onOpenChange }: SyncDrawerProps) {
+/**
+ * The app's only sync drawer; `setSyncDrawerOpen(true)` opens it.
+ */
+export function SyncDrawer() {
+    const open = useIsSyncDrawerOpen();
+    const onOpenChange = setSyncDrawerOpen;
     const status = useSyncStatus();
     const saveTransaction = useSaveTransaction();
     const deleteTransaction = useDeleteTransaction();
