@@ -55,6 +55,13 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Category_ColorInputs */
 /** @typedef {{}} Fixed_Cost_Category_Color_FailedInputs */
 /** @typedef {{ hue: NonNullable<unknown> }} Fixed_Cost_Category_HueInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_EndedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_Price_ChangeInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_Change_StartedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Fixed_Cost_ChangesInputs */
+/** @typedef {{}} Fixed_Cost_Changes_DeltaInputs */
+/** @typedef {{}} Fixed_Cost_Changes_MonthInputs */
+/** @typedef {{}} Fixed_Cost_Changes_WhatInputs */
 /** @typedef {{}} Fixed_Cost_Choose_CategoryInputs */
 /** @typedef {{}} Fixed_Cost_Choose_Start_DateInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Fixed_Cost_CreatedInputs */
@@ -66,6 +73,12 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_End_DateInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_HintInputs */
 /** @typedef {{}} Fixed_Cost_End_Date_OptionalInputs */
+/** @typedef {{}} Fixed_Cost_History_LabelInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Fixed_Cost_History_MoreInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_1yInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_3yInputs */
+/** @typedef {{}} Fixed_Cost_History_Range_AllInputs */
+/** @typedef {{ amount: NonNullable<unknown>, month: NonNullable<unknown> }} Fixed_Cost_History_SinceInputs */
 /** @typedef {{}} Fixed_Cost_IntervalInputs */
 /** @typedef {{}} Fixed_Cost_Interval_MonthlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
@@ -1005,6 +1018,104 @@ export const fixed_cost_category_hue = /** @type {((inputs: Fixed_Cost_Category_
 /**
 * | output |
 * | --- |
+* | "Ended: {name}" |
+*
+* @param {Fixed_Cost_Change_EndedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_change_ended = /** @type {((inputs: Fixed_Cost_Change_EndedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Change_EndedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_change_ended(inputs)
+	return __en.fixed_cost_change_ended(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Price change: {name}" |
+*
+* @param {Fixed_Cost_Change_Price_ChangeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_change_price_change = /** @type {((inputs: Fixed_Cost_Change_Price_ChangeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Change_Price_ChangeInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_change_price_change(inputs)
+	return __en.fixed_cost_change_price_change(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Started: {name}" |
+*
+* @param {Fixed_Cost_Change_StartedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_change_started = /** @type {((inputs: Fixed_Cost_Change_StartedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Change_StartedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_change_started(inputs)
+	return __en.fixed_cost_change_started(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Changes ({count})" |
+*
+* @param {Fixed_Cost_ChangesInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_changes = /** @type {((inputs: Fixed_Cost_ChangesInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_ChangesInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_changes(inputs)
+	return __en.fixed_cost_changes(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Per month" |
+*
+* @param {Fixed_Cost_Changes_DeltaInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_changes_delta = /** @type {((inputs?: Fixed_Cost_Changes_DeltaInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Changes_DeltaInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_changes_delta(inputs)
+	return __en.fixed_cost_changes_delta(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Month" |
+*
+* @param {Fixed_Cost_Changes_MonthInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_changes_month = /** @type {((inputs?: Fixed_Cost_Changes_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Changes_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_changes_month(inputs)
+	return __en.fixed_cost_changes_month(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "What happened" |
+*
+* @param {Fixed_Cost_Changes_WhatInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_changes_what = /** @type {((inputs?: Fixed_Cost_Changes_WhatInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Changes_WhatInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_changes_what(inputs)
+	return __en.fixed_cost_changes_what(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Choose a category" |
 *
 * @param {Fixed_Cost_Choose_CategoryInputs} inputs
@@ -1155,6 +1266,90 @@ export const fixed_cost_end_date_optional = /** @type {((inputs?: Fixed_Cost_End
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_end_date_optional(inputs)
 	return __en.fixed_cost_end_date_optional(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Monthly total over time" |
+*
+* @param {Fixed_Cost_History_LabelInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_label = /** @type {((inputs?: Fixed_Cost_History_LabelInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_LabelInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_label(inputs)
+	return __en.fixed_cost_history_label(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "+{count} more" |
+*
+* @param {Fixed_Cost_History_MoreInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_more = /** @type {((inputs: Fixed_Cost_History_MoreInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_MoreInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_more(inputs)
+	return __en.fixed_cost_history_more(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "1Y" |
+*
+* @param {Fixed_Cost_History_Range_1yInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_range_1y = /** @type {((inputs?: Fixed_Cost_History_Range_1yInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_Range_1yInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_range_1y(inputs)
+	return __en.fixed_cost_history_range_1y(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "3Y" |
+*
+* @param {Fixed_Cost_History_Range_3yInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_range_3y = /** @type {((inputs?: Fixed_Cost_History_Range_3yInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_Range_3yInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_range_3y(inputs)
+	return __en.fixed_cost_history_range_3y(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "All" |
+*
+* @param {Fixed_Cost_History_Range_AllInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_range_all = /** @type {((inputs?: Fixed_Cost_History_Range_AllInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_Range_AllInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_range_all(inputs)
+	return __en.fixed_cost_history_range_all(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{amount} since {month}" |
+*
+* @param {Fixed_Cost_History_SinceInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_history_since = /** @type {((inputs: Fixed_Cost_History_SinceInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_History_SinceInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_history_since(inputs)
+	return __en.fixed_cost_history_since(inputs)
 });
 /**
 * | output |
