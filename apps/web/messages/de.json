@@ -15,6 +15,7 @@
     "action_remove": "Entfernen",
     "action_replace": "Ersetzen",
     "action_restore": "Wiederherstellen",
+    "action_details": "Details",
     "action_retry": "Erneut versuchen",
     "action_save": "Speichern",
     "action_sign_in": "Anmelden",
@@ -120,6 +121,32 @@
     "sync_rejected_status": "Der Server hat die Änderung abgelehnt ({status}).",
     "sync_pending": "Ausstehend",
     "sync_now": "Jetzt synchronisieren",
+    "sync_indicator_synced": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} Änderung synchronisiert",
+                "countPlural=other": "{count} Änderungen synchronisiert"
+            }
+        }
+    ],
+    "sync_indicator_rejected": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} Änderung abgelehnt",
+                "countPlural=other": "{count} Änderungen abgelehnt"
+            }
+        }
+    ],
     "sync_server_unreachable": "Der Server ist gerade nicht erreichbar.",
     "sync_later_hint": "wird synchronisiert, sobald Du online bist",
     "sync_not_synced_yet": "Noch nicht synchronisiert",

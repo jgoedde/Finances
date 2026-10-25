@@ -15,6 +15,7 @@
     "action_remove": "Remove",
     "action_replace": "Replace",
     "action_restore": "Restore",
+    "action_details": "Details",
     "action_retry": "Try again",
     "action_save": "Save",
     "action_sign_in": "Sign in",
@@ -120,6 +121,32 @@
     "sync_rejected_status": "The server rejected the change ({status}).",
     "sync_pending": "Pending",
     "sync_now": "Sync now",
+    "sync_indicator_synced": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} change synced",
+                "countPlural=other": "{count} changes synced"
+            }
+        }
+    ],
+    "sync_indicator_rejected": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} change rejected",
+                "countPlural=other": "{count} changes rejected"
+            }
+        }
+    ],
     "sync_server_unreachable": "The server can't be reached right now.",
     "sync_later_hint": "will sync once you're online",
     "sync_not_synced_yet": "Not synced yet",

@@ -44,6 +44,9 @@ function update(next: SyncFailure[]): void {
 }
 
 export const syncFailures = {
+    getAll(): SyncFailure[] {
+        return failures;
+    },
     add(failure: Omit<SyncFailure, "id" | "failedAt">): void {
         update([
             ...failures,

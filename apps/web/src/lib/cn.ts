@@ -40,6 +40,7 @@ const twMerge = extendTailwindMerge({
                 "emphasized-decelerate",
                 "emphasized-accelerate",
             ],
+            animate: ["month-peek", "sync-strip-grow"],
         },
     },
 });

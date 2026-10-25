@@ -8,6 +8,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
 /** @typedef {{}} Action_DeleteInputs */
+/** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
@@ -169,6 +170,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ count: NonNullable<unknown> }} Sign_Out_Unsynced_ChangesInputs */
 /** @typedef {{}} Sync_Action_DeletedInputs */
 /** @typedef {{}} Sync_Action_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_RejectedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_SyncedInputs */
 /** @typedef {{}} Sync_Later_HintInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Menu_FailedInputs */
 /** @typedef {{}} Sync_Menu_OfflineInputs */
@@ -315,6 +318,20 @@ export const action_delete = /** @type {((inputs?: Action_DeleteInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_delete(inputs)
 	return __en.action_delete(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Details" |
+*
+* @param {Action_DetailsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_details = /** @type {((inputs?: Action_DetailsInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_DetailsInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.action_details(inputs)
+	return __en.action_details(inputs)
 });
 /**
 * | output |
@@ -2572,6 +2589,36 @@ export const sync_action_saved = /** @type {((inputs?: Sync_Action_SavedInputs, 
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.sync_action_saved(inputs)
 	return __en.sync_action_saved(inputs)
+});
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} change rejected" |
+* | "other" | "{count} changes rejected" |
+*
+* @param {Sync_Indicator_RejectedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_indicator_rejected = /** @type {((inputs: Sync_Indicator_RejectedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Sync_Indicator_RejectedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.sync_indicator_rejected(inputs)
+	return __en.sync_indicator_rejected(inputs)
+});
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} change synced" |
+* | "other" | "{count} changes synced" |
+*
+* @param {Sync_Indicator_SyncedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_indicator_synced = /** @type {((inputs: Sync_Indicator_SyncedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Sync_Indicator_SyncedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.sync_indicator_synced(inputs)
+	return __en.sync_indicator_synced(inputs)
 });
 /**
 * | output |

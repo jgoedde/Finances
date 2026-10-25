@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { sessionQuery } from "#/auth/auth-client.ts";
+import { SyncIndicator } from "#/features/sync/sync-indicator.tsx";
 
 // Every route below requires a signed-in user.
 export const Route = createFileRoute("/_authed")({
@@ -16,5 +17,15 @@ export const Route = createFileRoute("/_authed")({
         }
         return { user };
     },
-    component: Outlet,
+    component: RouteComponent,
 });
+
+function RouteComponent() {
+    return (
+        <>
+            <Outlet />
+            {/* On every app page, also full-screen details. */}
+            <SyncIndicator />
+        </>
+    );
+}

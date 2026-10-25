@@ -4,6 +4,7 @@ export const action_add: (inputs: Action_AddInputs) => LocalizedString;
 export const action_back: (inputs: Action_BackInputs) => LocalizedString;
 export const action_cancel: (inputs: Action_CancelInputs) => LocalizedString;
 export const action_delete: (inputs: Action_DeleteInputs) => LocalizedString;
+export const action_details: (inputs: Action_DetailsInputs) => LocalizedString;
 export const action_discard: (inputs: Action_DiscardInputs) => LocalizedString;
 export const action_export: (inputs: Action_ExportInputs) => LocalizedString;
 export const action_import: (inputs: Action_ImportInputs) => LocalizedString;
@@ -165,6 +166,8 @@ export const sign_out_failed: (inputs: Sign_Out_FailedInputs) => LocalizedString
 export const sign_out_unsynced_changes: (inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString;
 export const sync_action_deleted: (inputs: Sync_Action_DeletedInputs) => LocalizedString;
 export const sync_action_saved: (inputs: Sync_Action_SavedInputs) => LocalizedString;
+export const sync_indicator_rejected: (inputs: Sync_Indicator_RejectedInputs) => LocalizedString;
+export const sync_indicator_synced: (inputs: Sync_Indicator_SyncedInputs) => LocalizedString;
 export const sync_later_hint: (inputs: Sync_Later_HintInputs) => LocalizedString;
 export const sync_menu_failed: (inputs: Sync_Menu_FailedInputs) => LocalizedString;
 export const sync_menu_offline: (inputs: Sync_Menu_OfflineInputs) => LocalizedString;
@@ -238,6 +241,7 @@ export type Action_AddInputs = {};
 export type Action_BackInputs = {};
 export type Action_CancelInputs = {};
 export type Action_DeleteInputs = {};
+export type Action_DetailsInputs = {};
 export type Action_DiscardInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
@@ -451,6 +455,12 @@ export type Sign_Out_Unsynced_ChangesInputs = {
 };
 export type Sync_Action_DeletedInputs = {};
 export type Sync_Action_SavedInputs = {};
+export type Sync_Indicator_RejectedInputs = {
+    count: NonNullable<unknown>;
+};
+export type Sync_Indicator_SyncedInputs = {
+    count: NonNullable<unknown>;
+};
 export type Sync_Later_HintInputs = {};
 export type Sync_Menu_FailedInputs = {
     count: NonNullable<unknown>;
