@@ -44,6 +44,9 @@ function update(next: SyncFailure[]): void {
 }
 
 export const syncFailures = {
+    getAll(): SyncFailure[] {
+        return failures;
+    },
     add(failure: Omit<SyncFailure, "id" | "failedAt">): void {
         update([
             ...failures,
@@ -64,6 +67,6 @@ export function useSyncFailures(): SyncFailure[] {
             listeners.add(listener);
             return () => listeners.delete(listener);
         },
-        () => failures,
+        () => syncFailures.getAll(),
     );
 }

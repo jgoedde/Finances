@@ -85,6 +85,20 @@ export const action_delete: ((inputs?: Action_DeleteInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "Details" |
+*
+* @param {Action_DetailsInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_details: ((inputs?: Action_DetailsInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_DetailsInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Discard" |
 *
 * @param {Action_DiscardInputs} inputs
@@ -2340,6 +2354,36 @@ export const sync_action_saved: ((inputs?: Sync_Action_SavedInputs, options?: {
     locale?: "en" | "de";
 }, {}>;
 /**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} change rejected" |
+* | "other" | "{count} changes rejected" |
+*
+* @param {Sync_Indicator_RejectedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_indicator_rejected: ((inputs: Sync_Indicator_RejectedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Sync_Indicator_RejectedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} change synced" |
+* | "other" | "{count} changes synced" |
+*
+* @param {Sync_Indicator_SyncedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_indicator_synced: ((inputs: Sync_Indicator_SyncedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Sync_Indicator_SyncedInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
 * | output |
 * | --- |
 * | "will sync once you're online" |
@@ -3205,6 +3249,7 @@ export type Action_AddInputs = {};
 export type Action_BackInputs = {};
 export type Action_CancelInputs = {};
 export type Action_DeleteInputs = {};
+export type Action_DetailsInputs = {};
 export type Action_DiscardInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
@@ -3418,6 +3463,12 @@ export type Sign_Out_Unsynced_ChangesInputs = {
 };
 export type Sync_Action_DeletedInputs = {};
 export type Sync_Action_SavedInputs = {};
+export type Sync_Indicator_RejectedInputs = {
+    count: NonNullable<unknown>;
+};
+export type Sync_Indicator_SyncedInputs = {
+    count: NonNullable<unknown>;
+};
 export type Sync_Later_HintInputs = {};
 export type Sync_Menu_FailedInputs = {
     count: NonNullable<unknown>;

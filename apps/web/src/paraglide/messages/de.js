@@ -6,6 +6,7 @@
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
 /** @typedef {{}} Action_DeleteInputs */
+/** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
@@ -167,6 +168,8 @@
 /** @typedef {{ count: NonNullable<unknown> }} Sign_Out_Unsynced_ChangesInputs */
 /** @typedef {{}} Sync_Action_DeletedInputs */
 /** @typedef {{}} Sync_Action_SavedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_RejectedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_SyncedInputs */
 /** @typedef {{}} Sync_Later_HintInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Menu_FailedInputs */
 /** @typedef {{}} Sync_Menu_OfflineInputs */
@@ -253,6 +256,10 @@ export const action_cancel = /** @type {(inputs: Action_CancelInputs) => Localiz
 
 export const action_delete = /** @type {(inputs: Action_DeleteInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Löschen`)
+};
+
+export const action_details = /** @type {(inputs: Action_DetailsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Details`)
 };
 
 export const action_discard = /** @type {(inputs: Action_DiscardInputs) => LocalizedString} */ () => {
@@ -906,6 +913,20 @@ export const sync_action_deleted = /** @type {(inputs: Sync_Action_DeletedInputs
 
 export const sync_action_saved = /** @type {(inputs: Sync_Action_SavedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Gespeichert`)
+};
+
+export const sync_indicator_rejected = /** @type {(inputs: Sync_Indicator_RejectedInputs) => LocalizedString} */ (i) => {
+	const countPlural = registry.plural("de", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung abgelehnt`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen abgelehnt`);
+	return /** @type {LocalizedString} */ ("sync_indicator_rejected");
+};
+
+export const sync_indicator_synced = /** @type {(inputs: Sync_Indicator_SyncedInputs) => LocalizedString} */ (i) => {
+	const countPlural = registry.plural("de", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung synchronisiert`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen synchronisiert`);
+	return /** @type {LocalizedString} */ ("sync_indicator_synced");
 };
 
 export const sync_later_hint = /** @type {(inputs: Sync_Later_HintInputs) => LocalizedString} */ () => {

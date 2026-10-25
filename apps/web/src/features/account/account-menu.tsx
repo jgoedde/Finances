@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -21,7 +20,7 @@ import { Avatar, AvatarFallback } from "#/components/ui/avatar.tsx";
 import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { sessionQuery } from "#/auth/auth-client.ts";
 import { useSignOut } from "#/features/auth/use-sign-out.ts";
-import { SyncDrawer } from "#/features/sync/sync-drawer.tsx";
+import { setSyncDrawerOpen } from "#/features/sync/sync-drawer-state.ts";
 import {
     type SyncState,
     type SyncStatus,
@@ -84,8 +83,6 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
     const status = useSyncStatus();
     const signOut = useSignOut();
 
-    const [isSyncDrawerOpen, setIsSyncDrawerOpen] = useState(false);
-
     const username = user?.username ?? "";
     const badgeClass = BADGE_CLASS[status.state];
     const syncItem = syncMenuItem(status);
@@ -145,9 +142,7 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
                     <DropdownMenuLabel>
                         {m.account_signed_in_as({ username })}
                     </DropdownMenuLabel>
-                    <DropdownMenuItem
-                        onSelect={() => setIsSyncDrawerOpen(true)}
-                    >
+                    <DropdownMenuItem onSelect={() => setSyncDrawerOpen(true)}>
                         {syncItem.icon}
                         {syncItem.label}
                     </DropdownMenuItem>
@@ -164,11 +159,6 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-
-            <SyncDrawer
-                open={isSyncDrawerOpen}
-                onOpenChange={setIsSyncDrawerOpen}
-            />
         </>
     );
 }

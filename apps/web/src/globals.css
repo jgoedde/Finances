@@ -306,6 +306,10 @@
 
     /* Hints that the month title can be swiped (`animate-month-peek`). */
     --animate-month-peek: month-peek 1200ms var(--ease-emphasized) 600ms both;
+
+    /* The sync indicator grows in from the left (`animate-sync-strip-grow`). */
+    --animate-sync-strip-grow: sync-strip-grow 600ms
+        var(--ease-emphasized-decelerate) both;
 }
 
 @layer base {
@@ -406,6 +410,12 @@
 @keyframes month-peek {
     40% {
         transform: translateX(2.5rem);
+    }
+}
+
+@keyframes sync-strip-grow {
+    from {
+        transform: scaleX(0);
     }
 }
 
