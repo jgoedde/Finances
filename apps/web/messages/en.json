@@ -42,6 +42,7 @@
     "api_error_invalid_link": "This link is invalid, has expired or has already been used.",
     "api_error_invalid_request": "The data is invalid.",
     "api_error_not_found": "Not found.",
+    "api_error_price_change_out_of_range": "A price change lies outside the start and end date.",
     "api_error_unauthorized": "Please sign in again.",
     "api_error_unknown_category": "The category no longer exists.",
     "api_error_unknown_user": "This user doesn't exist.",

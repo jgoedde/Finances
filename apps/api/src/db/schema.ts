@@ -54,7 +54,7 @@ export interface FixedCostsTable {
     id: string;
     name: string;
     description: string | null;
-    amount: number;
+    initial_amount: number;
     currency: string;
     interval: FixedCostInterval;
     category_id: string;
@@ -69,6 +69,17 @@ export interface FixedCostsTable {
      * `YYYY-MM-DD`
      */
     end_date: string | null;
+}
+
+export interface FixedCostPriceChangesTable {
+    user_id: string;
+    fixed_cost_id: string;
+
+    /**
+     * `YYYY-MM-DD`
+     */
+    date: string;
+    amount: number;
 }
 
 export interface InvitesTable {
@@ -102,6 +113,7 @@ export interface Database {
     transactions: TransactionsTable;
     transaction_tombstones: TransactionTombstonesTable;
     fixed_costs: FixedCostsTable;
+    fixed_cost_price_changes: FixedCostPriceChangesTable;
     invites: InvitesTable;
 
     /**

@@ -9,6 +9,7 @@ const MESSAGES = {
     invalid_link: m.api_error_invalid_link,
     invalid_request: m.api_error_invalid_request,
     not_found: m.api_error_not_found,
+    price_change_out_of_range: m.api_error_price_change_out_of_range,
     unauthorized: m.api_error_unauthorized,
     unknown_category: m.api_error_unknown_category,
     unknown_user: m.api_error_unknown_user,

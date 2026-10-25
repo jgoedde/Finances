@@ -365,6 +365,20 @@ export const api_error_not_found: ((inputs?: Api_Error_Not_FoundInputs, options?
 /**
 * | output |
 * | --- |
+* | "A price change lies outside the start and end date." |
+*
+* @param {Api_Error_Price_Change_Out_Of_RangeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_price_change_out_of_range: ((inputs?: Api_Error_Price_Change_Out_Of_RangeInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Api_Error_Price_Change_Out_Of_RangeInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Please sign in again." |
 *
 * @param {Api_Error_UnauthorizedInputs} inputs
@@ -3211,6 +3225,7 @@ export type Api_Error_ForbiddenInputs = {};
 export type Api_Error_Invalid_LinkInputs = {};
 export type Api_Error_Invalid_RequestInputs = {};
 export type Api_Error_Not_FoundInputs = {};
+export type Api_Error_Price_Change_Out_Of_RangeInputs = {};
 export type Api_Error_UnauthorizedInputs = {};
 export type Api_Error_Unknown_CategoryInputs = {};
 export type Api_Error_Unknown_UserInputs = {};

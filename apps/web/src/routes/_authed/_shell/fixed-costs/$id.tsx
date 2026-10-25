@@ -9,6 +9,7 @@ import {
     useUpdateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import {
+    correctAmountOn,
     toFixedCost,
     toLocalIsoDate,
 } from "#/features/fixed-costs/fixed-cost.ts";
@@ -65,8 +66,12 @@ function RouteComponent() {
     const updateFixedCost = useUpdateFixedCost();
     const deleteFixedCost = useDeleteFixedCost();
 
-    function save(values: FixedCostWizardValues) {
-        updateFixedCost.mutate({ id, patch: values });
+    // The form shows today's amount, so it corrects that one.
+    function save({ amount, ...values }: FixedCostWizardValues) {
+        updateFixedCost.mutate({
+            id,
+            patch: { ...values, ...correctAmountOn(record, today, amount) },
+        });
         toast.success(m.fixed_cost_updated());
         void navigate({ to: "/fixed-costs" });
     }

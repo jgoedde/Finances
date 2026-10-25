@@ -19,11 +19,42 @@ export type FixedCostInterval = z.infer<typeof fixedCostIntervalSchema>;
  */
 const isoDate = z.iso.date();
 
+/**
+ * A new amount of a fixed cost from `date` on.
+ */
+export const priceChangeSchema = z.object({
+    date: isoDate,
+    amount: z.number().nonnegative(),
+});
+export type PriceChange = z.infer<typeof priceChangeSchema>;
+
+/**
+ * At most one price change per day.
+ */
+const priceChangesSchema = z
+    .array(priceChangeSchema)
+    .refine(
+        (changes) =>
+            new Set(changes.map((change) => change.date)).size ===
+            changes.length,
+        { message: "Duplicate price change date" },
+    );
+
 export const fixedCostSchema = z.object({
     id: z.string(),
     name: z.string().trim().min(1).max(200),
     description: z.string().max(2000).nullable(),
-    amount: z.number().nonnegative(),
+
+    /**
+     * The amount from the start date until the first price change.
+     */
+    initialAmount: z.number().nonnegative(),
+
+    /**
+     * Each after the start date and on or before the end date (checked by
+     * the API). Served sorted by date, ascending.
+     */
+    priceChanges: priceChangesSchema,
     currency: z.string().length(3),
     interval: fixedCostIntervalSchema,
     categoryId: z.string().min(1),
@@ -33,10 +64,17 @@ export const fixedCostSchema = z.object({
 });
 export type FixedCost = z.infer<typeof fixedCostSchema>;
 
-export const fixedCostInputSchema = fixedCostSchema.omit({ id: true });
+const fixedCostFieldsSchema = fixedCostSchema.omit({ id: true });
+
+export const fixedCostInputSchema = fixedCostFieldsSchema.extend({
+    priceChanges: priceChangesSchema.default([]),
+});
 export type FixedCostInput = z.infer<typeof fixedCostInputSchema>;
 
-export const fixedCostPatchSchema = fixedCostInputSchema.partial();
+/**
+ * `priceChanges`, when given, replaces all of them.
+ */
+export const fixedCostPatchSchema = fixedCostFieldsSchema.partial();
 export type FixedCostPatch = z.infer<typeof fixedCostPatchSchema>;
 
 const MONTHS_PER_INTERVAL = {
@@ -46,17 +84,50 @@ const MONTHS_PER_INTERVAL = {
 } as const satisfies Record<FixedCostInterval, number>;
 
 /**
- * The amount spread evenly over the months of its interval, unrounded.
+ * What the fixed cost charges per interval on `day` (`YYYY-MM-DD`): the
+ * amount of its latest price change on or before that day, else its initial
+ * amount.
  */
-export function getMonthlyAmount(fixedCost: FixedCost): number {
-    return fixedCost.amount / MONTHS_PER_INTERVAL[fixedCost.interval];
+export function getAmountOn(
+    fixedCost: Pick<FixedCost, "initialAmount" | "priceChanges">,
+    day: string,
+): number {
+    let amount = fixedCost.initialAmount;
+    for (const change of fixedCost.priceChanges) {
+        if (change.date > day) {
+            break;
+        }
+        amount = change.amount;
+    }
+    return amount;
 }
 
 /**
- * Twelve monthly amounts, unrounded.
+ * The amount on `day` (`YYYY-MM-DD`) spread evenly over the months of its
+ * interval, unrounded.
  */
-export function getYearlyAmount(fixedCost: FixedCost): number {
-    return getMonthlyAmount(fixedCost) * 12;
+export function getMonthlyAmount(fixedCost: FixedCost, day: string): number {
+    return (
+        getAmountOn(fixedCost, day) / MONTHS_PER_INTERVAL[fixedCost.interval]
+    );
+}
+
+/**
+ * Twelve monthly amounts on `day` (`YYYY-MM-DD`), unrounded.
+ */
+export function getYearlyAmount(fixedCost: FixedCost, day: string): number {
+    return getMonthlyAmount(fixedCost, day) * 12;
+}
+
+/**
+ * `day` (`YYYY-MM-DD`), or the end date if the fixed cost ends before it:
+ * the day whose amount counts for a period ending on `day`, so a price
+ * change counts for the whole month it falls in.
+ */
+export function lastRunningDay(fixedCost: FixedCost, day: string): string {
+    return fixedCost.endDate !== null && fixedCost.endDate < day
+        ? fixedCost.endDate
+        : day;
 }
 
 /**

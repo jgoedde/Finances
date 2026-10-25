@@ -2,10 +2,12 @@ import { fixedCostPatchSchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import {
+    arePriceChangesInRange,
     categoryExists,
-    toColumns,
-    toFixedCost,
     fixedCostIdParam,
+    readFixedCost,
+    toColumns,
+    writePriceChanges,
 } from "#/features/fixed-costs/fixed-costs.ts";
 
 export const updateFixedCost = factory.createHandlers(
@@ -13,6 +15,7 @@ export const updateFixedCost = factory.createHandlers(
     validate("json", fixedCostPatchSchema),
     async (c) => {
         const { db, userId } = c.var;
+        const { id } = c.req.valid("param");
         const patch = c.req.valid("json");
         if (
             patch.categoryId !== undefined &&
@@ -25,24 +28,34 @@ export const updateFixedCost = factory.createHandlers(
                 ([, value]) => value !== undefined,
             ),
         );
-        const row =
-            Object.keys(columns).length > 0
-                ? await db
-                      .updateTable("fixed_costs")
-                      .set(columns)
-                      .where("user_id", "=", userId)
-                      .where("id", "=", c.req.valid("param").id)
-                      .returningAll()
-                      .executeTakeFirst()
-                : await db
-                      .selectFrom("fixed_costs")
-                      .selectAll()
-                      .where("user_id", "=", userId)
-                      .where("id", "=", c.req.valid("param").id)
-                      .executeTakeFirst();
-        if (!row) {
-            return c.json({ error: "not_found" }, 404);
+        const result = await db.transaction().execute(async (trx) => {
+            const existing = await readFixedCost(trx, userId, id);
+            if (!existing) {
+                return "not_found";
+            }
+            // Also catches moving the start or end date past a price change.
+            if (!arePriceChangesInRange({ ...existing, ...patch })) {
+                return "price_change_out_of_range";
+            }
+            if (Object.keys(columns).length > 0) {
+                await trx
+                    .updateTable("fixed_costs")
+                    .set(columns)
+                    .where("user_id", "=", userId)
+                    .where("id", "=", id)
+                    .execute();
+            }
+            if (patch.priceChanges !== undefined) {
+                await writePriceChanges(trx, userId, id, patch.priceChanges);
+            }
+            return (await readFixedCost(trx, userId, id)) ?? "not_found";
+        });
+        if (result === "not_found") {
+            return c.json({ error: result }, 404);
         }
-        return c.json(toFixedCost(row));
+        if (result === "price_change_out_of_range") {
+            return c.json({ error: result }, 422);
+        }
+        return c.json(result);
     },
 );

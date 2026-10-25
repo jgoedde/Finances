@@ -1,6 +1,9 @@
 import type { DataExport, ImportResult } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
-import { toFixedCost } from "#/features/fixed-costs/fixed-costs.ts";
+import {
+    arePriceChangesInRange,
+    readFixedCosts,
+} from "#/features/fixed-costs/fixed-costs.ts";
 import {
     toLocationColumns,
     toTransaction,
@@ -24,12 +27,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
                 .where("user_id", "=", userId)
                 .orderBy("id")
                 .execute(),
-            db
-                .selectFrom("fixed_costs")
-                .selectAll()
-                .where("user_id", "=", userId)
-                .orderBy("id")
-                .execute(),
+            readFixedCosts(db, userId),
             db
                 .selectFrom("transactions")
                 .selectAll()
@@ -40,7 +38,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 3,
+        version: 4,
         exportedAt: new Date().toISOString(),
         categories: categories.map((c) => ({
             id: c.id,
@@ -53,7 +51,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
             name: c.name,
             description: c.description,
         })),
-        fixedCosts: fixedCosts.map(toFixedCost),
+        fixedCosts,
         transactions: transactions.map(toTransaction),
     };
 }
@@ -81,6 +79,8 @@ export async function hasData(db: DB, userId: string): Promise<boolean> {
 
 export class InvalidReferenceError extends Error {}
 
+export class PriceChangeOutOfRangeError extends Error {}
+
 /**
  * Replaces all of the user's data with the import, atomically. Callers decide
  * whether an account with data may be replaced.
@@ -99,6 +99,9 @@ export async function replaceData(
         data.fixedCosts.some((f) => !fixedCostCategoryIds.has(f.categoryId))
     ) {
         throw new InvalidReferenceError();
+    }
+    if (!data.fixedCosts.every(arePriceChangesInRange)) {
+        throw new PriceChangeOutOfRangeError();
     }
 
     const now = Date.now();
@@ -168,7 +171,7 @@ export async function replaceData(
                         id: f.id,
                         name: f.name,
                         description: f.description,
-                        amount: f.amount,
+                        initial_amount: f.initialAmount,
                         currency: f.currency,
                         interval: f.interval,
                         category_id: f.categoryId,
@@ -178,6 +181,21 @@ export async function replaceData(
                     })),
                 )
                 .execute(),
+        );
+        await insertChunked(
+            data.fixedCosts.flatMap((f) =>
+                f.priceChanges.map((change) => ({
+                    user_id: userId,
+                    fixed_cost_id: f.id,
+                    date: change.date,
+                    amount: change.amount,
+                })),
+            ),
+            (chunk) =>
+                trx
+                    .insertInto("fixed_cost_price_changes")
+                    .values(chunk)
+                    .execute(),
         );
         await insertChunked(data.transactions, (chunk) =>
             trx

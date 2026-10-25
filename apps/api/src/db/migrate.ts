@@ -6,12 +6,14 @@ import { logger } from "../log.ts";
 import { up as appTables } from "./migrations/0001-app-tables.ts";
 import { up as transactionCounterparty } from "./migrations/0002-transaction-counterparty.ts";
 import { up as transactionLocation } from "./migrations/0003-transaction-location.ts";
+import { up as fixedCostPriceChanges } from "./migrations/0004-fixed-cost-price-changes.ts";
 
 // Append new migrations here. Never edit or reorder applied ones.
 const migrations: Record<string, Migration> = {
     "0001-app-tables": { up: appTables },
     "0002-transaction-counterparty": { up: transactionCounterparty },
     "0003-transaction-location": { up: transactionLocation },
+    "0004-fixed-cost-price-changes": { up: fixedCostPriceChanges },
 };
 
 /**

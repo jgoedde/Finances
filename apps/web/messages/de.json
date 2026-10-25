@@ -42,6 +42,7 @@
     "api_error_invalid_link": "Dieser Link ist ungültig, abgelaufen oder wurde bereits verwendet.",
     "api_error_invalid_request": "Die Daten sind ungültig.",
     "api_error_not_found": "Nicht gefunden.",
+    "api_error_price_change_out_of_range": "Eine Preisänderung liegt außerhalb von Start- und Enddatum.",
     "api_error_unauthorized": "Bitte melde Dich erneut an.",
     "api_error_unknown_category": "Die Kategorie existiert nicht mehr.",
     "api_error_unknown_user": "Diesen Benutzer gibt es nicht.",
