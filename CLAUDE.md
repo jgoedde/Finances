@@ -11,7 +11,7 @@ Personal expense tracker (PWA) built with React 19, TypeScript, Vite, TanStack R
 Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the client lives in `apps/web` (`@finances/web`), the API in `apps/api` (`@finances/api`) and shared zod schemas in `packages/shared`. Run the commands below from the repo root; root scripts delegate to the workspaces. Formatting (Prettier) and knip are configured once at the root.
 
 - `npm run dev`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
-- `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check.
+- `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check. Also this compiles Paraglide source files. Don't invoke any Paraglide CLI commands to regenerate files after message changes.
 - `npm run lint`: ESLint in every workspace, in parallel (`concurrently`), with `--max-warnings 0`. The root `eslint.config.js` holds the shared defaults (`@eslint/js` + typescript-eslint recommended, ignores); each workspace's `eslint.config.js` extends it (web: React plugins and browser globals; api/shared: Node globals). Known violations are suppressed in `apps/web/eslint-suppressions.json`: don't add to it; after fixing one, run `npx eslint . --prune-suppressions` in that workspace.
 - `npm run format` / `npm run format:check`: Prettier with `--cache` (4-space indent, with Tailwind class sorting/wrapping plugins)
 - `npm run knip:check`: detect unused files and exports

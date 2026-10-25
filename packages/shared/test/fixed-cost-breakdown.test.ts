@@ -7,7 +7,8 @@ function fixedCost(overrides: Partial<FixedCost> = {}): FixedCost {
         id: "f1",
         name: "Miete",
         description: null,
-        amount: 100,
+        initialAmount: 100,
+        priceChanges: [],
         currency: "EUR",
         interval: "monthly",
         categoryId: "housing",
@@ -24,11 +25,31 @@ describe("groupByFixedCostCategory", () => {
     it("groups into fixed cost categories with their monthly amount and share, largest first", () => {
         const groups = groupByFixedCostCategory(
             [
-                fixedCost({ id: "rent", categoryId: "housing", amount: 600 }),
-                fixedCost({ id: "car", categoryId: "mobility", amount: 150 }),
-                fixedCost({ id: "power", categoryId: "housing", amount: 100 }),
-                fixedCost({ id: "bike", categoryId: "mobility", amount: 50 }),
-                fixedCost({ id: "phone", categoryId: "media", amount: 100 }),
+                fixedCost({
+                    id: "rent",
+                    categoryId: "housing",
+                    initialAmount: 600,
+                }),
+                fixedCost({
+                    id: "car",
+                    categoryId: "mobility",
+                    initialAmount: 150,
+                }),
+                fixedCost({
+                    id: "power",
+                    categoryId: "housing",
+                    initialAmount: 100,
+                }),
+                fixedCost({
+                    id: "bike",
+                    categoryId: "mobility",
+                    initialAmount: 50,
+                }),
+                fixedCost({
+                    id: "phone",
+                    categoryId: "media",
+                    initialAmount: 100,
+                }),
             ],
             TODAY,
         );
@@ -45,11 +66,19 @@ describe("groupByFixedCostCategory", () => {
     it("counts only the fixed costs running on the day", () => {
         const groups = groupByFixedCostCategory(
             [
-                fixedCost({ id: "rent", categoryId: "housing", amount: 300 }),
+                fixedCost({
+                    id: "rent",
+                    categoryId: "housing",
+                    initialAmount: 300,
+                }),
                 fixedCost({ id: "off", categoryId: "housing", active: false }),
                 fixedCost({ id: "later", startDate: "2026-07-01" }),
                 fixedCost({ id: "ended", endDate: "2026-06-14" }),
-                fixedCost({ id: "car", categoryId: "mobility", amount: 100 }),
+                fixedCost({
+                    id: "car",
+                    categoryId: "mobility",
+                    initialAmount: 100,
+                }),
             ],
             TODAY,
         );
@@ -65,7 +94,11 @@ describe("groupByFixedCostCategory", () => {
     it("counts the fixed costs running on at least one day of a range", () => {
         const groups = groupByFixedCostCategory(
             [
-                fixedCost({ id: "rent", categoryId: "housing", amount: 300 }),
+                fixedCost({
+                    id: "rent",
+                    categoryId: "housing",
+                    initialAmount: 300,
+                }),
                 fixedCost({
                     id: "ended",
                     categoryId: "media",
@@ -95,7 +128,7 @@ describe("groupByFixedCostCategory", () => {
     it("lists fixed costs not running on the day without a share, after the running ones", () => {
         const housing = groupByFixedCostCategory(
             [
-                fixedCost({ id: "rent", name: "Miete", amount: 300 }),
+                fixedCost({ id: "rent", name: "Miete", initialAmount: 300 }),
                 fixedCost({ id: "off", name: "Strom", active: false }),
                 fixedCost({ id: "ended", name: "Gas", endDate: "2026-06-14" }),
             ],
@@ -143,8 +176,12 @@ describe("groupByFixedCostCategory", () => {
     it("spreads quarterly and yearly fixed costs over their months", () => {
         const [group] = groupByFixedCostCategory(
             [
-                fixedCost({ id: "a", amount: 30, interval: "quarterly" }),
-                fixedCost({ id: "b", amount: 120, interval: "yearly" }),
+                fixedCost({
+                    id: "a",
+                    initialAmount: 30,
+                    interval: "quarterly",
+                }),
+                fixedCost({ id: "b", initialAmount: 120, interval: "yearly" }),
             ],
             TODAY,
         );
@@ -155,11 +192,15 @@ describe("groupByFixedCostCategory", () => {
     it("lists each group's fixed costs with their share of the total, largest first", () => {
         const housing = groupByFixedCostCategory(
             [
-                fixedCost({ id: "power", name: "Strom", amount: 50 }),
-                fixedCost({ id: "rent", name: "Miete", amount: 150 }),
-                fixedCost({ id: "water", name: "Wasser", amount: 25 }),
-                fixedCost({ id: "gas", name: "Gas", amount: 25 }),
-                fixedCost({ id: "car", categoryId: "mobility", amount: 250 }),
+                fixedCost({ id: "power", name: "Strom", initialAmount: 50 }),
+                fixedCost({ id: "rent", name: "Miete", initialAmount: 150 }),
+                fixedCost({ id: "water", name: "Wasser", initialAmount: 25 }),
+                fixedCost({ id: "gas", name: "Gas", initialAmount: 25 }),
+                fixedCost({
+                    id: "car",
+                    categoryId: "mobility",
+                    initialAmount: 250,
+                }),
             ],
             TODAY,
         ).find((g) => g.categoryId === "housing");
@@ -192,7 +233,7 @@ describe("groupByFixedCostCategory", () => {
 
     it("gives running fixed costs a share of 0 when the total is 0", () => {
         const [group] = groupByFixedCostCategory(
-            [fixedCost({ id: "free", amount: 0 })],
+            [fixedCost({ id: "free", initialAmount: 0 })],
             TODAY,
         );
 

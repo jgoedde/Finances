@@ -2,6 +2,7 @@ import {
     type FixedCost,
     getMonthlyAmount,
     isRunningBetween,
+    lastRunningDay,
 } from "#/fixed-costs.ts";
 import _ from "lodash";
 
@@ -49,7 +50,9 @@ export interface FixedCostCategoryShare {
  * (`YYYY-MM-DD`, both included; a single day by default) count: shares are
  * of their monthly total, so they add up to 1 (or are all 0 when that total
  * is 0). The others follow in their group without a share, and groups
- * without running fixed costs come last. Ties are ordered by name.
+ * without running fixed costs come last. Ties are ordered by name. Monthly
+ * amounts are those on `to`, or on the end date of a fixed cost ending
+ * before it.
  */
 export function groupByFixedCostCategory(
     fixedCosts: FixedCost[],
@@ -59,14 +62,16 @@ export function groupByFixedCostCategory(
     const [running, stopped] = _.partition(fixedCosts, (it) =>
         isRunningBetween(it, from, to),
     );
-    const total = _.sumBy(running, getMonthlyAmount);
+    const monthlyAmountOf = (fixedCost: FixedCost) =>
+        getMonthlyAmount(fixedCost, lastRunningDay(fixedCost, to));
+    const total = _.sumBy(running, monthlyAmountOf);
     // Fixed costs may cost 0, so the total may be 0.
     const shareOf = (amount: number) => (total > 0 ? amount / total : 0);
 
     const shares: FixedCostShare[] = [
         ...running
             .map((fixedCost) => {
-                const monthlyAmount = getMonthlyAmount(fixedCost);
+                const monthlyAmount = monthlyAmountOf(fixedCost);
                 return {
                     fixedCost,
                     monthlyAmount,
@@ -81,7 +86,7 @@ export function groupByFixedCostCategory(
         ...stopped
             .map((fixedCost) => ({
                 fixedCost,
-                monthlyAmount: getMonthlyAmount(fixedCost),
+                monthlyAmount: monthlyAmountOf(fixedCost),
                 share: null,
             }))
             .sort((a, b) => compareNames(a.fixedCost.name, b.fixedCost.name)),

@@ -26,6 +26,7 @@
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
+/** @typedef {{}} Api_Error_Price_Change_Out_Of_RangeInputs */
 /** @typedef {{}} Api_Error_UnauthorizedInputs */
 /** @typedef {{}} Api_Error_Unknown_CategoryInputs */
 /** @typedef {{}} Api_Error_Unknown_UserInputs */
@@ -332,6 +333,10 @@ export const api_error_invalid_request = /** @type {(inputs: Api_Error_Invalid_R
 
 export const api_error_not_found = /** @type {(inputs: Api_Error_Not_FoundInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Not found.`)
+};
+
+export const api_error_price_change_out_of_range = /** @type {(inputs: Api_Error_Price_Change_Out_Of_RangeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`A price change lies outside the start and end date.`)
 };
 
 export const api_error_unauthorized = /** @type {(inputs: Api_Error_UnauthorizedInputs) => LocalizedString} */ () => {

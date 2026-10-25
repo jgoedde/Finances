@@ -3,6 +3,8 @@ import {
     type FixedCost as FixedCostRecord,
     type FixedCostCategory,
     type FixedCostInterval,
+    type FixedCostPatch,
+    getAmountOn,
     getMonthlyAmount,
     getYearlyAmount,
     groupByFixedCostCategory,
@@ -25,6 +27,10 @@ export interface FixedCost {
     id: string;
     name: string;
     description: string | null;
+
+    /**
+     * What it charges per interval today.
+     */
     amount: number;
     currency: string;
     interval: FixedCostInterval;
@@ -33,6 +39,9 @@ export interface FixedCost {
     startDate: Date;
     endDate: Date | null;
 
+    /**
+     * From today's amount.
+     */
     monthlyAmount: number;
     yearlyAmount: number;
 
@@ -43,7 +52,8 @@ export interface FixedCost {
 }
 
 /**
- * Hydrates a fixed cost; `today` (`YYYY-MM-DD`) decides `isRunning`.
+ * Hydrates a fixed cost; `today` (`YYYY-MM-DD`) decides the amounts and
+ * `isRunning`.
  */
 export function toFixedCost(
     record: FixedCostRecord,
@@ -54,16 +64,38 @@ export function toFixedCost(
         id: record.id,
         name: record.name,
         description: record.description,
-        amount: record.amount,
+        amount: getAmountOn(record, today),
         currency: record.currency,
         interval: record.interval,
         category: findCategory(record.categoryId, categories),
         active: record.active,
         startDate: fromIsoDate(record.startDate),
         endDate: record.endDate ? fromIsoDate(record.endDate) : null,
-        monthlyAmount: getMonthlyAmount(record),
-        yearlyAmount: getYearlyAmount(record),
+        monthlyAmount: getMonthlyAmount(record, today),
+        yearlyAmount: getYearlyAmount(record, today),
         isRunning: isRunningOn(record, today),
+    };
+}
+
+/**
+ * The patch that corrects the amount on `day` (`YYYY-MM-DD`) to `amount`:
+ * edits the price change that applies on that day, else the initial amount.
+ * A correction, not a new price change.
+ */
+export function correctAmountOn(
+    record: FixedCostRecord,
+    day: string,
+    amount: number,
+): Pick<FixedCostPatch, "initialAmount" | "priceChanges"> {
+    const past = record.priceChanges.filter((change) => change.date <= day);
+    const applying = past[past.length - 1];
+    if (applying === undefined) {
+        return { initialAmount: amount };
+    }
+    return {
+        priceChanges: record.priceChanges.map((change) =>
+            change === applying ? { ...change, amount } : change,
+        ),
     };
 }
 

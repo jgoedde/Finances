@@ -40,7 +40,7 @@ describe("month overview", () => {
             body: JSON.stringify({
                 name: "Rent",
                 description: null,
-                amount: 12,
+                initialAmount: 12,
                 currency: "EUR",
                 interval: "monthly",
                 categoryId: "1",
@@ -115,9 +115,9 @@ describe("month overview", () => {
     });
 
     it("adds the monthly amounts of fixed costs running in the month", async () => {
-        await addFixedCost({ amount: 12 });
+        await addFixedCost({ initialAmount: 12 });
         await addFixedCost({
-            amount: 120,
+            initialAmount: 120,
             interval: "yearly",
             startDate: "2026-10-15",
         });
@@ -132,11 +132,11 @@ describe("month overview", () => {
     });
 
     it("breaks the fixed costs running in the month down by fixed cost category, largest first", async () => {
-        await addFixedCost({ amount: 12 });
-        await addFixedCost({ name: "Power", amount: 3 });
+        await addFixedCost({ initialAmount: 12 });
+        await addFixedCost({ name: "Power", initialAmount: 3 });
         await addFixedCost({
             name: "Liability",
-            amount: 240,
+            initialAmount: 240,
             interval: "yearly",
             categoryId: "7",
             startDate: "2026-10-31",
@@ -177,9 +177,63 @@ describe("month overview", () => {
         ]);
     });
 
+    it("counts a price change for the whole month it falls in", async () => {
+        await addFixedCost({
+            initialAmount: 12,
+            priceChanges: [{ date: "2026-10-15", amount: 15 }],
+        });
+
+        const september = await json<MonthOverview>(overview(alice, "2026-09"));
+        const october = await json<MonthOverview>(overview(alice, "2026-10"));
+
+        expect(september.fixedCosts).toBe(12);
+        expect(october.fixedCosts).toBe(15);
+    });
+
+    it("spreads the amount on the month's last day over a longer interval", async () => {
+        await addFixedCost({
+            initialAmount: 30,
+            interval: "quarterly",
+            priceChanges: [{ date: "2026-10-31", amount: 60 }],
+        });
+        await addFixedCost({
+            name: "Insurance",
+            initialAmount: 120,
+            interval: "yearly",
+            priceChanges: [{ date: "2026-11-01", amount: 240 }],
+        });
+
+        const october = await json<MonthOverview>(overview(alice, "2026-10"));
+        const november = await json<MonthOverview>(overview(alice, "2026-11"));
+
+        expect(october.fixedCosts).toBe(30);
+        expect(november.fixedCosts).toBe(40);
+    });
+
+    it("uses the amount on the end date of a fixed cost ending in the month", async () => {
+        await addFixedCost({
+            initialAmount: 12,
+            endDate: "2026-10-20",
+            priceChanges: [
+                { date: "2026-10-10", amount: 14 },
+                { date: "2026-10-20", amount: 16 },
+            ],
+        });
+
+        const { fixedCosts } = await json<MonthOverview>(
+            overview(alice, "2026-10"),
+        );
+
+        expect(fixedCosts).toBe(16);
+    });
+
     it("rounds the fixed costs' total from their monthly amounts", async () => {
         for (const categoryId of ["1", "2", "3"]) {
-            await addFixedCost({ amount: 100, interval: "yearly", categoryId });
+            await addFixedCost({
+                initialAmount: 100,
+                interval: "yearly",
+                categoryId,
+            });
         }
 
         const { fixedCosts, fixedCostCategories } = await json<MonthOverview>(

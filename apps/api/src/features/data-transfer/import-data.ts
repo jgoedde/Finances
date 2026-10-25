@@ -6,6 +6,7 @@ import { logger } from "#/log.ts";
 import {
     hasData,
     InvalidReferenceError,
+    PriceChangeOutOfRangeError,
     replaceData,
 } from "#/features/data-transfer/data-transfer.ts";
 
@@ -36,6 +37,13 @@ export const importData = factory.createHandlers(
             if (error instanceof InvalidReferenceError) {
                 logger.warn({ userId }, "Import rejected: unknown category");
                 return c.json({ error: "unknown_category" }, 422);
+            }
+            if (error instanceof PriceChangeOutOfRangeError) {
+                logger.warn(
+                    { userId },
+                    "Import rejected: price change out of range",
+                );
+                return c.json({ error: "price_change_out_of_range" }, 422);
             }
             throw error;
         }

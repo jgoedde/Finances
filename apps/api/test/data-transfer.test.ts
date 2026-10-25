@@ -46,10 +46,34 @@ describe("data transfer", () => {
         });
     }
 
+    function fixedCostBody(overrides: Record<string, unknown> = {}) {
+        return JSON.stringify({
+            name: "Rent",
+            description: null,
+            initialAmount: 500,
+            currency: "EUR",
+            interval: "monthly",
+            categoryId: "1",
+            active: true,
+            startDate: "2026-01-01",
+            endDate: null,
+            ...overrides,
+        });
+    }
+
     it("round-trips an export into another account", async () => {
         await alice("/api/transactions/t1", {
             method: "PUT",
             body: transactionBody({ categoryId: "3" }),
+        });
+        await alice("/api/fixed-costs", {
+            method: "POST",
+            body: fixedCostBody({
+                priceChanges: [
+                    { date: "2026-04-01", amount: 520 },
+                    { date: "2026-09-01", amount: 550 },
+                ],
+            }),
         });
         const exported = await json<DataExport>(alice("/api/data/export"));
 
@@ -57,10 +81,34 @@ describe("data transfer", () => {
         expect((await upload(bob, JSON.stringify(exported))).status).toBe(200);
 
         const reexported = await json<DataExport>(bob("/api/data/export"));
+        expect(reexported.version).toBe(4);
+        expect(reexported.fixedCosts[0]?.priceChanges).toHaveLength(2);
         expect({ ...reexported, exportedAt: "" }).toEqual({
             ...exported,
             exportedAt: "",
         });
+    });
+
+    it("imports a version 3 export, whose fixed costs have a single amount", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const fixedCost = {
+            ...(JSON.parse(fixedCostBody()) as Record<string, unknown>),
+            id: "f1",
+            initialAmount: undefined,
+            amount: 480,
+        };
+        const v3 = { ...exported, version: 3, fixedCosts: [fixedCost] };
+        expect((await upload(alice, JSON.stringify(v3))).status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        expect(reexported.fixedCosts).toEqual([
+            {
+                ...fixedCost,
+                amount: undefined,
+                initialAmount: 480,
+                priceChanges: [],
+            },
+        ]);
     });
 
     it("imports a version 2 export, whose transactions have no location", async () => {
@@ -74,8 +122,26 @@ describe("data transfer", () => {
         expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(3);
+        expect(reexported.version).toBe(4);
         expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
+    });
+
+    it("rejects price changes outside a fixed cost's start and end date", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const fixedCost = {
+            ...(JSON.parse(fixedCostBody()) as Record<string, unknown>),
+            id: "f1",
+            priceChanges: [{ date: "2026-01-01", amount: 520 }],
+        };
+        const response = await upload(
+            alice,
+            JSON.stringify({ ...exported, fixedCosts: [fixedCost] }),
+        );
+        expect(response.status).toBe(422);
+        expect(await json(response)).toEqual({
+            error: "price_change_out_of_range",
+        });
+        expect(await list(alice, "/api/fixed-costs")).toEqual([]);
     });
 
     it("rejects a version 1 export", async () => {

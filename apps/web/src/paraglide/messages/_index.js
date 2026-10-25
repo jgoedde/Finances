@@ -28,6 +28,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
+/** @typedef {{}} Api_Error_Price_Change_Out_Of_RangeInputs */
 /** @typedef {{}} Api_Error_UnauthorizedInputs */
 /** @typedef {{}} Api_Error_Unknown_CategoryInputs */
 /** @typedef {{}} Api_Error_Unknown_UserInputs */
@@ -594,6 +595,20 @@ export const api_error_not_found = /** @type {((inputs?: Api_Error_Not_FoundInpu
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.api_error_not_found(inputs)
 	return __en.api_error_not_found(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "A price change lies outside the start and end date." |
+*
+* @param {Api_Error_Price_Change_Out_Of_RangeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_price_change_out_of_range = /** @type {((inputs?: Api_Error_Price_Change_Out_Of_RangeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Price_Change_Out_Of_RangeInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_price_change_out_of_range(inputs)
+	return __en.api_error_price_change_out_of_range(inputs)
 });
 /**
 * | output |

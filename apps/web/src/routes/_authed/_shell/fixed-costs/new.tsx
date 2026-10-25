@@ -30,9 +30,11 @@ function RouteComponent() {
     const { data: categories } = useSuspenseQuery(fixedCostCategoriesQuery);
     const createFixedCost = useCreateFixedCost();
 
-    function save(values: FixedCostWizardValues) {
+    function save({ amount, ...values }: FixedCostWizardValues) {
         createFixedCost.mutate({
             ...values,
+            initialAmount: amount,
+            priceChanges: [],
             description: null,
             currency: "EUR",
             active: true,
