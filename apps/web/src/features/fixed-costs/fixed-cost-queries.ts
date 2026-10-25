@@ -9,6 +9,7 @@ import type {
     FixedCostCategory,
     FixedCostInput,
     FixedCostPatch,
+    UpdateFixedCostCategory,
 } from "@finances/shared";
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
@@ -196,5 +197,46 @@ export function useDeleteFixedCost() {
             ),
         onError: (error, _id, context) => optimistic.rollback(error, context),
         onSettled: optimistic.settle,
+    });
+}
+
+/**
+ * Changes a fixed cost category's hue, shown right away; online-only.
+ */
+export function useUpdateFixedCostCategory() {
+    const queryClient = useQueryClient();
+    const { queryKey } = fixedCostCategoriesQuery;
+    return useMutation({
+        mutationFn: ({
+            id,
+            update,
+        }: {
+            id: string;
+            update: UpdateFixedCostCategory;
+        }) =>
+            apiFetch<FixedCostCategory>(`/fixed-cost-categories/${id}`, {
+                method: "PATCH",
+                body: update,
+            }),
+        onMutate: async ({ id, update }) => {
+            await queryClient.cancelQueries({ queryKey });
+            const previous = queryClient.getQueryData(queryKey);
+            queryClient.setQueryData(queryKey, (categories) =>
+                categories?.map((category) =>
+                    category.id === id ? { ...category, ...update } : category,
+                ),
+            );
+            return { previous };
+        },
+        onError: (_error, _variables, context) => {
+            queryClient.setQueryData(queryKey, context?.previous);
+            toast.error(m.fixed_cost_category_color_failed());
+        },
+        onSettled: () =>
+            Promise.all([
+                queryClient.invalidateQueries({ queryKey }),
+                queryClient.invalidateQueries({ queryKey: ["fixed-costs"] }),
+                queryClient.invalidateQueries({ queryKey: ["insights"] }),
+            ]),
     });
 }

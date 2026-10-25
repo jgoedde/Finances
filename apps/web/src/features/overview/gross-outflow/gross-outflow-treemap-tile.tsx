@@ -13,7 +13,7 @@ const LABEL_MIN = { width: 72, nameHeight: 36, amountHeight: 56 } as const;
 
 const TILE_CLASS_NAME = `state-layer flex size-full flex-col overflow-hidden
     rounded-xs border border-surface bg-(--tone) p-2 text-(--on-tone)
-    focus-ring ranked-tone`;
+    focus-ring tone`;
 
 interface GrossOutflowTreemapTileProps {
     node: TreemapNode;

@@ -2,8 +2,7 @@ import { formatCurrency } from "@finances/shared";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { ChevronRight, CloudUpload, MessageCircleQuestion } from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
-import { convertHexToTonal } from "#/utils/color.ts";
-import { useColorScheme } from "@mantine/hooks";
+import { paletteFromHex, toneStyle } from "#/utils/color.ts";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
 import { useCategories } from "#/features/transactions/transaction-queries.ts";
@@ -30,7 +29,6 @@ export function TransactionListItem({
     dateLabel,
 }: TransactionListItemProps) {
     const rippleHandlers = useRipple();
-    const theme = useColorScheme();
 
     const categories = useCategories();
     const isPending = usePendingChanges().some(
@@ -67,13 +65,6 @@ export function TransactionListItem({
         }, 150);
     }
 
-    const tonal = convertHexToTonal(category?.color ?? "#2f2");
-    const backgroundColor =
-        theme === "dark" ? tonal.dark.container : tonal.light.container;
-
-    const textColor =
-        theme === "dark" ? tonal.dark.onContainer : tonal.light.onContainer;
-
     return (
         <button
             type={"button"}
@@ -93,10 +84,8 @@ export function TransactionListItem({
         >
             <div
                 className={`flex size-10 shrink-0 items-center justify-center
-                    rounded-full`}
-                style={{
-                    backgroundColor,
-                }}
+                    rounded-full bg-(--tone) text-(--on-tone) tone`}
+                style={toneStyle(paletteFromHex(category?.color ?? "#2f2"))}
             >
                 {category != null ? (
                     <DynamicIcon
@@ -106,17 +95,9 @@ export function TransactionListItem({
                             >["name"]
                         }
                         className={"size-6"}
-                        style={{
-                            color: textColor,
-                        }}
                     />
                 ) : (
-                    <MessageCircleQuestion
-                        className={"size-6"}
-                        style={{
-                            color: textColor,
-                        }}
-                    />
+                    <MessageCircleQuestion className={"size-6"} />
                 )}
             </div>
             <div className={"flex min-w-0 flex-1 flex-col"}>

@@ -48,6 +48,9 @@ export const fixed_cost_amount_eur: (inputs: Fixed_Cost_Amount_EurInputs) => Loc
 export const fixed_cost_breakdown_title: (inputs: Fixed_Cost_Breakdown_TitleInputs) => LocalizedString;
 export const fixed_cost_categories: (inputs: Fixed_Cost_CategoriesInputs) => LocalizedString;
 export const fixed_cost_category: (inputs: Fixed_Cost_CategoryInputs) => LocalizedString;
+export const fixed_cost_category_color: (inputs: Fixed_Cost_Category_ColorInputs) => LocalizedString;
+export const fixed_cost_category_color_failed: (inputs: Fixed_Cost_Category_Color_FailedInputs) => LocalizedString;
+export const fixed_cost_category_hue: (inputs: Fixed_Cost_Category_HueInputs) => LocalizedString;
 export const fixed_cost_choose_category: (inputs: Fixed_Cost_Choose_CategoryInputs) => LocalizedString;
 export const fixed_cost_choose_start_date: (inputs: Fixed_Cost_Choose_Start_DateInputs) => LocalizedString;
 export const fixed_cost_created: (inputs: Fixed_Cost_CreatedInputs) => LocalizedString;
@@ -309,6 +312,13 @@ export type Fixed_Cost_Amount_EurInputs = {};
 export type Fixed_Cost_Breakdown_TitleInputs = {};
 export type Fixed_Cost_CategoriesInputs = {};
 export type Fixed_Cost_CategoryInputs = {};
+export type Fixed_Cost_Category_ColorInputs = {
+    name: NonNullable<unknown>;
+};
+export type Fixed_Cost_Category_Color_FailedInputs = {};
+export type Fixed_Cost_Category_HueInputs = {
+    hue: NonNullable<unknown>;
+};
 export type Fixed_Cost_Choose_CategoryInputs = {};
 export type Fixed_Cost_Choose_Start_DateInputs = {};
 export type Fixed_Cost_CreatedInputs = {

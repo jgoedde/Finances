@@ -26,7 +26,7 @@ export function GrossOutflowShareBar({ outflow }: GrossOutflowShareBarProps) {
                     {side.categories.map((category) => (
                         <div
                             key={category.id}
-                            className={"min-w-0.5 bg-(--tone) ranked-tone"}
+                            className={"min-w-0.5 bg-(--tone) tone"}
                             style={{
                                 ...category.toneStyle,
                                 flex: `${category.total} 0 0`,

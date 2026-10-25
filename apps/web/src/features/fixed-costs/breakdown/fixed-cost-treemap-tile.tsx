@@ -55,7 +55,7 @@ export function FixedCostTreemapTile({ node }: FixedCostTreemapTileProps) {
                 aria-label={`${fixedCost.name}, ${amount}, ${share}`}
                 className={`state-layer flex size-full flex-col overflow-hidden
                     rounded-xs border border-surface bg-(--tone) p-2
-                    text-(--on-tone) focus-ring ranked-tone`}
+                    text-(--on-tone) focus-ring tone`}
                 style={group.toneStyle ?? undefined}
             >
                 {showName && (

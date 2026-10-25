@@ -81,12 +81,31 @@ describe("data transfer", () => {
         expect((await upload(bob, JSON.stringify(exported))).status).toBe(200);
 
         const reexported = await json<DataExport>(bob("/api/data/export"));
-        expect(reexported.version).toBe(4);
+        expect(reexported.version).toBe(5);
         expect(reexported.fixedCosts[0]?.priceChanges).toHaveLength(2);
         expect({ ...reexported, exportedAt: "" }).toEqual({
             ...exported,
             exportedAt: "",
         });
+    });
+
+    it("imports a version 4 export, whose fixed cost categories have no hue", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const v4 = {
+            ...exported,
+            version: 4,
+            fixedCostCategories: [
+                { id: "1", name: "Miete", description: null },
+                { id: "custom", name: "Eigene", description: null },
+            ],
+        };
+        expect((await upload(alice, JSON.stringify(v4))).status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        expect(reexported.fixedCostCategories).toEqual([
+            { id: "1", name: "Miete", description: null, hue: 30 },
+            { id: "custom", name: "Eigene", description: null, hue: 138 },
+        ]);
     });
 
     it("imports a version 3 export, whose fixed costs have a single amount", async () => {
@@ -122,7 +141,7 @@ describe("data transfer", () => {
         expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(4);
+        expect(reexported.version).toBe(5);
         expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
     });
 

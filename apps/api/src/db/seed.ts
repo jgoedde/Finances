@@ -1,3 +1,4 @@
+import { initialHue } from "@finances/shared";
 import type { DB } from "./database.ts";
 
 // Defaults every new user starts with. Ids match the legacy client-side
@@ -77,8 +78,9 @@ export async function seedUserData(db: DB, userId: string): Promise<void> {
         await trx
             .insertInto("fixed_cost_categories")
             .values(
-                DEFAULT_FIXED_COST_CATEGORIES.map((c) => ({
+                DEFAULT_FIXED_COST_CATEGORIES.map((c, index) => ({
                     ...c,
+                    hue: initialHue(c.id, index),
                     user_id: userId,
                 })),
             )

@@ -16,6 +16,7 @@ export interface FixedCostCategoriesTable {
     id: string;
     name: string;
     description: string | null;
+    hue: number;
 }
 
 export interface TransactionsTable {

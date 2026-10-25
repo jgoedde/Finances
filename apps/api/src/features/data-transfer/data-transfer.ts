@@ -38,7 +38,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 4,
+        version: 5,
         exportedAt: new Date().toISOString(),
         categories: categories.map((c) => ({
             id: c.id,
@@ -50,6 +50,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
             id: c.id,
             name: c.name,
             description: c.description,
+            hue: c.hue,
         })),
         fixedCosts,
         transactions: transactions.map(toTransaction),
@@ -158,6 +159,7 @@ export async function replaceData(
                         id: c.id,
                         name: c.name,
                         description: c.description,
+                        hue: c.hue,
                     })),
                 )
                 .execute(),

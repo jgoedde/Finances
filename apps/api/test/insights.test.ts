@@ -162,12 +162,14 @@ describe("month overview", () => {
             {
                 categoryId: "7",
                 categoryName: "Versicherungen",
+                categoryHue: 150,
                 total: 20,
                 fixedCosts: [{ name: "Liability", total: 20 }],
             },
             {
                 categoryId: "1",
                 categoryName: "Miete / Wohnung",
+                categoryHue: 30,
                 total: 15,
                 fixedCosts: [
                     { name: "Rent", total: 12 },

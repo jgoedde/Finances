@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { FixedCost, PriceChange } from "@finances/shared";
+import type {
+    FixedCost,
+    FixedCostCategory,
+    PriceChange,
+} from "@finances/shared";
 import { type Client, createTestApp, json } from "./test-app.ts";
 
 describe("fixed costs", () => {
@@ -197,5 +201,51 @@ describe("fixed costs", () => {
     it("answers 404 for a patch of an unknown fixed cost", async () => {
         const response = await patch("nope", { priceChanges: [] });
         expect(response.status).toBe(404);
+    });
+});
+
+describe("fixed cost categories", () => {
+    let alice: Client;
+
+    beforeEach(async () => {
+        const app = await createTestApp();
+        alice = (await app.signUp("alice")).client;
+    });
+
+    function patch(id: string, body: Record<string, unknown>) {
+        return alice(`/api/fixed-cost-categories/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(body),
+        });
+    }
+
+    it("seeds a distinct hue for every default category", async () => {
+        const categories = await json<FixedCostCategory[]>(
+            alice("/api/fixed-cost-categories"),
+        );
+        const hues = categories.map((it) => it.hue);
+        expect(new Set(hues).size).toBe(categories.length);
+    });
+
+    it("changes a category's hue", async () => {
+        const response = await patch("1", { hue: 200 });
+        expect(response.status).toBe(200);
+        expect(await json<FixedCostCategory>(response)).toMatchObject({
+            id: "1",
+            hue: 200,
+        });
+        const categories = await json<FixedCostCategory[]>(
+            alice("/api/fixed-cost-categories"),
+        );
+        expect(categories.find((it) => it.id === "1")?.hue).toBe(200);
+    });
+
+    it("rejects a hue outside 0 to 359", async () => {
+        expect((await patch("1", { hue: 360 })).status).toBe(400);
+        expect((await patch("1", { hue: 12.5 })).status).toBe(400);
+    });
+
+    it("answers 404 for an unknown category", async () => {
+        expect((await patch("nope", { hue: 10 })).status).toBe(404);
     });
 });

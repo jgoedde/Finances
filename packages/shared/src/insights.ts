@@ -47,6 +47,7 @@ export interface CategoryOverview {
 export interface FixedCostCategoryOverview {
     categoryId: string;
     categoryName: string;
+    categoryHue: number;
 
     /**
      * Monthly amount of its fixed costs running in the month.

@@ -23,7 +23,7 @@ export function FixedCostShareBar({ groups }: FixedCostShareBarProps) {
             {groups.map((group) => (
                 <div
                     key={group.category.id}
-                    className={"min-w-0.5 bg-(--tone) ranked-tone"}
+                    className={"min-w-0.5 bg-(--tone) tone"}
                     style={{
                         ...group.toneStyle,
                         flex: `${group.monthlyAmount} 0 0`,

@@ -55,7 +55,10 @@ interface MonthOverviewInput {
     transactions: SpendingInput[];
     categories: Pick<CategoriesTable, "id" | "name" | "color" | "icon_name">[];
     fixedCosts: FixedCost[];
-    fixedCostCategories: Pick<FixedCostCategoriesTable, "id" | "name">[];
+    fixedCostCategories: Pick<
+        FixedCostCategoriesTable,
+        "id" | "name" | "hue"
+    >[];
 }
 
 /**
@@ -129,7 +132,7 @@ export function buildMonthOverview({
     )
         // Not running in the month: counts nowhere.
         .filter((group) => group.share !== null);
-    const fixedCostCategoryNames = _.keyBy(fixedCostCategoryRows, "id");
+    const fixedCostCategoryRowsById = _.keyBy(fixedCostCategoryRows, "id");
     const fixedCostCategories = runningFixedCosts.map(
         (group): FixedCostCategoryOverview => {
             const fixedCosts = group.fixedCosts
@@ -139,10 +142,11 @@ export function buildMonthOverview({
                     name: it.fixedCost.name,
                     total: roundToCents(it.monthlyAmount),
                 }));
+            const category = fixedCostCategoryRowsById[group.categoryId];
             return {
                 categoryId: group.categoryId,
-                categoryName:
-                    fixedCostCategoryNames[group.categoryId]?.name ?? "",
+                categoryName: category?.name ?? "",
+                categoryHue: category?.hue ?? 0,
                 // The sum of its rounded fixed costs, so they add up.
                 total: roundToCents(_.sumBy(fixedCosts, (it) => it.total)),
                 fixedCosts,

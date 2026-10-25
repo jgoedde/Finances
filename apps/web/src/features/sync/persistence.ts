@@ -1,3 +1,4 @@
+import type { MonthOverview } from "@finances/shared";
 import type { QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { persistQueryClient } from "@tanstack/react-query-persist-client";
@@ -54,6 +55,21 @@ export async function restoreQueryClient(
         queryKey: ["fixed-costs"],
         predicate: (query) => !hasPriceChanges(query.state.data),
     });
+    // Fixed cost categories cached before they had a hue (v2.9.0); refetch
+    // them and the overviews showing them.
+    queryClient.removeQueries({
+        queryKey: ["fixed-cost-categories"],
+        predicate: (query) => !everyHas(query.state.data, "hue"),
+    });
+    queryClient.removeQueries({
+        queryKey: ["insights", "overview"],
+        predicate: (query) =>
+            !everyHas(
+                (query.state.data as MonthOverview | undefined)
+                    ?.fixedCostCategories,
+                "categoryHue",
+            ),
+    });
 
     // Restored mutations are not running yet. Continuing them in order lets
     // their scope run them one after another.
@@ -69,11 +85,18 @@ export async function restoreQueryClient(
  * `priceChanges`.
  */
 function hasPriceChanges(data: unknown): boolean {
-    const records: unknown[] = Array.isArray(data) ? data : [data];
-    return records.every(
-        (record) =>
-            typeof record === "object" &&
-            record !== null &&
-            "priceChanges" in record,
+    return everyHas(Array.isArray(data) ? data : [data], "priceChanges");
+}
+
+/**
+ * Whether `records` is a list of objects that all have `key`.
+ */
+function everyHas(records: unknown, key: string): boolean {
+    return (
+        Array.isArray(records) &&
+        records.every(
+            (record) =>
+                typeof record === "object" && record !== null && key in record,
+        )
     );
 }
