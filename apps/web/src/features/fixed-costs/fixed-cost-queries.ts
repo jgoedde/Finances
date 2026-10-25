@@ -33,7 +33,7 @@ function useFixedCostCategories(): FixedCostCategory[] {
     return useQuery(fixedCostCategoriesQuery).data ?? EMPTY;
 }
 
-export const fixedCostsQuery = queryOptions({
+const fixedCostsQuery = queryOptions({
     queryKey: ["fixed-costs", "list"],
     queryFn: () => apiFetch<FixedCostRecord[]>("/fixed-costs"),
 });

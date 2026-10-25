@@ -139,20 +139,6 @@
 /** @typedef {{}} Pwa_Offline_ReadyInputs */
 /** @typedef {{}} Pwa_Update_AvailableInputs */
 /** @typedef {{}} Pwa_Wait_For_SyncInputs */
-/** @typedef {{}} Sankey_Amount_PlaceholderInputs */
-/** @typedef {{}} Sankey_DescriptionInputs */
-/** @typedef {{}} Sankey_Income_Source_PlaceholderInputs */
-/** @typedef {{}} Sankey_Income_SourcesInputs */
-/** @typedef {{}} Sankey_Invalid_MonthInputs */
-/** @typedef {{}} Sankey_Load_FailedInputs */
-/** @typedef {{}} Sankey_MonthInputs */
-/** @typedef {{}} Sankey_Month_PlaceholderInputs */
-/** @typedef {{}} Sankey_OpenInputs */
-/** @typedef {{}} Sankey_Savings_Target_PlaceholderInputs */
-/** @typedef {{}} Sankey_Savings_TargetsInputs */
-/** @typedef {{}} Sankey_TitleInputs */
-/** @typedef {{}} Sankey_YearInputs */
-/** @typedef {{}} Sankey_Year_PlaceholderInputs */
 /** @typedef {{}} Search_All_MonthsInputs */
 /** @typedef {{}} Search_ClearInputs */
 /** @typedef {{}} Search_LabelInputs */
@@ -644,7 +630,8 @@ export const overview_categories_title = /** @type {(inputs: Overview_Categories
 	return /** @type {LocalizedString} */ (`Categories`)
 };
 
-export const overview_exceptional = /** @type {(inputs: Overview_ExceptionalInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {}, true);
+export const overview_exceptional = /** @type {(inputs: Overview_ExceptionalInputs) => LocalizedString} */ (i) => {
+	const countPlural = registry.plural("en", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`Incl. ${i?.count} exceptional transaction: ${i?.amount}`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`Incl. ${i?.count} exceptional transactions: ${i?.amount}`);
 	return /** @type {LocalizedString} */ ("overview_exceptional");
@@ -658,7 +645,8 @@ export const overview_fixed_costs = /** @type {(inputs: Overview_Fixed_CostsInpu
 	return /** @type {LocalizedString} */ (`+ Fixed costs`)
 };
 
-export const overview_gross_outflow_exceptional = /** @type {(inputs: Overview_Gross_Outflow_ExceptionalInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {}, true);
+export const overview_gross_outflow_exceptional = /** @type {(inputs: Overview_Gross_Outflow_ExceptionalInputs) => LocalizedString} */ (i) => {
+	const countPlural = registry.plural("en", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`Excl. ${i?.count} exceptional transaction (${i?.amount})`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`Excl. ${i?.count} exceptional transactions (${i?.amount})`);
 	return /** @type {LocalizedString} */ ("overview_gross_outflow_exceptional");
@@ -804,62 +792,6 @@ export const pwa_wait_for_sync = /** @type {(inputs: Pwa_Wait_For_SyncInputs) =>
 	return /** @type {LocalizedString} */ (`Please wait until all changes are synced.`)
 };
 
-export const sankey_amount_placeholder = /** @type {(inputs: Sankey_Amount_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Amount`)
-};
-
-export const sankey_description = /** @type {(inputs: Sankey_DescriptionInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Enter the month and year to export, along with income sources and fixed costs.`)
-};
-
-export const sankey_income_source_placeholder = /** @type {(inputs: Sankey_Income_Source_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Name (e.g., job)`)
-};
-
-export const sankey_income_sources = /** @type {(inputs: Sankey_Income_SourcesInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Income Sources`)
-};
-
-export const sankey_invalid_month = /** @type {(inputs: Sankey_Invalid_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Please enter a valid month (1-12) and year`)
-};
-
-export const sankey_load_failed = /** @type {(inputs: Sankey_Load_FailedInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Could not load the data for the export`)
-};
-
-export const sankey_month = /** @type {(inputs: Sankey_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Month (1-12)`)
-};
-
-export const sankey_month_placeholder = /** @type {(inputs: Sankey_Month_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`e.g., 11`)
-};
-
-export const sankey_open = /** @type {(inputs: Sankey_OpenInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Summarize`)
-};
-
-export const sankey_savings_target_placeholder = /** @type {(inputs: Sankey_Savings_Target_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Name (e.g., bitcoin)`)
-};
-
-export const sankey_savings_targets = /** @type {(inputs: Sankey_Savings_TargetsInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Savings Targets`)
-};
-
-export const sankey_title = /** @type {(inputs: Sankey_TitleInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Export Month as Sankey Diagram`)
-};
-
-export const sankey_year = /** @type {(inputs: Sankey_YearInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Year`)
-};
-
-export const sankey_year_placeholder = /** @type {(inputs: Sankey_Year_PlaceholderInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`e.g., 2025`)
-};
-
 export const search_all_months = /** @type {(inputs: Search_All_MonthsInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Results from all months`)
 };
@@ -956,7 +888,8 @@ export const sign_out_failed = /** @type {(inputs: Sign_Out_FailedInputs) => Loc
 	return /** @type {LocalizedString} */ (`Sign-out failed. Please try again.`)
 };
 
-export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {const countPlural = registry.plural("en", i?.count, {}, true);
+export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {
+	const countPlural = registry.plural("en", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} change hasn't been synced yet and will be lost when you sign out.`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} changes haven't been synced yet and will be lost when you sign out.`);
 	return /** @type {LocalizedString} */ ("sign_out_unsynced_changes");
