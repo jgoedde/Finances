@@ -196,8 +196,8 @@ export interface AmountDay {
 
 /**
  * The fixed cost's amount per interval on every day from its start to its
- * end date; without one, to a month after `today` (`YYYY-MM-DD`) or after
- * its last price change, whichever is later.
+ * end date; without one, to a month after the latest of `today`
+ * (`YYYY-MM-DD`), its start and its last price change.
  */
 export function getAmountTimeline(
     fixedCost: Pick<
@@ -206,11 +206,14 @@ export function getAmountTimeline(
     >,
     today: string,
 ): AmountDay[] {
-    const lastChange =
-        fixedCost.priceChanges[fixedCost.priceChanges.length - 1]?.date ??
-        today;
-    const end =
-        fixedCost.endDate ?? addMonth(lastChange > today ? lastChange : today);
+    const latest = [
+        today,
+        fixedCost.startDate,
+        ...fixedCost.priceChanges.map((it) => it.date),
+    ]
+        .sort()
+        .pop()!;
+    const end = fixedCost.endDate ?? addMonth(latest);
     const steps = [
         { date: fixedCost.startDate, amount: fixedCost.initialAmount },
         ...fixedCost.priceChanges,

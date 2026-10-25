@@ -377,4 +377,13 @@ describe("getAmountTimeline", () => {
         expect(onPrecise("2026-06-10")?.upcoming).toBe(false);
         expect(onPrecise("2026-06-11")?.upcoming).toBe(true);
     });
+
+    it("runs to one month after a future start", () => {
+        const days = getAmountTimeline(
+            fixedCost({ startDate: "2026-09-15" }),
+            DAY,
+        );
+        expect(days[0]?.date).toBe("2026-09-15");
+        expect(days.at(-1)?.date).toBe("2026-10-15");
+    });
 });
