@@ -22,6 +22,9 @@
 /** @typedef {{}} Action_Sign_OutInputs */
 /** @typedef {{}} Action_UndoInputs */
 /** @typedef {{}} Action_UpdateInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Amount_Sparkline_SinceInputs */
+/** @typedef {{}} Amount_Sparkline_Since_StartInputs */
+/** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
@@ -339,6 +342,18 @@ export const action_undo = /** @type {(inputs: Action_UndoInputs) => LocalizedSt
 
 export const action_update = /** @type {(inputs: Action_UpdateInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Aktualisieren`)
+};
+
+export const amount_sparkline_since = /** @type {(inputs: Amount_Sparkline_SinceInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Seit ${i?.date}`)
+};
+
+export const amount_sparkline_since_start = /** @type {(inputs: Amount_Sparkline_Since_StartInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Seit Beginn`)
+};
+
+export const amount_sparkline_upcoming = /** @type {(inputs: Amount_Sparkline_UpcomingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`geplant`)
 };
 
 export const api_error_account_not_empty = /** @type {(inputs: Api_Error_Account_Not_EmptyInputs) => LocalizedString} */ () => {

@@ -309,6 +309,48 @@ export const action_update: ((inputs?: Action_UpdateInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "Since {date}" |
+*
+* @param {Amount_Sparkline_SinceInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_since: ((inputs: Amount_Sparkline_SinceInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Amount_Sparkline_SinceInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Since start" |
+*
+* @param {Amount_Sparkline_Since_StartInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_since_start: ((inputs?: Amount_Sparkline_Since_StartInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Amount_Sparkline_Since_StartInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "upcoming" |
+*
+* @param {Amount_Sparkline_UpcomingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_upcoming: ((inputs?: Amount_Sparkline_UpcomingInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Amount_Sparkline_UpcomingInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Your account already contains data." |
 *
 * @param {Api_Error_Account_Not_EmptyInputs} inputs
@@ -3531,6 +3573,11 @@ export type Action_Sign_InInputs = {};
 export type Action_Sign_OutInputs = {};
 export type Action_UndoInputs = {};
 export type Action_UpdateInputs = {};
+export type Amount_Sparkline_SinceInputs = {
+    date: NonNullable<unknown>;
+};
+export type Amount_Sparkline_Since_StartInputs = {};
+export type Amount_Sparkline_UpcomingInputs = {};
 export type Api_Error_Account_Not_EmptyInputs = {};
 export type Api_Error_File_Too_LargeInputs = {};
 export type Api_Error_ForbiddenInputs = {};

@@ -24,6 +24,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_Sign_OutInputs */
 /** @typedef {{}} Action_UndoInputs */
 /** @typedef {{}} Action_UpdateInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Amount_Sparkline_SinceInputs */
+/** @typedef {{}} Amount_Sparkline_Since_StartInputs */
+/** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
@@ -561,6 +564,48 @@ export const action_update = /** @type {((inputs?: Action_UpdateInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_update(inputs)
 	return __en.action_update(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Since {date}" |
+*
+* @param {Amount_Sparkline_SinceInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_since = /** @type {((inputs: Amount_Sparkline_SinceInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Amount_Sparkline_SinceInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.amount_sparkline_since(inputs)
+	return __en.amount_sparkline_since(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Since start" |
+*
+* @param {Amount_Sparkline_Since_StartInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_since_start = /** @type {((inputs?: Amount_Sparkline_Since_StartInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Amount_Sparkline_Since_StartInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.amount_sparkline_since_start(inputs)
+	return __en.amount_sparkline_since_start(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "upcoming" |
+*
+* @param {Amount_Sparkline_UpcomingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const amount_sparkline_upcoming = /** @type {((inputs?: Amount_Sparkline_UpcomingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Amount_Sparkline_UpcomingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.amount_sparkline_upcoming(inputs)
+	return __en.amount_sparkline_upcoming(inputs)
 });
 /**
 * | output |
