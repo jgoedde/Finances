@@ -5,6 +5,7 @@
 /** @typedef {{}} Action_AddInputs */
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
+/** @typedef {{}} Action_CloseInputs */
 /** @typedef {{}} Action_DeleteInputs */
 /** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
@@ -290,6 +291,10 @@ export const action_back = /** @type {(inputs: Action_BackInputs) => LocalizedSt
 
 export const action_cancel = /** @type {(inputs: Action_CancelInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Cancel`)
+};
+
+export const action_close = /** @type {(inputs: Action_CloseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Close`)
 };
 
 export const action_delete = /** @type {(inputs: Action_DeleteInputs) => LocalizedString} */ () => {

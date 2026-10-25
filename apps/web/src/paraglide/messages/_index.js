@@ -7,6 +7,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_AddInputs */
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
+/** @typedef {{}} Action_CloseInputs */
 /** @typedef {{}} Action_DeleteInputs */
 /** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
@@ -342,6 +343,20 @@ export const action_cancel = /** @type {((inputs?: Action_CancelInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_cancel(inputs)
 	return __en.action_cancel(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Close" |
+*
+* @param {Action_CloseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_close = /** @type {((inputs?: Action_CloseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_CloseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.action_close(inputs)
+	return __en.action_close(inputs)
 });
 /**
 * | output |

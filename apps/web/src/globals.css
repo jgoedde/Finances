@@ -407,6 +407,29 @@
     pointer-events: none;
 }
 
+/*
+ * MD3 snackbar motion for the unstyled sonner toasts (components/ui/sonner.tsx):
+ * fade in while growing from the bottom edge, fade out on dismissal. Replaces
+ * sonner's slide; swiping keeps sonner's own animation.
+ */
+[data-sonner-toaster] [data-sonner-toast][data-styled="false"] {
+    --y: scaleY(0.8);
+    transform-origin: bottom;
+    transition:
+        transform 300ms var(--ease-emphasized-decelerate),
+        opacity 300ms var(--ease-emphasized-decelerate);
+
+    &[data-mounted="true"] {
+        --y: scaleY(1);
+    }
+
+    &[data-removed="true"][data-swipe-out="false"] {
+        --y: scaleY(1);
+        opacity: 0;
+        transition: opacity 200ms var(--ease-emphasized-accelerate);
+    }
+}
+
 @keyframes month-peek {
     40% {
         transform: translateX(2.5rem);

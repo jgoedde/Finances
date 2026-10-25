@@ -5,6 +5,7 @@ import {
     type TransactionFormSubmitData,
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
+import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
 import {
     useDeleteTransaction,
@@ -74,6 +75,7 @@ function RouteComponent() {
         });
         void navigate({ to: "/transactions" });
         toast.success(`${m.transaction_updated()}${syncLaterHint()}`, {
+            duration: ACTION_TOAST_DURATION,
             action: {
                 label: m.action_undo(),
                 onClick: () => saveTransaction.mutate(transaction),
@@ -90,6 +92,7 @@ function RouteComponent() {
                 ? m.transaction_income_deleted()
                 : m.transaction_expense_deleted();
         toast.success(`${deleted}${syncLaterHint()}`, {
+            duration: ACTION_TOAST_DURATION,
             action: {
                 label: m.action_restore(),
                 onClick: () =>
