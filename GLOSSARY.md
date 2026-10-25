@@ -67,8 +67,20 @@ _Avoid_: Burn rate, budget status
 ## Fixed costs
 
 **Fixed cost**:
-A recurring expense of a fixed amount, such as rent or a subscription, charged every interval between its start date and optional end date. Never also recorded as a transaction.
+A recurring expense, such as rent or a subscription, charged every interval between its start date and optional end date. Its amount is fixed until a price change. Never also recorded as a transaction.
 _Avoid_: Subscription, recurring transaction, standing order
+
+**Amount** (of a fixed cost):
+What a fixed cost charges per interval on a given day: the amount of its latest price change on or before that day, else its initial amount.
+_Avoid_: Price, rate
+
+**Initial amount**:
+The amount of a fixed cost from its start date until its first price change.
+_Avoid_: Base amount, original price
+
+**Price change**:
+A new amount of a fixed cost from a given day on, past or future, within its start and end date. Correcting a mistyped amount is not a price change.
+_Avoid_: Amount history entry, revision, version
 
 **Fixed cost category**:
 What kind of obligation a fixed cost is, such as housing, insurance or mobility. Separate from the categories of transactions.
@@ -79,7 +91,7 @@ How often a fixed cost is charged: monthly, quarterly or yearly.
 _Avoid_: Frequency, period, cycle
 
 **Monthly amount**:
-A fixed cost's amount spread evenly over the months of its interval. A yearly amount is twelve monthly amounts.
+A fixed cost's amount spread evenly over the months of its interval. A yearly amount is twelve monthly amounts. A month's monthly amount uses the amount on the last day of that month the fixed cost runs, so a price change counts for the whole month it falls in.
 _Avoid_: Monthly rate, average
 
 **Total outflow**:
