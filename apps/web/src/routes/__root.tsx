@@ -47,6 +47,7 @@ function RootComponent() {
             toast(m.pwa_update_available(), {
                 id: UPDATE_TOAST_ID,
                 duration: Infinity,
+                closeButton: true,
                 action: {
                     label: m.action_reload(),
                     onClick: () => {

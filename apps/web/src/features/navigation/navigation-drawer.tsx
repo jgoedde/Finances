@@ -11,7 +11,7 @@ export function NavigationDrawer() {
         <nav
             aria-label={m.nav_label()}
             className={`sticky top-0 hidden h-dvh w-72 shrink-0 flex-col gap-4
-                bg-surface p-3 expanded:flex`}
+                bg-surface-container-low p-3 expanded:flex`}
         >
             <div className={"px-1 py-2"}>
                 <NewTransactionFAB variant={"extended"} />

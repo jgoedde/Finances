@@ -71,6 +71,20 @@ export const action_cancel: ((inputs?: Action_CancelInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "Close" |
+*
+* @param {Action_CloseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_close: ((inputs?: Action_CloseInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_CloseInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Delete" |
 *
 * @param {Action_DeleteInputs} inputs
@@ -3780,6 +3794,7 @@ export type Account_Signed_In_AsInputs = {
 export type Action_AddInputs = {};
 export type Action_BackInputs = {};
 export type Action_CancelInputs = {};
+export type Action_CloseInputs = {};
 export type Action_DeleteInputs = {};
 export type Action_DetailsInputs = {};
 export type Action_DiscardInputs = {};

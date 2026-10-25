@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { setSyncDrawerOpen } from "#/features/sync/sync-drawer-state.ts";
 import {
     type SyncIndicatorState,
@@ -33,6 +34,8 @@ export function SyncIndicator() {
             // One toast, updated by every further rejection.
             toast.error(m.sync_indicator_rejected({ count }), {
                 id: REJECTED_TOAST_ID,
+                duration: ACTION_TOAST_DURATION,
+                closeButton: true,
                 action: {
                     label: m.action_details(),
                     onClick: () => setSyncDrawerOpen(true),
