@@ -12,7 +12,7 @@ import {
 
 const EMPTY: never[] = [];
 
-export const categoriesQuery = queryOptions({
+const categoriesQuery = queryOptions({
     queryKey: ["categories"],
     queryFn: () => apiFetch<Category[]>("/categories"),
     staleTime: Infinity,

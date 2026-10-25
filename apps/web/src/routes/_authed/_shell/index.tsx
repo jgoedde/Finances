@@ -10,7 +10,6 @@ import { GrossOutflowCard } from "#/features/overview/gross-outflow/gross-outflo
 import { CategoryBarsCard } from "#/features/overview/category-bars-card.tsx";
 import { TrendCard } from "#/features/overview/trend-card.tsx";
 import { PatternsCard } from "#/features/overview/patterns/patterns-card.tsx";
-import { ExportSankeyDialog } from "#/features/sankey/export-as-sankey.tsx";
 import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
 
 export const Route = createFileRoute("/_authed/_shell/")({
@@ -46,9 +45,6 @@ function RouteComponent() {
                         <div className={"flex min-w-0 flex-col gap-3"}>
                             <PatternsCard month={month} />
                             <TrendCard overview={overview} />
-                            <div className={"flex justify-center py-2"}>
-                                <ExportSankeyDialog />
-                            </div>
                         </div>
                     </>
                 )}
