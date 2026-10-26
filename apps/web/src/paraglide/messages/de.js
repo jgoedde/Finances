@@ -6,9 +6,11 @@
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
 /** @typedef {{}} Action_CloseInputs */
+/** @typedef {{}} Action_CreateInputs */
 /** @typedef {{}} Action_DeleteInputs */
 /** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
+/** @typedef {{}} Action_DismissInputs */
 /** @typedef {{}} Action_EditInputs */
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
@@ -93,6 +95,7 @@
 /** @typedef {{}} Fixed_Cost_Save_FailedInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_SinceInputs */
 /** @typedef {{}} Fixed_Cost_Start_DateInputs */
+/** @typedef {{}} Fixed_Cost_Suggestion_DetectedInputs */
 /** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_UntilInputs */
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
@@ -297,6 +300,10 @@ export const action_close = /** @type {(inputs: Action_CloseInputs) => Localized
 	return /** @type {LocalizedString} */ (`Schließen`)
 };
 
+export const action_create = /** @type {(inputs: Action_CreateInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Erstellen`)
+};
+
 export const action_delete = /** @type {(inputs: Action_DeleteInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Löschen`)
 };
@@ -307,6 +314,10 @@ export const action_details = /** @type {(inputs: Action_DetailsInputs) => Local
 
 export const action_discard = /** @type {(inputs: Action_DiscardInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Verwerfen`)
+};
+
+export const action_dismiss = /** @type {(inputs: Action_DismissInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ignorieren`)
 };
 
 export const action_edit = /** @type {(inputs: Action_EditInputs) => LocalizedString} */ () => {
@@ -643,6 +654,10 @@ export const fixed_cost_since = /** @type {(inputs: Fixed_Cost_SinceInputs) => L
 
 export const fixed_cost_start_date = /** @type {(inputs: Fixed_Cost_Start_DateInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Startdatum`)
+};
+
+export const fixed_cost_suggestion_detected = /** @type {(inputs: Fixed_Cost_Suggestion_DetectedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Wiederkehrende Zahlung erkannt`)
 };
 
 export const fixed_cost_unknown_category = /** @type {(inputs: Fixed_Cost_Unknown_CategoryInputs) => LocalizedString} */ () => {

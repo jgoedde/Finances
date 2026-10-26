@@ -85,6 +85,20 @@ export const action_close: ((inputs?: Action_CloseInputs, options?: {
 /**
 * | output |
 * | --- |
+* | "Create" |
+*
+* @param {Action_CreateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_create: ((inputs?: Action_CreateInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_CreateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
 * | "Delete" |
 *
 * @param {Action_DeleteInputs} inputs
@@ -122,6 +136,20 @@ export const action_details: ((inputs?: Action_DetailsInputs, options?: {
 export const action_discard: ((inputs?: Action_DiscardInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_DiscardInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Dismiss" |
+*
+* @param {Action_DismissInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_dismiss: ((inputs?: Action_DismissInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Action_DismissInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -1298,6 +1326,20 @@ export const fixed_cost_since: ((inputs: Fixed_Cost_SinceInputs, options?: {
 export const fixed_cost_start_date: ((inputs?: Fixed_Cost_Start_DateInputs, options?: {
     locale?: "en" | "de";
 }) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Start_DateInputs, {
+    locale?: "en" | "de";
+}, {}>;
+/**
+* | output |
+* | --- |
+* | "Recurring payment detected" |
+*
+* @param {Fixed_Cost_Suggestion_DetectedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_suggestion_detected: ((inputs?: Fixed_Cost_Suggestion_DetectedInputs, options?: {
+    locale?: "en" | "de";
+}) => LocalizedString) & import("../runtime.js").MessageMetadata<Fixed_Cost_Suggestion_DetectedInputs, {
     locale?: "en" | "de";
 }, {}>;
 /**
@@ -3795,9 +3837,11 @@ export type Action_AddInputs = {};
 export type Action_BackInputs = {};
 export type Action_CancelInputs = {};
 export type Action_CloseInputs = {};
+export type Action_CreateInputs = {};
 export type Action_DeleteInputs = {};
 export type Action_DetailsInputs = {};
 export type Action_DiscardInputs = {};
+export type Action_DismissInputs = {};
 export type Action_EditInputs = {};
 export type Action_ExportInputs = {};
 export type Action_ImportInputs = {};
@@ -3908,6 +3952,7 @@ export type Fixed_Cost_SinceInputs = {
     date: NonNullable<unknown>;
 };
 export type Fixed_Cost_Start_DateInputs = {};
+export type Fixed_Cost_Suggestion_DetectedInputs = {};
 export type Fixed_Cost_Unknown_CategoryInputs = {};
 export type Fixed_Cost_UntilInputs = {
     date: NonNullable<unknown>;

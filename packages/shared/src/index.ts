@@ -16,3 +16,10 @@ export {
     firstPatternMonth,
     type Pattern,
 } from "./patterns/patterns.ts";
+export {
+    findFixedCostSuggestion,
+    type FixedCostSuggestion,
+    type FixedCostSuggestionQuery,
+    fixedCostSuggestionQuerySchema,
+    SUGGESTION_LOOKBACK_MONTHS,
+} from "./fixed-cost-suggestions.ts";

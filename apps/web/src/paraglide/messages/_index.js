@@ -8,9 +8,11 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_BackInputs */
 /** @typedef {{}} Action_CancelInputs */
 /** @typedef {{}} Action_CloseInputs */
+/** @typedef {{}} Action_CreateInputs */
 /** @typedef {{}} Action_DeleteInputs */
 /** @typedef {{}} Action_DetailsInputs */
 /** @typedef {{}} Action_DiscardInputs */
+/** @typedef {{}} Action_DismissInputs */
 /** @typedef {{}} Action_EditInputs */
 /** @typedef {{}} Action_ExportInputs */
 /** @typedef {{}} Action_ImportInputs */
@@ -95,6 +97,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Save_FailedInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_SinceInputs */
 /** @typedef {{}} Fixed_Cost_Start_DateInputs */
+/** @typedef {{}} Fixed_Cost_Suggestion_DetectedInputs */
 /** @typedef {{}} Fixed_Cost_Unknown_CategoryInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Fixed_Cost_UntilInputs */
 /** @typedef {{}} Fixed_Cost_Update_FailedInputs */
@@ -361,6 +364,20 @@ export const action_close = /** @type {((inputs?: Action_CloseInputs, options?: 
 /**
 * | output |
 * | --- |
+* | "Create" |
+*
+* @param {Action_CreateInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_create = /** @type {((inputs?: Action_CreateInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_CreateInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.action_create(inputs)
+	return __en.action_create(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Delete" |
 *
 * @param {Action_DeleteInputs} inputs
@@ -399,6 +416,20 @@ export const action_discard = /** @type {((inputs?: Action_DiscardInputs, option
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_discard(inputs)
 	return __en.action_discard(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Dismiss" |
+*
+* @param {Action_DismissInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const action_dismiss = /** @type {((inputs?: Action_DismissInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Action_DismissInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.action_dismiss(inputs)
+	return __en.action_dismiss(inputs)
 });
 /**
 * | output |
@@ -1575,6 +1606,20 @@ export const fixed_cost_start_date = /** @type {((inputs?: Fixed_Cost_Start_Date
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_start_date(inputs)
 	return __en.fixed_cost_start_date(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Recurring payment detected" |
+*
+* @param {Fixed_Cost_Suggestion_DetectedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_suggestion_detected = /** @type {((inputs?: Fixed_Cost_Suggestion_DetectedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_Suggestion_DetectedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_suggestion_detected(inputs)
+	return __en.fixed_cost_suggestion_detected(inputs)
 });
 /**
 * | output |

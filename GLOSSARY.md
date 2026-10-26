@@ -106,6 +106,10 @@ _Avoid_: Spending mix, total spending
 A fixed cost the user has not switched off. An inactive fixed cost is kept but counts nowhere.
 _Avoid_: Enabled, paused
 
+**Fixed cost suggestion**:
+A run of expenses with the same counterparty, a fixed amount and a regular interval, which looks like a fixed cost the user hasn't set up. Offered to the user to turn into a fixed cost from the next expected charge on; the expenses already recorded stay. Not a pattern.
+_Avoid_: Recurring payment, recurring transaction, detected subscription
+
 **Running**:
 A fixed cost is running on a day when it is active and the day falls within its start and end date.
 _Avoid_: Current, ongoing, valid

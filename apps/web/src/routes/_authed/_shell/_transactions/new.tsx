@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
 import { useCurrentLocation } from "#/features/transactions/device-location.ts";
+import { useOfferFixedCostSuggestion } from "#/features/fixed-costs/fixed-cost-suggestion.ts";
 import { m } from "#/paraglide/messages.js";
 
 const prefilledSchema = z.object({
@@ -32,6 +33,7 @@ function RouteComponent() {
     const navigate = useNavigate();
     const saveTransaction = useSaveTransaction();
     const deviceLocation = useCurrentLocation();
+    const offerFixedCostSuggestion = useOfferFixedCostSuggestion();
 
     const onTransactionFormSubmit = (data: TransactionFormSubmitData) => {
         // Saved locally right away; sent now or once back online. A split
@@ -45,24 +47,24 @@ function RouteComponent() {
             // Whatever is known by now; saving never waits for it.
             location: deviceLocation,
         } as const;
-        const drafts = [
-            {
-                categoryId: data.categoryId,
-                amount: data.amount,
-                description: data.description,
-            },
-            ...data.parts,
-        ];
-        for (const draft of drafts) {
-            saveTransaction.mutate({
-                id: nanoid(8),
-                ...common,
-                ...draft,
-            });
+        const main = {
+            id: nanoid(8),
+            ...common,
+            categoryId: data.categoryId,
+            amount: data.amount,
+            description: data.description,
+        };
+        saveTransaction.mutate(main);
+        for (const part of data.parts) {
+            saveTransaction.mutate({ id: nanoid(8), ...common, ...part });
         }
 
         void navigate({ to: "/transactions" });
-        toast.success(`${savedMessage(data, drafts.length)}${syncLaterHint()}`);
+        toast.success(
+            `${savedMessage(data, 1 + data.parts.length)}${syncLaterHint()}`,
+        );
+        // Split parts are other purchases; only the main one can recur.
+        offerFixedCostSuggestion(main);
     };
 
     return (
