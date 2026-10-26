@@ -38,7 +38,10 @@ const Toaster = ({ ...props }: ToasterProps) => (
                     has-data-close-button:pe-1`,
                 content: "min-w-0 flex-[1_1_10rem] py-2.5",
                 title: "text-body-medium",
-                actionButton: `ms-auto h-10 shrink-0 cursor-pointer rounded-full px-3
+                cancelButton: `ms-auto h-10 shrink-0 cursor-pointer rounded-full px-3
+                    text-label-large text-inverse-primary state-layer focus-ring`,
+                // Right-aligned, unless a cancel button before it already is.
+                actionButton: `ms-auto h-10 shrink-0 [[data-cancel]+&]:ms-0 cursor-pointer rounded-full px-3
                     text-label-large text-inverse-primary state-layer focus-ring`,
                 closeButton: `order-last grid size-10 shrink-0 cursor-pointer
                     place-items-center rounded-full text-inverse-on-surface

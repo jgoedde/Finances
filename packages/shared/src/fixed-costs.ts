@@ -117,7 +117,7 @@ export type FixedCostInput = z.infer<typeof fixedCostInputSchema>;
 export const fixedCostPatchSchema = fixedCostFieldsSchema.partial();
 export type FixedCostPatch = z.infer<typeof fixedCostPatchSchema>;
 
-const MONTHS_PER_INTERVAL = {
+export const MONTHS_PER_INTERVAL = {
     monthly: 1,
     quarterly: 3,
     yearly: 12,
