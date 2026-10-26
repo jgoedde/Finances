@@ -31,7 +31,7 @@ const Toaster = ({ ...props }: ToasterProps) => (
             unstyled: true,
             closeButtonAriaLabel: m.action_close(),
             classNames: {
-                toast: `inset-x-0 mx-auto flex min-h-12 w-fit min-w-[min(344px,100%)]
+                toast: `inset-x-0 md:mx-auto flex min-h-12 w-fit min-w-[min(344px,100%)]
                     max-w-full flex-wrap items-center gap-x-2 rounded-xs
                     bg-inverse-surface py-1 ps-4 pe-4 text-inverse-on-surface
                     shadow-elevation-3 has-data-button:pe-2
