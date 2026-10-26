@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { formatCurrency, formatMonthYear } from "@finances/shared";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
@@ -17,6 +16,7 @@ import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { useLocalStorage } from "@mantine/hooks";
 
 interface FixedCostsHeroProps {
     /**
@@ -33,7 +33,11 @@ interface FixedCostsHeroProps {
 export function FixedCostsHero({ monthlyTotal }: FixedCostsHeroProps) {
     const isOnline = useIsOnline();
     const history = useFixedCostHistory();
-    const [range, setRange] = useState<HistoryRange>("all");
+    const [range, setRange] = useLocalStorage<HistoryRange>({
+        defaultValue: "1y",
+        key: "finances-fc-history-range",
+        getInitialValueInEffect: false,
+    });
 
     const { months } = HISTORY_RANGES[range];
     const totals = Number.isFinite(months)
