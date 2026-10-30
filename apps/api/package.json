@@ -15,10 +15,10 @@
     "dependencies": {
         "@finances/shared": "*",
         "@hono/node-server": "^2.1.5",
-        "better-auth": "~1.7.12",
+        "better-auth": "~1.7.14",
         "better-sqlite3": "^13.0.3",
         "commander": "^15.0.0",
-        "hono": "^4.13.12",
+        "hono": "^4.13.14",
         "kysely": "^0.29.7",
         "lodash": "^4.18.1",
         "nanoid": "^6.0.2",
@@ -27,7 +27,7 @@
     },
     "devDependencies": {
         "@types/better-sqlite3": "^9.6.0",
-        "@types/lodash": "^4.17.26",
+        "@types/lodash": "^4.17.27",
         "@types/node": "^26.6.5",
         "@vitest/coverage-v8": "^5.0.4",
         "pino-pretty": "^13.2.0",
