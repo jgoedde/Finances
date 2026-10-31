@@ -49,12 +49,6 @@ export async function restoreQueryClient(
         // The persister already discarded the unreadable cache; start empty.
     }
 
-    // Fixed costs cached before price changes existed (v2.8.0) have an
-    // `amount` instead; refetch them.
-    queryClient.removeQueries({
-        queryKey: ["fixed-costs"],
-        predicate: (query) => !hasPriceChanges(query.state.data),
-    });
     // Fixed cost categories cached before they had a hue (v2.9.0); refetch
     // them and the overviews showing them.
     queryClient.removeQueries({
@@ -78,14 +72,6 @@ export async function restoreQueryClient(
             void mutation.continue().catch(() => undefined);
         }
     }
-}
-
-/**
- * Whether cached fixed-cost data (a list or a single fixed cost) has
- * `priceChanges`.
- */
-function hasPriceChanges(data: unknown): boolean {
-    return everyHas(Array.isArray(data) ? data : [data], "priceChanges");
 }
 
 /**
