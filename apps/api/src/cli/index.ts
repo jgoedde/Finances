@@ -6,7 +6,6 @@ import { openMigratedDatabase } from "../bootstrap.ts";
 import type { Output, RunCommand } from "./command.ts";
 import { registerBackup } from "./commands/backup.ts";
 import { registerInvite } from "./commands/invite.ts";
-import { registerMergeFixedCosts } from "./commands/merge-fixed-costs.ts";
 import { registerResetPassword } from "./commands/reset-password.ts";
 import { registerRestore } from "./commands/restore.ts";
 import { registerUsers } from "./commands/users.ts";
@@ -41,6 +40,5 @@ registerResetPassword(program, run);
 registerUsers(program, run);
 registerBackup(program, run);
 registerRestore(program, run);
-registerMergeFixedCosts(program, run);
 
 await program.parseAsync();
