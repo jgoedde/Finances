@@ -273,7 +273,7 @@
 /** @typedef {{}} Transaction_Split_RemoveInputs */
 /** @typedef {{}} Transaction_Split_Too_MuchInputs */
 /** @typedef {{}} Transaction_UpdatedInputs */
-import * as registry from "../registry.js"
+import * as __paraglideRegistry from "../registry.js"
 
 
 export const account_menu_label = /** @type {(inputs: Account_Menu_LabelInputs) => LocalizedString} */ (i) => {
@@ -793,7 +793,7 @@ export const overview_categories_title = /** @type {(inputs: Overview_Categories
 };
 
 export const overview_exceptional = /** @type {(inputs: Overview_ExceptionalInputs) => LocalizedString} */ (i) => {
-	const countPlural = registry.plural("de", i?.count, {}, true);
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`Inkl. ${i?.count} außergewöhnlicher Geldbewegung: ${i?.amount}`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`Inkl. ${i?.count} außergewöhnlicher Geldbewegungen: ${i?.amount}`);
 	return /** @type {LocalizedString} */ ("overview_exceptional");
@@ -808,7 +808,7 @@ export const overview_fixed_costs = /** @type {(inputs: Overview_Fixed_CostsInpu
 };
 
 export const overview_gross_outflow_exceptional = /** @type {(inputs: Overview_Gross_Outflow_ExceptionalInputs) => LocalizedString} */ (i) => {
-	const countPlural = registry.plural("de", i?.count, {}, true);
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`Ohne ${i?.count} außergewöhnliche Geldbewegung (${i?.amount})`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`Ohne ${i?.count} außergewöhnliche Geldbewegungen (${i?.amount})`);
 	return /** @type {LocalizedString} */ ("overview_gross_outflow_exceptional");
@@ -1111,7 +1111,7 @@ export const sign_out_failed = /** @type {(inputs: Sign_Out_FailedInputs) => Loc
 };
 
 export const sign_out_unsynced_changes = /** @type {(inputs: Sign_Out_Unsynced_ChangesInputs) => LocalizedString} */ (i) => {
-	const countPlural = registry.plural("de", i?.count, {}, true);
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung wurde noch nicht synchronisiert und geht beim Abmelden verloren.`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen wurden noch nicht synchronisiert und gehen beim Abmelden verloren.`);
 	return /** @type {LocalizedString} */ ("sign_out_unsynced_changes");
@@ -1126,14 +1126,14 @@ export const sync_action_saved = /** @type {(inputs: Sync_Action_SavedInputs) =>
 };
 
 export const sync_indicator_rejected = /** @type {(inputs: Sync_Indicator_RejectedInputs) => LocalizedString} */ (i) => {
-	const countPlural = registry.plural("de", i?.count, {}, true);
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung abgelehnt`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen abgelehnt`);
 	return /** @type {LocalizedString} */ ("sync_indicator_rejected");
 };
 
 export const sync_indicator_synced = /** @type {(inputs: Sync_Indicator_SyncedInputs) => LocalizedString} */ (i) => {
-	const countPlural = registry.plural("de", i?.count, {}, true);
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
 	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Änderung synchronisiert`);
 	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Änderungen synchronisiert`);
 	return /** @type {LocalizedString} */ ("sync_indicator_synced");
