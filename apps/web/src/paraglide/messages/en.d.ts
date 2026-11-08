@@ -272,13 +272,8 @@ export const transaction_split_remove: (inputs: Transaction_Split_RemoveInputs) 
 export const transaction_split_too_much: (inputs: Transaction_Split_Too_MuchInputs) => LocalizedString;
 export const transaction_updated: (inputs: Transaction_UpdatedInputs) => LocalizedString;
 export type LocalizedString = import("../runtime.js").LocalizedString;
-export type Account_Menu_LabelInputs = {
-    username: NonNullable<unknown>;
-    status: NonNullable<unknown>;
-};
-export type Account_Signed_In_AsInputs = {
-    username: NonNullable<unknown>;
-};
+export type Account_Menu_LabelInputs = { username: NonNullable<unknown>, status: NonNullable<unknown> };
+export type Account_Signed_In_AsInputs = { username: NonNullable<unknown> };
 export type Action_AddInputs = {};
 export type Action_BackInputs = {};
 export type Action_CancelInputs = {};
@@ -302,9 +297,7 @@ export type Action_Sign_InInputs = {};
 export type Action_Sign_OutInputs = {};
 export type Action_UndoInputs = {};
 export type Action_UpdateInputs = {};
-export type Amount_Sparkline_SinceInputs = {
-    date: NonNullable<unknown>;
-};
+export type Amount_Sparkline_SinceInputs = { date: NonNullable<unknown> };
 export type Amount_Sparkline_Since_StartInputs = {};
 export type Amount_Sparkline_UpcomingInputs = {};
 export type Api_Error_Account_Not_EmptyInputs = {};
@@ -332,33 +325,19 @@ export type Fixed_Cost_Amount_EurInputs = {};
 export type Fixed_Cost_Breakdown_TitleInputs = {};
 export type Fixed_Cost_CategoriesInputs = {};
 export type Fixed_Cost_CategoryInputs = {};
-export type Fixed_Cost_Category_ColorInputs = {
-    name: NonNullable<unknown>;
-};
+export type Fixed_Cost_Category_ColorInputs = { name: NonNullable<unknown> };
 export type Fixed_Cost_Category_Color_FailedInputs = {};
-export type Fixed_Cost_Category_HueInputs = {
-    hue: NonNullable<unknown>;
-};
-export type Fixed_Cost_Change_EndedInputs = {
-    name: NonNullable<unknown>;
-};
-export type Fixed_Cost_Change_Price_ChangeInputs = {
-    name: NonNullable<unknown>;
-};
-export type Fixed_Cost_Change_StartedInputs = {
-    name: NonNullable<unknown>;
-};
-export type Fixed_Cost_ChangesInputs = {
-    count: NonNullable<unknown>;
-};
+export type Fixed_Cost_Category_HueInputs = { hue: NonNullable<unknown> };
+export type Fixed_Cost_Change_EndedInputs = { name: NonNullable<unknown> };
+export type Fixed_Cost_Change_Price_ChangeInputs = { name: NonNullable<unknown> };
+export type Fixed_Cost_Change_StartedInputs = { name: NonNullable<unknown> };
+export type Fixed_Cost_ChangesInputs = { count: NonNullable<unknown> };
 export type Fixed_Cost_Changes_DeltaInputs = {};
 export type Fixed_Cost_Changes_MonthInputs = {};
 export type Fixed_Cost_Changes_WhatInputs = {};
 export type Fixed_Cost_Choose_CategoryInputs = {};
 export type Fixed_Cost_Choose_Start_DateInputs = {};
-export type Fixed_Cost_CreatedInputs = {
-    name: NonNullable<unknown>;
-};
+export type Fixed_Cost_CreatedInputs = { name: NonNullable<unknown> };
 export type Fixed_Cost_Delete_DescriptionInputs = {};
 export type Fixed_Cost_Delete_FailedInputs = {};
 export type Fixed_Cost_Delete_TitleInputs = {};
@@ -368,16 +347,11 @@ export type Fixed_Cost_End_DateInputs = {};
 export type Fixed_Cost_End_Date_HintInputs = {};
 export type Fixed_Cost_End_Date_OptionalInputs = {};
 export type Fixed_Cost_History_LabelInputs = {};
-export type Fixed_Cost_History_MoreInputs = {
-    count: NonNullable<unknown>;
-};
+export type Fixed_Cost_History_MoreInputs = { count: NonNullable<unknown> };
 export type Fixed_Cost_History_Range_1yInputs = {};
 export type Fixed_Cost_History_Range_3yInputs = {};
 export type Fixed_Cost_History_Range_AllInputs = {};
-export type Fixed_Cost_History_SinceInputs = {
-    amount: NonNullable<unknown>;
-    month: NonNullable<unknown>;
-};
+export type Fixed_Cost_History_SinceInputs = { amount: NonNullable<unknown>, month: NonNullable<unknown> };
 export type Fixed_Cost_IntervalInputs = {};
 export type Fixed_Cost_Interval_MonthlyInputs = {};
 export type Fixed_Cost_Interval_QuarterlyInputs = {};
@@ -387,22 +361,15 @@ export type Fixed_Cost_Monthly_TotalInputs = {};
 export type Fixed_Cost_NameInputs = {};
 export type Fixed_Cost_Name_PlaceholderInputs = {};
 export type Fixed_Cost_NewInputs = {};
-export type Fixed_Cost_Next_Price_ChangeInputs = {
-    amount: NonNullable<unknown>;
-    date: NonNullable<unknown>;
-};
+export type Fixed_Cost_Next_Price_ChangeInputs = { amount: NonNullable<unknown>, date: NonNullable<unknown> };
 export type Fixed_Cost_Not_FoundInputs = {};
 export type Fixed_Cost_Per_MonthInputs = {};
 export type Fixed_Cost_Save_FailedInputs = {};
-export type Fixed_Cost_SinceInputs = {
-    date: NonNullable<unknown>;
-};
+export type Fixed_Cost_SinceInputs = { date: NonNullable<unknown> };
 export type Fixed_Cost_Start_DateInputs = {};
 export type Fixed_Cost_Suggestion_DetectedInputs = {};
 export type Fixed_Cost_Unknown_CategoryInputs = {};
-export type Fixed_Cost_UntilInputs = {
-    date: NonNullable<unknown>;
-};
+export type Fixed_Cost_UntilInputs = { date: NonNullable<unknown> };
 export type Fixed_Cost_Update_FailedInputs = {};
 export type Fixed_Cost_UpdatedInputs = {};
 export type Fixed_Costs_TitleInputs = {};
@@ -411,9 +378,7 @@ export type Kind_IncomeInputs = {};
 export type Link_Create_AccountInputs = {};
 export type Link_For_UserInputs = {};
 export type Link_InvalidInputs = {};
-export type Link_Min_Password_LengthInputs = {
-    count: NonNullable<unknown>;
-};
+export type Link_Min_Password_LengthInputs = { count: NonNullable<unknown> };
 export type Link_Password_ChangedInputs = {};
 export type Link_Password_Saved_Sign_InInputs = {};
 export type Link_Passwords_DifferInputs = {};
@@ -436,73 +401,32 @@ export type Offline_UnavailableInputs = {};
 export type Overview_Categories_EmptyInputs = {};
 export type Overview_Categories_HintInputs = {};
 export type Overview_Categories_TitleInputs = {};
-export type Overview_ExceptionalInputs = {
-    count: NonNullable<unknown>;
-    amount: NonNullable<unknown>;
-};
+export type Overview_ExceptionalInputs = { count: NonNullable<unknown>, amount: NonNullable<unknown> };
 export type Overview_ExpensesInputs = {};
 export type Overview_Fixed_CostsInputs = {};
-export type Overview_Gross_Outflow_ExceptionalInputs = {
-    count: NonNullable<unknown>;
-    amount: NonNullable<unknown>;
-};
+export type Overview_Gross_Outflow_ExceptionalInputs = { count: NonNullable<unknown>, amount: NonNullable<unknown> };
 export type Overview_Gross_Outflow_HintInputs = {};
 export type Overview_Gross_Outflow_So_FarInputs = {};
 export type Overview_Gross_Outflow_SpendingInputs = {};
 export type Overview_Gross_Outflow_TitleInputs = {};
 export type Overview_IncomeInputs = {};
 export type Overview_Net_SpendingInputs = {};
-export type Overview_Pace_Above_DayInputs = {
-    percent: NonNullable<unknown>;
-    day: NonNullable<unknown>;
-};
-export type Overview_Pace_Above_MonthInputs = {
-    percent: NonNullable<unknown>;
-};
-export type Overview_Pace_Below_DayInputs = {
-    percent: NonNullable<unknown>;
-    day: NonNullable<unknown>;
-};
-export type Overview_Pace_Below_MonthInputs = {
-    percent: NonNullable<unknown>;
-};
+export type Overview_Pace_Above_DayInputs = { percent: NonNullable<unknown>, day: NonNullable<unknown> };
+export type Overview_Pace_Above_MonthInputs = { percent: NonNullable<unknown> };
+export type Overview_Pace_Below_DayInputs = { percent: NonNullable<unknown>, day: NonNullable<unknown> };
+export type Overview_Pace_Below_MonthInputs = { percent: NonNullable<unknown> };
 export type Overview_Pace_EvenInputs = {};
 export type Overview_Pace_NoneInputs = {};
 export type Overview_Total_OutflowInputs = {};
 export type Overview_Trend_HintInputs = {};
 export type Overview_Trend_TitleInputs = {};
-export type Overview_Vs_TypicalInputs = {
-    change: NonNullable<unknown>;
-};
-export type Page_TitleInputs = {
-    page: NonNullable<unknown>;
-};
-export type Pattern_DriftInputs = {
-    category: NonNullable<unknown>;
-    change: NonNullable<unknown>;
-};
-export type Pattern_RecurringInputs = {
-    name: NonNullable<unknown>;
-    count: NonNullable<unknown>;
-    average: NonNullable<unknown>;
-};
-export type Pattern_RhythmInputs = {
-    share: NonNullable<unknown>;
-    category: NonNullable<unknown>;
-    first: NonNullable<unknown>;
-    last: NonNullable<unknown>;
-};
-export type Pattern_SmallInputs = {
-    count: NonNullable<unknown>;
-    limit: NonNullable<unknown>;
-    total: NonNullable<unknown>;
-};
-export type Pattern_Small_TopInputs = {
-    count: NonNullable<unknown>;
-    limit: NonNullable<unknown>;
-    total: NonNullable<unknown>;
-    name: NonNullable<unknown>;
-};
+export type Overview_Vs_TypicalInputs = { change: NonNullable<unknown> };
+export type Page_TitleInputs = { page: NonNullable<unknown> };
+export type Pattern_DriftInputs = { category: NonNullable<unknown>, change: NonNullable<unknown> };
+export type Pattern_RecurringInputs = { name: NonNullable<unknown>, count: NonNullable<unknown>, average: NonNullable<unknown> };
+export type Pattern_RhythmInputs = { share: NonNullable<unknown>, category: NonNullable<unknown>, first: NonNullable<unknown>, last: NonNullable<unknown> };
+export type Pattern_SmallInputs = { count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown> };
+export type Pattern_Small_TopInputs = { count: NonNullable<unknown>, limit: NonNullable<unknown>, total: NonNullable<unknown>, name: NonNullable<unknown> };
 export type Patterns_HintInputs = {};
 export type Patterns_TitleInputs = {};
 export type PeriodInputs = {};
@@ -524,12 +448,8 @@ export type Price_Change_EditInputs = {};
 export type Price_Change_NewInputs = {};
 export type Price_Change_SavedInputs = {};
 export type Price_History_CurrentInputs = {};
-export type Price_History_FromInputs = {
-    date: NonNullable<unknown>;
-};
-export type Price_History_StartInputs = {
-    date: NonNullable<unknown>;
-};
+export type Price_History_FromInputs = { date: NonNullable<unknown> };
+export type Price_History_StartInputs = { date: NonNullable<unknown> };
 export type Price_History_TitleInputs = {};
 export type Price_History_UpcomingInputs = {};
 export type Pwa_Offline_ReadyInputs = {};
@@ -547,15 +467,10 @@ export type Settings_Export_FailedInputs = {};
 export type Settings_Import_DescriptionInputs = {};
 export type Settings_Import_FailedInputs = {};
 export type Settings_Import_Invalid_FileInputs = {};
-export type Settings_Import_Invalid_File_DetailInputs = {
-    issue: NonNullable<unknown>;
-};
+export type Settings_Import_Invalid_File_DetailInputs = { issue: NonNullable<unknown> };
 export type Settings_Import_Replace_DescriptionInputs = {};
 export type Settings_Import_Replace_TitleInputs = {};
-export type Settings_Import_SuccessInputs = {
-    transactions: NonNullable<unknown>;
-    fixedCosts: NonNullable<unknown>;
-};
+export type Settings_Import_SuccessInputs = { transactions: NonNullable<unknown>, fixedCosts: NonNullable<unknown> };
 export type Settings_LanguageInputs = {};
 export type Settings_Language_DescriptionInputs = {};
 export type Settings_LocationInputs = {};
@@ -564,36 +479,22 @@ export type Settings_Location_DescriptionInputs = {};
 export type Settings_TitleInputs = {};
 export type Sign_Out_Anyway_TitleInputs = {};
 export type Sign_Out_FailedInputs = {};
-export type Sign_Out_Unsynced_ChangesInputs = {
-    count: NonNullable<unknown>;
-};
+export type Sign_Out_Unsynced_ChangesInputs = { count: NonNullable<unknown> };
 export type Sync_Action_DeletedInputs = {};
 export type Sync_Action_SavedInputs = {};
-export type Sync_Indicator_RejectedInputs = {
-    count: NonNullable<unknown>;
-};
-export type Sync_Indicator_SyncedInputs = {
-    count: NonNullable<unknown>;
-};
+export type Sync_Indicator_RejectedInputs = { count: NonNullable<unknown> };
+export type Sync_Indicator_SyncedInputs = { count: NonNullable<unknown> };
 export type Sync_Later_HintInputs = {};
-export type Sync_Menu_FailedInputs = {
-    count: NonNullable<unknown>;
-};
+export type Sync_Menu_FailedInputs = { count: NonNullable<unknown> };
 export type Sync_Menu_OfflineInputs = {};
-export type Sync_Menu_Offline_PendingInputs = {
-    count: NonNullable<unknown>;
-};
-export type Sync_Menu_PendingInputs = {
-    count: NonNullable<unknown>;
-};
+export type Sync_Menu_Offline_PendingInputs = { count: NonNullable<unknown> };
+export type Sync_Menu_PendingInputs = { count: NonNullable<unknown> };
 export type Sync_Menu_SyncedInputs = {};
 export type Sync_Not_Synced_YetInputs = {};
 export type Sync_NowInputs = {};
 export type Sync_PendingInputs = {};
 export type Sync_RejectedInputs = {};
-export type Sync_Rejected_StatusInputs = {
-    status: NonNullable<unknown>;
-};
+export type Sync_Rejected_StatusInputs = { status: NonNullable<unknown> };
 export type Sync_Server_UnreachableInputs = {};
 export type Sync_Status_FailedInputs = {};
 export type Sync_Status_OfflineInputs = {};
@@ -601,22 +502,16 @@ export type Sync_Status_PendingInputs = {};
 export type Sync_Status_SyncedInputs = {};
 export type Sync_TitleInputs = {};
 export type Transaction_AmountInputs = {};
-export type Transaction_Amount_LastInputs = {
-    amount: NonNullable<unknown>;
-};
+export type Transaction_Amount_LastInputs = { amount: NonNullable<unknown> };
 export type Transaction_Amount_MissingInputs = {};
 export type Transaction_CategoryInputs = {};
 export type Transaction_Category_MissingInputs = {};
 export type Transaction_Choose_DateInputs = {};
-export type Transaction_Counterparty_AliasedInputs = {
-    raw: NonNullable<unknown>;
-};
+export type Transaction_Counterparty_AliasedInputs = { raw: NonNullable<unknown> };
 export type Transaction_Counterparty_ExpenseInputs = {};
 export type Transaction_Counterparty_IncomeInputs = {};
 export type Transaction_Counterparty_MissingInputs = {};
-export type Transaction_Counterparty_UseInputs = {
-    name: NonNullable<unknown>;
-};
+export type Transaction_Counterparty_UseInputs = { name: NonNullable<unknown> };
 export type Transaction_DateInputs = {};
 export type Transaction_Date_TodayInputs = {};
 export type Transaction_Date_YesterdayInputs = {};
@@ -626,30 +521,16 @@ export type Transaction_DescriptionInputs = {};
 export type Transaction_EditInputs = {};
 export type Transaction_ExceptionalInputs = {};
 export type Transaction_Expense_DeletedInputs = {};
-export type Transaction_Expense_SavedInputs = {
-    name: NonNullable<unknown>;
-};
-export type Transaction_Expenses_SavedInputs = {
-    count: NonNullable<unknown>;
-    name: NonNullable<unknown>;
-};
+export type Transaction_Expense_SavedInputs = { name: NonNullable<unknown> };
+export type Transaction_Expenses_SavedInputs = { count: NonNullable<unknown>, name: NonNullable<unknown> };
 export type Transaction_FabInputs = {};
 export type Transaction_FilterInputs = {};
-export type Transaction_Filter_ActiveInputs = {
-    category: NonNullable<unknown>;
-};
+export type Transaction_Filter_ActiveInputs = { category: NonNullable<unknown> };
 export type Transaction_Filter_AllInputs = {};
 export type Transaction_Income_DeletedInputs = {};
-export type Transaction_Income_SavedInputs = {
-    name: NonNullable<unknown>;
-};
-export type Transaction_Incomes_SavedInputs = {
-    count: NonNullable<unknown>;
-    name: NonNullable<unknown>;
-};
-export type Transaction_List_EmptyInputs = {
-    period: NonNullable<unknown>;
-};
+export type Transaction_Income_SavedInputs = { name: NonNullable<unknown> };
+export type Transaction_Incomes_SavedInputs = { count: NonNullable<unknown>, name: NonNullable<unknown> };
+export type Transaction_List_EmptyInputs = { period: NonNullable<unknown> };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_UpcomingInputs = {};
@@ -659,13 +540,8 @@ export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};
 export type Transaction_SplitInputs = {};
 export type Transaction_Split_DescriptionInputs = {};
-export type Transaction_Split_RemainderInputs = {
-    category: NonNullable<unknown>;
-    amount: NonNullable<unknown>;
-};
-export type Transaction_Split_Remainder_UncategorizedInputs = {
-    amount: NonNullable<unknown>;
-};
+export type Transaction_Split_RemainderInputs = { category: NonNullable<unknown>, amount: NonNullable<unknown> };
+export type Transaction_Split_Remainder_UncategorizedInputs = { amount: NonNullable<unknown> };
 export type Transaction_Split_RemoveInputs = {};
 export type Transaction_Split_Too_MuchInputs = {};
 export type Transaction_UpdatedInputs = {};
