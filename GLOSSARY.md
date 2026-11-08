@@ -17,8 +17,16 @@ The person running an instance, with shell access to where it runs. Not necessar
 _Avoid_: Host, sysadmin, owner
 
 **Invite**:
-A one-time, expiring permission, created by an admin or the operator, that lets one person become a user.
+A one-time, expiring permission, created by an admin or the operator, that lets one person become a user, either by choosing a password or by signing in at the identity provider. The only way to become a user besides the first admin.
 _Avoid_: Signup code, registration link
+
+**Identity provider**:
+An external service the operator connects to the instance so that users can sign in with an identity they already have there. At most one per instance. It never decides who becomes a user or an admin.
+_Avoid_: SSO, OIDC provider, IdP, login provider
+
+**Sign-in method**:
+A way a user proves who they are: a password, an identity at the identity provider, or both. A user always keeps at least one.
+_Avoid_: Login, credential, account
 
 **Password reset link**:
 A one-time, expiring permission, created by an admin or the operator, that lets an existing user set a new password.
