@@ -20,6 +20,8 @@ import { m } from "#/paraglide/messages.js";
 import { getLocale, type Locale, locales } from "#/paraglide/runtime.js";
 import { chooseLocale } from "#/i18n.ts";
 import { useSaveLocation } from "#/features/transactions/device-location.ts";
+import { SettingsSignInPrototype } from "#/features/auth/oidc-prototype/settings-variants.tsx";
+import { useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authed/_shell/settings")({
     head: () => ({
@@ -72,6 +74,10 @@ function RouteComponent() {
     const [isImporting, setIsImporting] = useState(false);
     const [savesLocation, setSavesLocation] = useSaveLocation();
     const [isLocationDenied, setIsLocationDenied] = useState(false);
+    // PROTOTYPE (#419): `?variant=` mounts the sign-in methods variants.
+    const searchStr = useLocation({ select: (l) => l.searchStr });
+    const showPrototype =
+        import.meta.env.DEV && new URLSearchParams(searchStr).has("variant");
 
     async function handleSaveLocationChange(enabled: boolean) {
         setIsLocationDenied(!(await setSavesLocation(enabled)));
@@ -140,7 +146,17 @@ function RouteComponent() {
         <div className="flex min-h-dvh flex-col">
             <TopAppBar title={m.settings_title()} />
 
-            <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-4">
+            <main
+                className={
+                    showPrototype
+                        ? // PROTOTYPE (#419): masonry on wide screens.
+                          `mx-auto w-full max-w-4xl columns-1 gap-4 p-4
+                            md:columns-2 [&>*]:mb-4 [&>*]:break-inside-avoid
+                            [&>p]:[column-span:all]`
+                        : "mx-auto flex w-full max-w-md flex-col gap-4 p-4"
+                }
+            >
+                {showPrototype && <SettingsSignInPrototype />}
                 <Card className={"gap-3 p-4"}>
                     <h2 className="font-brand text-title-large">
                         {m.settings_language()}

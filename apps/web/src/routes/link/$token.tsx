@@ -12,6 +12,8 @@ import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { m } from "#/paraglide/messages.js";
+import { InvitePrototype } from "#/features/auth/oidc-prototype/invite-variants.tsx";
+import { useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/link/$token")({
     head: () => ({ meta: [{ title: m.page_title({ page: m.link_title() }) }] }),
@@ -20,7 +22,16 @@ export const Route = createFileRoute("/link/$token")({
 
 const MIN_PASSWORD_LENGTH = 8;
 
+// PROTOTYPE (#419): `?variant=` shows the OIDC invite variants (stub invite).
 function RouteComponent() {
+    const searchStr = useLocation({ select: (l) => l.searchStr });
+    if (import.meta.env.DEV && new URLSearchParams(searchStr).has("variant")) {
+        return <InvitePrototype />;
+    }
+    return <RealLink />;
+}
+
+function RealLink() {
     const { token } = Route.useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();

@@ -13,6 +13,8 @@ import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { m } from "#/paraglide/messages.js";
+import { LoginPrototype } from "#/features/auth/oidc-prototype/login-variants.tsx";
+import { useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
     validateSearch: z.object({
@@ -34,7 +36,16 @@ export const Route = createFileRoute("/login")({
     component: RouteComponent,
 });
 
+// PROTOTYPE (#419): `?variant=` shows the OIDC login variants.
 function RouteComponent() {
+    const searchStr = useLocation({ select: (l) => l.searchStr });
+    if (import.meta.env.DEV && new URLSearchParams(searchStr).has("variant")) {
+        return <LoginPrototype />;
+    }
+    return <RealLogin />;
+}
+
+function RealLogin() {
     const { redirect: redirectTo } = Route.useSearch();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
