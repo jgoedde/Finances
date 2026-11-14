@@ -145,6 +145,7 @@ export function useSyncIndicator({
         }
 
         // Changes restored from the last session are pending from the start.
+        // eslint-disable-next-line react-x/set-state-in-effect -- the queue can already hold changes when the effect runs, so the initial state must be read here
         trackSyncPeriod();
         const unsubscribeAll = [
             mutationCache.subscribe(trackSyncPeriod),
