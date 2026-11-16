@@ -140,7 +140,15 @@ function RouteComponent() {
         <div className="flex min-h-dvh flex-col">
             <TopAppBar title={m.settings_title()} />
 
-            <main className="mx-auto flex w-full max-w-md flex-col gap-4 p-4">
+            {/*
+             * Masonry from `md` on: cards flow into two columns without being
+             * split. A child marked `data-full-width` spans both columns.
+             */}
+            <main
+                className={`mx-auto w-full max-w-md gap-4 p-4
+                    *:break-inside-avoid *:not-last:mb-4 md:max-w-4xl
+                    md:columns-2 [&>[data-full-width]]:[column-span:all]`}
+            >
                 <Card className={"gap-3 p-4"}>
                     <h2 className="font-brand text-title-large">
                         {m.settings_language()}
@@ -230,6 +238,7 @@ function RouteComponent() {
                 </Card>
 
                 <p
+                    data-full-width
                     className={`py-4 text-center text-body-small
                         text-on-surface-variant`}
                 >
