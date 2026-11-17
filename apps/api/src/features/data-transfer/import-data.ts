@@ -4,6 +4,7 @@ import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { logger } from "#/log.ts";
 import {
+    CategoryKindMismatchError,
     hasData,
     InvalidReferenceError,
     PriceChangeOutOfRangeError,
@@ -37,6 +38,13 @@ export const importData = factory.createHandlers(
             if (error instanceof InvalidReferenceError) {
                 logger.warn({ userId }, "Import rejected: unknown category");
                 return c.json({ error: "unknown_category" }, 422);
+            }
+            if (error instanceof CategoryKindMismatchError) {
+                logger.warn(
+                    { userId },
+                    "Import rejected: category of the other kind",
+                );
+                return c.json({ error: "category_kind_mismatch" }, 422);
             }
             if (error instanceof PriceChangeOutOfRangeError) {
                 logger.warn(

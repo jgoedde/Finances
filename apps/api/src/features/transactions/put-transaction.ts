@@ -37,12 +37,15 @@ export const putTransaction = factory.createHandlers(
 
             const category = await trx
                 .selectFrom("categories")
-                .select("id")
+                .select("kind")
                 .where("user_id", "=", userId)
                 .where("id", "=", input.categoryId)
                 .executeTakeFirst();
             if (!category) {
                 return c.json({ error: "unknown_category" }, 422);
+            }
+            if (category.kind !== input.kind) {
+                return c.json({ error: "category_kind_mismatch" }, 422);
             }
 
             const values = {

@@ -29,6 +29,7 @@
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_Category_Kind_MismatchInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
@@ -43,6 +44,7 @@
 /** @typedef {{}} App_NameInputs */
 /** @typedef {{}} Auth_PasswordInputs */
 /** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Category_FallbackInputs */
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
@@ -393,6 +395,10 @@ export const api_error_account_not_empty = /** @type {(inputs: Api_Error_Account
 	return /** @type {LocalizedString} */ (`Your account already contains data.`)
 };
 
+export const api_error_category_kind_mismatch = /** @type {(inputs: Api_Error_Category_Kind_MismatchInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The category doesn't match the kind of transaction.`)
+};
+
 export const api_error_file_too_large = /** @type {(inputs: Api_Error_File_Too_LargeInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`The file is too large.`)
 };
@@ -447,6 +453,10 @@ export const auth_password = /** @type {(inputs: Auth_PasswordInputs) => Localiz
 
 export const auth_username = /** @type {(inputs: Auth_UsernameInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Username`)
+};
+
+export const category_fallback = /** @type {(inputs: Category_FallbackInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Other`)
 };
 
 export const error_try_again = /** @type {(inputs: Error_Try_AgainInputs) => LocalizedString} */ () => {

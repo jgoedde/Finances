@@ -1,7 +1,8 @@
-import { initialHue } from "@finances/shared";
+import { FALLBACK_CATEGORIES, initialHue } from "@finances/shared";
 import type { DB } from "./database.ts";
+import { toCategoryColumns } from "#/features/categories/categories.ts";
 
-// Defaults every new user starts with. Ids match the legacy client-side
+// Defaults every new user starts with, besides the fallback categories. Ids match the legacy client-side
 // database so imported data maps onto them.
 const DEFAULT_CATEGORIES = [
     {
@@ -73,7 +74,17 @@ export async function seedUserData(db: DB, userId: string): Promise<void> {
     await db.transaction().execute(async (trx) => {
         await trx
             .insertInto("categories")
-            .values(DEFAULT_CATEGORIES.map((c) => ({ ...c, user_id: userId })))
+            .values([
+                ...DEFAULT_CATEGORIES.map((c) => ({
+                    ...c,
+                    kind: "expense" as const,
+                    fallback: 0 as const,
+                    user_id: userId,
+                })),
+                ...Object.values(FALLBACK_CATEGORIES).map((c) =>
+                    toCategoryColumns(userId, c),
+                ),
+            ])
             .execute();
         await trx
             .insertInto("fixed_cost_categories")

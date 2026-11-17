@@ -12,6 +12,7 @@ import {
 } from "#/components/ui/select.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 /**
  * A value a part can't be saved without.
@@ -94,7 +95,7 @@ export function SplitPartRow({
                     <SelectContent>
                         {categories.map((category) => (
                             <SelectItem key={category.id} value={category.id}>
-                                {category.name}
+                                {getCategoryName(category.name)}
                             </SelectItem>
                         ))}
                     </SelectContent>

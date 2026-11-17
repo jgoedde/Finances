@@ -30,7 +30,10 @@ import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { getTransactionKindLabel } from "#/features/transactions/utils/transaction-utils.ts";
+import {
+    getCategoryName,
+    getTransactionKindLabel,
+} from "#/features/transactions/utils/transaction-utils.ts";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
@@ -184,7 +187,11 @@ export function TransactionForm({
     const isRemainderInvalid =
         parts.length > 0 && remainder !== undefined && remainder <= 0;
 
-    const selectedCategory = categories.find(
+    // Expenses only get expense categories, incomes only income categories.
+    const categoriesOfKind = categories.filter(
+        (category) => category.kind === transactionType,
+    );
+    const selectedCategory = categoriesOfKind.find(
         (category) => category.id === categoryId,
     );
 
@@ -297,6 +304,25 @@ export function TransactionForm({
         setParts((current) => current.filter((part) => part.key !== key));
     }
 
+    /**
+     * Switching the kind moves the transaction and every part onto the new
+     * kind's fallback category, since the chosen ones are of the other kind.
+     */
+    function onKindChange(kind: TransactionKind) {
+        if (kind === transactionType) {
+            return;
+        }
+        const fallbackId = categories.find(
+            (category) => category.fallback && category.kind === kind,
+        )?.id;
+        setChosenKind(kind);
+        setChosenCategoryId(fallbackId);
+        setParts((current) =>
+            current.map((part) => ({ ...part, categoryId: fallbackId })),
+        );
+        clearMissing("category");
+    }
+
     function onCategorySelect(id: string) {
         setChosenCategoryId(id);
         clearMissing("category");
@@ -358,7 +384,7 @@ export function TransactionForm({
                     ]}
                     value={transactionType}
                     onChange={(e) => {
-                        setChosenKind(e as TransactionKind);
+                        onKindChange(e as TransactionKind);
                     }}
                 />
 
@@ -446,7 +472,7 @@ export function TransactionForm({
 
                 <CategoryChips
                     ref={categoryChipsRef}
-                    categories={categories}
+                    categories={categoriesOfKind}
                     selectedCategoryId={categoryId}
                     onSelect={onCategorySelect}
                     error={
@@ -472,7 +498,9 @@ export function TransactionForm({
                                     ? m.transaction_split_too_much()
                                     : selectedCategory
                                       ? m.transaction_split_remainder({
-                                            category: selectedCategory.name,
+                                            category: getCategoryName(
+                                                selectedCategory.name,
+                                            ),
                                             amount: formatCurrency(
                                                 remainder,
                                                 getLocale(),
@@ -492,7 +520,7 @@ export function TransactionForm({
                             <SplitPartRow
                                 key={part.key}
                                 part={part}
-                                categories={categories}
+                                categories={categoriesOfKind}
                                 onChange={updatePart}
                                 onRemove={() => removePart(part.key)}
                                 missing={

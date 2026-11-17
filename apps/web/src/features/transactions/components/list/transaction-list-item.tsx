@@ -11,6 +11,7 @@ import { cn } from "#/lib/cn.ts";
 import type { ComponentProps } from "react";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 // I'm lazy now, so we query the categories additionally instead of joining them in the query in the first place.
 
@@ -51,7 +52,7 @@ export function TransactionListItem({
         }
 
         if (category) {
-            return category.name;
+            return getCategoryName(category.name);
         }
 
         return m.transaction_no_description();

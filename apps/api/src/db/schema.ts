@@ -6,7 +6,17 @@ import type { FixedCostInterval, TransactionKind } from "@finances/shared";
 export interface CategoriesTable {
     user_id: string;
     id: string;
-    name: string;
+    kind: TransactionKind;
+
+    /**
+     * At most one per user and kind.
+     */
+    fallback: 0 | 1;
+
+    /**
+     * `null` exactly for a fallback category.
+     */
+    name: string | null;
     color: string;
     icon_name: string;
 }

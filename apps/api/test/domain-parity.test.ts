@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+    FALLBACK_CATEGORIES,
     matchesListQuery,
     type Transaction,
     type TransactionListQuery,
@@ -16,7 +17,13 @@ import {
 const fixtures: Transaction[] = [
     tx({ id: "a", date: 1000, amount: 10.1, categoryId: "1" }),
     tx({ id: "b", date: 2000, amount: 0.2 }),
-    tx({ id: "c", date: 2000, kind: "income", amount: 100 }),
+    tx({
+        id: "c",
+        date: 2000,
+        kind: "income",
+        amount: 100,
+        categoryId: FALLBACK_CATEGORIES.income.id,
+    }),
     tx({
         id: "d",
         date: 3000,
@@ -24,7 +31,13 @@ const fixtures: Transaction[] = [
         categoryId: "1",
         exceptional: true,
     }),
-    tx({ id: "e", date: 4000, kind: "income", amount: 0.3, categoryId: "1" }),
+    tx({
+        id: "e",
+        date: 4000,
+        kind: "income",
+        amount: 0.3,
+        categoryId: FALLBACK_CATEGORIES.income.id,
+    }),
     tx({ id: "f", date: 5000, amount: 7.45 }),
 ];
 

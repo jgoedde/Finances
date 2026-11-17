@@ -4,6 +4,7 @@ import { m } from "#/paraglide/messages.js";
 // The API answers errors with `{ error: code }`; the client words them.
 const MESSAGES = {
     account_not_empty: m.api_error_account_not_empty,
+    category_kind_mismatch: m.api_error_category_kind_mismatch,
     file_too_large: m.api_error_file_too_large,
     forbidden: m.api_error_forbidden,
     invalid_link: m.api_error_invalid_link,

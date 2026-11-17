@@ -2,7 +2,11 @@ import type { DatedTransaction } from "../spending.ts";
 
 export interface PatternCategory {
     categoryId: string;
-    categoryName: string;
+
+    /**
+     * `null` for the fallback category.
+     */
+    categoryName: string | null;
     categoryColor: string;
 }
 

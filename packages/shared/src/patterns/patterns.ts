@@ -54,7 +54,7 @@ interface FindPatternsInput {
      * At least those from `firstPatternMonth(month)` through `month`.
      */
     transactions: SpendingInput[];
-    categories: Pick<Category, "id" | "name" | "color">[];
+    categories: Pick<Category, "id" | "name" | "color" | "kind">[];
 }
 
 /**
@@ -72,7 +72,11 @@ export function findPatterns({
     const expenses = placeInTimeZone(transactions, timeZone).filter(
         (t) => t.kind === "expense" && !t.exceptional && t.day <= today,
     );
-    const byId = _.keyBy(categories, "id");
+    // Patterns are about spending: only expense categories.
+    const byId = _.keyBy(
+        categories.filter((c) => c.kind === "expense"),
+        "id",
+    );
 
     const context: PatternContext = {
         current: expenses.filter(

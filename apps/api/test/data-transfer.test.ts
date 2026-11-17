@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { DataExport, ImportResult, Transaction } from "@finances/shared";
+import {
+    type Category,
+    type DataExport,
+    FALLBACK_CATEGORIES,
+    type ImportResult,
+    type Transaction,
+} from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -29,7 +35,7 @@ describe("data transfer", () => {
 
     /**
      * Another account's export: two transactions and only their category
-     * (`transactionBody`'s default, "2").
+     * (`transactionBody`'s default, "2") besides the fallback categories.
      */
     async function sampleExport(): Promise<string> {
         const carol = (await app.signUp("carol")).client;
@@ -42,8 +48,28 @@ describe("data transfer", () => {
         const exported = await json<DataExport>(carol("/api/data/export"));
         return JSON.stringify({
             ...exported,
-            categories: exported.categories.filter((c) => c.id === "2"),
+            categories: exported.categories.filter(
+                (c) => c.id === "2" || c.fallback,
+            ),
         });
+    }
+
+    /**
+     * The categories as exports before version 6 had them.
+     */
+    function v5Categories(exported: DataExport) {
+        return exported.categories.flatMap((c) =>
+            c.fallback
+                ? []
+                : [
+                      {
+                          id: c.id,
+                          name: c.name,
+                          color: c.color,
+                          iconName: c.iconName,
+                      },
+                  ],
+        );
     }
 
     function fixedCostBody(overrides: Record<string, unknown> = {}) {
@@ -66,6 +92,13 @@ describe("data transfer", () => {
             method: "PUT",
             body: transactionBody({ categoryId: "3" }),
         });
+        await alice("/api/transactions/t2", {
+            method: "PUT",
+            body: transactionBody({
+                kind: "income",
+                categoryId: FALLBACK_CATEGORIES.income.id,
+            }),
+        });
         await alice("/api/fixed-costs", {
             method: "POST",
             body: fixedCostBody({
@@ -81,11 +114,109 @@ describe("data transfer", () => {
         expect((await upload(bob, JSON.stringify(exported))).status).toBe(200);
 
         const reexported = await json<DataExport>(bob("/api/data/export"));
-        expect(reexported.version).toBe(5);
+        expect(reexported.version).toBe(6);
         expect(reexported.fixedCosts[0]?.priceChanges).toHaveLength(2);
+        expect(reexported.categories).toContainEqual(
+            FALLBACK_CATEGORIES.income,
+        );
         expect({ ...reexported, exportedAt: "" }).toEqual({
             ...exported,
             exportedAt: "",
+        });
+    });
+
+    it("imports a version 5 export like the migration: expense categories, both fallback categories, incomes on the income one", async () => {
+        const v5 = {
+            format: "finances-export",
+            version: 5,
+            exportedAt: new Date().toISOString(),
+            categories: [
+                { id: "1", name: "Essen", color: "#000001", iconName: "a" },
+                // An ordinary category, despite the name.
+                { id: "2", name: "Sonstiges", color: "#000002", iconName: "b" },
+            ],
+            fixedCostCategories: [],
+            fixedCosts: [],
+            transactions: [
+                {
+                    ...JSON.parse(transactionBody({ categoryId: "1" })),
+                    id: "e1",
+                },
+                {
+                    ...JSON.parse(
+                        transactionBody({ kind: "income", categoryId: "2" }),
+                    ),
+                    id: "i1",
+                },
+            ],
+        };
+        expect((await upload(alice, JSON.stringify(v5))).status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        expect(reexported.categories).toEqual<Category[]>([
+            {
+                id: "1",
+                name: "Essen",
+                color: "#000001",
+                iconName: "a",
+                kind: "expense",
+                fallback: false,
+            },
+            {
+                id: "2",
+                name: "Sonstiges",
+                color: "#000002",
+                iconName: "b",
+                kind: "expense",
+                fallback: false,
+            },
+            FALLBACK_CATEGORIES.expense,
+            FALLBACK_CATEGORIES.income,
+        ]);
+        expect(
+            Object.fromEntries(
+                reexported.transactions.map((t) => [t.id, t.categoryId]),
+            ),
+        ).toEqual({ e1: "1", i1: FALLBACK_CATEGORIES.income.id });
+    });
+
+    it("rejects an export without exactly one fallback category per kind", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const response = await upload(
+            alice,
+            JSON.stringify({
+                ...exported,
+                categories: exported.categories.filter(
+                    (c) => c.id !== FALLBACK_CATEGORIES.income.id,
+                ),
+            }),
+        );
+        expect(response.status).toBe(400);
+        expect(await list(alice, "/api/categories")).toHaveLength(12);
+    });
+
+    it("rejects a transaction whose category doesn't match its kind", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const response = await upload(
+            alice,
+            JSON.stringify({
+                ...exported,
+                transactions: [
+                    {
+                        ...JSON.parse(
+                            transactionBody({
+                                kind: "income",
+                                categoryId: "2",
+                            }),
+                        ),
+                        id: "t1",
+                    },
+                ],
+            }),
+        );
+        expect(response.status).toBe(422);
+        expect(await json(response)).toEqual({
+            error: "category_kind_mismatch",
         });
     });
 
@@ -93,6 +224,7 @@ describe("data transfer", () => {
         const exported = await json<DataExport>(alice("/api/data/export"));
         const v4 = {
             ...exported,
+            categories: v5Categories(exported),
             version: 4,
             fixedCostCategories: [
                 { id: "1", name: "Miete", description: null },
@@ -116,7 +248,12 @@ describe("data transfer", () => {
             initialAmount: undefined,
             amount: 480,
         };
-        const v3 = { ...exported, version: 3, fixedCosts: [fixedCost] };
+        const v3 = {
+            ...exported,
+            categories: v5Categories(exported),
+            version: 3,
+            fixedCosts: [fixedCost],
+        };
         expect((await upload(alice, JSON.stringify(v3))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
@@ -135,13 +272,14 @@ describe("data transfer", () => {
         const transaction = JSON.parse(transactionBody()) as Transaction;
         const v2 = {
             ...exported,
+            categories: v5Categories(exported),
             version: 2,
             transactions: [{ ...transaction, id: "t1", location: undefined }],
         };
         expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(5);
+        expect(reexported.version).toBe(6);
         expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
     });
 
@@ -198,7 +336,7 @@ describe("data transfer", () => {
         const exported = await sampleExport();
         const first = await upload(alice, exported, { replace: true });
         expect(await json<ImportResult>(first)).toEqual({
-            categories: 1,
+            categories: 3,
             fixedCosts: 0,
             transactions: 2,
         });
@@ -211,7 +349,7 @@ describe("data transfer", () => {
             `/api/transactions?from=0&to=${Date.now()}`,
         );
         expect(transactions.map((t) => t.id).sort()).toEqual(["t1", "t2"]);
-        expect(await list(alice, "/api/categories")).toHaveLength(1);
+        expect(await list(alice, "/api/categories")).toHaveLength(3);
     });
 
     it("keeps the data when a replacing import is invalid", async () => {
@@ -260,13 +398,13 @@ describe("data transfer", () => {
         };
         const unknownCategory = await upload(alice, JSON.stringify(broken));
         expect(unknownCategory.status).toBe(422);
-        expect(await list(alice, "/api/categories")).toHaveLength(10);
+        expect(await list(alice, "/api/categories")).toHaveLength(12);
     });
 
     it("leaves other users alone", async () => {
         const bob = (await app.signUp("bob")).client;
         await upload(alice, await sampleExport());
-        expect(await list(bob, "/api/categories")).toHaveLength(10);
+        expect(await list(bob, "/api/categories")).toHaveLength(12);
         expect(
             await list(bob, `/api/transactions?from=0&to=${Date.now()}`),
         ).toEqual([]);

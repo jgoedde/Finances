@@ -3,6 +3,7 @@ import { formatPercent, formatWeekday, type Pattern } from "@finances/shared";
 import { PatternRowLayout } from "#/features/overview/patterns/pattern-row-layout.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 interface WeekdayRhythmRowProps {
     pattern: Extract<Pattern, { kind: "weekdayRhythm" }>;
@@ -21,7 +22,7 @@ export function WeekdayRhythmRow({ pattern }: WeekdayRhythmRowProps) {
         >
             {m.pattern_rhythm({
                 share: formatPercent(pattern.share, locale),
-                category: pattern.category.categoryName,
+                category: getCategoryName(pattern.category.categoryName),
                 first: formatWeekday(pattern.firstWeekday, locale),
                 last: formatWeekday(pattern.lastWeekday, locale),
             })}

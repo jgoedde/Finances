@@ -2,6 +2,7 @@ import { useMemo, type CSSProperties } from "react";
 import { breakDownGrossOutflow, type MonthOverview } from "@finances/shared";
 import { m } from "#/paraglide/messages.js";
 import { paletteFromHex, paletteFromHue, toneStyle } from "#/utils/color.ts";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 /**
  * A fixed cost within its fixed cost category.
@@ -85,7 +86,7 @@ export function useGrossOutflow(overview: MonthOverview): GrossOutflowView {
                 categories: spending.categories.map((category) => ({
                     kind: "spending",
                     id: category.categoryId,
-                    name: category.categoryName,
+                    name: getCategoryName(category.categoryName),
                     total: category.total,
                     share: category.share,
                     toneStyle: toneStyle(

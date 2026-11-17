@@ -13,6 +13,14 @@ export function getTransactionKindLabel(kind: TransactionKind): string {
 }
 
 /**
+ * A category's name to show; a fallback category has none and is shown as
+ * "Sonstiges" / "Other".
+ */
+export function getCategoryName(name: string | null): string {
+    return name ?? m.category_fallback();
+}
+
+/**
  * `transactions` grouped by calendar day, the latest day first.
  */
 export function groupByDay(
