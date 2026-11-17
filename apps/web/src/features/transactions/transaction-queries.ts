@@ -1,9 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import type {
-    Category,
-    Transaction,
-    TransactionListQuery,
-} from "@finances/shared";
+import type { Transaction, TransactionListQuery } from "@finances/shared";
 import { apiFetch, toQueryString } from "#/api/api-client.ts";
 import {
     applyToList,
@@ -11,16 +7,6 @@ import {
 } from "#/features/transactions/pending-changes.ts";
 
 const EMPTY: never[] = [];
-
-const categoriesQuery = queryOptions({
-    queryKey: ["categories"],
-    queryFn: () => apiFetch<Category[]>("/categories"),
-    staleTime: Infinity,
-});
-
-export function useCategories(): Category[] {
-    return useQuery(categoriesQuery).data ?? EMPTY;
-}
 
 export function transactionsQuery(params: TransactionListQuery) {
     return queryOptions({

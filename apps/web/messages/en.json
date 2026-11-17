@@ -350,5 +350,48 @@
     "price_change_before_start": "A price change must be after the start date.",
     "price_change_after_end": "A price change can't be after the end date.",
     "price_change_saved": "Price change saved",
-    "price_change_deleted": "Price change deleted"
+    "price_change_deleted": "Price change deleted",
+
+    "settings_categories_description": "Create categories, rename them or change their color and icon.",
+    "settings_categories_open": "Manage categories",
+    "categories_title": "Categories",
+    "categories_tab_expense": "Expenses",
+    "categories_tab_income": "Income",
+    "categories_offline": "Offline, you can only view categories.",
+    "category_new": "New category",
+    "category_edit": "Edit category",
+    "category_name": "Name",
+    "category_name_missing": "Enter a name.",
+    "category_fallback_hint": "This category always exists. You can only change its color and icon.",
+    "category_color": "Color",
+    "category_color_option": "Color {number}",
+    "category_icon": "Icon",
+    "category_icon_search": "Search icons",
+    "category_icon_none": "No matching icon.",
+    "category_created": "Category {name} created",
+    "category_updated": "Category saved",
+    "category_save_failed": "The category couldn't be saved. Please try again.",
+    "category_delete_action": "Delete {name}",
+    "category_delete_title": "Delete {name}?",
+    "category_delete_counting": "Counting transactions …",
+    "category_delete_unused": "This category has no transactions.",
+    "category_delete_used": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} transaction moves to the chosen category.",
+                "countPlural=other": "{count} transactions move to the chosen category."
+            }
+        }
+    ],
+    "category_delete_target": "Move to",
+    "category_deleted": "{name} deleted",
+    "category_delete_failed": "{name} couldn't be deleted. Please try again.",
+    "api_error_category_name_taken": "A category with this name already exists.",
+    "api_error_category_in_use": "The category has transactions. Choose where they move.",
+    "api_error_fallback_category": "Other can't be renamed or deleted."
 }

@@ -47,3 +47,49 @@ export const FALLBACK_CATEGORIES = {
         name: null,
     },
 } as const satisfies Record<TransactionKind, Category>;
+
+const categoryNameSchema = z.string().trim().min(1).max(40);
+
+/**
+ * `#rrggbb`. The client offers a palette, but any color stays valid.
+ */
+const categoryColorSchema = z.string().regex(/^#[0-9a-f]{6}$/i);
+
+/**
+ * A Lucide icon name, e.g. `shopping-basket`.
+ */
+const categoryIconNameSchema = z
+    .string()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/)
+    .max(64);
+
+export const categoryInputSchema = z.object({
+    kind: transactionKindSchema,
+    name: categoryNameSchema,
+    color: categoryColorSchema,
+    iconName: categoryIconNameSchema,
+});
+export type CategoryInput = z.infer<typeof categoryInputSchema>;
+
+/**
+ * A fallback category only takes `color` and `iconName`.
+ */
+export const categoryPatchSchema = categoryInputSchema
+    .omit({ kind: true })
+    .partial()
+    .refine((patch) => Object.values(patch).some((v) => v !== undefined));
+export type CategoryPatch = z.infer<typeof categoryPatchSchema>;
+
+export const deleteCategoryQuerySchema = z.object({
+    /**
+     * Where the category's transactions move; needed only if it has any.
+     */
+    moveTo: z.string().min(1).optional(),
+});
+
+export interface CategoryUsage {
+    /**
+     * How many transactions are in the category.
+     */
+    transactions: number;
+}

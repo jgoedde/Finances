@@ -29,7 +29,10 @@
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_Category_In_UseInputs */
 /** @typedef {{}} Api_Error_Category_Kind_MismatchInputs */
+/** @typedef {{}} Api_Error_Category_Name_TakenInputs */
+/** @typedef {{}} Api_Error_Fallback_CategoryInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
@@ -44,7 +47,32 @@
 /** @typedef {{}} App_NameInputs */
 /** @typedef {{}} Auth_PasswordInputs */
 /** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Categories_OfflineInputs */
+/** @typedef {{}} Categories_Tab_ExpenseInputs */
+/** @typedef {{}} Categories_Tab_IncomeInputs */
+/** @typedef {{}} Categories_TitleInputs */
+/** @typedef {{}} Category_ColorInputs */
+/** @typedef {{ number: NonNullable<unknown> }} Category_Color_OptionInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_CreatedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_ActionInputs */
+/** @typedef {{}} Category_Delete_CountingInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_FailedInputs */
+/** @typedef {{}} Category_Delete_TargetInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_TitleInputs */
+/** @typedef {{}} Category_Delete_UnusedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Category_Delete_UsedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_DeletedInputs */
+/** @typedef {{}} Category_EditInputs */
 /** @typedef {{}} Category_FallbackInputs */
+/** @typedef {{}} Category_Fallback_HintInputs */
+/** @typedef {{}} Category_IconInputs */
+/** @typedef {{}} Category_Icon_NoneInputs */
+/** @typedef {{}} Category_Icon_SearchInputs */
+/** @typedef {{}} Category_NameInputs */
+/** @typedef {{}} Category_Name_MissingInputs */
+/** @typedef {{}} Category_NewInputs */
+/** @typedef {{}} Category_Save_FailedInputs */
+/** @typedef {{}} Category_UpdatedInputs */
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
@@ -193,6 +221,8 @@
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
+/** @typedef {{}} Settings_Categories_DescriptionInputs */
+/** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
@@ -395,8 +425,20 @@ export const api_error_account_not_empty = /** @type {(inputs: Api_Error_Account
 	return /** @type {LocalizedString} */ (`Your account already contains data.`)
 };
 
+export const api_error_category_in_use = /** @type {(inputs: Api_Error_Category_In_UseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The category has transactions. Choose where they move.`)
+};
+
 export const api_error_category_kind_mismatch = /** @type {(inputs: Api_Error_Category_Kind_MismatchInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`The category doesn't match the kind of transaction.`)
+};
+
+export const api_error_category_name_taken = /** @type {(inputs: Api_Error_Category_Name_TakenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`A category with this name already exists.`)
+};
+
+export const api_error_fallback_category = /** @type {(inputs: Api_Error_Fallback_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Other can't be renamed or deleted.`)
 };
 
 export const api_error_file_too_large = /** @type {(inputs: Api_Error_File_Too_LargeInputs) => LocalizedString} */ () => {
@@ -455,8 +497,111 @@ export const auth_username = /** @type {(inputs: Auth_UsernameInputs) => Localiz
 	return /** @type {LocalizedString} */ (`Username`)
 };
 
+export const categories_offline = /** @type {(inputs: Categories_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Offline, you can only view categories.`)
+};
+
+export const categories_tab_expense = /** @type {(inputs: Categories_Tab_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expenses`)
+};
+
+export const categories_tab_income = /** @type {(inputs: Categories_Tab_IncomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Income`)
+};
+
+export const categories_title = /** @type {(inputs: Categories_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Categories`)
+};
+
+export const category_color = /** @type {(inputs: Category_ColorInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Color`)
+};
+
+export const category_color_option = /** @type {(inputs: Category_Color_OptionInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Color ${i?.number}`)
+};
+
+export const category_created = /** @type {(inputs: Category_CreatedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Category ${i?.name} created`)
+};
+
+export const category_delete_action = /** @type {(inputs: Category_Delete_ActionInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Delete ${i?.name}`)
+};
+
+export const category_delete_counting = /** @type {(inputs: Category_Delete_CountingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Counting transactions …`)
+};
+
+export const category_delete_failed = /** @type {(inputs: Category_Delete_FailedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} couldn't be deleted. Please try again.`)
+};
+
+export const category_delete_target = /** @type {(inputs: Category_Delete_TargetInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Move to`)
+};
+
+export const category_delete_title = /** @type {(inputs: Category_Delete_TitleInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Delete ${i?.name}?`)
+};
+
+export const category_delete_unused = /** @type {(inputs: Category_Delete_UnusedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This category has no transactions.`)
+};
+
+export const category_delete_used = /** @type {(inputs: Category_Delete_UsedInputs) => LocalizedString} */ (i) => {
+	const countPlural = __paraglideRegistry.plural("en", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} transaction moves to the chosen category.`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} transactions move to the chosen category.`);
+	return /** @type {LocalizedString} */ ("category_delete_used");
+};
+
+export const category_deleted = /** @type {(inputs: Category_DeletedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} deleted`)
+};
+
+export const category_edit = /** @type {(inputs: Category_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Edit category`)
+};
+
 export const category_fallback = /** @type {(inputs: Category_FallbackInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Other`)
+};
+
+export const category_fallback_hint = /** @type {(inputs: Category_Fallback_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This category always exists. You can only change its color and icon.`)
+};
+
+export const category_icon = /** @type {(inputs: Category_IconInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Icon`)
+};
+
+export const category_icon_none = /** @type {(inputs: Category_Icon_NoneInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`No matching icon.`)
+};
+
+export const category_icon_search = /** @type {(inputs: Category_Icon_SearchInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Search icons`)
+};
+
+export const category_name = /** @type {(inputs: Category_NameInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Name`)
+};
+
+export const category_name_missing = /** @type {(inputs: Category_Name_MissingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Enter a name.`)
+};
+
+export const category_new = /** @type {(inputs: Category_NewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`New category`)
+};
+
+export const category_save_failed = /** @type {(inputs: Category_Save_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The category couldn't be saved. Please try again.`)
+};
+
+export const category_updated = /** @type {(inputs: Category_UpdatedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Category saved`)
 };
 
 export const error_try_again = /** @type {(inputs: Error_Try_AgainInputs) => LocalizedString} */ () => {
@@ -1055,6 +1200,14 @@ export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) 
 
 export const search_show_in_month = /** @type {(inputs: Search_Show_In_MonthInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Show in month`)
+};
+
+export const settings_categories_description = /** @type {(inputs: Settings_Categories_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Create categories, rename them or change their color and icon.`)
+};
+
+export const settings_categories_open = /** @type {(inputs: Settings_Categories_OpenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Manage categories`)
 };
 
 export const settings_export_description = /** @type {(inputs: Settings_Export_DescriptionInputs) => LocalizedString} */ () => {

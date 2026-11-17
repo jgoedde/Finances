@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu.tsx";
-import { useCategories } from "#/features/transactions/transaction-queries.ts";
+import { useCategories } from "#/features/categories/category-queries.ts";
 import { useMonthCategoryTotals } from "#/features/transactions/components/list/use-month-category-totals.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";

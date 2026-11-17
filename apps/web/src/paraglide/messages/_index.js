@@ -31,7 +31,10 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_Category_In_UseInputs */
 /** @typedef {{}} Api_Error_Category_Kind_MismatchInputs */
+/** @typedef {{}} Api_Error_Category_Name_TakenInputs */
+/** @typedef {{}} Api_Error_Fallback_CategoryInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
@@ -46,7 +49,32 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} App_NameInputs */
 /** @typedef {{}} Auth_PasswordInputs */
 /** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Categories_OfflineInputs */
+/** @typedef {{}} Categories_Tab_ExpenseInputs */
+/** @typedef {{}} Categories_Tab_IncomeInputs */
+/** @typedef {{}} Categories_TitleInputs */
+/** @typedef {{}} Category_ColorInputs */
+/** @typedef {{ number: NonNullable<unknown> }} Category_Color_OptionInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_CreatedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_ActionInputs */
+/** @typedef {{}} Category_Delete_CountingInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_FailedInputs */
+/** @typedef {{}} Category_Delete_TargetInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_TitleInputs */
+/** @typedef {{}} Category_Delete_UnusedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Category_Delete_UsedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_DeletedInputs */
+/** @typedef {{}} Category_EditInputs */
 /** @typedef {{}} Category_FallbackInputs */
+/** @typedef {{}} Category_Fallback_HintInputs */
+/** @typedef {{}} Category_IconInputs */
+/** @typedef {{}} Category_Icon_NoneInputs */
+/** @typedef {{}} Category_Icon_SearchInputs */
+/** @typedef {{}} Category_NameInputs */
+/** @typedef {{}} Category_Name_MissingInputs */
+/** @typedef {{}} Category_NewInputs */
+/** @typedef {{}} Category_Save_FailedInputs */
+/** @typedef {{}} Category_UpdatedInputs */
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
@@ -195,6 +223,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
+/** @typedef {{}} Settings_Categories_DescriptionInputs */
+/** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
@@ -689,6 +719,20 @@ export const api_error_account_not_empty = /** @type {((inputs?: Api_Error_Accou
 /**
 * | output |
 * | --- |
+* | "The category has transactions. Choose where they move." |
+*
+* @param {Api_Error_Category_In_UseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_category_in_use = /** @type {((inputs?: Api_Error_Category_In_UseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Category_In_UseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_category_in_use(inputs)
+	return __en.api_error_category_in_use(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "The category doesn't match the kind of transaction." |
 *
 * @param {Api_Error_Category_Kind_MismatchInputs} inputs
@@ -699,6 +743,34 @@ export const api_error_category_kind_mismatch = /** @type {((inputs?: Api_Error_
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.api_error_category_kind_mismatch(inputs)
 	return __en.api_error_category_kind_mismatch(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "A category with this name already exists." |
+*
+* @param {Api_Error_Category_Name_TakenInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_category_name_taken = /** @type {((inputs?: Api_Error_Category_Name_TakenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Category_Name_TakenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_category_name_taken(inputs)
+	return __en.api_error_category_name_taken(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Other can't be renamed or deleted." |
+*
+* @param {Api_Error_Fallback_CategoryInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_fallback_category = /** @type {((inputs?: Api_Error_Fallback_CategoryInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Fallback_CategoryInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_fallback_category(inputs)
+	return __en.api_error_fallback_category(inputs)
 });
 /**
 * | output |
@@ -899,6 +971,231 @@ export const auth_username = /** @type {((inputs?: Auth_UsernameInputs, options?
 /**
 * | output |
 * | --- |
+* | "Offline, you can only view categories." |
+*
+* @param {Categories_OfflineInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const categories_offline = /** @type {((inputs?: Categories_OfflineInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Categories_OfflineInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.categories_offline(inputs)
+	return __en.categories_offline(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Expenses" |
+*
+* @param {Categories_Tab_ExpenseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const categories_tab_expense = /** @type {((inputs?: Categories_Tab_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Categories_Tab_ExpenseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.categories_tab_expense(inputs)
+	return __en.categories_tab_expense(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Income" |
+*
+* @param {Categories_Tab_IncomeInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const categories_tab_income = /** @type {((inputs?: Categories_Tab_IncomeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Categories_Tab_IncomeInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.categories_tab_income(inputs)
+	return __en.categories_tab_income(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Categories" |
+*
+* @param {Categories_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const categories_title = /** @type {((inputs?: Categories_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Categories_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.categories_title(inputs)
+	return __en.categories_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Color" |
+*
+* @param {Category_ColorInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_color = /** @type {((inputs?: Category_ColorInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_ColorInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_color(inputs)
+	return __en.category_color(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Color {number}" |
+*
+* @param {Category_Color_OptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_color_option = /** @type {((inputs: Category_Color_OptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Color_OptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_color_option(inputs)
+	return __en.category_color_option(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Category {name} created" |
+*
+* @param {Category_CreatedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_created = /** @type {((inputs: Category_CreatedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_CreatedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_created(inputs)
+	return __en.category_created(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Delete {name}" |
+*
+* @param {Category_Delete_ActionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_action = /** @type {((inputs: Category_Delete_ActionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_ActionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_action(inputs)
+	return __en.category_delete_action(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Counting transactions …" |
+*
+* @param {Category_Delete_CountingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_counting = /** @type {((inputs?: Category_Delete_CountingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_CountingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_counting(inputs)
+	return __en.category_delete_counting(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{name} couldn't be deleted. Please try again." |
+*
+* @param {Category_Delete_FailedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_failed = /** @type {((inputs: Category_Delete_FailedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_FailedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_failed(inputs)
+	return __en.category_delete_failed(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Move to" |
+*
+* @param {Category_Delete_TargetInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_target = /** @type {((inputs?: Category_Delete_TargetInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_TargetInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_target(inputs)
+	return __en.category_delete_target(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Delete {name}?" |
+*
+* @param {Category_Delete_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_title = /** @type {((inputs: Category_Delete_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_title(inputs)
+	return __en.category_delete_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "This category has no transactions." |
+*
+* @param {Category_Delete_UnusedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_unused = /** @type {((inputs?: Category_Delete_UnusedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_UnusedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_unused(inputs)
+	return __en.category_delete_unused(inputs)
+});
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} transaction moves to the chosen category." |
+* | "other" | "{count} transactions move to the chosen category." |
+*
+* @param {Category_Delete_UsedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_delete_used = /** @type {((inputs: Category_Delete_UsedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Delete_UsedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_delete_used(inputs)
+	return __en.category_delete_used(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "{name} deleted" |
+*
+* @param {Category_DeletedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_deleted = /** @type {((inputs: Category_DeletedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_DeletedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_deleted(inputs)
+	return __en.category_deleted(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Edit category" |
+*
+* @param {Category_EditInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_edit = /** @type {((inputs?: Category_EditInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_EditInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_edit(inputs)
+	return __en.category_edit(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Other" |
 *
 * @param {Category_FallbackInputs} inputs
@@ -909,6 +1206,132 @@ export const category_fallback = /** @type {((inputs?: Category_FallbackInputs, 
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.category_fallback(inputs)
 	return __en.category_fallback(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "This category always exists. You can only change its color and icon." |
+*
+* @param {Category_Fallback_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_fallback_hint = /** @type {((inputs?: Category_Fallback_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Fallback_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_fallback_hint(inputs)
+	return __en.category_fallback_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Icon" |
+*
+* @param {Category_IconInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_icon = /** @type {((inputs?: Category_IconInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_IconInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_icon(inputs)
+	return __en.category_icon(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No matching icon." |
+*
+* @param {Category_Icon_NoneInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_icon_none = /** @type {((inputs?: Category_Icon_NoneInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Icon_NoneInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_icon_none(inputs)
+	return __en.category_icon_none(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Search icons" |
+*
+* @param {Category_Icon_SearchInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_icon_search = /** @type {((inputs?: Category_Icon_SearchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Icon_SearchInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_icon_search(inputs)
+	return __en.category_icon_search(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Name" |
+*
+* @param {Category_NameInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_name = /** @type {((inputs?: Category_NameInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_NameInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_name(inputs)
+	return __en.category_name(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Enter a name." |
+*
+* @param {Category_Name_MissingInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_name_missing = /** @type {((inputs?: Category_Name_MissingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Name_MissingInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_name_missing(inputs)
+	return __en.category_name_missing(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "New category" |
+*
+* @param {Category_NewInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_new = /** @type {((inputs?: Category_NewInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_NewInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_new(inputs)
+	return __en.category_new(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "The category couldn't be saved. Please try again." |
+*
+* @param {Category_Save_FailedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_save_failed = /** @type {((inputs?: Category_Save_FailedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Save_FailedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_save_failed(inputs)
+	return __en.category_save_failed(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Category saved" |
+*
+* @param {Category_UpdatedInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_updated = /** @type {((inputs?: Category_UpdatedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_UpdatedInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_updated(inputs)
+	return __en.category_updated(inputs)
 });
 /**
 * | output |
@@ -2983,6 +3406,34 @@ export const search_show_in_month = /** @type {((inputs?: Search_Show_In_MonthIn
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.search_show_in_month(inputs)
 	return __en.search_show_in_month(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Create categories, rename them or change their color and icon." |
+*
+* @param {Settings_Categories_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_categories_description = /** @type {((inputs?: Settings_Categories_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Categories_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_categories_description(inputs)
+	return __en.settings_categories_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Manage categories" |
+*
+* @param {Settings_Categories_OpenInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_categories_open = /** @type {((inputs?: Settings_Categories_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Categories_OpenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_categories_open(inputs)
+	return __en.settings_categories_open(inputs)
 });
 /**
 * | output |

@@ -5,7 +5,7 @@ import { useRipple } from "#/hooks/use-ripple.ts";
 import { paletteFromHex, toneStyle } from "#/utils/color.ts";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
-import { useCategories } from "#/features/transactions/transaction-queries.ts";
+import { useCategories } from "#/features/categories/category-queries.ts";
 import { usePendingChanges } from "#/features/sync/use-sync-status.ts";
 import { cn } from "#/lib/cn.ts";
 import type { ComponentProps } from "react";
