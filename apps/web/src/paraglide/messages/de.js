@@ -864,7 +864,7 @@ export const overview_pace_none = /** @type {(inputs: Overview_Pace_NoneInputs) 
 };
 
 export const overview_total_outflow = /** @type {(inputs: Overview_Total_OutflowInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`= Gesamtabfluss`)
+	return /** @type {LocalizedString} */ (`= Gesamtausgaben`)
 };
 
 export const overview_trend_hint = /** @type {(inputs: Overview_Trend_HintInputs) => LocalizedString} */ () => {
