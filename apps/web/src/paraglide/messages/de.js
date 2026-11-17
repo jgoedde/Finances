@@ -190,6 +190,7 @@
 /** @typedef {{}} Search_No_ResultsInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
+/** @typedef {{}} Search_Show_In_MonthInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
@@ -1040,6 +1041,10 @@ export const search_offline = /** @type {(inputs: Search_OfflineInputs) => Local
 
 export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Buchung/Transaktion suchen`)
+};
+
+export const search_show_in_month = /** @type {(inputs: Search_Show_In_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Im Monat anzeigen`)
 };
 
 export const settings_export_description = /** @type {(inputs: Settings_Export_DescriptionInputs) => LocalizedString} */ () => {

@@ -192,6 +192,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_No_ResultsInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
+/** @typedef {{}} Search_Show_In_MonthInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
@@ -2938,6 +2939,20 @@ export const search_placeholder = /** @type {((inputs?: Search_PlaceholderInputs
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.search_placeholder(inputs)
 	return __en.search_placeholder(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Show in month" |
+*
+* @param {Search_Show_In_MonthInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const search_show_in_month = /** @type {((inputs?: Search_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.search_show_in_month(inputs)
+	return __en.search_show_in_month(inputs)
 });
 /**
 * | output |

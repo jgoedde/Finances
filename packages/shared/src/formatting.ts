@@ -80,7 +80,8 @@ function formatNearDay(days: number, locale: string): string {
 /**
  * A day heading. Within the last week relative, then the date: "Heute · 18.
  * Oktober", "Gestern · 17. Oktober", "Donnerstag · 16. Oktober"; older and
- * future days e.g. "Sa., 11. Oktober".
+ * future days e.g. "Sa., 11. Oktober" (with the year outside the current
+ * one, e.g. "Mi., 24. Dezember 2025").
  */
 export function formatDayHeading(
     date: Date,
@@ -93,6 +94,10 @@ export function formatDayHeading(
             weekday: "short",
             day: "2-digit",
             month: "long",
+            year:
+                date.getFullYear() === today.getFullYear()
+                    ? undefined
+                    : "numeric",
         });
     }
 

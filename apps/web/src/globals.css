@@ -310,6 +310,12 @@
     /* The sync indicator grows in from the left (`animate-sync-strip-grow`). */
     --animate-sync-strip-grow: sync-strip-grow 600ms
         var(--ease-emphasized-decelerate) both;
+
+    /*
+     * A transaction "Show in month" landed on fades from highlighted
+     * (`animate-highlight-fade`); with reduced motion it stays until the end.
+     */
+    --animate-highlight-fade: highlight-fade 2s var(--ease-standard);
 }
 
 @layer base {
@@ -439,6 +445,12 @@
 @keyframes sync-strip-grow {
     from {
         transform: scaleX(0);
+    }
+}
+
+@keyframes highlight-fade {
+    from {
+        background-color: var(--color-secondary-container);
     }
 }
 
