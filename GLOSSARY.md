@@ -41,8 +41,20 @@ A transaction where money is spent.
 _Avoid_: Cost, spending
 
 **Income**:
-A transaction where money is received.
+A transaction where money is received in day-to-day life, such as a refund or a friend paying back. A refund doesn't lower what any expense category spent. Regular earnings such as a salary are not meant to be recorded.
 _Avoid_: Revenue, earning
+
+**Category**:
+What a transaction is for, such as groceries or a refund. Belongs to one user and to one kind, fixed when it is created: expenses only get expense categories, incomes only income categories. Its name is unique among the user's categories of that kind.
+_Avoid_: Tag, label, type
+
+**Default category**:
+A category an admin maintains for the whole instance. Every new user starts with a copy of each; changing a default category later leaves the categories users already have untouched.
+_Avoid_: Seed category, template category, global category
+
+**Fallback category**:
+The one category of each kind that every user always has and can never remove or rename, shown as "Sonstiges" (or "Other" in English).
+_Avoid_: Default category, uncategorized, misc
 
 **Counterparty**:
 Who a transaction is with: where the money went for an expense, where it came from for an income, such as a supermarket or an employer. The same counterparty may appear under several categories.
