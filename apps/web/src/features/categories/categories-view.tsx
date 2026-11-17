@@ -28,10 +28,13 @@ import {
     useDeleteCategory,
     useUpdateCategory,
 } from "#/features/categories/category-queries.ts";
+import { CategoryGrid } from "#/features/categories/category-grid.tsx";
 import { DeleteCategoryDialog } from "#/features/categories/delete-category-dialog.tsx";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
+import { useIsMediumWindow } from "#/hooks/use-is-medium-window.ts";
+import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
 const KIND_TABS = {
@@ -55,6 +58,7 @@ interface CategoriesViewProps {
  */
 export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
     const isOnline = useIsOnline();
+    const isMediumWindow = useIsMediumWindow();
     const categories = useCategories();
     const [editing, setEditing] = useState<Editing>(null);
     const [deleting, setDeleting] = useState<Category | null>(null);
@@ -127,7 +131,11 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                     onKindChange(value as TransactionKind)
                 }
             >
-                <TabsList>
+                <TabsList
+                    className={cn(
+                        isMediumWindow && "px-6 *:max-w-60 *:flex-none",
+                    )}
+                >
                     {(Object.keys(KIND_TABS) as TransactionKind[]).map(
                         (tab) => (
                             <TabsTrigger key={tab} value={tab}>
@@ -138,7 +146,12 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                 </TabsList>
             </Tabs>
 
-            <main className={"mx-auto flex w-full max-w-md flex-col py-2"}>
+            <main
+                className={cn(
+                    "flex w-full flex-col",
+                    isMediumWindow ? "gap-2 p-6" : "mx-auto max-w-md py-2",
+                )}
+            >
                 {!isOnline && (
                     <p
                         className={`px-4 py-2 text-body-medium
@@ -147,67 +160,81 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                         {m.categories_offline()}
                     </p>
                 )}
-                <ul>
-                    {ofKind.map((category) => {
-                        const name = getCategoryName(category.name);
-                        return (
-                            <li
-                                key={category.id}
-                                className={"flex items-center pr-2"}
-                            >
-                                <button
-                                    type={"button"}
-                                    className={`state-layer flex min-w-0 grow
-                                    cursor-pointer items-center gap-4 py-2 pl-4
-                                    text-left focus-ring`}
-                                    onClick={() => setEditing(category)}
-                                >
-                                    <CategoryAvatar
-                                        color={category.color}
-                                        iconName={category.iconName}
-                                    />
-                                    <span
-                                        className={`truncate text-body-large
-                                        text-on-surface`}
+                {isMediumWindow ? (
+                    <CategoryGrid
+                        categories={ofKind}
+                        isOnline={isOnline}
+                        onCreate={() => setEditing("new")}
+                        onEdit={setEditing}
+                    />
+                ) : (
+                    <>
+                        <ul>
+                            {ofKind.map((category) => {
+                                const name = getCategoryName(category.name);
+                                return (
+                                    <li
+                                        key={category.id}
+                                        className={"flex items-center pr-2"}
                                     >
-                                        {name}
-                                    </span>
-                                </button>
-                                {!category.fallback && (
-                                    <OfflineHint active={!isOnline}>
-                                        <Button
-                                            variant={"ghost"}
-                                            size={"icon"}
-                                            aria-label={m.category_delete_action(
-                                                { name },
-                                            )}
-                                            disabled={!isOnline}
-                                            onClick={() =>
-                                                setDeleting(category)
-                                            }
+                                        <button
+                                            type={"button"}
+                                            className={`state-layer flex min-w-0
+                                                grow cursor-pointer items-center
+                                                gap-4 py-2 pl-4 text-left
+                                                focus-ring`}
+                                            onClick={() => setEditing(category)}
                                         >
-                                            <Trash2 />
-                                        </Button>
-                                    </OfflineHint>
-                                )}
-                            </li>
-                        );
-                    })}
-                </ul>
-                <OfflineHint active={!isOnline}>
-                    <Button
-                        variant={"filledTonal"}
-                        className={"m-4 self-start"}
-                        disabled={!isOnline}
-                        onClick={() => setEditing("new")}
-                    >
-                        <Plus />
-                        {m.category_new()}
-                    </Button>
-                </OfflineHint>
+                                            <CategoryAvatar
+                                                color={category.color}
+                                                iconName={category.iconName}
+                                            />
+                                            <span
+                                                className={`truncate
+                                                    text-body-large
+                                                    text-on-surface`}
+                                            >
+                                                {name}
+                                            </span>
+                                        </button>
+                                        {!category.fallback && (
+                                            <OfflineHint active={!isOnline}>
+                                                <Button
+                                                    variant={"ghost"}
+                                                    size={"icon"}
+                                                    aria-label={m.category_delete_action(
+                                                        { name },
+                                                    )}
+                                                    disabled={!isOnline}
+                                                    onClick={() =>
+                                                        setDeleting(category)
+                                                    }
+                                                >
+                                                    <Trash2 />
+                                                </Button>
+                                            </OfflineHint>
+                                        )}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        <OfflineHint active={!isOnline}>
+                            <Button
+                                variant={"filledTonal"}
+                                className={"m-4 self-start"}
+                                disabled={!isOnline}
+                                onClick={() => setEditing("new")}
+                            >
+                                <Plus />
+                                {m.category_new()}
+                            </Button>
+                        </OfflineHint>
+                    </>
+                )}
             </main>
 
             <Drawer
+                direction={isMediumWindow ? "right" : "bottom"}
                 open={editing !== null}
                 onOpenChange={(open) => {
                     if (!open) {
@@ -215,13 +242,35 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                     }
                 }}
             >
-                <DrawerContent>
-                    <DrawerHeader>
-                        <DrawerTitle>
+                <DrawerContent className={"sm:max-w-md"}>
+                    <DrawerHeader className={"flex-row items-center"}>
+                        <DrawerTitle className={"grow"}>
                             {editing === "new"
                                 ? m.category_new()
                                 : m.category_edit()}
                         </DrawerTitle>
+                        {/* Compact windows delete from the list. */}
+                        {isMediumWindow &&
+                            editing !== null &&
+                            editing !== "new" &&
+                            !editing.fallback && (
+                                <OfflineHint active={!isOnline}>
+                                    <Button
+                                        variant={"ghost"}
+                                        size={"icon"}
+                                        aria-label={m.category_delete_action({
+                                            name: getCategoryName(editing.name),
+                                        })}
+                                        disabled={!isOnline}
+                                        onClick={() => {
+                                            setEditing(null);
+                                            setDeleting(editing);
+                                        }}
+                                    >
+                                        <Trash2 />
+                                    </Button>
+                                </OfflineHint>
+                            )}
                     </DrawerHeader>
                     {editing !== null && (
                         <div className={"overflow-y-auto px-4 pb-6"}>
