@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { MonthOverview } from "@finances/shared";
+import { FALLBACK_CATEGORIES, type MonthOverview } from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -72,7 +72,7 @@ describe("month overview", () => {
         await add("2026-10-03T12:00:00Z", {
             kind: "income",
             amount: 100,
-            categoryId: "1",
+            categoryId: FALLBACK_CATEGORIES.income.id,
         });
     });
 
@@ -110,7 +110,11 @@ describe("month overview", () => {
             })),
         ).toEqual([
             { categoryId: "2", total: 30, typical: 20 },
-            { categoryId: "1", total: -100, typical: 0 },
+            {
+                categoryId: FALLBACK_CATEGORIES.income.id,
+                total: -100,
+                typical: 0,
+            },
         ]);
     });
 

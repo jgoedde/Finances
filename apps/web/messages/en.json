@@ -40,6 +40,7 @@
     "error_unexpected": "An unknown error occurred. Please try again.",
     "error_unknown": "Unknown error.",
 
+    "api_error_category_kind_mismatch": "The category doesn't match the kind of transaction.",
     "api_error_account_not_empty": "Your account already contains data.",
     "api_error_file_too_large": "The file is too large.",
     "api_error_forbidden": "You aren't allowed to do that.",
@@ -193,6 +194,7 @@
     "transaction_choose_date": "Choose date",
     "transaction_counterparty_expense": "Where?",
     "transaction_counterparty_income": "From whom?",
+    "category_fallback": "Other",
     "transaction_category": "Category",
     "transaction_date": "Date",
     "transaction_date_today": "Today",

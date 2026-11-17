@@ -40,6 +40,7 @@
     "error_unexpected": "Es ist ein unbekannter Fehler aufgetreten. Bitte versuche es erneut.",
     "error_unknown": "Unbekannter Fehler.",
 
+    "api_error_category_kind_mismatch": "Die Kategorie passt nicht zur Art der Buchung.",
     "api_error_account_not_empty": "Dein Konto enthält bereits Daten.",
     "api_error_file_too_large": "Die Datei ist zu groß.",
     "api_error_forbidden": "Dafür fehlt Dir die Berechtigung.",
@@ -193,6 +194,7 @@
     "transaction_choose_date": "Datum wählen",
     "transaction_counterparty_expense": "Wo?",
     "transaction_counterparty_income": "Von wem?",
+    "category_fallback": "Sonstiges",
     "transaction_category": "Kategorie",
     "transaction_date": "Datum",
     "transaction_date_today": "Heute",

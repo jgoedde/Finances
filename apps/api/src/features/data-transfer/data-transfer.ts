@@ -5,6 +5,10 @@ import {
     readFixedCosts,
 } from "#/features/fixed-costs/fixed-costs.ts";
 import {
+    toCategory,
+    toCategoryColumns,
+} from "#/features/categories/categories.ts";
+import {
     toLocationColumns,
     toTransaction,
 } from "#/features/transactions/transactions.ts";
@@ -38,14 +42,9 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 5,
+        version: 6,
         exportedAt: new Date().toISOString(),
-        categories: categories.map((c) => ({
-            id: c.id,
-            name: c.name,
-            color: c.color,
-            iconName: c.icon_name,
-        })),
+        categories: categories.map(toCategory),
         fixedCostCategories: fixedCostCategories.map((c) => ({
             id: c.id,
             name: c.name,
@@ -80,6 +79,8 @@ export async function hasData(db: DB, userId: string): Promise<boolean> {
 
 export class InvalidReferenceError extends Error {}
 
+export class CategoryKindMismatchError extends Error {}
+
 export class PriceChangeOutOfRangeError extends Error {}
 
 /**
@@ -91,15 +92,22 @@ export async function replaceData(
     userId: string,
     data: DataExport,
 ): Promise<ImportResult> {
-    const categoryIds = new Set(data.categories.map((c) => c.id));
+    const categoryKinds = new Map(data.categories.map((c) => [c.id, c.kind]));
     const fixedCostCategoryIds = new Set(
         data.fixedCostCategories.map((c) => c.id),
     );
     if (
-        data.transactions.some((t) => !categoryIds.has(t.categoryId)) ||
+        data.transactions.some((t) => !categoryKinds.has(t.categoryId)) ||
         data.fixedCosts.some((f) => !fixedCostCategoryIds.has(f.categoryId))
     ) {
         throw new InvalidReferenceError();
+    }
+    if (
+        data.transactions.some(
+            (t) => categoryKinds.get(t.categoryId) !== t.kind,
+        )
+    ) {
+        throw new CategoryKindMismatchError();
     }
     if (!data.fixedCosts.every(arePriceChangesInRange)) {
         throw new PriceChangeOutOfRangeError();
@@ -139,15 +147,7 @@ export async function replaceData(
         await insertChunked(data.categories, (chunk) =>
             trx
                 .insertInto("categories")
-                .values(
-                    chunk.map((c) => ({
-                        user_id: userId,
-                        id: c.id,
-                        name: c.name,
-                        color: c.color,
-                        icon_name: c.iconName,
-                    })),
-                )
+                .values(chunk.map((c) => toCategoryColumns(userId, c)))
                 .execute(),
         );
         await insertChunked(data.fixedCostCategories, (chunk) =>

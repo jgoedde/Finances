@@ -205,6 +205,13 @@ export const api_error_account_not_empty: ((inputs?: Api_Error_Account_Not_Empty
 /**
 * | output |
 * | --- |
+* | "The category doesn't match the kind of transaction." |
+*
+*/
+export const api_error_category_kind_mismatch: ((inputs?: Api_Error_Category_Kind_MismatchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Category_Kind_MismatchInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "The file is too large." |
 *
 */
@@ -300,6 +307,13 @@ export const auth_password: ((inputs?: Auth_PasswordInputs, options?: { locale?:
 *
 */
 export const auth_username: ((inputs?: Auth_UsernameInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Auth_UsernameInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Other" |
+*
+*/
+export const category_fallback: ((inputs?: Category_FallbackInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_FallbackInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -1952,6 +1966,7 @@ export type Amount_Sparkline_SinceInputs = { date: NonNullable<unknown> };
 export type Amount_Sparkline_Since_StartInputs = {};
 export type Amount_Sparkline_UpcomingInputs = {};
 export type Api_Error_Account_Not_EmptyInputs = {};
+export type Api_Error_Category_Kind_MismatchInputs = {};
 export type Api_Error_File_Too_LargeInputs = {};
 export type Api_Error_ForbiddenInputs = {};
 export type Api_Error_Invalid_LinkInputs = {};
@@ -1966,6 +1981,7 @@ export type Api_Error_Username_TakenInputs = {};
 export type App_NameInputs = {};
 export type Auth_PasswordInputs = {};
 export type Auth_UsernameInputs = {};
+export type Category_FallbackInputs = {};
 export type Error_Try_AgainInputs = {};
 export type Error_UnexpectedInputs = {};
 export type Error_UnknownInputs = {};

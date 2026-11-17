@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { categorySchema } from "./categories.ts";
+import { categorySchema, FALLBACK_CATEGORIES } from "./categories.ts";
 import {
     fixedCostCategorySchema,
     fixedCostSchema,
     initialHue,
 } from "./fixed-costs.ts";
-import { transactionSchema } from "./transactions.ts";
+import { transactionKindSchema, transactionSchema } from "./transactions.ts";
 
 /**
  * A user's complete data, as downloaded by the export. Bump `version` on
@@ -13,7 +13,7 @@ import { transactionSchema } from "./transactions.ts";
  */
 const dataExportSchema = z.object({
     format: z.literal("finances-export"),
-    version: z.literal(5),
+    version: z.literal(6),
     exportedAt: z.iso.datetime(),
     categories: z.array(categorySchema),
     fixedCostCategories: z.array(fixedCostCategorySchema),
@@ -23,9 +23,25 @@ const dataExportSchema = z.object({
 export type DataExport = z.infer<typeof dataExportSchema>;
 
 /**
+ * Version 5: categories had no `kind` and no fallback categories existed.
+ */
+const dataExportV5Schema = dataExportSchema.extend({
+    version: z.literal(5),
+    categories: z.array(
+        z.object({
+            id: z.string(),
+            name: z.string(),
+            color: z.string(),
+            iconName: z.string(),
+        }),
+    ),
+});
+type DataExportV5 = z.infer<typeof dataExportV5Schema>;
+
+/**
  * Version 4: fixed cost categories had no `hue`.
  */
-const dataExportV4Schema = dataExportSchema.extend({
+const dataExportV4Schema = dataExportV5Schema.extend({
     version: z.literal(4),
     fixedCostCategories: z.array(fixedCostCategorySchema.omit({ hue: true })),
 });
@@ -52,7 +68,36 @@ const dataExportV2Schema = dataExportV3Schema.extend({
     transactions: z.array(transactionSchema.omit({ location: true })),
 });
 
-function fromV4(data: DataExportV4): DataExport {
+/**
+ * Like the migration `0006-category-kinds`: every category becomes an
+ * expense category, both fallback categories are added and all incomes move
+ * onto the income fallback category.
+ */
+function fromV5(data: DataExportV5): DataExport {
+    return {
+        ...data,
+        version: 6,
+        categories: [
+            ...data.categories.map((category) => ({
+                ...category,
+                kind: "expense" as const,
+                fallback: false as const,
+            })),
+            FALLBACK_CATEGORIES.expense,
+            FALLBACK_CATEGORIES.income,
+        ],
+        transactions: data.transactions.map((transaction) =>
+            transaction.kind === "income"
+                ? {
+                      ...transaction,
+                      categoryId: FALLBACK_CATEGORIES.income.id,
+                  }
+                : transaction,
+        ),
+    };
+}
+
+function fromV4(data: DataExportV4): DataExportV5 {
     return {
         ...data,
         version: 5,
@@ -78,6 +123,17 @@ function fromV3(data: DataExportV3): DataExportV4 {
 }
 
 /**
+ * Whether the export has exactly one fallback category of each kind.
+ */
+function hasOneFallbackPerKind(data: DataExport): boolean {
+    return transactionKindSchema.options.every(
+        (kind) =>
+            data.categories.filter((c) => c.fallback && c.kind === kind)
+                .length === 1,
+    );
+}
+
+/**
  * What the import accepts: an export of version 2 or later, upgraded to the
  * current one.
  */
@@ -86,32 +142,43 @@ export const dataImportSchema = z
         dataExportV2Schema,
         dataExportV3Schema,
         dataExportV4Schema,
+        dataExportV5Schema,
         dataExportSchema,
     ])
     .transform((data): DataExport => {
         switch (data.version) {
             case 2:
-                return fromV4(
-                    fromV3({
-                        ...data,
-                        version: 3,
-                        transactions: data.transactions.map((transaction) => ({
-                            ...transaction,
-                            location: null,
-                        })),
-                    }),
+                return fromV5(
+                    fromV4(
+                        fromV3({
+                            ...data,
+                            version: 3,
+                            transactions: data.transactions.map(
+                                (transaction) => ({
+                                    ...transaction,
+                                    location: null,
+                                }),
+                            ),
+                        }),
+                    ),
                 );
             case 3:
-                return fromV4(fromV3(data));
+                return fromV5(fromV4(fromV3(data)));
             case 4:
-                return fromV4(data);
+                return fromV5(fromV4(data));
             case 5:
+                return fromV5(data);
+            case 6:
                 return data;
             default:
                 throw new Error(
                     `unreachable error - type ${String(data satisfies never)}`,
                 );
         }
+    })
+    .refine(hasOneFallbackPerKind, {
+        message: "Needs exactly one fallback category of each kind",
+        path: ["categories"],
     });
 
 export interface ImportResult {

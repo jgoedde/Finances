@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import type { CategoryOverview } from "@finances/shared";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 interface CategoryBarProps {
     category: CategoryOverview;
@@ -54,7 +55,7 @@ export function CategoryBar({ category, scale }: CategoryBarProps) {
                         "min-w-0 grow truncate text-body-large text-on-surface"
                     }
                 >
-                    {category.categoryName}
+                    {getCategoryName(category.categoryName)}
                 </span>
                 <span className={"text-label-large text-on-surface"}>
                     {formatCurrency(total, getLocale())}

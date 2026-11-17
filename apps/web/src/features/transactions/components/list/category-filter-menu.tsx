@@ -14,6 +14,7 @@ import { useCategories } from "#/features/transactions/transaction-queries.ts";
 import { useMonthCategoryTotals } from "#/features/transactions/components/list/use-month-category-totals.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
@@ -27,9 +28,11 @@ const ALL = "";
 export function CategoryFilterMenu() {
     const { category: selected } = transactionsRoute.useSearch();
     const totals = useMonthCategoryTotals();
-    const selectedName = useCategories().find(
+    const selectedCategory = useCategories().find(
         (category) => category.id === selected,
-    )?.name;
+    );
+    const selectedName =
+        selectedCategory && getCategoryName(selectedCategory.name);
 
     const navigate = useNavigate();
 
@@ -90,7 +93,7 @@ export function CategoryFilterMenu() {
                                 style={{ backgroundColor: category.color }}
                             />
                             <span className={"min-w-0 grow truncate"}>
-                                {category.name}
+                                {getCategoryName(category.name)}
                             </span>
                             <span
                                 className={

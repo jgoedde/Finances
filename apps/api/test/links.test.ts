@@ -51,7 +51,7 @@ describe("links", () => {
 
         const carol = await app.login("carol", "carols-password");
         const categories = await json<unknown[]>(carol("/api/categories"));
-        expect(categories).toHaveLength(10);
+        expect(categories).toHaveLength(12);
 
         const again = await redeem(token, {
             username: "dave",

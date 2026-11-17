@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Pattern } from "@finances/shared";
+import { FALLBACK_CATEGORIES, type Pattern } from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -154,6 +154,23 @@ describe("patterns", () => {
         expect(drifts).toHaveLength(1);
         expect(drifts[0]?.category.categoryId).toBe("2");
         expect(drifts[0]?.change).toBeCloseTo(450 / 79 / (300 / 92) - 1, 2);
+    });
+
+    it("ignores income categories in the category drift", async () => {
+        for (const day of ["2026-05-15", "2026-06-15", "2026-07-15"]) {
+            await add(day, {
+                kind: "income",
+                categoryId: FALLBACK_CATEGORIES.income.id,
+                amount: 100,
+            });
+        }
+        await add("2026-10-15", {
+            kind: "income",
+            categoryId: FALLBACK_CATEGORIES.income.id,
+            amount: 900,
+        });
+
+        expect(ofKind(await patterns(), "categoryDrift")).toEqual([]);
     });
 
     it("follows the selected month", async () => {

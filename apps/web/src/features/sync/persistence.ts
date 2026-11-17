@@ -49,6 +49,12 @@ export async function restoreQueryClient(
         // The persister already discarded the unreadable cache; start empty.
     }
 
+    // Categories cached before they had a kind; refetch them.
+    queryClient.removeQueries({
+        queryKey: ["categories"],
+        predicate: (query) => !everyHas(query.state.data, "kind"),
+    });
+
     // Fixed cost categories cached before they had a hue (v2.9.0); refetch
     // them and the overviews showing them.
     queryClient.removeQueries({

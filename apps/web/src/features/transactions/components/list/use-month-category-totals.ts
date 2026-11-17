@@ -10,8 +10,9 @@ import {
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
 /**
- * Net spending per category in the selected month, largest first. Only
- * categories with transactions, plus the selected one.
+ * Net spending per category in the selected month, largest first and the
+ * fallback categories last. Only categories with transactions, plus the
+ * selected one.
  */
 export function useMonthCategoryTotals(): {
     category: Category;
@@ -36,5 +37,9 @@ export function useMonthCategoryTotals(): {
     return categories
         .filter(({ id }) => totals.has(id) || id === selected)
         .map((category) => ({ category, total: totals.get(category.id) ?? 0 }))
-        .sort((a, b) => b.total - a.total);
+        .sort(
+            (a, b) =>
+                Number(a.category.fallback) - Number(b.category.fallback) ||
+                b.total - a.total,
+        );
 }

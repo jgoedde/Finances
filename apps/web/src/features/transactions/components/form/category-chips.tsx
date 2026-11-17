@@ -5,6 +5,7 @@ import { Badge } from "#/components/ui/badge.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
+import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
 /**
  * Share of the category's color in a selected chip's tint.
@@ -74,7 +75,7 @@ export function CategoryChips({
                                         }}
                                     />
                                 )}
-                                {category.name}
+                                {getCategoryName(category.name)}
                             </button>
                         </Badge>
                     );

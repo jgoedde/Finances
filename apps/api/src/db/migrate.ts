@@ -8,6 +8,7 @@ import { up as transactionCounterparty } from "./migrations/0002-transaction-cou
 import { up as transactionLocation } from "./migrations/0003-transaction-location.ts";
 import { up as fixedCostPriceChanges } from "./migrations/0004-fixed-cost-price-changes.ts";
 import { up as fixedCostCategoryHue } from "./migrations/0005-fixed-cost-category-hue.ts";
+import { up as categoryKinds } from "./migrations/0006-category-kinds.ts";
 
 // Append new migrations here. Never edit or reorder applied ones.
 const migrations: Record<string, Migration> = {
@@ -16,6 +17,7 @@ const migrations: Record<string, Migration> = {
     "0003-transaction-location": { up: transactionLocation },
     "0004-fixed-cost-price-changes": { up: fixedCostPriceChanges },
     "0005-fixed-cost-category-hue": { up: fixedCostCategoryHue },
+    "0006-category-kinds": { up: categoryKinds },
 };
 
 /**

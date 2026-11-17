@@ -31,6 +31,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_Category_Kind_MismatchInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
@@ -45,6 +46,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} App_NameInputs */
 /** @typedef {{}} Auth_PasswordInputs */
 /** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Category_FallbackInputs */
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
@@ -687,6 +689,20 @@ export const api_error_account_not_empty = /** @type {((inputs?: Api_Error_Accou
 /**
 * | output |
 * | --- |
+* | "The category doesn't match the kind of transaction." |
+*
+* @param {Api_Error_Category_Kind_MismatchInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_category_kind_mismatch = /** @type {((inputs?: Api_Error_Category_Kind_MismatchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Category_Kind_MismatchInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_category_kind_mismatch(inputs)
+	return __en.api_error_category_kind_mismatch(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "The file is too large." |
 *
 * @param {Api_Error_File_Too_LargeInputs} inputs
@@ -879,6 +895,20 @@ export const auth_username = /** @type {((inputs?: Auth_UsernameInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.auth_username(inputs)
 	return __en.auth_username(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Other" |
+*
+* @param {Category_FallbackInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_fallback = /** @type {((inputs?: Category_FallbackInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_FallbackInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_fallback(inputs)
+	return __en.category_fallback(inputs)
 });
 /**
 * | output |

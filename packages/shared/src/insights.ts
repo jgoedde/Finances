@@ -30,7 +30,11 @@ export type MonthInsightQuery = z.infer<typeof monthInsightQuerySchema>;
  */
 export interface CategoryOverview {
     categoryId: string;
-    categoryName: string;
+
+    /**
+     * `null` for a fallback category.
+     */
+    categoryName: string | null;
     categoryColor: string;
     categoryIconName: string;
     total: number;

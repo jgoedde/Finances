@@ -26,7 +26,7 @@ export const getPatterns = factory.createHandlers(
                 .execute(),
             db
                 .selectFrom("categories")
-                .select(["id", "name", "color"])
+                .select(["id", "name", "color", "kind"])
                 .where("user_id", "=", userId)
                 .execute(),
         ]);
