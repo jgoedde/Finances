@@ -1334,6 +1334,13 @@ export const search_placeholder: ((inputs?: Search_PlaceholderInputs, options?: 
 /**
 * | output |
 * | --- |
+* | "Show in month" |
+*
+*/
+export const search_show_in_month: ((inputs?: Search_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Search_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Download all your transactions, categories and fixed costs as a file. You can import it into a new account later." |
 *
 */
@@ -2106,6 +2113,7 @@ export type Search_Load_MoreInputs = {};
 export type Search_No_ResultsInputs = {};
 export type Search_OfflineInputs = {};
 export type Search_PlaceholderInputs = {};
+export type Search_Show_In_MonthInputs = {};
 export type Settings_Export_DescriptionInputs = {};
 export type Settings_Export_FailedInputs = {};
 export type Settings_Import_DescriptionInputs = {};

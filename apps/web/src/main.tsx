@@ -13,6 +13,7 @@ import { sessionQuery } from "#/auth/auth-client.ts";
 import { registerTransactionMutations } from "#/features/transactions/transaction-mutations.ts";
 import { restoreQueryClient } from "#/features/sync/persistence.ts";
 import { TooltipProvider } from "#/components/ui/tooltip.tsx";
+import type { MonthLanding } from "#/features/transactions/components/list/month-landing.ts";
 import { getLocale } from "#/paraglide/runtime.js";
 
 function onUnauthorized() {
@@ -37,6 +38,10 @@ const router = createRouter({ routeTree, context: { queryClient } });
 declare module "@tanstack/react-router" {
     interface Register {
         router: typeof router;
+    }
+
+    interface HistoryState {
+        monthLanding?: MonthLanding;
     }
 
     interface StaticDataRouteOption {

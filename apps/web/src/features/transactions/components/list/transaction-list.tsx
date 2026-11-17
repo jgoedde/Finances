@@ -6,10 +6,11 @@ import { useSelectedMonth } from "#/features/month/month.ts";
 import { transactionsQuery } from "#/features/transactions/transaction-queries.ts";
 import { TransactionGroup } from "#/features/transactions/components/list/transaction-group.tsx";
 import { UpcomingTransactions } from "#/features/transactions/components/list/upcoming-transactions.tsx";
+import { useMonthLanding } from "#/features/transactions/components/list/month-landing.ts";
 import { TransactionListSkeleton } from "#/features/transactions/components/list/transaction-list-skeleton.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
-import _ from "lodash";
+import { groupByDay } from "#/features/transactions/utils/transaction-utils.ts";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 
@@ -36,6 +37,9 @@ export function TransactionList() {
         ...transactionsQuery({ from: tomorrow, to: Number.MAX_SAFE_INTEGER }),
         enabled: isCurrentMonth,
     });
+    const highlighted = useMonthLanding(
+        !isPending && (!isCurrentMonth || !upcomingQuery.isPending),
+    );
 
     const matchesCategory = (it: Transaction) =>
         !category || it.categoryId === category;
@@ -48,9 +52,7 @@ export function TransactionList() {
               .sort((a, b) => a.date - b.date)
         : [];
 
-    const days = Object.entries(
-        _.groupBy(transactions, (it) => startOfDay(it.date).getTime()),
-    ).sort(([a], [b]) => Number(b) - Number(a));
+    const days = groupByDay(transactions);
 
     if (isPending) {
         // A paused query only resumes once the device is back online.
@@ -80,13 +82,18 @@ export function TransactionList() {
     return (
         <div className={"flex flex-col"}>
             {upcoming.length > 0 && (
-                <UpcomingTransactions transactions={upcoming} today={today} />
+                <UpcomingTransactions
+                    transactions={upcoming}
+                    today={today}
+                    highlighted={highlighted}
+                />
             )}
             {days.map(([day, dayTransactions]) => (
                 <TransactionGroup
-                    key={day}
-                    day={new Date(Number(day))}
+                    key={day.getTime()}
+                    day={day}
                     transactions={dayTransactions}
+                    highlighted={highlighted}
                 />
             ))}
         </div>

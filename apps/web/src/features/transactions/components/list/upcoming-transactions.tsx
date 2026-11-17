@@ -9,6 +9,11 @@ interface UpcomingTransactionsProps {
      */
     transactions: Transaction[];
     today: Date;
+
+    /**
+     * The transactions to highlight, e.g. where "Show in month" landed.
+     */
+    highlighted?: ReadonlySet<string>;
 }
 
 /**
@@ -18,9 +23,14 @@ interface UpcomingTransactionsProps {
 export function UpcomingTransactions({
     transactions,
     today,
+    highlighted,
 }: UpcomingTransactionsProps) {
     return (
-        <section className={"flex flex-col pb-2"}>
+        <section
+            // Lands right under the search bar (4.5rem).
+            className={"flex scroll-mt-18 flex-col pb-2"}
+            data-landing-anchor={"upcoming"}
+        >
             {/* Sticks below the search bar (4.5rem), like the day headers. */}
             <h2
                 className={`sticky top-18 z-[5] bg-surface px-4 py-2
@@ -33,6 +43,7 @@ export function UpcomingTransactions({
                     <TransactionListItem
                         key={it.id}
                         transaction={it}
+                        highlighted={highlighted?.has(it.id)}
                         dateLabel={formatUpcomingDay(
                             new Date(it.date),
                             today,

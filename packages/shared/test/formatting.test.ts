@@ -76,6 +76,18 @@ describe("formatting", () => {
         );
     });
 
+    it("adds the year to day headings outside the current year", () => {
+        expect(formatDayHeading(new Date(2025, 11, 24), date, "de")).toBe(
+            "Mi., 24. Dezember 2025",
+        );
+        expect(formatDayHeading(new Date(2025, 11, 24), date, "en")).toBe(
+            "Wed, December 24, 2025",
+        );
+        expect(formatDayHeading(new Date(2027, 0, 2), date, "de")).toBe(
+            "Sa., 02. Januar 2027",
+        );
+    });
+
     it("counts calendar days across a DST switch", () => {
         // Clocks go back on 2026-10-25 in Europe.
         expect(

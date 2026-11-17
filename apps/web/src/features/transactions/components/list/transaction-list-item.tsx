@@ -22,11 +22,17 @@ interface TransactionListItemProps {
      * due.
      */
     dateLabel?: string;
+
+    /**
+     * Fades from highlighted, e.g. where "Show in month" landed.
+     */
+    highlighted?: boolean;
 }
 
 export function TransactionListItem({
     transaction,
     dateLabel,
+    highlighted = false,
 }: TransactionListItemProps) {
     const rippleHandlers = useRipple();
 
@@ -73,6 +79,9 @@ export function TransactionListItem({
                 cursor-pointer flex-row items-center gap-x-4 rounded-md px-2
                 py-2 text-left focus-ring`,
                 isSelected && "bg-secondary-container",
+                highlighted &&
+                    `animate-highlight-fade
+                    motion-reduce:[animation-timing-function:steps(1,end)]`,
             )}
             aria-current={isSelected || undefined}
             data-ripple-color={"bg-on-surface/10"}
