@@ -20,6 +20,8 @@ const transactionsSearchSchema = z.object({
      */
     q: z.string().optional().catch(undefined),
     older: z.enum(DATE_FILTER_OPTIONS).optional().catch(undefined),
+    // PROTOTYPE (#429): day-header variant switcher.
+    variant: z.string().optional().catch(undefined),
 });
 
 // The transaction list with its detail routes (new, edit). On expanded
@@ -27,7 +29,7 @@ const transactionsSearchSchema = z.object({
 // replaces the list. Filters stay while a detail is open.
 export const Route = createFileRoute("/_authed/_shell/_transactions")({
     validateSearch: transactionsSearchSchema,
-    search: { middlewares: [retainSearchParams(["category", "q", "older"])] },
+    search: { middlewares: [retainSearchParams(["category", "q", "older", "variant"])] },
     component: RouteComponent,
 });
 

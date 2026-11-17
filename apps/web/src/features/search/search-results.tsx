@@ -9,11 +9,16 @@ import { Drawer, DrawerContent } from "#/components/ui/drawer.tsx";
 import { DateFilterDrawerContent } from "#/features/search/filters/date/date-filter-drawer-content.tsx";
 import { Badge } from "#/components/ui/badge.tsx";
 import { Button } from "#/components/ui/button.tsx";
-import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
 import { useTransactionSearch } from "#/features/search/search-queries.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { cn } from "#/lib/cn.ts";
+import { startOfDay } from "date-fns";
+import _ from "lodash";
+import {
+    PrototypeDayGroup,
+    PrototypeSwitcher,
+} from "#/features/search/prototype-day-headers.tsx";
 import { m } from "#/paraglide/messages.js";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
@@ -97,11 +102,22 @@ export function SearchResults() {
                     {m.search_no_results()}
                 </p>
             )}
-            <div className={"flex flex-col gap-y-1.5 px-2 pt-2"}>
-                {transactions.map((it) => (
-                    <TransactionListItem key={it.id} transaction={it} />
-                ))}
+            <div className={"flex flex-col pt-2"}>
+                {Object.entries(
+                    _.groupBy(transactions, (it) =>
+                        startOfDay(it.date).getTime(),
+                    ),
+                )
+                    .sort(([a], [b]) => Number(b) - Number(a))
+                    .map(([day, dayTransactions]) => (
+                        <PrototypeDayGroup
+                            key={day}
+                            day={new Date(Number(day))}
+                            transactions={dayTransactions}
+                        />
+                    ))}
             </div>
+            <PrototypeSwitcher />
             {hasNextPage && (
                 <div className={"my-4 flex justify-center"}>
                     <OfflineHint active={!isOnline}>
