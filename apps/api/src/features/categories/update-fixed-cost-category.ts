@@ -1,11 +1,13 @@
-import { z } from "zod";
 import { updateFixedCostCategorySchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
-import { toFixedCostCategory } from "#/features/categories/categories.ts";
+import {
+    categoryIdParam,
+    toFixedCostCategory,
+} from "#/features/categories/categories.ts";
 
 export const updateFixedCostCategory = factory.createHandlers(
-    validate("param", z.object({ id: z.string().min(1) })),
+    validate("param", categoryIdParam),
     validate("json", updateFixedCostCategorySchema),
     async (c) => {
         const { id } = c.req.valid("param");

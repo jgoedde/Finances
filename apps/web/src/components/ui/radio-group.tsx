@@ -70,4 +70,26 @@ function RadioGroupSwatch({
     );
 }
 
-export { RadioGroup, RadioGroupItem, RadioGroupSwatch };
+// An icon choice: a 48dp square showing its children (an icon), filled in
+// secondary-container when selected.
+function RadioGroupIconItem({
+    className,
+    ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+    return (
+        <RadioGroupPrimitive.Item
+            data-slot="radio-group-icon-item"
+            className={cn(
+                `state-layer flex size-12 shrink-0 cursor-pointer items-center
+                justify-center rounded-md text-on-surface-variant focus-ring
+                outline-none disabled:cursor-not-allowed disabled:opacity-38
+                data-[state=checked]:bg-secondary-container
+                data-[state=checked]:text-on-secondary-container [&_svg]:size-6`,
+                className,
+            )}
+            {...props}
+        />
+    );
+}
+
+export { RadioGroup, RadioGroupIconItem, RadioGroupItem, RadioGroupSwatch };

@@ -205,10 +205,31 @@ export const api_error_account_not_empty: ((inputs?: Api_Error_Account_Not_Empty
 /**
 * | output |
 * | --- |
+* | "The category has transactions. Choose where they move." |
+*
+*/
+export const api_error_category_in_use: ((inputs?: Api_Error_Category_In_UseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Category_In_UseInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "The category doesn't match the kind of transaction." |
 *
 */
 export const api_error_category_kind_mismatch: ((inputs?: Api_Error_Category_Kind_MismatchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Category_Kind_MismatchInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "A category with this name already exists." |
+*
+*/
+export const api_error_category_name_taken: ((inputs?: Api_Error_Category_Name_TakenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Category_Name_TakenInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Other can't be renamed or deleted." |
+*
+*/
+export const api_error_fallback_category: ((inputs?: Api_Error_Fallback_CategoryInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Fallback_CategoryInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -310,10 +331,186 @@ export const auth_username: ((inputs?: Auth_UsernameInputs, options?: { locale?:
 /**
 * | output |
 * | --- |
+* | "Offline, you can only view categories." |
+*
+*/
+export const categories_offline: ((inputs?: Categories_OfflineInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Categories_OfflineInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Expenses" |
+*
+*/
+export const categories_tab_expense: ((inputs?: Categories_Tab_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Categories_Tab_ExpenseInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Income" |
+*
+*/
+export const categories_tab_income: ((inputs?: Categories_Tab_IncomeInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Categories_Tab_IncomeInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Categories" |
+*
+*/
+export const categories_title: ((inputs?: Categories_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Categories_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Color" |
+*
+*/
+export const category_color: ((inputs?: Category_ColorInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_ColorInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Color {number}" |
+*
+*/
+export const category_color_option: ((inputs: Category_Color_OptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Color_OptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Category {name} created" |
+*
+*/
+export const category_created: ((inputs: Category_CreatedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_CreatedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Delete {name}" |
+*
+*/
+export const category_delete_action: ((inputs: Category_Delete_ActionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_ActionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Counting transactions …" |
+*
+*/
+export const category_delete_counting: ((inputs?: Category_Delete_CountingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_CountingInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "{name} couldn't be deleted. Please try again." |
+*
+*/
+export const category_delete_failed: ((inputs: Category_Delete_FailedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_FailedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Move to" |
+*
+*/
+export const category_delete_target: ((inputs?: Category_Delete_TargetInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_TargetInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Delete {name}?" |
+*
+*/
+export const category_delete_title: ((inputs: Category_Delete_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "This category has no transactions." |
+*
+*/
+export const category_delete_unused: ((inputs?: Category_Delete_UnusedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_UnusedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} transaction moves to the chosen category." |
+* | "other" | "{count} transactions move to the chosen category." |
+*
+*/
+export const category_delete_used: ((inputs: Category_Delete_UsedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Delete_UsedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "{name} deleted" |
+*
+*/
+export const category_deleted: ((inputs: Category_DeletedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_DeletedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Edit category" |
+*
+*/
+export const category_edit: ((inputs?: Category_EditInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_EditInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Other" |
 *
 */
 export const category_fallback: ((inputs?: Category_FallbackInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_FallbackInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "This category always exists. You can only change its color and icon." |
+*
+*/
+export const category_fallback_hint: ((inputs?: Category_Fallback_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Fallback_HintInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Icon" |
+*
+*/
+export const category_icon: ((inputs?: Category_IconInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_IconInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "No matching icon." |
+*
+*/
+export const category_icon_none: ((inputs?: Category_Icon_NoneInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Icon_NoneInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Search icons" |
+*
+*/
+export const category_icon_search: ((inputs?: Category_Icon_SearchInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Icon_SearchInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Name" |
+*
+*/
+export const category_name: ((inputs?: Category_NameInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_NameInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Enter a name." |
+*
+*/
+export const category_name_missing: ((inputs?: Category_Name_MissingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Name_MissingInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "New category" |
+*
+*/
+export const category_new: ((inputs?: Category_NewInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_NewInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "The category couldn't be saved. Please try again." |
+*
+*/
+export const category_save_failed: ((inputs?: Category_Save_FailedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Save_FailedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Category saved" |
+*
+*/
+export const category_updated: ((inputs?: Category_UpdatedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_UpdatedInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -1355,6 +1552,20 @@ export const search_show_in_month: ((inputs?: Search_Show_In_MonthInputs, option
 /**
 * | output |
 * | --- |
+* | "Create categories, rename them or change their color and icon." |
+*
+*/
+export const settings_categories_description: ((inputs?: Settings_Categories_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Settings_Categories_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Manage categories" |
+*
+*/
+export const settings_categories_open: ((inputs?: Settings_Categories_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Settings_Categories_OpenInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Download all your transactions, categories and fixed costs as a file. You can import it into a new account later." |
 *
 */
@@ -1966,7 +2177,10 @@ export type Amount_Sparkline_SinceInputs = { date: NonNullable<unknown> };
 export type Amount_Sparkline_Since_StartInputs = {};
 export type Amount_Sparkline_UpcomingInputs = {};
 export type Api_Error_Account_Not_EmptyInputs = {};
+export type Api_Error_Category_In_UseInputs = {};
 export type Api_Error_Category_Kind_MismatchInputs = {};
+export type Api_Error_Category_Name_TakenInputs = {};
+export type Api_Error_Fallback_CategoryInputs = {};
 export type Api_Error_File_Too_LargeInputs = {};
 export type Api_Error_ForbiddenInputs = {};
 export type Api_Error_Invalid_LinkInputs = {};
@@ -1981,7 +2195,32 @@ export type Api_Error_Username_TakenInputs = {};
 export type App_NameInputs = {};
 export type Auth_PasswordInputs = {};
 export type Auth_UsernameInputs = {};
+export type Categories_OfflineInputs = {};
+export type Categories_Tab_ExpenseInputs = {};
+export type Categories_Tab_IncomeInputs = {};
+export type Categories_TitleInputs = {};
+export type Category_ColorInputs = {};
+export type Category_Color_OptionInputs = { number: NonNullable<unknown> };
+export type Category_CreatedInputs = { name: NonNullable<unknown> };
+export type Category_Delete_ActionInputs = { name: NonNullable<unknown> };
+export type Category_Delete_CountingInputs = {};
+export type Category_Delete_FailedInputs = { name: NonNullable<unknown> };
+export type Category_Delete_TargetInputs = {};
+export type Category_Delete_TitleInputs = { name: NonNullable<unknown> };
+export type Category_Delete_UnusedInputs = {};
+export type Category_Delete_UsedInputs = { count: NonNullable<unknown> };
+export type Category_DeletedInputs = { name: NonNullable<unknown> };
+export type Category_EditInputs = {};
 export type Category_FallbackInputs = {};
+export type Category_Fallback_HintInputs = {};
+export type Category_IconInputs = {};
+export type Category_Icon_NoneInputs = {};
+export type Category_Icon_SearchInputs = {};
+export type Category_NameInputs = {};
+export type Category_Name_MissingInputs = {};
+export type Category_NewInputs = {};
+export type Category_Save_FailedInputs = {};
+export type Category_UpdatedInputs = {};
 export type Error_Try_AgainInputs = {};
 export type Error_UnexpectedInputs = {};
 export type Error_UnknownInputs = {};
@@ -2130,6 +2369,8 @@ export type Search_No_ResultsInputs = {};
 export type Search_OfflineInputs = {};
 export type Search_PlaceholderInputs = {};
 export type Search_Show_In_MonthInputs = {};
+export type Settings_Categories_DescriptionInputs = {};
+export type Settings_Categories_OpenInputs = {};
 export type Settings_Export_DescriptionInputs = {};
 export type Settings_Export_FailedInputs = {};
 export type Settings_Import_DescriptionInputs = {};

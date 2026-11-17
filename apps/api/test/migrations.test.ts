@@ -18,6 +18,10 @@ import { createTestApp, json, transactionBody } from "./test-app.ts";
  * and incomes in expense categories (`incomeCategoryId`).
  */
 async function undoCategoryKinds(db: DB, incomeCategoryId = "1") {
+    // `0007-category-styles-repeat` only dropped indexes of the rebuilt table.
+    await sql`delete from kysely_migration where name = '0007-category-styles-repeat'`.execute(
+        db,
+    );
     await sql`pragma foreign_keys = off`.execute(db);
     await sql`
         update transactions

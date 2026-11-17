@@ -2,10 +2,8 @@ import { getRouteApi } from "@tanstack/react-router";
 import { endOfMonth } from "date-fns";
 import { type Category, netSpending } from "@finances/shared";
 import { useSelectedMonth } from "#/features/month/month.ts";
-import {
-    useCategories,
-    useTransactions,
-} from "#/features/transactions/transaction-queries.ts";
+import { useCategories } from "#/features/categories/category-queries.ts";
+import { useTransactions } from "#/features/transactions/transaction-queries.ts";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
 

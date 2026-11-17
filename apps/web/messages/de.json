@@ -350,5 +350,48 @@
     "price_change_before_start": "Eine Preisänderung muss nach dem Startdatum liegen.",
     "price_change_after_end": "Eine Preisänderung darf nicht nach dem Enddatum liegen.",
     "price_change_saved": "Preisänderung gespeichert",
-    "price_change_deleted": "Preisänderung gelöscht"
+    "price_change_deleted": "Preisänderung gelöscht",
+
+    "settings_categories_description": "Lege Kategorien an, benenne sie um oder ändere Farbe und Icon.",
+    "settings_categories_open": "Kategorien verwalten",
+    "categories_title": "Kategorien",
+    "categories_tab_expense": "Ausgaben",
+    "categories_tab_income": "Einnahmen",
+    "categories_offline": "Offline kannst Du Kategorien nur ansehen.",
+    "category_new": "Neue Kategorie",
+    "category_edit": "Kategorie bearbeiten",
+    "category_name": "Name",
+    "category_name_missing": "Gib einen Namen ein.",
+    "category_fallback_hint": "Diese Kategorie gibt es immer. Du kannst nur Farbe und Icon ändern.",
+    "category_color": "Farbe",
+    "category_color_option": "Farbe {number}",
+    "category_icon": "Icon",
+    "category_icon_search": "Icon suchen",
+    "category_icon_none": "Kein passendes Icon.",
+    "category_created": "Kategorie {name} angelegt",
+    "category_updated": "Kategorie gespeichert",
+    "category_save_failed": "Die Kategorie konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "category_delete_action": "{name} löschen",
+    "category_delete_title": "{name} löschen?",
+    "category_delete_counting": "Geldbewegungen werden gezählt …",
+    "category_delete_unused": "In dieser Kategorie gibt es keine Geldbewegungen.",
+    "category_delete_used": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} Geldbewegung wird in die gewählte Kategorie verschoben.",
+                "countPlural=other": "{count} Geldbewegungen werden in die gewählte Kategorie verschoben."
+            }
+        }
+    ],
+    "category_delete_target": "Verschieben nach",
+    "category_deleted": "{name} gelöscht",
+    "category_delete_failed": "{name} konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "api_error_category_name_taken": "Es gibt schon eine Kategorie mit diesem Namen.",
+    "api_error_category_in_use": "Die Kategorie enthält Geldbewegungen. Wähle, wohin sie verschoben werden.",
+    "api_error_fallback_category": "Sonstiges kann weder umbenannt noch gelöscht werden."
 }

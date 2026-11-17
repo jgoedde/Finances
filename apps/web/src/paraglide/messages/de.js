@@ -29,7 +29,10 @@
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
 /** @typedef {{}} Api_Error_Account_Not_EmptyInputs */
+/** @typedef {{}} Api_Error_Category_In_UseInputs */
 /** @typedef {{}} Api_Error_Category_Kind_MismatchInputs */
+/** @typedef {{}} Api_Error_Category_Name_TakenInputs */
+/** @typedef {{}} Api_Error_Fallback_CategoryInputs */
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
@@ -44,7 +47,32 @@
 /** @typedef {{}} App_NameInputs */
 /** @typedef {{}} Auth_PasswordInputs */
 /** @typedef {{}} Auth_UsernameInputs */
+/** @typedef {{}} Categories_OfflineInputs */
+/** @typedef {{}} Categories_Tab_ExpenseInputs */
+/** @typedef {{}} Categories_Tab_IncomeInputs */
+/** @typedef {{}} Categories_TitleInputs */
+/** @typedef {{}} Category_ColorInputs */
+/** @typedef {{ number: NonNullable<unknown> }} Category_Color_OptionInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_CreatedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_ActionInputs */
+/** @typedef {{}} Category_Delete_CountingInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_FailedInputs */
+/** @typedef {{}} Category_Delete_TargetInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_Delete_TitleInputs */
+/** @typedef {{}} Category_Delete_UnusedInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Category_Delete_UsedInputs */
+/** @typedef {{ name: NonNullable<unknown> }} Category_DeletedInputs */
+/** @typedef {{}} Category_EditInputs */
 /** @typedef {{}} Category_FallbackInputs */
+/** @typedef {{}} Category_Fallback_HintInputs */
+/** @typedef {{}} Category_IconInputs */
+/** @typedef {{}} Category_Icon_NoneInputs */
+/** @typedef {{}} Category_Icon_SearchInputs */
+/** @typedef {{}} Category_NameInputs */
+/** @typedef {{}} Category_Name_MissingInputs */
+/** @typedef {{}} Category_NewInputs */
+/** @typedef {{}} Category_Save_FailedInputs */
+/** @typedef {{}} Category_UpdatedInputs */
 /** @typedef {{}} Error_Try_AgainInputs */
 /** @typedef {{}} Error_UnexpectedInputs */
 /** @typedef {{}} Error_UnknownInputs */
@@ -193,6 +221,8 @@
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
+/** @typedef {{}} Settings_Categories_DescriptionInputs */
+/** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
 /** @typedef {{}} Settings_Export_FailedInputs */
 /** @typedef {{}} Settings_Import_DescriptionInputs */
@@ -395,8 +425,20 @@ export const api_error_account_not_empty = /** @type {(inputs: Api_Error_Account
 	return /** @type {LocalizedString} */ (`Dein Konto enthält bereits Daten.`)
 };
 
+export const api_error_category_in_use = /** @type {(inputs: Api_Error_Category_In_UseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Die Kategorie enthält Geldbewegungen. Wähle, wohin sie verschoben werden.`)
+};
+
 export const api_error_category_kind_mismatch = /** @type {(inputs: Api_Error_Category_Kind_MismatchInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Die Kategorie passt nicht zur Art der Buchung.`)
+};
+
+export const api_error_category_name_taken = /** @type {(inputs: Api_Error_Category_Name_TakenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Es gibt schon eine Kategorie mit diesem Namen.`)
+};
+
+export const api_error_fallback_category = /** @type {(inputs: Api_Error_Fallback_CategoryInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sonstiges kann weder umbenannt noch gelöscht werden.`)
 };
 
 export const api_error_file_too_large = /** @type {(inputs: Api_Error_File_Too_LargeInputs) => LocalizedString} */ () => {
@@ -455,8 +497,111 @@ export const auth_username = /** @type {(inputs: Auth_UsernameInputs) => Localiz
 	return /** @type {LocalizedString} */ (`Benutzername`)
 };
 
+export const categories_offline = /** @type {(inputs: Categories_OfflineInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Offline kannst Du Kategorien nur ansehen.`)
+};
+
+export const categories_tab_expense = /** @type {(inputs: Categories_Tab_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Ausgaben`)
+};
+
+export const categories_tab_income = /** @type {(inputs: Categories_Tab_IncomeInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Einnahmen`)
+};
+
+export const categories_title = /** @type {(inputs: Categories_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kategorien`)
+};
+
+export const category_color = /** @type {(inputs: Category_ColorInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Farbe`)
+};
+
+export const category_color_option = /** @type {(inputs: Category_Color_OptionInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Farbe ${i?.number}`)
+};
+
+export const category_created = /** @type {(inputs: Category_CreatedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Kategorie ${i?.name} angelegt`)
+};
+
+export const category_delete_action = /** @type {(inputs: Category_Delete_ActionInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} löschen`)
+};
+
+export const category_delete_counting = /** @type {(inputs: Category_Delete_CountingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Geldbewegungen werden gezählt …`)
+};
+
+export const category_delete_failed = /** @type {(inputs: Category_Delete_FailedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} konnte nicht gelöscht werden. Bitte versuche es erneut.`)
+};
+
+export const category_delete_target = /** @type {(inputs: Category_Delete_TargetInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Verschieben nach`)
+};
+
+export const category_delete_title = /** @type {(inputs: Category_Delete_TitleInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} löschen?`)
+};
+
+export const category_delete_unused = /** @type {(inputs: Category_Delete_UnusedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`In dieser Kategorie gibt es keine Geldbewegungen.`)
+};
+
+export const category_delete_used = /** @type {(inputs: Category_Delete_UsedInputs) => LocalizedString} */ (i) => {
+	const countPlural = __paraglideRegistry.plural("de", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} Geldbewegung wird in die gewählte Kategorie verschoben.`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} Geldbewegungen werden in die gewählte Kategorie verschoben.`);
+	return /** @type {LocalizedString} */ ("category_delete_used");
+};
+
+export const category_deleted = /** @type {(inputs: Category_DeletedInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`${i?.name} gelöscht`)
+};
+
+export const category_edit = /** @type {(inputs: Category_EditInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kategorie bearbeiten`)
+};
+
 export const category_fallback = /** @type {(inputs: Category_FallbackInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Sonstiges`)
+};
+
+export const category_fallback_hint = /** @type {(inputs: Category_Fallback_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Diese Kategorie gibt es immer. Du kannst nur Farbe und Icon ändern.`)
+};
+
+export const category_icon = /** @type {(inputs: Category_IconInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Icon`)
+};
+
+export const category_icon_none = /** @type {(inputs: Category_Icon_NoneInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kein passendes Icon.`)
+};
+
+export const category_icon_search = /** @type {(inputs: Category_Icon_SearchInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Icon suchen`)
+};
+
+export const category_name = /** @type {(inputs: Category_NameInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Name`)
+};
+
+export const category_name_missing = /** @type {(inputs: Category_Name_MissingInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Gib einen Namen ein.`)
+};
+
+export const category_new = /** @type {(inputs: Category_NewInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neue Kategorie`)
+};
+
+export const category_save_failed = /** @type {(inputs: Category_Save_FailedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Die Kategorie konnte nicht gespeichert werden. Bitte versuche es erneut.`)
+};
+
+export const category_updated = /** @type {(inputs: Category_UpdatedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kategorie gespeichert`)
 };
 
 export const error_try_again = /** @type {(inputs: Error_Try_AgainInputs) => LocalizedString} */ () => {
@@ -1055,6 +1200,14 @@ export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) 
 
 export const search_show_in_month = /** @type {(inputs: Search_Show_In_MonthInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Im Monat anzeigen`)
+};
+
+export const settings_categories_description = /** @type {(inputs: Settings_Categories_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Lege Kategorien an, benenne sie um oder ändere Farbe und Icon.`)
+};
+
+export const settings_categories_open = /** @type {(inputs: Settings_Categories_OpenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Kategorien verwalten`)
 };
 
 export const settings_export_description = /** @type {(inputs: Settings_Export_DescriptionInputs) => LocalizedString} */ () => {

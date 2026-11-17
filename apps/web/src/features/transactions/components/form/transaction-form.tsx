@@ -23,7 +23,7 @@ import {
 import { useCounterparties } from "#/features/transactions/use-counterparties.ts";
 import { counterpartyAliases } from "#/features/transactions/counterparty-aliases.ts";
 import { Badge } from "#/components/ui/badge.tsx";
-import { useCategories } from "#/features/transactions/transaction-queries.ts";
+import { useCategories } from "#/features/categories/category-queries.ts";
 import { Label } from "#/components/ui/label.tsx";
 import { Checkbox } from "#/components/ui/checkbox.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
