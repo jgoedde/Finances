@@ -18,23 +18,60 @@ const now = new Date();
 
 const SUGGESTION_COUNT = 5;
 
+const ERROR_ID = "transaction-error";
+
 const LABELS = {
     expense: m.transaction_counterparty_expense,
     income: m.transaction_counterparty_income,
 } as const satisfies Record<TransactionKind, () => string>;
 
-interface CounterpartyFieldProps {
+interface CounterpartyInputProps {
     ref?: Ref<HTMLInputElement>;
     value: string;
-    counterparties: Counterparty[];
     onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    kind: TransactionKind;
+    error: string | undefined;
+}
+
+/**
+ * The transaction's counterparty: where the money went or
+ * where it came from. Its hints render separately in
+ * {@link CounterpartyHints}, so the input can share a row.
+ */
+export function CounterpartyInput({
+    ref,
+    value,
+    onInputChange,
+    kind,
+    error,
+}: CounterpartyInputProps) {
+    return (
+        <Field data-invalid={error !== undefined}>
+            <FieldLabel htmlFor={"transaction"}>{LABELS[kind]()}</FieldLabel>
+            <Input
+                ref={ref}
+                id={"transaction"}
+                name={"transaction"}
+                value={value}
+                onChange={onInputChange}
+                type={"text"}
+                autoComplete={"off"}
+                aria-invalid={error !== undefined}
+                aria-describedby={error !== undefined ? ERROR_ID : undefined}
+            />
+        </Field>
+    );
+}
+
+interface CounterpartyHintsProps {
+    value: string;
+    counterparties: Counterparty[];
 
     /**
      * A suggested counterparty was tapped.
      */
     onPick: (name: string) => void;
     shouldShowSuggestions: boolean;
-    kind: TransactionKind;
     error: string | undefined;
 
     /**
@@ -51,23 +88,20 @@ interface CounterpartyFieldProps {
 }
 
 /**
- * The transaction's counterparty: where the money went or
- * where it came from, with suggestions from recent transactions.
+ * What goes under the {@link CounterpartyInput}: its error, the undo for a
+ * learned alias and suggestions from recent transactions.
  */
-export function CounterpartyField({
-    ref,
+export function CounterpartyHints({
     value,
     counterparties,
-    onInputChange,
     onPick,
     shouldShowSuggestions,
-    kind,
     error,
     match,
     onAcceptMatch,
     aliasedFrom,
     onUndoAlias,
-}: CounterpartyFieldProps) {
+}: CounterpartyHintsProps) {
     const fuse = useMemo(
         () => new Fuse(counterparties, { keys: ["name"] }),
         [counterparties],
@@ -88,26 +122,9 @@ export function CounterpartyField({
     const ripple = useRipple();
 
     return (
-        <Field data-invalid={error !== undefined}>
-            <FieldLabel htmlFor={"transaction"}>{LABELS[kind]()}</FieldLabel>
-            <Input
-                ref={ref}
-                id={"transaction"}
-                name={"transaction"}
-                value={value}
-                onChange={onInputChange}
-                type={"text"}
-                autoComplete={"off"}
-                aria-invalid={error !== undefined}
-                aria-describedby={
-                    error !== undefined ? "transaction-error" : undefined
-                }
-            />
+        <>
             {error !== undefined && (
-                <p
-                    id={"transaction-error"}
-                    className={"px-4 text-body-small text-error"}
-                >
+                <p id={ERROR_ID} className={"px-4 text-body-small text-error"}>
                     {error}
                 </p>
             )}
@@ -175,6 +192,6 @@ export function CounterpartyField({
                         ))}
                 </div>
             )}
-        </Field>
+        </>
     );
 }
