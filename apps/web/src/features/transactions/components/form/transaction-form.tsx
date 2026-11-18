@@ -4,7 +4,10 @@ import { ChevronDownIcon, SplitIcon } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Input } from "#/components/ui/input.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
-import { CounterpartyField } from "#/features/transactions/components/form/counterparty-field.tsx";
+import {
+    CounterpartyHints,
+    CounterpartyInput,
+} from "#/features/transactions/components/form/counterparty-field.tsx";
 import { CategoryChips } from "#/features/transactions/components/form/category-chips.tsx";
 import { DateChips } from "#/features/transactions/components/form/date-chips.tsx";
 import {
@@ -174,6 +177,9 @@ export function TransactionForm({
     const categoryId = chosenCategoryId ?? known?.categoryId;
     const transactionType = chosenKind ?? known?.kind ?? initialValues.kind;
     const lastAmount = amountStr === "" ? known?.lastAmount : undefined;
+    const counterpartyError = missingFields.includes("counterparty")
+        ? m.transaction_counterparty_missing()
+        : undefined;
 
     const total = parseAmount(amountStr);
     const remainder = isNaN(total)
@@ -388,40 +394,79 @@ export function TransactionForm({
                     }}
                 />
 
-                <Field data-invalid={missingFields.includes("amount")}>
-                    <FieldLabel htmlFor={"amount"}>
-                        {m.transaction_amount()}
-                    </FieldLabel>
-                    <CurrencyInputWrapper
-                        ref={amountInputRef}
-                        id={"amount"}
-                        name={"amount"}
-                        inputMode={"decimal"}
-                        intlConfig={{
-                            locale: getLocale(),
-                            currency: "EUR",
-                        }}
-                        allowNegativeValue={false}
-                        onValueChange={(value) => {
-                            setAmountStr(value ?? "");
-                            clearMissing("amount");
-                        }}
-                        decimalsLimit={2}
-                        value={amountStr}
-                        step={1}
-                        autoComplete={"off"}
-                        // Prefilled from a link, the keyboard would only
-                        // cover the save button.
-                        autoFocus={initialValues.amount === undefined}
-                        aria-invalid={missingFields.includes("amount")}
-                        placeholder={
-                            lastAmount !== undefined
-                                ? formatCurrency(lastAmount, getLocale())
-                                : undefined
+                {/* Amount and counterparty share a row to save height;
+                their hints go below it at full width. */}
+                <div className={"flex flex-col gap-3"}>
+                    <div
+                        className={
+                            "grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-3"
                         }
-                    />
+                    >
+                        <Field data-invalid={missingFields.includes("amount")}>
+                            <FieldLabel htmlFor={"amount"}>
+                                {m.transaction_amount()}
+                            </FieldLabel>
+                            <CurrencyInputWrapper
+                                ref={amountInputRef}
+                                id={"amount"}
+                                name={"amount"}
+                                // Narrow column: less padding leaves room
+                                // for four digits and the currency.
+                                className={"px-3 focus:px-[11px]"}
+                                inputMode={"decimal"}
+                                intlConfig={{
+                                    locale: getLocale(),
+                                    currency: "EUR",
+                                }}
+                                allowNegativeValue={false}
+                                onValueChange={(value) => {
+                                    setAmountStr(value ?? "");
+                                    clearMissing("amount");
+                                }}
+                                decimalsLimit={2}
+                                value={amountStr}
+                                step={1}
+                                autoComplete={"off"}
+                                // Prefilled from a link, the keyboard would
+                                // only cover the save button.
+                                autoFocus={initialValues.amount === undefined}
+                                aria-invalid={missingFields.includes("amount")}
+                                aria-describedby={
+                                    missingFields.includes("amount")
+                                        ? "amount-error"
+                                        : undefined
+                                }
+                                placeholder={
+                                    lastAmount !== undefined
+                                        ? formatCurrency(
+                                              lastAmount,
+                                              getLocale(),
+                                          )
+                                        : undefined
+                                }
+                            />
+                        </Field>
+
+                        <CounterpartyInput
+                            ref={counterpartyInputRef}
+                            value={counterparty}
+                            onInputChange={(e) => {
+                                setCounterparty(e.target.value);
+                                clearMissing("counterparty");
+                                setAliasedFrom(undefined);
+
+                                setShouldShowSuggestions(true);
+                            }}
+                            kind={transactionType}
+                            error={counterpartyError}
+                        />
+                    </div>
+
                     {missingFields.includes("amount") && (
-                        <p className={"px-4 text-body-small text-error"}>
+                        <p
+                            id={"amount-error"}
+                            className={"px-4 text-body-small text-error"}
+                        >
                             {m.transaction_amount_missing()}
                         </p>
                     )}
@@ -443,32 +488,19 @@ export function TransactionForm({
                             </button>
                         </Badge>
                     )}
-                </Field>
 
-                <CounterpartyField
-                    ref={counterpartyInputRef}
-                    shouldShowSuggestions={shouldShowSuggestions}
-                    value={counterparty}
-                    counterparties={counterparties}
-                    onInputChange={(e) => {
-                        setCounterparty(e.target.value);
-                        clearMissing("counterparty");
-                        setAliasedFrom(undefined);
-
-                        setShouldShowSuggestions(true);
-                    }}
-                    onPick={pickCounterparty}
-                    match={match}
-                    onAcceptMatch={acceptMatch}
-                    aliasedFrom={aliasedFrom}
-                    onUndoAlias={undoAlias}
-                    kind={transactionType}
-                    error={
-                        missingFields.includes("counterparty")
-                            ? m.transaction_counterparty_missing()
-                            : undefined
-                    }
-                />
+                    <CounterpartyHints
+                        shouldShowSuggestions={shouldShowSuggestions}
+                        value={counterparty}
+                        counterparties={counterparties}
+                        onPick={pickCounterparty}
+                        match={match}
+                        onAcceptMatch={acceptMatch}
+                        aliasedFrom={aliasedFrom}
+                        onUndoAlias={undoAlias}
+                        error={counterpartyError}
+                    />
+                </div>
 
                 <CategoryChips
                     ref={categoryChipsRef}
