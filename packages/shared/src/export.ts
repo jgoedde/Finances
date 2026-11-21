@@ -8,31 +8,33 @@ import {
 import { transactionKindSchema, transactionSchema } from "./transactions.ts";
 
 /**
- * Exports made before attached expenses have no `mainExpenseId`.
- */
-const exportedTransactionSchema = transactionSchema.extend({
-    mainExpenseId: transactionSchema.shape.mainExpenseId.default(null),
-});
-
-/**
  * A user's complete data, as downloaded by the export. Bump `version` on
  * breaking changes and keep importing old ones (see `dataImportSchema`).
  */
 const dataExportSchema = z.object({
     format: z.literal("finances-export"),
-    version: z.literal(6),
+    version: z.literal(7),
     exportedAt: z.iso.datetime(),
     categories: z.array(categorySchema),
     fixedCostCategories: z.array(fixedCostCategorySchema),
     fixedCosts: z.array(fixedCostSchema),
-    transactions: z.array(exportedTransactionSchema),
+    transactions: z.array(transactionSchema),
 });
 export type DataExport = z.infer<typeof dataExportSchema>;
 
 /**
+ * Version 6: transactions had no `mainExpenseId` (no attached expenses).
+ */
+const dataExportV6Schema = dataExportSchema.extend({
+    version: z.literal(6),
+    transactions: z.array(transactionSchema.omit({ mainExpenseId: true })),
+});
+type DataExportV6 = z.infer<typeof dataExportV6Schema>;
+
+/**
  * Version 5: categories had no `kind` and no fallback categories existed.
  */
-const dataExportV5Schema = dataExportSchema.extend({
+const dataExportV5Schema = dataExportV6Schema.extend({
     version: z.literal(5),
     categories: z.array(
         z.object({
@@ -72,7 +74,9 @@ type DataExportV3 = z.infer<typeof dataExportV3Schema>;
  */
 const dataExportV2Schema = dataExportV3Schema.extend({
     version: z.literal(2),
-    transactions: z.array(exportedTransactionSchema.omit({ location: true })),
+    transactions: z.array(
+        transactionSchema.omit({ mainExpenseId: true, location: true }),
+    ),
 });
 
 /**
@@ -80,7 +84,18 @@ const dataExportV2Schema = dataExportV3Schema.extend({
  * expense category, both fallback categories are added and all incomes move
  * onto the income fallback category.
  */
-function fromV5(data: DataExportV5): DataExport {
+function fromV6(data: DataExportV6): DataExport {
+    return {
+        ...data,
+        version: 7,
+        transactions: data.transactions.map((transaction) => ({
+            ...transaction,
+            mainExpenseId: null,
+        })),
+    };
+}
+
+function fromV5(data: DataExportV5): DataExportV6 {
     return {
         ...data,
         version: 6,
@@ -150,32 +165,37 @@ export const dataImportSchema = z
         dataExportV3Schema,
         dataExportV4Schema,
         dataExportV5Schema,
+        dataExportV6Schema,
         dataExportSchema,
     ])
     .transform((data): DataExport => {
         switch (data.version) {
             case 2:
-                return fromV5(
-                    fromV4(
-                        fromV3({
-                            ...data,
-                            version: 3,
-                            transactions: data.transactions.map(
-                                (transaction) => ({
-                                    ...transaction,
-                                    location: null,
-                                }),
-                            ),
-                        }),
+                return fromV6(
+                    fromV5(
+                        fromV4(
+                            fromV3({
+                                ...data,
+                                version: 3,
+                                transactions: data.transactions.map(
+                                    (transaction) => ({
+                                        ...transaction,
+                                        location: null,
+                                    }),
+                                ),
+                            }),
+                        ),
                     ),
                 );
             case 3:
-                return fromV5(fromV4(fromV3(data)));
+                return fromV6(fromV5(fromV4(fromV3(data))));
             case 4:
-                return fromV5(fromV4(data));
+                return fromV6(fromV5(fromV4(data)));
             case 5:
-                return fromV5(data);
+                return fromV6(fromV5(data));
             case 6:
+                return fromV6(data);
+            case 7:
                 return data;
             default:
                 throw new Error(

@@ -99,6 +99,10 @@ describe("data transfer", () => {
                 categoryId: FALLBACK_CATEGORIES.income.id,
             }),
         });
+        await alice("/api/transactions/t3", {
+            method: "PUT",
+            body: transactionBody({ mainExpenseId: "t1" }),
+        });
         await alice("/api/fixed-costs", {
             method: "POST",
             body: fixedCostBody({
@@ -114,8 +118,11 @@ describe("data transfer", () => {
         expect((await upload(bob, JSON.stringify(exported))).status).toBe(200);
 
         const reexported = await json<DataExport>(bob("/api/data/export"));
-        expect(reexported.version).toBe(6);
+        expect(reexported.version).toBe(7);
         expect(reexported.fixedCosts[0]?.priceChanges).toHaveLength(2);
+        expect(
+            reexported.transactions.find((t) => t.id === "t3")?.mainExpenseId,
+        ).toBe("t1");
         expect(reexported.categories).toContainEqual(
             FALLBACK_CATEGORIES.income,
         );
@@ -123,6 +130,68 @@ describe("data transfer", () => {
             ...exported,
             exportedAt: "",
         });
+    });
+
+    it("imports a version 6 export, whose transactions have no main expense", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const transaction = JSON.parse(transactionBody()) as Transaction;
+        const v6 = {
+            ...exported,
+            version: 6,
+            transactions: [{ ...transaction, id: "t1" }],
+        };
+        expect((await upload(alice, JSON.stringify(v6))).status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        expect(reexported.transactions).toEqual([
+            { ...transaction, id: "t1", mainExpenseId: null },
+        ]);
+    });
+
+    it("imports main expense references with the save rules: invalid or dangling ones are dropped, attached expenses take the main expense's date", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const expense = (id: string, overrides: Record<string, unknown>) => ({
+            ...(JSON.parse(transactionBody()) as Transaction),
+            id,
+            mainExpenseId: null,
+            ...overrides,
+        });
+        const income = {
+            kind: "income",
+            categoryId: FALLBACK_CATEGORIES.income.id,
+        };
+        const transactions = [
+            expense("main", { date: 1_000 }),
+            expense("attached", { date: 2_000, mainExpenseId: "main" }),
+            expense("dangling", { mainExpenseId: "missing" }),
+            expense("self", { mainExpenseId: "self" }),
+            expense("nested", { mainExpenseId: "attached" }),
+            expense("income", income),
+            expense("on-income", { mainExpenseId: "income" }),
+            expense("attached-income", { ...income, mainExpenseId: "main" }),
+        ];
+        const response = await upload(
+            alice,
+            JSON.stringify({ ...exported, transactions }),
+        );
+        expect(response.status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        const byId = new Map(reexported.transactions.map((t) => [t.id, t]));
+        expect(byId.get("attached")).toMatchObject({
+            mainExpenseId: "main",
+            date: 1_000,
+        });
+        for (const id of [
+            "main",
+            "dangling",
+            "self",
+            "nested",
+            "on-income",
+            "attached-income",
+        ]) {
+            expect(byId.get(id)?.mainExpenseId, id).toBeNull();
+        }
     });
 
     it("imports a version 5 export like the migration: expense categories, both fallback categories, incomes on the income one", async () => {
@@ -210,6 +279,7 @@ describe("data transfer", () => {
                             }),
                         ),
                         id: "t1",
+                        mainExpenseId: null,
                     },
                 ],
             }),
@@ -279,7 +349,7 @@ describe("data transfer", () => {
         expect((await upload(alice, JSON.stringify(v2))).status).toBe(200);
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
-        expect(reexported.version).toBe(6);
+        expect(reexported.version).toBe(7);
         expect(reexported.transactions).toEqual([
             { ...transaction, id: "t1", mainExpenseId: null },
         ]);
@@ -394,6 +464,7 @@ describe("data transfer", () => {
                 {
                     ...JSON.parse(transactionBody()),
                     id: "t1",
+                    mainExpenseId: null,
                     categoryId: "999",
                 },
             ],
