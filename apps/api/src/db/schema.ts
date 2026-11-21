@@ -21,6 +21,17 @@ export interface CategoriesTable {
     icon_name: string;
 }
 
+/**
+ * Instance-wide, maintained by admins; copied to every new user.
+ */
+export interface DefaultCategoriesTable {
+    id: string;
+    kind: TransactionKind;
+    name: string;
+    color: string;
+    icon_name: string;
+}
+
 export interface FixedCostCategoriesTable {
     user_id: string;
     id: string;
@@ -125,6 +136,7 @@ export interface UserTable {
 
 export interface Database {
     categories: CategoriesTable;
+    default_categories: DefaultCategoriesTable;
     fixed_cost_categories: FixedCostCategoriesTable;
     transactions: TransactionsTable;
     transaction_tombstones: TransactionTombstonesTable;

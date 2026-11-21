@@ -2,31 +2,6 @@ import { FALLBACK_CATEGORIES, initialHue } from "@finances/shared";
 import type { DB } from "./database.ts";
 import { toCategoryColumns } from "#/features/categories/categories.ts";
 
-// Defaults every new user starts with, besides the fallback categories. Ids match the legacy client-side
-// database so imported data maps onto them.
-const DEFAULT_CATEGORIES = [
-    {
-        id: "1",
-        name: "Auswärts essen",
-        color: "#00202e",
-        icon_name: "utensils",
-    },
-    {
-        id: "2",
-        name: "Einkäufe",
-        color: "#2c4875",
-        icon_name: "shopping-basket",
-    },
-    { id: "3", name: "Geschenke", color: "#8a508f", icon_name: "gift" },
-    { id: "4", name: "Gesundheit", color: "#bc5090", icon_name: "heart" },
-    { id: "5", name: "Kleidung", color: "#ff8531", icon_name: "shirt" },
-    { id: "6", name: "Freizeit", color: "#ffa600", icon_name: "joystick" },
-    { id: "7", name: "Urlaub", color: "#80d353", icon_name: "plane" },
-    { id: "8", name: "Büro/Arbeit", color: "#609f3f", icon_name: "lamp-desk" },
-    { id: "9", name: "Snacks", color: "#D8DC6A", icon_name: "popcorn" },
-    { id: "10", name: "Wohnung", color: "#ff6361", icon_name: "sofa" },
-];
-
 const DEFAULT_FIXED_COST_CATEGORIES = [
     { id: "1", name: "Miete / Wohnung", description: "inkl. Nebenkosten" },
     { id: "2", name: "Strom & Heizung", description: null },
@@ -70,14 +45,22 @@ const DEFAULT_FIXED_COST_CATEGORIES = [
     },
 ];
 
+/**
+ * Gives a new user a copy of every default category (under the same id) and
+ * both fallback categories, plus the fixed cost categories. The copies stay
+ * independent of the defaults (ADR 0007).
+ */
 export async function seedUserData(db: DB, userId: string): Promise<void> {
     await db.transaction().execute(async (trx) => {
+        const defaults = await trx
+            .selectFrom("default_categories")
+            .selectAll()
+            .execute();
         await trx
             .insertInto("categories")
             .values([
-                ...DEFAULT_CATEGORIES.map((c) => ({
+                ...defaults.map((c) => ({
                     ...c,
-                    kind: "expense" as const,
                     fallback: 0 as const,
                     user_id: userId,
                 })),

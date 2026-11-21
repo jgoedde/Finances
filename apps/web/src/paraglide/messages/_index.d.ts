@@ -170,6 +170,48 @@ export const action_update: ((inputs?: Action_UpdateInputs, options?: { locale?:
 /**
 * | output |
 * | --- |
+* | "Choose the categories every new user starts with." |
+*
+*/
+export const admin_default_categories_description: ((inputs?: Admin_Default_Categories_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_Default_Categories_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "New users get a copy of these categories. Changes don't affect existing users." |
+*
+*/
+export const admin_default_categories_hint: ((inputs?: Admin_Default_Categories_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_Default_Categories_HintInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Manage default categories" |
+*
+*/
+export const admin_default_categories_open: ((inputs?: Admin_Default_Categories_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_Default_Categories_OpenInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Default categories" |
+*
+*/
+export const admin_default_categories_title: ((inputs?: Admin_Default_Categories_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_Default_Categories_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "New users won't get this category anymore. Existing users keep theirs." |
+*
+*/
+export const admin_default_category_delete_description: ((inputs?: Admin_Default_Category_Delete_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_Default_Category_Delete_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Administration" |
+*
+*/
+export const admin_title: ((inputs?: Admin_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Admin_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Since {date}" |
 *
 */
@@ -2306,6 +2348,12 @@ export type Action_Sign_InInputs = {};
 export type Action_Sign_OutInputs = {};
 export type Action_UndoInputs = {};
 export type Action_UpdateInputs = {};
+export type Admin_Default_Categories_DescriptionInputs = {};
+export type Admin_Default_Categories_HintInputs = {};
+export type Admin_Default_Categories_OpenInputs = {};
+export type Admin_Default_Categories_TitleInputs = {};
+export type Admin_Default_Category_Delete_DescriptionInputs = {};
+export type Admin_TitleInputs = {};
 export type Amount_Sparkline_SinceInputs = { date: NonNullable<unknown> };
 export type Amount_Sparkline_Since_StartInputs = {};
 export type Amount_Sparkline_UpcomingInputs = {};

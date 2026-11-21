@@ -7,6 +7,7 @@ import {
     LogOut,
     RefreshCw,
     Settings,
+    ShieldCheck,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -153,6 +154,14 @@ export function AccountMenu({ side = "bottom", className }: AccountMenuProps) {
                             {m.settings_title()}
                         </Link>
                     </DropdownMenuItem>
+                    {user?.role === "admin" && (
+                        <DropdownMenuItem asChild>
+                            <Link to={"/admin"}>
+                                <ShieldCheck />
+                                {m.admin_title()}
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onSelect={() => void confirmSignOut()}>
                         <LogOut />
                         {m.action_sign_out()}

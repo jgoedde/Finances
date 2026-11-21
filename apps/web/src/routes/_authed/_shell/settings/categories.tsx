@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { transactionKindSchema } from "@finances/shared";
-import { CategoriesView } from "#/features/categories/categories-view.tsx";
+import { UserCategoriesView } from "#/features/categories/user-categories-view.tsx";
 import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/_shell/settings/categories")({
@@ -19,7 +19,7 @@ function RouteComponent() {
     const navigate = useNavigate({ from: Route.fullPath });
 
     return (
-        <CategoriesView
+        <UserCategoriesView
             kind={kind}
             onKindChange={(next) =>
                 void navigate({

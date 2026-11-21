@@ -1,17 +1,23 @@
 import { createAuthClient } from "better-auth/client";
-import { usernameClient } from "better-auth/client/plugins";
+import { adminClient, usernameClient } from "better-auth/client/plugins";
 import { type QueryClient, queryOptions } from "@tanstack/react-query";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
 import { counterpartyAliases } from "#/features/transactions/counterparty-aliases.ts";
 
 export const authClient = createAuthClient({
     basePath: "/api/auth",
-    plugins: [usernameClient()],
+    plugins: [usernameClient(), adminClient()],
 });
 
 interface SessionUser {
     id: string;
     username: string;
+
+    /**
+     * `"admin"` for admins. Only decides what the client shows; the API
+     * checks it on its own.
+     */
+    role: string | null;
 }
 
 /**
@@ -40,6 +46,7 @@ export const sessionQuery = queryOptions({
         return {
             id: data.user.id,
             username: data.user.username ?? data.user.name,
+            role: data.user.role ?? null,
         };
     },
     staleTime: 5 * 60 * 1000,

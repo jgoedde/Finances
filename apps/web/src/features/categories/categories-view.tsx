@@ -3,6 +3,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
     type Category,
+    type CategoryInput,
+    type CategoryPatch,
     FALLBACK_CATEGORIES,
     type TransactionKind,
 } from "@finances/shared";
@@ -21,15 +23,7 @@ import {
     CategoryForm,
     type CategoryFormValues,
 } from "#/features/categories/category-form.tsx";
-import {
-    useCategories,
-    useCategoryUsage,
-    useCreateCategory,
-    useDeleteCategory,
-    useUpdateCategory,
-} from "#/features/categories/category-queries.ts";
 import { CategoryGrid } from "#/features/categories/category-grid.tsx";
-import { DeleteCategoryDialog } from "#/features/categories/delete-category-dialog.tsx";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
@@ -48,24 +42,51 @@ const KIND_TABS = {
 type Editing = Category | "new" | null;
 
 interface CategoriesViewProps {
+    title: string;
+
+    /**
+     * Shown above the categories, e.g. who changes affect.
+     */
+    hint?: string;
     kind: TransactionKind;
     onKindChange: (kind: TransactionKind) => void;
+
+    /**
+     * Of both kinds; the view shows those of `kind`.
+     */
+    categories: Category[];
+
+    /**
+     * Saving rejects with the API's error, which the view shows.
+     */
+    onCreate: (input: CategoryInput) => Promise<unknown>;
+    onUpdate: (id: string, patch: CategoryPatch) => Promise<unknown>;
+
+    /**
+     * Starts deleting `category` (not a fallback category), usually by
+     * asking to confirm.
+     */
+    onDelete: (category: Category) => void;
 }
 
 /**
- * The user's categories of each kind, to create, edit and delete.
- * Online-only; offline they can only be viewed.
+ * Categories of each kind, to create, edit and delete. Knows nothing about
+ * whose categories they are, so the user's categories and the admin's
+ * default categories share it. Online-only; offline they can only be viewed.
  */
-export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
+export function CategoriesView({
+    title,
+    hint,
+    kind,
+    onKindChange,
+    categories,
+    onCreate,
+    onUpdate,
+    onDelete,
+}: CategoriesViewProps) {
     const isOnline = useIsOnline();
     const isMediumWindow = useIsMediumWindow();
-    const categories = useCategories();
     const [editing, setEditing] = useState<Editing>(null);
-    const [deleting, setDeleting] = useState<Category | null>(null);
-    const usage = useCategoryUsage(deleting?.id ?? null);
-    const createCategory = useCreateCategory();
-    const updateCategory = useUpdateCategory();
-    const deleteCategory = useDeleteCategory();
 
     const ofKind = categories.filter((category) => category.kind === kind);
 
@@ -88,16 +109,16 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
         }
         try {
             if (editing === "new") {
-                await createCategory.mutateAsync({ kind, ...values });
+                await onCreate({ kind, ...values });
                 toast.success(m.category_created({ name: values.name }));
             } else {
                 const { color, iconName } = values;
-                await updateCategory.mutateAsync({
-                    id: editing.id,
-                    patch: editing.fallback
+                await onUpdate(
+                    editing.id,
+                    editing.fallback
                         ? { color, iconName }
                         : { name: values.name, color, iconName },
-                });
+                );
                 toast.success(m.category_updated());
             }
         } catch (error) {
@@ -107,24 +128,11 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
         return undefined;
     }
 
-    async function remove(category: Category, moveTo: string | undefined) {
-        const name = getCategoryName(category.name);
-        try {
-            await deleteCategory.mutateAsync({ id: category.id, moveTo });
-            toast.success(m.category_deleted({ name }));
-        } catch (error) {
-            toast.error(
-                apiErrorMessage(apiErrorCode(error)) ??
-                    m.category_delete_failed({ name }),
-            );
-        }
-    }
-
     const fallback = FALLBACK_CATEGORIES[kind];
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <TopAppBar title={m.categories_title()} />
+            <TopAppBar title={title} />
             <Tabs
                 value={kind}
                 onValueChange={(value) =>
@@ -152,6 +160,16 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                     isMediumWindow ? "gap-2 p-6" : "mx-auto max-w-md py-2",
                 )}
             >
+                {hint !== undefined && (
+                    <p
+                        className={cn(
+                            "py-2 text-body-medium text-on-surface-variant",
+                            !isMediumWindow && "px-4",
+                        )}
+                    >
+                        {hint}
+                    </p>
+                )}
                 {!isOnline && (
                     <p
                         className={`px-4 py-2 text-body-medium
@@ -207,7 +225,7 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                                                     )}
                                                     disabled={!isOnline}
                                                     onClick={() =>
-                                                        setDeleting(category)
+                                                        onDelete(category)
                                                     }
                                                 >
                                                     <Trash2 />
@@ -264,7 +282,7 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                                         disabled={!isOnline}
                                         onClick={() => {
                                             setEditing(null);
-                                            setDeleting(editing);
+                                            onDelete(editing);
                                         }}
                                     >
                                         <Trash2 />
@@ -307,35 +325,6 @@ export function CategoriesView({ kind, onKindChange }: CategoriesViewProps) {
                     )}
                 </DrawerContent>
             </Drawer>
-
-            <DeleteCategoryDialog
-                category={
-                    deleting && {
-                        id: deleting.id,
-                        name: getCategoryName(deleting.name),
-                    }
-                }
-                affectedTransactions={usage?.transactions ?? null}
-                targets={categories
-                    .filter(
-                        (category) =>
-                            category.kind === deleting?.kind &&
-                            category.id !== deleting.id,
-                    )
-                    .map((category) => ({
-                        id: category.id,
-                        name: getCategoryName(category.name),
-                    }))}
-                defaultTargetId={FALLBACK_CATEGORIES[deleting?.kind ?? kind].id}
-                isOffline={!isOnline}
-                onConfirm={(moveTo) => {
-                    if (deleting) {
-                        void remove(deleting, moveTo);
-                    }
-                    setDeleting(null);
-                }}
-                onClose={() => setDeleting(null)}
-            />
         </div>
     );
 }

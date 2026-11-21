@@ -108,6 +108,7 @@ async function renderApp(
     queryClient.setQueryData(sessionQuery.queryKey, () => ({
         id: "u1",
         username: "julian",
+        role: null,
     }));
     queryClient.setQueryData(["categories"], categories);
     if (transactions) {

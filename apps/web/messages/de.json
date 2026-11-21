@@ -424,5 +424,12 @@
     "category_delete_failed": "{name} konnte nicht gelöscht werden. Bitte versuche es erneut.",
     "api_error_category_name_taken": "Es gibt schon eine Kategorie mit diesem Namen.",
     "api_error_category_in_use": "Die Kategorie enthält Geldbewegungen. Wähle, wohin sie verschoben werden.",
-    "api_error_fallback_category": "Sonstiges kann weder umbenannt noch gelöscht werden."
+    "api_error_fallback_category": "Sonstiges kann weder umbenannt noch gelöscht werden.",
+
+    "admin_title": "Administration",
+    "admin_default_categories_title": "Standardkategorien",
+    "admin_default_categories_description": "Lege fest, mit welchen Kategorien neue Nutzer starten.",
+    "admin_default_categories_open": "Standardkategorien verwalten",
+    "admin_default_categories_hint": "Neue Nutzer erhalten eine Kopie dieser Kategorien. Änderungen wirken sich nicht auf bestehende Nutzer aus.",
+    "admin_default_category_delete_description": "Neue Nutzer erhalten diese Kategorie nicht mehr. Bestehende Nutzer behalten ihre."
 }

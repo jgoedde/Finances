@@ -24,6 +24,12 @@
 /** @typedef {{}} Action_Sign_OutInputs */
 /** @typedef {{}} Action_UndoInputs */
 /** @typedef {{}} Action_UpdateInputs */
+/** @typedef {{}} Admin_Default_Categories_DescriptionInputs */
+/** @typedef {{}} Admin_Default_Categories_HintInputs */
+/** @typedef {{}} Admin_Default_Categories_OpenInputs */
+/** @typedef {{}} Admin_Default_Categories_TitleInputs */
+/** @typedef {{}} Admin_Default_Category_Delete_DescriptionInputs */
+/** @typedef {{}} Admin_TitleInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Amount_Sparkline_SinceInputs */
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
@@ -422,6 +428,30 @@ export const action_undo = /** @type {(inputs: Action_UndoInputs) => LocalizedSt
 
 export const action_update = /** @type {(inputs: Action_UpdateInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Aktualisieren`)
+};
+
+export const admin_default_categories_description = /** @type {(inputs: Admin_Default_Categories_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Lege fest, mit welchen Kategorien neue Nutzer starten.`)
+};
+
+export const admin_default_categories_hint = /** @type {(inputs: Admin_Default_Categories_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neue Nutzer erhalten eine Kopie dieser Kategorien. Änderungen wirken sich nicht auf bestehende Nutzer aus.`)
+};
+
+export const admin_default_categories_open = /** @type {(inputs: Admin_Default_Categories_OpenInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Standardkategorien verwalten`)
+};
+
+export const admin_default_categories_title = /** @type {(inputs: Admin_Default_Categories_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Standardkategorien`)
+};
+
+export const admin_default_category_delete_description = /** @type {(inputs: Admin_Default_Category_Delete_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Neue Nutzer erhalten diese Kategorie nicht mehr. Bestehende Nutzer behalten ihre.`)
+};
+
+export const admin_title = /** @type {(inputs: Admin_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Administration`)
 };
 
 export const amount_sparkline_since = /** @type {(inputs: Amount_Sparkline_SinceInputs) => LocalizedString} */ (i) => {
