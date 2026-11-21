@@ -10,6 +10,7 @@ import { useMonthLanding } from "#/features/transactions/components/list/month-l
 import { TransactionListSkeleton } from "#/features/transactions/components/list/transaction-list-skeleton.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
+import { AttachedExpensesPrototype } from "#/features/transactions/components/list/attached-expenses.prototype.tsx";
 import { groupByDay } from "#/features/transactions/utils/transaction-utils.ts";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
@@ -81,6 +82,7 @@ export function TransactionList() {
     }
     return (
         <div className={"flex flex-col"}>
+            {import.meta.env.DEV && <AttachedExpensesPrototype />}
             {upcoming.length > 0 && (
                 <UpcomingTransactions
                     transactions={upcoming}
