@@ -5,6 +5,7 @@ import {
     categoryIdParam,
     countCategoryTransactions,
 } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Deletes a category, first moving its transactions to `moveTo` (a category
@@ -27,15 +28,15 @@ export const deleteCategory = factory.createHandlers(
                 .where("id", "=", id)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "not_found" as const }, 404);
+                return apiError(c, "not_found", 404);
             }
             if (category.fallback === 1) {
-                return c.json({ error: "fallback_category" as const }, 422);
+                return apiError(c, "fallback_category", 422);
             }
 
             if ((await countCategoryTransactions(trx, userId, id)) > 0) {
                 if (moveTo === undefined) {
-                    return c.json({ error: "category_in_use" as const }, 409);
+                    return apiError(c, "category_in_use", 409);
                 }
                 const target = await trx
                     .selectFrom("categories")
@@ -45,13 +46,10 @@ export const deleteCategory = factory.createHandlers(
                     .where("id", "!=", id)
                     .executeTakeFirst();
                 if (!target) {
-                    return c.json({ error: "unknown_category" as const }, 422);
+                    return apiError(c, "unknown_category", 422);
                 }
                 if (target.kind !== category.kind) {
-                    return c.json(
-                        { error: "category_kind_mismatch" as const },
-                        422,
-                    );
+                    return apiError(c, "category_kind_mismatch", 422);
                 }
                 await trx
                     .updateTable("transactions")

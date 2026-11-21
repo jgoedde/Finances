@@ -1,12 +1,13 @@
 import type { Context, MiddlewareHandler } from "hono";
 import { validator } from "hono/validator";
 import type { z } from "zod";
+import { apiError } from "./api-error.ts";
 import type { AppEnv } from "./session.ts";
 
 type Target = "json" | "query" | "param";
 
 function invalidRequest(c: Context, issues: z.core.$ZodIssue[]) {
-    return c.json({ error: "invalid_request" as const, issues }, 400);
+    return apiError(c, "invalid_request", 400, { issues });
 }
 
 /**

@@ -63,25 +63,26 @@ const MESSAGES = {
     username_taken: m.api_error_username_taken,
 } satisfies Record<ApiErrorCode, () => string>;
 
+function isApiErrorCode(code: unknown): code is ApiErrorCode {
+    return typeof code === "string" && Object.hasOwn(MESSAGES, code);
+}
+
 /**
- * The API's error code (e.g. `not_found`), if the API sent one.
+ * The API's error code (e.g. `not_found`), if the API sent one this client
+ * knows.
  */
 export function apiErrorCode(error: unknown): ApiErrorCode | undefined {
     if (!(error instanceof ApiError)) {
         return undefined;
     }
     const code = (error.body as { error?: unknown } | null | undefined)?.error;
-    return typeof code === "string" ? (code as ApiErrorCode) : undefined;
+    return isApiErrorCode(code) ? code : undefined;
 }
 
 /**
  * The message for an API error code, or undefined for unknown codes (e.g. a
- * stored sync failure from an older version).
+ * stored sync failure from another version).
  */
-export function apiErrorMessage(
-    code: ApiErrorCode | undefined,
-): string | undefined {
-    return code !== undefined && Object.hasOwn(MESSAGES, code)
-        ? MESSAGES[code]()
-        : undefined;
+export function apiErrorMessage(code: string | undefined): string | undefined {
+    return isApiErrorCode(code) ? MESSAGES[code]() : undefined;
 }

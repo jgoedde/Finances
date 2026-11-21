@@ -104,4 +104,13 @@ describe("apiErrorCode", () => {
         expect(apiErrorCode(new ApiError(500, undefined))).toBeUndefined();
         expect(apiErrorCode(new ApiError(400, { issues: [] }))).toBeUndefined();
     });
+
+    it("is undefined for codes the client doesn't know", () => {
+        expect(
+            apiErrorCode(new ApiError(400, { error: "from_the_future" })),
+        ).toBeUndefined();
+        expect(
+            apiErrorCode(new ApiError(400, { error: "toString" })),
+        ).toBeUndefined();
+    });
 });

@@ -5,7 +5,11 @@ import {
     useQuery,
 } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";
-import type { Transaction, TransactionListQuery } from "@finances/shared";
+import {
+    toBooleanQuery,
+    type Transaction,
+    type TransactionListQuery,
+} from "@finances/shared";
 import { api, unwrap } from "#/api/api-client.ts";
 import {
     applyToList,
@@ -24,12 +28,7 @@ export function transactionsQuery(params: TransactionListQuery) {
                 api.transactions.$get({
                     query: {
                         ...query,
-                        excludeExceptional:
-                            excludeExceptional === undefined
-                                ? undefined
-                                : excludeExceptional
-                                  ? "true"
-                                  : "false",
+                        excludeExceptional: toBooleanQuery(excludeExceptional),
                     },
                 }),
             );

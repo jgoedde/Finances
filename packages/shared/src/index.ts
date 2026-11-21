@@ -7,6 +7,7 @@ export * from "./gross-outflow.ts";
 export * from "./insights.ts";
 export * from "./links.ts";
 export * from "./export.ts";
+export { toBooleanQuery } from "./query.ts";
 export * from "./formatting.ts";
 export * from "./calendar.ts";
 export * from "./spending.ts";

@@ -427,6 +427,21 @@ describe("data transfer", () => {
         expect((await upload(alice, await sampleExport())).status).toBe(409);
     });
 
+    it("keeps the data unless `replace` is exactly `true`", async () => {
+        await alice("/api/transactions/a1", {
+            method: "PUT",
+            body: transactionBody(),
+        });
+        const body = await sampleExport();
+        for (const replace of ["false", "yes", "1", ""]) {
+            const response = await alice(
+                `/api/data/import?replace=${replace}`,
+                { method: "POST", body },
+            );
+            expect(response.status).toBe(409);
+        }
+    });
+
     it("replaces all data when asked to", async () => {
         await alice("/api/transactions/a1", {
             method: "PUT",

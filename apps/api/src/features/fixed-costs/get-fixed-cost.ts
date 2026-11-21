@@ -4,6 +4,7 @@ import {
     fixedCostIdParam,
     readFixedCost,
 } from "#/features/fixed-costs/fixed-costs.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const getFixedCost = factory.createHandlers(
     validate("param", fixedCostIdParam),
@@ -14,7 +15,7 @@ export const getFixedCost = factory.createHandlers(
             c.req.valid("param").id,
         );
         if (!fixedCost) {
-            return c.json({ error: "not_found" as const }, 404);
+            return apiError(c, "not_found", 404);
         }
         return c.json(fixedCost);
     },

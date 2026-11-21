@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { booleanQuery } from "./query.ts";
 
 export const transactionKindSchema = z.enum(["expense", "income"]);
 export type TransactionKind = z.infer<typeof transactionKindSchema>;
@@ -98,10 +99,6 @@ export function canAttachTo(
         main.mainExpenseId === null
     );
 }
-
-const booleanQuery = z
-    .enum(["true", "false"])
-    .transform((value) => value === "true");
 
 export const transactionListQuerySchema = z.object({
     from: z.coerce.number<number>().int(),

@@ -1,6 +1,5 @@
 import { useSyncExternalStore } from "react";
 import type { Transaction } from "@finances/shared";
-import type { ApiErrorCode } from "#/api/api-errors.ts";
 
 /**
  * A pending change the server rejected. Kept until retried or discarded.
@@ -11,10 +10,11 @@ export interface SyncFailure {
     transaction: Transaction;
 
     /**
-     * The API's answer, if the change reached it. Stored codes may come
-     * from an older version.
+     * The API's answer, if the change reached it. A `string`, not
+     * `ApiErrorCode`: stored codes may come from another version, so
+     * `apiErrorMessage` checks them when wording.
      */
-    error?: { status: number; code?: ApiErrorCode };
+    error?: { status: number; code?: string };
 
     /**
      * German reason text, stored by versions before the API codes.

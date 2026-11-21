@@ -1,6 +1,6 @@
-import type { ImportResult } from "@finances/shared";
+import { type ImportResult, toBooleanQuery } from "@finances/shared";
 import type { InferRequestType } from "hono/client";
-import { api, unwrap } from "#/api/api-client.ts";
+import { api, ensureOk, unwrap } from "#/api/api-client.ts";
 
 type ImportRequest = InferRequestType<typeof api.data.import.$post>;
 
@@ -8,16 +8,13 @@ type ImportRequest = InferRequestType<typeof api.data.import.$post>;
  * Downloads all of the user's data as a JSON file.
  */
 export async function downloadExport(): Promise<void> {
-    const response = await api.data.export.$get();
-    const data = await unwrap(response);
+    const response = await ensureOk(api.data.export.$get());
 
     const fileName =
         /filename="([^"]+)"/.exec(
             response.headers.get("content-disposition") ?? "",
         )?.[1] ?? "finances.json";
-    const url = URL.createObjectURL(
-        new Blob([JSON.stringify(data)], { type: "application/json" }),
-    );
+    const url = URL.createObjectURL(await response.blob());
     const a = document.createElement("a");
     a.href = url;
     a.download = fileName;
@@ -53,8 +50,8 @@ export async function importFile(
     }
     return unwrap(
         api.data.import.$post({
-            query: { replace: replace ? "true" : undefined },
-            // Unchecked: the API validates the file.
+            query: { replace: toBooleanQuery(replace) },
+            // The one cast on an API call: the API validates the file.
             json: data as ImportRequest["json"],
         }),
     );

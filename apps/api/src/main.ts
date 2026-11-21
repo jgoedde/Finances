@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { createApp } from "./app.ts";
 import { createUser } from "./auth/auth.ts";
 import { bootstrap } from "./bootstrap.ts";
+import { apiError } from "./http/api-error.ts";
 import { requestLogger } from "./http/request-logger.ts";
 import { staticRoutes } from "./http/static.ts";
 import { logger } from "./log.ts";
@@ -43,7 +44,7 @@ if (count === 0) {
 const server = new Hono()
     .use("/api/*", requestLogger(logger))
     .route("/", createApp(db, auth))
-    .all("/api/*", (c) => c.json({ error: "not_found" }, 404));
+    .all("/api/*", (c) => apiError(c, "not_found", 404));
 
 // In production the API also serves the built client (same origin).
 const staticDir = process.env.STATIC_DIR;

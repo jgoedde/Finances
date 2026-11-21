@@ -9,6 +9,7 @@ import {
     toTransaction,
     transactionIdParam,
 } from "#/features/transactions/transactions.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Create or replace (last write wins). Idempotent, so offline clients can
@@ -46,18 +47,15 @@ export const putTransaction = factory.createHandlers(
                 .where("id", "=", input.categoryId)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "unknown_category" as const }, 422);
+                return apiError(c, "unknown_category", 422);
             }
             if (category.kind !== input.kind) {
-                return c.json(
-                    { error: "category_kind_mismatch" as const },
-                    422,
-                );
+                return apiError(c, "category_kind_mismatch", 422);
             }
 
             const resolved = await resolveMainExpense(trx, userId, id, input);
             if ("error" in resolved) {
-                return c.json({ error: resolved.error }, 422);
+                return apiError(c, resolved.error, 422);
             }
             const { main, hasAttached } = resolved;
 

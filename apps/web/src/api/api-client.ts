@@ -53,6 +53,25 @@ type SuccessBody<R> =
             : never
         : never;
 
+async function readJson(response: Response): Promise<unknown> {
+    const text = await response.text();
+    return text ? JSON.parse(text) : undefined;
+}
+
+/**
+ * Throws {@link ApiError} for non-2xx responses; resolves to the response
+ * otherwise, for reading a body that isn't JSON (else use {@link unwrap}).
+ */
+export async function ensureOk<R extends ClientResponse<unknown>>(
+    response: R | Promise<R>,
+): Promise<R> {
+    const resolved = await response;
+    if (!resolved.ok) {
+        throw new ApiError(resolved.status, await readJson(resolved));
+    }
+    return resolved;
+}
+
 /**
  * Throws {@link ApiError} for non-2xx responses; resolves to undefined for
  * empty responses and to the JSON body otherwise.
@@ -60,11 +79,5 @@ type SuccessBody<R> =
 export async function unwrap<R extends ClientResponse<unknown>>(
     response: R | Promise<R>,
 ): Promise<SuccessBody<R>> {
-    const resolved = await response;
-    const text = await resolved.text();
-    const data: unknown = text ? JSON.parse(text) : undefined;
-    if (!resolved.ok) {
-        throw new ApiError(resolved.status, data);
-    }
-    return data as SuccessBody<R>;
+    return (await readJson(await ensureOk(response))) as SuccessBody<R>;
 }

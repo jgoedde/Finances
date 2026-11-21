@@ -12,12 +12,13 @@ import { fixedCostRoutes } from "./features/fixed-costs/routes.ts";
 import { insightRoutes } from "./features/insights/routes.ts";
 import { adminLinkRoutes, linkRoutes } from "./features/links/routes.ts";
 import { transactionRoutes } from "./features/transactions/routes.ts";
+import { apiError } from "./http/api-error.ts";
 import { type AppEnv, requireAdmin, requireUser } from "./http/session.ts";
 
 /**
- * The API under `/api`. The routers the web client calls are mounted in one
- * chained expression so {@link AppType} keeps their routes: a `.route(...)`
- * or `.get(...)` outside the chain is invisible to the client.
+ * The API under `/api`. The routers the web client calls are mounted in
+ * chained expressions so {@link AppType} keeps their routes: a `.route(...)`
+ * or `.get(...)` outside a chain is invisible to the client.
  */
 export function createApp(db: DB, auth: Auth) {
     const app = new Hono<AppEnv>().basePath("/api");
@@ -27,7 +28,7 @@ export function createApp(db: DB, auth: Auth) {
     // Hono's own errors (e.g. malformed JSON, 400) keep their status.
     app.onError((error, c) =>
         error instanceof HTTPException
-            ? c.json({ error: "invalid_request" }, error.status)
+            ? apiError(c, "invalid_request", error.status)
             : c.text("Internal Server Error", 500),
     );
 
@@ -42,26 +43,25 @@ export function createApp(db: DB, auth: Auth) {
     app.get("/health", (c) => c.json({ ok: true }));
     app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
 
-    return (
-        app
-            .route("/links", linkRoutes)
-            // `/path/*` also matches `/path`.
-            .use("/transactions/*", requireUser)
-            .route("/transactions", transactionRoutes)
-            .use("/categories/*", requireUser)
-            .route("/categories", categoryRoutes)
-            .use("/fixed-cost-categories/*", requireUser)
-            .route("/fixed-cost-categories", fixedCostCategoryRoutes)
-            .use("/fixed-costs/*", requireUser)
-            .route("/fixed-costs", fixedCostRoutes)
-            .use("/insights/*", requireUser)
-            .route("/insights", insightRoutes)
-            .use("/data/*", requireUser)
-            .route("/data", dataTransferRoutes)
-            .use("/admin/*", requireUser, requireAdmin)
-            .route("/admin", adminLinkRoutes)
-            .route("/admin/default-categories", defaultCategoryRoutes)
-    );
+    // `requireAdmin` runs after `requireUser` from `userRoutes`.
+    const adminRoutes = new Hono<AppEnv>()
+        .use(requireAdmin)
+        .route("/", adminLinkRoutes)
+        .route("/default-categories", defaultCategoryRoutes);
+    // Mounted at the root after the public routes, so `requireUser` guards
+    // everything below them (an unknown path without a session answers 401
+    // rather than 404).
+    const userRoutes = new Hono<AppEnv>()
+        .use(requireUser)
+        .route("/transactions", transactionRoutes)
+        .route("/categories", categoryRoutes)
+        .route("/fixed-cost-categories", fixedCostCategoryRoutes)
+        .route("/fixed-costs", fixedCostRoutes)
+        .route("/insights", insightRoutes)
+        .route("/data", dataTransferRoutes)
+        .route("/admin", adminRoutes);
+
+    return app.route("/links", linkRoutes).route("/", userRoutes);
 }
 
 /**

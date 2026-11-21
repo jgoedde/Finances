@@ -9,6 +9,7 @@ import {
     toColumns,
     writePriceChanges,
 } from "#/features/fixed-costs/fixed-costs.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const updateFixedCost = factory.createHandlers(
     validate("param", fixedCostIdParam),
@@ -21,7 +22,7 @@ export const updateFixedCost = factory.createHandlers(
             patch.categoryId !== undefined &&
             !(await categoryExists(db, userId, patch.categoryId))
         ) {
-            return c.json({ error: "unknown_category" as const }, 422);
+            return apiError(c, "unknown_category", 422);
         }
         const columns = Object.fromEntries(
             Object.entries(toColumns(patch)).filter(
@@ -51,10 +52,10 @@ export const updateFixedCost = factory.createHandlers(
             return (await readFixedCost(trx, userId, id)) ?? "not_found";
         });
         if (result === "not_found") {
-            return c.json({ error: "not_found" as const }, 404);
+            return apiError(c, "not_found", 404);
         }
         if (result === "price_change_out_of_range") {
-            return c.json({ error: "price_change_out_of_range" as const }, 422);
+            return apiError(c, "price_change_out_of_range", 422);
         }
         return c.json(result);
     },

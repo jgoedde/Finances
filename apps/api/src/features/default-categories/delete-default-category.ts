@@ -1,6 +1,7 @@
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { categoryIdParam } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * No transaction references a default category, so nothing moves; users'
@@ -15,7 +16,7 @@ export const deleteDefaultCategory = factory.createHandlers(
             .where("id", "=", id)
             .executeTakeFirst();
         if (result.numDeletedRows === 0n) {
-            return c.json({ error: "not_found" as const }, 404);
+            return apiError(c, "not_found", 404);
         }
         return c.body(null, 204);
     },

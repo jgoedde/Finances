@@ -6,6 +6,7 @@ import {
     isCategoryNameTaken,
     toCategory,
 } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const createCategory = factory.createHandlers(
     validate("json", categoryInputSchema),
@@ -16,7 +17,7 @@ export const createCategory = factory.createHandlers(
             if (
                 await isCategoryNameTaken(trx, userId, input.kind, input.name)
             ) {
-                return c.json({ error: "category_name_taken" as const }, 409);
+                return apiError(c, "category_name_taken", 409);
             }
             const row = await trx
                 .insertInto("categories")

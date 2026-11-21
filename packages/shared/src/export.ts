@@ -5,6 +5,7 @@ import {
     fixedCostSchema,
     initialHue,
 } from "./fixed-costs.ts";
+import { booleanFlagQuery } from "./query.ts";
 import { transactionKindSchema, transactionSchema } from "./transactions.ts";
 
 /**
@@ -157,6 +158,12 @@ function hasOneFallbackPerKind(data: DataExport): boolean {
                 .length === 1,
     );
 }
+
+/**
+ * The import's query: an account with data is only replaced with
+ * `?replace=true` (any other value keeps it).
+ */
+export const dataImportQuerySchema = z.object({ replace: booleanFlagQuery });
 
 /**
  * What the import accepts: an export of version 2 or later, upgraded to the
