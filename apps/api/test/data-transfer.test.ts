@@ -194,6 +194,33 @@ describe("data transfer", () => {
         }
     });
 
+    it("keeps a reference to a main expense whose own reference is dropped, as saving would", async () => {
+        const exported = await json<DataExport>(alice("/api/data/export"));
+        const expense = (id: string, overrides: Record<string, unknown>) => ({
+            ...(JSON.parse(transactionBody()) as Transaction),
+            id,
+            mainExpenseId: null,
+            ...overrides,
+        });
+        const transactions = [
+            expense("tip", { date: 2_000, mainExpenseId: "meal" }),
+            expense("meal", { date: 1_000, mainExpenseId: "missing" }),
+        ];
+        const response = await upload(
+            alice,
+            JSON.stringify({ ...exported, transactions }),
+        );
+        expect(response.status).toBe(200);
+
+        const reexported = await json<DataExport>(alice("/api/data/export"));
+        const byId = new Map(reexported.transactions.map((t) => [t.id, t]));
+        expect(byId.get("meal")?.mainExpenseId).toBeNull();
+        expect(byId.get("tip")).toMatchObject({
+            mainExpenseId: "meal",
+            date: 1_000,
+        });
+    });
+
     it("imports a version 5 export like the migration: expense categories, both fallback categories, incomes on the income one", async () => {
         const v5 = {
             format: "finances-export",

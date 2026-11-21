@@ -1,4 +1,9 @@
-import type { DataExport, ImportResult, Transaction } from "@finances/shared";
+import {
+    canAttachTo,
+    type DataExport,
+    type ImportResult,
+    type Transaction,
+} from "@finances/shared";
 import type { DB } from "#/db/database.ts";
 import {
     arePriceChangesInRange,
@@ -79,27 +84,44 @@ export async function hasData(db: DB, userId: string): Promise<boolean> {
 
 /**
  * The import's transactions with their main expense references checked like
- * `PUT /api/transactions/:id` does, except that an invalid reference becomes
- * `null` instead of failing the import: the main expense must be another
- * expense of the import that isn't attached itself, and only expenses can be
- * attached. An attached expense takes its main expense's date.
+ * `PUT /api/transactions/:id` does, as if each main expense were saved before
+ * its attached expenses: a missing main expense leaves a regular expense, and
+ * so does an invalid reference, which would fail the save instead of the
+ * import. Whether a main expense is attached itself is checked against the
+ * references that remain. An attached expense takes its main expense's date.
  */
 function withValidMainExpenses(transactions: Transaction[]): Transaction[] {
-    const byId = new Map(transactions.map((t) => [t.id, t]));
-    return transactions.map((transaction) => {
-        if (transaction.mainExpenseId === null) {
-            return transaction;
-        }
-        const main = byId.get(transaction.mainExpenseId);
-        const isValid =
-            transaction.kind === "expense" &&
-            main !== undefined &&
-            main.id !== transaction.id &&
-            main.kind === "expense" &&
-            main.mainExpenseId === null;
-        return isValid
-            ? { ...transaction, date: main.date }
-            : { ...transaction, mainExpenseId: null };
+    const byIdOf = (list: Transaction[]) => new Map(list.map((t) => [t.id, t]));
+    const mainOf = (
+        byId: Map<string, Transaction>,
+        transaction: Transaction,
+    ) =>
+        transaction.mainExpenseId === null
+            ? undefined
+            : byId.get(transaction.mainExpenseId);
+    const keepValid = (
+        list: Transaction[],
+        isValid: (transaction: Transaction, main: Transaction) => boolean,
+    ) => {
+        const byId = byIdOf(list);
+        return list.map((transaction) => {
+            const main = mainOf(byId, transaction);
+            return main !== undefined && isValid(transaction, main)
+                ? transaction
+                : { ...transaction, mainExpenseId: null };
+        });
+    };
+
+    const valid = keepValid(
+        keepValid(transactions, (transaction, main) =>
+            canAttachTo(transaction, { ...main, mainExpenseId: null }),
+        ),
+        canAttachTo,
+    );
+    const byId = byIdOf(valid);
+    return valid.map((transaction) => {
+        const main = mainOf(byId, transaction);
+        return main ? { ...transaction, date: main.date } : transaction;
     });
 }
 
