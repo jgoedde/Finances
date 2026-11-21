@@ -1,21 +1,24 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import type { Transaction } from "@finances/shared";
+import type { QueryClient } from "@tanstack/react-query";
 import {
     TransactionForm,
+    type TransactionFormLink,
     type TransactionFormSubmitData,
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
+import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
+import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
 import {
-    useDeleteTransaction,
-    useSaveTransaction,
-} from "#/features/transactions/transaction-mutations.ts";
-import { findCachedTransaction } from "#/features/transactions/pending-changes.ts";
+    findAttachedExpenses,
+    findCachedTransaction,
+} from "#/features/transactions/pending-changes.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
 import { apiErrorCode } from "#/api/api-errors.ts";
 import { m } from "#/paraglide/messages.js";
-import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
     staticData: { detail: true },
@@ -58,7 +61,8 @@ function RouteComponent() {
     const navigate = useNavigate();
     const { data: transaction } = useSuspenseQuery(transactionQuery(id));
     const saveTransaction = useSaveTransaction();
-    const deleteTransaction = useDeleteTransaction();
+    const deleteWithUndo = useDeleteWithUndo();
+    const queryClient = useQueryClient();
 
     const onTransactionFormSubmit = (updated: TransactionFormSubmitData) => {
         saveTransaction.mutate({
@@ -85,24 +89,8 @@ function RouteComponent() {
     };
 
     const onTransactionFormDelete = () => {
-        deleteTransaction.mutate(transaction);
+        deleteWithUndo(transaction);
         void navigate({ to: "/transactions" });
-        // Deleted ids can't be reused, so restoring saves a copy.
-        const deleted =
-            transaction.kind === "income"
-                ? m.transaction_income_deleted()
-                : m.transaction_expense_deleted();
-        toast.success(`${deleted}${syncLaterHint()}`, {
-            duration: ACTION_TOAST_DURATION,
-            action: {
-                label: m.action_restore(),
-                onClick: () =>
-                    saveTransaction.mutate({
-                        ...transaction,
-                        id: nanoid(8),
-                    }),
-            },
-        });
     };
 
     return (
@@ -120,6 +108,31 @@ function RouteComponent() {
             onDelete={onTransactionFormDelete}
             onSubmit={onTransactionFormSubmit}
             title={m.transaction_edit()}
+            link={findLink(queryClient, transaction)}
         />
     );
+}
+
+/**
+ * How the transaction is tied to others, from the cached lists (they also
+ * hold what the current view filters out).
+ */
+function findLink(
+    queryClient: QueryClient,
+    transaction: Transaction,
+): TransactionFormLink | undefined {
+    if (transaction.mainExpenseId !== null) {
+        return {
+            role: "attached",
+            mainExpenseCounterparty: findCachedTransaction(
+                queryClient,
+                transaction.mainExpenseId,
+            )?.counterparty,
+        };
+    }
+    const attachedCount = findAttachedExpenses(
+        queryClient,
+        transaction.id,
+    ).length;
+    return attachedCount > 0 ? { role: "main", attachedCount } : undefined;
 }

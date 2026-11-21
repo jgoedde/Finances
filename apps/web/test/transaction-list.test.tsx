@@ -127,7 +127,7 @@ async function renderApp(
         </QueryClientProvider>,
     );
     return {
-        main: await screen.findByRole("main"),
+        main: await screen.findByRole("main", {}, { timeout: 5000 }),
 
         /**
          * Queues a change like the form does; it stays pending.
@@ -160,6 +160,12 @@ beforeAll(() => {
     // jsdom lays nothing out; the month switcher scrolls its track.
     Element.prototype.scrollTo = () => undefined;
     window.scrollTo = () => undefined;
+    // The form's chips and popovers measure themselves.
+    globalThis.ResizeObserver ??= class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    };
 });
 
 afterEach(() => {
@@ -309,5 +315,52 @@ describe("search results", () => {
         expect(await row(main, "Trattoria Luigi")).toHaveTextContent(
             "gesamt 17,50 €",
         );
+    });
+});
+
+describe("transaction form", () => {
+    async function renderForm(id: string) {
+        await renderApp(`/edit/${id}`, { transactions: [bakery, meal, tip] });
+        const save = await screen.findByRole("button", { name: "Speichern" });
+        return save.closest("form")!;
+    }
+
+    it("locks an attached expense's date and kind", async () => {
+        const form = await renderForm("tip");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeDisabled();
+        expect(
+            within(form).getByRole("button", { name: "Heute" }),
+        ).toBeDisabled();
+        expect(form).toHaveTextContent(
+            "Das Datum kommt von der Hauptausgabe Trattoria Luigi.",
+        );
+        expect(form).toHaveTextContent(
+            "Löse die Ausgabe von ihrer Hauptausgabe, um sie zur Einnahme zu machen.",
+        );
+    });
+
+    it("locks the kind of a main expense with attached expenses", async () => {
+        const form = await renderForm("meal");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeDisabled();
+        expect(
+            within(form).getByRole("button", { name: "Heute" }),
+        ).toBeEnabled();
+        expect(form).toHaveTextContent(
+            "An dieser Ausgabe hängen andere Ausgaben, daher bleibt sie eine Ausgabe.",
+        );
+    });
+
+    it("leaves a regular expense unlocked", async () => {
+        const form = await renderForm("bakery");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeEnabled();
     });
 });

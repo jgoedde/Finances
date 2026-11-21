@@ -6,7 +6,7 @@ import { cn } from "#/lib/cn.ts";
 
 // MD3 segmented button (https://m3.material.io/components/segmented-buttons/specs).
 const segmentedButton = cva(
-    "ripple-container state-layer focus-ring flex h-10 min-w-12 flex-1 cursor-pointer items-center justify-center gap-x-2 border border-outline px-3 text-label-large outline-none transition-colors duration-200 ease-standard",
+    "ripple-container state-layer focus-ring flex h-10 min-w-12 flex-1 cursor-pointer items-center justify-center gap-x-2 border border-outline px-3 text-label-large outline-none transition-colors duration-200 ease-standard disabled:pointer-events-none disabled:border-on-surface/12 disabled:text-on-surface/38",
     {
         variants: {
             selected: {
@@ -43,11 +43,13 @@ export function SegmentedButton({
     value,
     onChange,
     className,
+    disabled = false,
 }: {
     options: SegmentedButtonOption[];
     value: string;
     onChange: (value: string) => void;
     className?: string;
+    disabled?: boolean;
 }) {
     const ripple = useRipple();
 
@@ -71,6 +73,7 @@ export function SegmentedButton({
                                 : "bg-on-surface/40"
                         }
                         type="button"
+                        disabled={disabled}
                         {...ripple}
                         onClick={(e) => {
                             onChange(option.value);

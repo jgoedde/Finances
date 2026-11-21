@@ -17,7 +17,6 @@
     "action_reload": "Neu laden",
     "action_remove": "Entfernen",
     "action_replace": "Ersetzen",
-    "action_restore": "Wiederherstellen",
     "action_details": "Details",
     "action_edit": "Bearbeiten",
     "action_retry": "Erneut versuchen",
@@ -220,6 +219,33 @@
     "transaction_main_expense_total": "gesamt {amount}",
     "transaction_attached_expenses": "Angehängt an {counterparty}",
     "transaction_belongs_to": "gehört zu {counterparty}",
+    "transaction_actions": "Weitere Aktionen",
+    "transaction_attach_to": "Anhängen an …",
+    "transaction_attach_title": "Anhängen an",
+    "transaction_attach_description": "Ausgaben vom selben Tag, die selbst nicht angehängt sind",
+    "transaction_attach_none": "An diesem Tag gibt es keine andere Ausgabe, an die sie sich anhängen lässt.",
+    "transaction_attached_to": "An {counterparty} angehängt",
+    "transaction_detach": "Lösen",
+    "transaction_detached": "Ausgabe gelöst",
+    "transaction_date_from_main_expense": "Das Datum kommt von der Hauptausgabe {counterparty}.",
+    "transaction_date_from_unknown_main_expense": "Das Datum kommt von der Hauptausgabe.",
+    "transaction_kind_locked_attached": "Löse die Ausgabe von ihrer Hauptausgabe, um sie zur Einnahme zu machen.",
+    "transaction_kind_locked_main": "An dieser Ausgabe hängen andere Ausgaben, daher bleibt sie eine Ausgabe.",
+    "transaction_move_attached_title": "Angehängte Ausgaben verschieben?",
+    "transaction_move_attached_description": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} angehängte Ausgabe zieht mit auf das neue Datum.",
+                "countPlural=other": "{count} angehängte Ausgaben ziehen mit auf das neue Datum."
+            }
+        }
+    ],
+    "transaction_move_attached_confirm": "Verschieben",
     "transaction_filter": "Nach Kategorie filtern",
     "transaction_filter_active": "Kategoriefilter aktiv: {category}",
     "transaction_filter_all": "Alle Kategorien",

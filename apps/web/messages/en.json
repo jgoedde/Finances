@@ -17,7 +17,6 @@
     "action_reload": "Reload",
     "action_remove": "Remove",
     "action_replace": "Replace",
-    "action_restore": "Restore",
     "action_details": "Details",
     "action_edit": "Edit",
     "action_retry": "Try again",
@@ -220,6 +219,33 @@
     "transaction_main_expense_total": "total {amount}",
     "transaction_attached_expenses": "Attached to {counterparty}",
     "transaction_belongs_to": "belongs to {counterparty}",
+    "transaction_actions": "More actions",
+    "transaction_attach_to": "Attach to…",
+    "transaction_attach_title": "Attach to",
+    "transaction_attach_description": "Expenses of the same day that aren't attached themselves",
+    "transaction_attach_none": "There's no other expense on this day to attach it to.",
+    "transaction_attached_to": "Attached to {counterparty}",
+    "transaction_detach": "Detach",
+    "transaction_detached": "Expense detached",
+    "transaction_date_from_main_expense": "The date comes from the main expense {counterparty}.",
+    "transaction_date_from_unknown_main_expense": "The date comes from the main expense.",
+    "transaction_kind_locked_attached": "Detach the expense from its main expense to turn it into an income.",
+    "transaction_kind_locked_main": "Other expenses are attached to this one, so it stays an expense.",
+    "transaction_move_attached_title": "Move attached expenses?",
+    "transaction_move_attached_description": [
+        {
+            "declarations": [
+                "input count",
+                "local countPlural = count: plural"
+            ],
+            "selectors": ["countPlural"],
+            "match": {
+                "countPlural=one": "{count} attached expense moves to the new date too.",
+                "countPlural=other": "{count} attached expenses move to the new date too."
+            }
+        }
+    ],
+    "transaction_move_attached_confirm": "Move",
     "transaction_filter": "Filter by category",
     "transaction_filter_active": "Category filter active: {category}",
     "transaction_filter_all": "All categories",

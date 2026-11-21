@@ -1,5 +1,7 @@
 import { type SubmitEvent, useRef, useState } from "react";
 import { useBlocker } from "@tanstack/react-router";
+import { isSameDay } from "date-fns";
+import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { ChevronDownIcon, SplitIcon } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Input } from "#/components/ui/input.tsx";
@@ -91,6 +93,22 @@ interface InitialFormValues {
 }
 
 /**
+ * How an edited expense is tied to others, which locks fields: an attached
+ * expense has its main expense's date and stays an expense; a main expense
+ * with attached expenses stays an expense, and moving it moves them along.
+ */
+export type TransactionFormLink =
+    | {
+          role: "attached";
+
+          /**
+           * Unknown when the main expense isn't cached.
+           */
+          mainExpenseCounterparty: string | undefined;
+      }
+    | { role: "main"; attachedCount: number };
+
+/**
  * The fields that can be missing, in the order of the form.
  */
 type RequiredField = "amount" | "counterparty" | "category";
@@ -105,6 +123,7 @@ interface TransactionFormProps {
      * Offer splitting the total across categories (new transactions only).
      */
     canSplit?: boolean;
+    link?: TransactionFormLink;
 }
 
 /**
@@ -117,6 +136,7 @@ export function TransactionForm({
     onSubmit,
     title,
     canSplit = false,
+    link,
 }: TransactionFormProps) {
     const categories = useCategories();
 
@@ -202,6 +222,16 @@ export function TransactionForm({
         (category) => category.id === categoryId,
     );
 
+    const kindLockHint = getKindLockHint(link);
+    const dateLockHint =
+        link?.role === "attached"
+            ? link.mainExpenseCounterparty === undefined
+                ? m.transaction_date_from_unknown_main_expense()
+                : m.transaction_date_from_main_expense({
+                      counterparty: link.mainExpenseCounterparty,
+                  })
+            : undefined;
+
     // Values prefilled from a link don't count as changes.
     const isDirty =
         counterparty !== initialCounterparty ||
@@ -271,7 +301,7 @@ export function TransactionForm({
             return;
         }
 
-        onSubmit({
+        const data: TransactionFormSubmitData = {
             isExceptional,
             date,
             description: trimOrNull(description),
@@ -284,6 +314,30 @@ export function TransactionForm({
                 categoryId: part.categoryId ?? selectedCategory.id,
                 description: trimOrNull(part.description),
             })),
+        };
+        void confirmDateMove().then(
+            (isConfirmed) => isConfirmed && onSubmit(data),
+        );
+    }
+
+    /**
+     * Moving a main expense to another day moves its attached expenses
+     * along; asks first.
+     */
+    async function confirmDateMove(): Promise<boolean> {
+        if (
+            link?.role !== "main" ||
+            link.attachedCount === 0 ||
+            isSameDay(date, initialValues.date)
+        ) {
+            return true;
+        }
+        return confirmAction({
+            title: m.transaction_move_attached_title(),
+            description: m.transaction_move_attached_description({
+                count: link.attachedCount,
+            }),
+            confirmLabel: m.transaction_move_attached_confirm(),
         });
     }
 
@@ -376,24 +430,36 @@ export function TransactionForm({
                 className={`mx-auto flex w-full max-w-md grow flex-col gap-6
                     px-4 pt-2 pb-6`}
             >
-                <SegmentedButton
-                    options={[
-                        {
-                            label: getTransactionKindLabel("income"),
-                            value: "income",
-                            icon: "banknote-arrow-up",
-                        },
-                        {
-                            label: getTransactionKindLabel("expense"),
-                            value: "expense",
-                            icon: "banknote-arrow-down",
-                        },
-                    ]}
-                    value={transactionType}
-                    onChange={(e) => {
-                        onKindChange(e as TransactionKind);
-                    }}
-                />
+                <div className={"flex flex-col gap-2"}>
+                    <SegmentedButton
+                        disabled={kindLockHint !== undefined}
+                        options={[
+                            {
+                                label: getTransactionKindLabel("income"),
+                                value: "income",
+                                icon: "banknote-arrow-up",
+                            },
+                            {
+                                label: getTransactionKindLabel("expense"),
+                                value: "expense",
+                                icon: "banknote-arrow-down",
+                            },
+                        ]}
+                        value={transactionType}
+                        onChange={(e) => {
+                            onKindChange(e as TransactionKind);
+                        }}
+                    />
+                    {kindLockHint !== undefined && (
+                        <p
+                            className={
+                                "px-4 text-body-small text-on-surface-variant"
+                            }
+                        >
+                            {kindLockHint}
+                        </p>
+                    )}
+                </div>
 
                 {/* Amount and counterparty share a row to save height;
                 their hints go below it at full width. */}
@@ -575,7 +641,12 @@ export function TransactionForm({
                     </div>
                 )}
 
-                <DateChips date={date} onChange={setDate} />
+                <DateChips
+                    date={date}
+                    onChange={setDate}
+                    disabled={dateLockHint !== undefined}
+                    hint={dateLockHint}
+                />
 
                 <div className={"flex flex-col gap-4"}>
                     <Button
@@ -657,6 +728,25 @@ export function TransactionForm({
             </footer>
         </form>
     );
+}
+
+function getKindLockHint(
+    link: TransactionFormLink | undefined,
+): string | undefined {
+    switch (link?.role) {
+        case undefined:
+            return undefined;
+        case "attached":
+            return m.transaction_kind_locked_attached();
+        case "main":
+            return link.attachedCount > 0
+                ? m.transaction_kind_locked_main()
+                : undefined;
+        default:
+            throw new Error(
+                `unreachable error - type ${String(link satisfies never)}`,
+            );
+    }
 }
 
 /**

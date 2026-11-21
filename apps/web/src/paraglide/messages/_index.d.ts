@@ -128,13 +128,6 @@ export const action_replace: ((inputs?: Action_ReplaceInputs, options?: { locale
 /**
 * | output |
 * | --- |
-* | "Restore" |
-*
-*/
-export const action_restore: ((inputs?: Action_RestoreInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Action_RestoreInputs, { locale?: "en" | "de" }, {}>;
-/**
-* | output |
-* | --- |
 * | "Try again" |
 *
 */
@@ -1856,6 +1849,13 @@ export const sync_title: ((inputs?: Sync_TitleInputs, options?: { locale?: "en" 
 /**
 * | output |
 * | --- |
+* | "More actions" |
+*
+*/
+export const transaction_actions: ((inputs?: Transaction_ActionsInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_ActionsInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Amount" |
 *
 */
@@ -1877,10 +1877,45 @@ export const transaction_amount_missing: ((inputs?: Transaction_Amount_MissingIn
 /**
 * | output |
 * | --- |
+* | "Expenses of the same day that aren't attached themselves" |
+*
+*/
+export const transaction_attach_description: ((inputs?: Transaction_Attach_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attach_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "There's no other expense on this day to attach it to." |
+*
+*/
+export const transaction_attach_none: ((inputs?: Transaction_Attach_NoneInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attach_NoneInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Attach to" |
+*
+*/
+export const transaction_attach_title: ((inputs?: Transaction_Attach_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attach_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Attach to…" |
+*
+*/
+export const transaction_attach_to: ((inputs?: Transaction_Attach_ToInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attach_ToInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Attached to {counterparty}" |
 *
 */
 export const transaction_attached_expenses: ((inputs: Transaction_Attached_ExpensesInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attached_ExpensesInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Attached to {counterparty}" |
+*
+*/
+export const transaction_attached_to: ((inputs: Transaction_Attached_ToInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attached_ToInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -1954,6 +1989,20 @@ export const transaction_date: ((inputs?: Transaction_DateInputs, options?: { lo
 /**
 * | output |
 * | --- |
+* | "The date comes from the main expense {counterparty}." |
+*
+*/
+export const transaction_date_from_main_expense: ((inputs: Transaction_Date_From_Main_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Date_From_Main_ExpenseInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "The date comes from the main expense." |
+*
+*/
+export const transaction_date_from_unknown_main_expense: ((inputs?: Transaction_Date_From_Unknown_Main_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Date_From_Unknown_Main_ExpenseInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Today" |
 *
 */
@@ -1986,6 +2035,20 @@ export const transaction_delete_title: ((inputs?: Transaction_Delete_TitleInputs
 *
 */
 export const transaction_description: ((inputs?: Transaction_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Detach" |
+*
+*/
+export const transaction_detach: ((inputs?: Transaction_DetachInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_DetachInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Expense detached" |
+*
+*/
+export const transaction_detached: ((inputs?: Transaction_DetachedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_DetachedInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -2073,6 +2136,20 @@ export const transaction_incomes_saved: ((inputs: Transaction_Incomes_SavedInput
 /**
 * | output |
 * | --- |
+* | "Detach the expense from its main expense to turn it into an income." |
+*
+*/
+export const transaction_kind_locked_attached: ((inputs?: Transaction_Kind_Locked_AttachedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Kind_Locked_AttachedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Other expenses are attached to this one, so it stays an expense." |
+*
+*/
+export const transaction_kind_locked_main: ((inputs?: Transaction_Kind_Locked_MainInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Kind_Locked_MainInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "No transactions ({period})" |
 *
 */
@@ -2112,6 +2189,28 @@ export const transaction_main_expense_total: ((inputs: Transaction_Main_Expense_
 *
 */
 export const transaction_more: ((inputs?: Transaction_MoreInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_MoreInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Move" |
+*
+*/
+export const transaction_move_attached_confirm: ((inputs?: Transaction_Move_Attached_ConfirmInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Move_Attached_ConfirmInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | countPlural | output |
+* | --- | --- |
+* | "one" | "{count} attached expense moves to the new date too." |
+* | "other" | "{count} attached expenses move to the new date too." |
+*
+*/
+export const transaction_move_attached_description: ((inputs: Transaction_Move_Attached_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Move_Attached_DescriptionInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Move attached expenses?" |
+*
+*/
+export const transaction_move_attached_title: ((inputs?: Transaction_Move_Attached_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Move_Attached_TitleInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -2201,7 +2300,6 @@ export type Action_NextInputs = {};
 export type Action_ReloadInputs = {};
 export type Action_RemoveInputs = {};
 export type Action_ReplaceInputs = {};
-export type Action_RestoreInputs = {};
 export type Action_RetryInputs = {};
 export type Action_SaveInputs = {};
 export type Action_Sign_InInputs = {};
@@ -2447,10 +2545,16 @@ export type Sync_Status_OfflineInputs = {};
 export type Sync_Status_PendingInputs = {};
 export type Sync_Status_SyncedInputs = {};
 export type Sync_TitleInputs = {};
+export type Transaction_ActionsInputs = {};
 export type Transaction_AmountInputs = {};
 export type Transaction_Amount_LastInputs = { amount: NonNullable<unknown> };
 export type Transaction_Amount_MissingInputs = {};
+export type Transaction_Attach_DescriptionInputs = {};
+export type Transaction_Attach_NoneInputs = {};
+export type Transaction_Attach_TitleInputs = {};
+export type Transaction_Attach_ToInputs = {};
 export type Transaction_Attached_ExpensesInputs = { counterparty: NonNullable<unknown> };
+export type Transaction_Attached_ToInputs = { counterparty: NonNullable<unknown> };
 export type Transaction_Belongs_ToInputs = { counterparty: NonNullable<unknown> };
 export type Transaction_CategoryInputs = {};
 export type Transaction_Category_MissingInputs = {};
@@ -2461,11 +2565,15 @@ export type Transaction_Counterparty_IncomeInputs = {};
 export type Transaction_Counterparty_MissingInputs = {};
 export type Transaction_Counterparty_UseInputs = { name: NonNullable<unknown> };
 export type Transaction_DateInputs = {};
+export type Transaction_Date_From_Main_ExpenseInputs = { counterparty: NonNullable<unknown> };
+export type Transaction_Date_From_Unknown_Main_ExpenseInputs = {};
 export type Transaction_Date_TodayInputs = {};
 export type Transaction_Date_YesterdayInputs = {};
 export type Transaction_Delete_DescriptionInputs = {};
 export type Transaction_Delete_TitleInputs = {};
 export type Transaction_DescriptionInputs = {};
+export type Transaction_DetachInputs = {};
+export type Transaction_DetachedInputs = {};
 export type Transaction_EditInputs = {};
 export type Transaction_ExceptionalInputs = {};
 export type Transaction_Expense_DeletedInputs = {};
@@ -2478,12 +2586,17 @@ export type Transaction_Filter_AllInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = { name: NonNullable<unknown> };
 export type Transaction_Incomes_SavedInputs = { count: NonNullable<unknown>, name: NonNullable<unknown> };
+export type Transaction_Kind_Locked_AttachedInputs = {};
+export type Transaction_Kind_Locked_MainInputs = {};
 export type Transaction_List_EmptyInputs = { period: NonNullable<unknown> };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_UpcomingInputs = {};
 export type Transaction_Main_Expense_TotalInputs = { amount: NonNullable<unknown> };
 export type Transaction_MoreInputs = {};
+export type Transaction_Move_Attached_ConfirmInputs = {};
+export type Transaction_Move_Attached_DescriptionInputs = { count: NonNullable<unknown> };
+export type Transaction_Move_Attached_TitleInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};

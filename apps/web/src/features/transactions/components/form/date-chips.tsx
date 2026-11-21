@@ -20,13 +20,24 @@ const SELECTED_CHIP_CLASS_NAME =
 interface DateChipsProps {
     date: Date;
     onChange: (date: Date) => void;
+
+    /**
+     * Shown below the chips, e.g. why they are disabled.
+     */
+    hint?: string;
+    disabled?: boolean;
 }
 
 /**
  * The transaction's day as chips: today, yesterday, or any other day picked
  * in a calendar. Another day shows as its own selected chip.
  */
-export function DateChips({ date, onChange }: DateChipsProps) {
+export function DateChips({
+    date,
+    onChange,
+    hint,
+    disabled = false,
+}: DateChipsProps) {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const isOtherDay = !isToday(date) && !isYesterday(date);
 
@@ -41,6 +52,7 @@ export function DateChips({ date, onChange }: DateChipsProps) {
                 <Badge asChild variant={"md3"}>
                     <button
                         type={"button"}
+                        disabled={disabled}
                         aria-pressed={isToday(date)}
                         className={cn(
                             isToday(date) && SELECTED_CHIP_CLASS_NAME,
@@ -55,6 +67,7 @@ export function DateChips({ date, onChange }: DateChipsProps) {
                 <Badge asChild variant={"md3"}>
                     <button
                         type={"button"}
+                        disabled={disabled}
                         aria-pressed={isYesterday(date)}
                         className={cn(
                             isYesterday(date) && SELECTED_CHIP_CLASS_NAME,
@@ -73,6 +86,7 @@ export function DateChips({ date, onChange }: DateChipsProps) {
                         <Badge asChild variant={"md3"}>
                             <button
                                 type={"button"}
+                                disabled={disabled}
                                 aria-pressed={isOtherDay}
                                 className={cn(
                                     isOtherDay && SELECTED_CHIP_CLASS_NAME,
@@ -106,6 +120,11 @@ export function DateChips({ date, onChange }: DateChipsProps) {
                     </PopoverContent>
                 </Popover>
             </div>
+            {hint !== undefined && (
+                <p className={"px-4 text-body-small text-on-surface-variant"}>
+                    {hint}
+                </p>
+            )}
         </Field>
     );
 }

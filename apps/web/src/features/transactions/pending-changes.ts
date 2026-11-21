@@ -1,4 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
+import { isSameDay } from "date-fns";
 import {
     matchesListQuery,
     type Transaction,
@@ -169,6 +170,39 @@ function cachedTransactions(queryClient: QueryClient): Transaction[] {
         }
     }
     return [...byId.values()];
+}
+
+/**
+ * The cached expenses attached to `id`, also those the current view filters
+ * out.
+ */
+export function findAttachedExpenses(
+    queryClient: QueryClient,
+    id: string,
+): Transaction[] {
+    return cachedTransactions(queryClient).filter(
+        (it) => it.mainExpenseId === id,
+    );
+}
+
+/**
+ * The cached expenses of `transaction`'s day it can be attached to: neither
+ * attached themselves nor `transaction` or its current main expense.
+ */
+export function findMainExpenseCandidates(
+    queryClient: QueryClient,
+    transaction: Transaction,
+): Transaction[] {
+    return cachedTransactions(queryClient)
+        .filter(
+            (it) =>
+                it.kind === "expense" &&
+                it.mainExpenseId === null &&
+                it.id !== transaction.id &&
+                it.id !== transaction.mainExpenseId &&
+                isSameDay(it.date, transaction.date),
+        )
+        .sort((a, b) => b.date - a.date);
 }
 
 /**
