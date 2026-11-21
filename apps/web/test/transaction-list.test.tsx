@@ -76,22 +76,30 @@ const tip = expense("tip", {
 const bakery = expense("bakery", { amount: 3.2, date: day + 60 * 1000 });
 
 /**
- * Renders the app at `url` with the October list (and search results)
- * already in the cache; requests never answer.
+ * Renders the app at `url` with the October list (unless `null`) and search
+ * results already in the cache. Requests `api` answers (by path, without the
+ * query) get that JSON; the others never answer.
  */
 async function renderApp(
     url: string,
     {
         transactions = [],
         search,
+        api = {},
     }: {
-        transactions?: Transaction[];
+        transactions?: Transaction[] | null;
         search?: { q: string; page: TransactionSearchPage };
+        api?: Record<string, unknown>;
     },
 ) {
     vi.stubGlobal(
         "fetch",
-        vi.fn(() => new Promise(() => undefined)),
+        vi.fn((input: string) => {
+            const path = new URL(input, "http://localhost").pathname;
+            return path in api
+                ? Promise.resolve(new Response(JSON.stringify(api[path])))
+                : new Promise(() => undefined);
+        }),
     );
     const queryClient = createQueryClient(() => undefined);
     registerTransactionMutations(queryClient, {
@@ -102,14 +110,16 @@ async function renderApp(
         username: "julian",
     }));
     queryClient.setQueryData(["categories"], categories);
-    queryClient.setQueryData(
-        [
-            "transactions",
-            "list",
-            { from: october.getTime(), to: endOfMonth(october).getTime() },
-        ],
-        transactions,
-    );
+    if (transactions) {
+        queryClient.setQueryData(
+            [
+                "transactions",
+                "list",
+                { from: october.getTime(), to: endOfMonth(october).getTime() },
+            ],
+            transactions,
+        );
+    }
     if (search) {
         queryClient.setQueryData(
             ["transactions", "search", { q: search.q, older: "any" }],
@@ -127,7 +137,7 @@ async function renderApp(
         </QueryClientProvider>,
     );
     return {
-        main: await screen.findByRole("main"),
+        main: await screen.findByRole("main", {}, { timeout: 5000 }),
 
         /**
          * Queues a change like the form does; it stays pending.
@@ -160,6 +170,12 @@ beforeAll(() => {
     // jsdom lays nothing out; the month switcher scrolls its track.
     Element.prototype.scrollTo = () => undefined;
     window.scrollTo = () => undefined;
+    // The form's chips and popovers measure themselves.
+    globalThis.ResizeObserver ??= class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    };
 });
 
 afterEach(() => {
@@ -220,6 +236,24 @@ describe("transaction list", () => {
             within(main).queryByRole("button", { name: /^Trattoria Luigi/ }),
         ).toBeNull();
         expect(within(main).queryByRole("group")).toBeNull();
+    });
+
+    it("counts the whole occasion in the total when the category filter hides attached expenses", async () => {
+        const water = expense("water", {
+            counterparty: "Wasser",
+            amount: 3,
+            mainExpenseId: "meal",
+        });
+        const { main } = await renderApp(
+            "/transactions?month=2026-10&category=restaurant",
+            {
+                transactions: [bakery, meal, tip, water],
+            },
+        );
+
+        expect(await row(main, "Trattoria Luigi")).toHaveTextContent(
+            "gesamt 20,50 €",
+        );
     });
 });
 
@@ -309,5 +343,73 @@ describe("search results", () => {
         expect(await row(main, "Trattoria Luigi")).toHaveTextContent(
             "gesamt 17,50 €",
         );
+    });
+});
+
+describe("transaction form", () => {
+    async function renderForm(id: string) {
+        await renderApp(`/edit/${id}`, { transactions: [bakery, meal, tip] });
+        const save = await screen.findByRole("button", { name: "Speichern" });
+        return save.closest("form")!;
+    }
+
+    it("locks an attached expense's date and kind", async () => {
+        const form = await renderForm("tip");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeDisabled();
+        expect(
+            within(form).getByRole("button", { name: "Heute" }),
+        ).toBeDisabled();
+        expect(form).toHaveTextContent(
+            "Das Datum kommt von der Hauptausgabe Trattoria Luigi.",
+        );
+        expect(form).toHaveTextContent(
+            "Löse die Ausgabe von ihrer Hauptausgabe, um sie zur Einnahme zu machen.",
+        );
+    });
+
+    it("locks the kind of a main expense with attached expenses", async () => {
+        const form = await renderForm("meal");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeDisabled();
+        expect(
+            within(form).getByRole("button", { name: "Heute" }),
+        ).toBeEnabled();
+        expect(form).toHaveTextContent(
+            "An dieser Ausgabe hängen andere Ausgaben, daher bleibt sie eine Ausgabe.",
+        );
+    });
+
+    it("locks the kind of a main expense opened by a link to an uncached month", async () => {
+        await renderApp("/edit/meal", {
+            transactions: null,
+            api: {
+                "/api/transactions/meal": meal,
+                "/api/transactions": [bakery, meal, tip],
+            },
+        });
+        const save = await screen.findByRole(
+            "button",
+            { name: "Speichern" },
+            { timeout: 5000 },
+        );
+
+        expect(
+            within(save.closest("form")!).getByRole("button", {
+                name: "Einnahme",
+            }),
+        ).toBeDisabled();
+    });
+
+    it("leaves a regular expense unlocked", async () => {
+        const form = await renderForm("bakery");
+
+        expect(
+            within(form).getByRole("button", { name: "Einnahme" }),
+        ).toBeEnabled();
     });
 });

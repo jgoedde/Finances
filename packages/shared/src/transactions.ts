@@ -82,6 +82,23 @@ export function netSpending(
         : -transaction.amount;
 }
 
+/**
+ * Whether `transaction` may be attached to `main` (ADR 0008): only an
+ * expense, to another expense that isn't attached itself. Whether
+ * `transaction` has attached expenses of its own is up to the caller.
+ */
+export function canAttachTo(
+    transaction: Pick<Transaction, "id" | "kind">,
+    main: Pick<Transaction, "id" | "kind" | "mainExpenseId">,
+): boolean {
+    return (
+        transaction.kind === "expense" &&
+        main.id !== transaction.id &&
+        main.kind === "expense" &&
+        main.mainExpenseId === null
+    );
+}
+
 const booleanQuery = z
     .enum(["true", "false"])
     .transform((value) => value === "true");

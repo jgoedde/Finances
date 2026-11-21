@@ -57,10 +57,15 @@ export function toListRows(
 
 /**
  * What the occasion of a main expense cost: its own net spending plus its
- * attached expenses, in whole cents.
+ * attached expenses, in whole cents. `cached` adds attached expenses the view
+ * filters out; the row's own versions win.
  */
-export function occasionTotal(row: ListRow): number {
-    const cents = row.attached.reduce(
+export function occasionTotal(row: ListRow, cached: Transaction[]): number {
+    const attached = new Map(cached.map((it) => [it.id, it]));
+    for (const it of row.attached) {
+        attached.set(it.id, it);
+    }
+    const cents = [...attached.values()].reduce(
         (sum, it) => sum + Math.round(netSpending(it) * 100),
         Math.round(netSpending(row.transaction) * 100),
     );

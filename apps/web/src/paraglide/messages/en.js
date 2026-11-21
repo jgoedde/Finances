@@ -18,7 +18,6 @@
 /** @typedef {{}} Action_ReloadInputs */
 /** @typedef {{}} Action_RemoveInputs */
 /** @typedef {{}} Action_ReplaceInputs */
-/** @typedef {{}} Action_RestoreInputs */
 /** @typedef {{}} Action_RetryInputs */
 /** @typedef {{}} Action_SaveInputs */
 /** @typedef {{}} Action_Sign_InInputs */
@@ -264,10 +263,16 @@
 /** @typedef {{}} Sync_Status_PendingInputs */
 /** @typedef {{}} Sync_Status_SyncedInputs */
 /** @typedef {{}} Sync_TitleInputs */
+/** @typedef {{}} Transaction_ActionsInputs */
 /** @typedef {{}} Transaction_AmountInputs */
 /** @typedef {{ amount: NonNullable<unknown> }} Transaction_Amount_LastInputs */
 /** @typedef {{}} Transaction_Amount_MissingInputs */
+/** @typedef {{}} Transaction_Attach_DescriptionInputs */
+/** @typedef {{}} Transaction_Attach_NoneInputs */
+/** @typedef {{}} Transaction_Attach_TitleInputs */
+/** @typedef {{}} Transaction_Attach_ToInputs */
 /** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Attached_ExpensesInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Attached_ToInputs */
 /** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Belongs_ToInputs */
 /** @typedef {{}} Transaction_CategoryInputs */
 /** @typedef {{}} Transaction_Category_MissingInputs */
@@ -278,11 +283,15 @@
 /** @typedef {{}} Transaction_Counterparty_MissingInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Counterparty_UseInputs */
 /** @typedef {{}} Transaction_DateInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Date_From_Main_ExpenseInputs */
+/** @typedef {{}} Transaction_Date_From_Unknown_Main_ExpenseInputs */
 /** @typedef {{}} Transaction_Date_TodayInputs */
 /** @typedef {{}} Transaction_Date_YesterdayInputs */
 /** @typedef {{}} Transaction_Delete_DescriptionInputs */
 /** @typedef {{}} Transaction_Delete_TitleInputs */
 /** @typedef {{}} Transaction_DescriptionInputs */
+/** @typedef {{}} Transaction_DetachInputs */
+/** @typedef {{}} Transaction_DetachedInputs */
 /** @typedef {{}} Transaction_EditInputs */
 /** @typedef {{}} Transaction_ExceptionalInputs */
 /** @typedef {{}} Transaction_Expense_DeletedInputs */
@@ -295,12 +304,17 @@
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
+/** @typedef {{}} Transaction_Kind_Locked_AttachedInputs */
+/** @typedef {{}} Transaction_Kind_Locked_MainInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_UpcomingInputs */
 /** @typedef {{ amount: NonNullable<unknown> }} Transaction_Main_Expense_TotalInputs */
 /** @typedef {{}} Transaction_MoreInputs */
+/** @typedef {{}} Transaction_Move_Attached_ConfirmInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Transaction_Move_Attached_DescriptionInputs */
+/** @typedef {{}} Transaction_Move_Attached_TitleInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
@@ -384,10 +398,6 @@ export const action_remove = /** @type {(inputs: Action_RemoveInputs) => Localiz
 
 export const action_replace = /** @type {(inputs: Action_ReplaceInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Replace`)
-};
-
-export const action_restore = /** @type {(inputs: Action_RestoreInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Restore`)
 };
 
 export const action_retry = /** @type {(inputs: Action_RetryInputs) => LocalizedString} */ () => {
@@ -1388,6 +1398,10 @@ export const sync_title = /** @type {(inputs: Sync_TitleInputs) => LocalizedStri
 	return /** @type {LocalizedString} */ (`Sync`)
 };
 
+export const transaction_actions = /** @type {(inputs: Transaction_ActionsInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`More actions`)
+};
+
 export const transaction_amount = /** @type {(inputs: Transaction_AmountInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Amount`)
 };
@@ -1400,7 +1414,27 @@ export const transaction_amount_missing = /** @type {(inputs: Transaction_Amount
 	return /** @type {LocalizedString} */ (`Enter an amount.`)
 };
 
+export const transaction_attach_description = /** @type {(inputs: Transaction_Attach_DescriptionInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expenses of the same day that aren't attached themselves`)
+};
+
+export const transaction_attach_none = /** @type {(inputs: Transaction_Attach_NoneInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`There's no other expense on this day to attach it to.`)
+};
+
+export const transaction_attach_title = /** @type {(inputs: Transaction_Attach_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Attach to`)
+};
+
+export const transaction_attach_to = /** @type {(inputs: Transaction_Attach_ToInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Attach to…`)
+};
+
 export const transaction_attached_expenses = /** @type {(inputs: Transaction_Attached_ExpensesInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Attached to ${i?.counterparty}`)
+};
+
+export const transaction_attached_to = /** @type {(inputs: Transaction_Attached_ToInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`Attached to ${i?.counterparty}`)
 };
 
@@ -1444,6 +1478,14 @@ export const transaction_date = /** @type {(inputs: Transaction_DateInputs) => L
 	return /** @type {LocalizedString} */ (`Date`)
 };
 
+export const transaction_date_from_main_expense = /** @type {(inputs: Transaction_Date_From_Main_ExpenseInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`The date comes from the main expense ${i?.counterparty}.`)
+};
+
+export const transaction_date_from_unknown_main_expense = /** @type {(inputs: Transaction_Date_From_Unknown_Main_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`The date comes from the main expense.`)
+};
+
 export const transaction_date_today = /** @type {(inputs: Transaction_Date_TodayInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Today`)
 };
@@ -1462,6 +1504,14 @@ export const transaction_delete_title = /** @type {(inputs: Transaction_Delete_T
 
 export const transaction_description = /** @type {(inputs: Transaction_DescriptionInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Description`)
+};
+
+export const transaction_detach = /** @type {(inputs: Transaction_DetachInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Detach`)
+};
+
+export const transaction_detached = /** @type {(inputs: Transaction_DetachedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Expense detached`)
 };
 
 export const transaction_edit = /** @type {(inputs: Transaction_EditInputs) => LocalizedString} */ () => {
@@ -1512,6 +1562,14 @@ export const transaction_incomes_saved = /** @type {(inputs: Transaction_Incomes
 	return /** @type {LocalizedString} */ (`${i?.count} incomes from ${i?.name} saved`)
 };
 
+export const transaction_kind_locked_attached = /** @type {(inputs: Transaction_Kind_Locked_AttachedInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Detach the expense from its main expense to turn it into an income.`)
+};
+
+export const transaction_kind_locked_main = /** @type {(inputs: Transaction_Kind_Locked_MainInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Other expenses are attached to this one, so it stays an expense.`)
+};
+
 export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
 	return /** @type {LocalizedString} */ (`No transactions (${i?.period})`)
 };
@@ -1534,6 +1592,21 @@ export const transaction_main_expense_total = /** @type {(inputs: Transaction_Ma
 
 export const transaction_more = /** @type {(inputs: Transaction_MoreInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`More details`)
+};
+
+export const transaction_move_attached_confirm = /** @type {(inputs: Transaction_Move_Attached_ConfirmInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Move`)
+};
+
+export const transaction_move_attached_description = /** @type {(inputs: Transaction_Move_Attached_DescriptionInputs) => LocalizedString} */ (i) => {
+	const countPlural = __paraglideRegistry.plural("en", i?.count, {}, true);
+	if (countPlural === "one") return /** @type {LocalizedString} */ (`${i?.count} attached expense moves to the new date too.`);
+	if (countPlural === "other") return /** @type {LocalizedString} */ (`${i?.count} attached expenses move to the new date too.`);
+	return /** @type {LocalizedString} */ ("transaction_move_attached_description");
+};
+
+export const transaction_move_attached_title = /** @type {(inputs: Transaction_Move_Attached_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Move attached expenses?`)
 };
 
 export const transaction_new = /** @type {(inputs: Transaction_NewInputs) => LocalizedString} */ () => {

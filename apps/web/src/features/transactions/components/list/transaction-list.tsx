@@ -1,9 +1,12 @@
 import { formatMonthYear, type Transaction } from "@finances/shared";
-import { addDays, endOfMonth, isSameMonth, startOfDay } from "date-fns";
+import { addDays, isSameMonth, startOfDay } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useSelectedMonth } from "#/features/month/month.ts";
-import { transactionsQuery } from "#/features/transactions/transaction-queries.ts";
+import {
+    monthTransactionsQuery,
+    transactionsQuery,
+} from "#/features/transactions/transaction-queries.ts";
 import { TransactionGroup } from "#/features/transactions/components/list/transaction-group.tsx";
 import { UpcomingTransactions } from "#/features/transactions/components/list/upcoming-transactions.tsx";
 import { useMonthLanding } from "#/features/transactions/components/list/month-landing.ts";
@@ -27,10 +30,7 @@ export function TransactionList() {
     const { category } = transactionsRoute.useSearch();
     // The whole month, so the category filter shares the cached list.
     const { data, isPending, fetchStatus } = useQuery(
-        transactionsQuery({
-            from: month.getTime(),
-            to: endOfMonth(month).getTime(),
-        }),
+        monthTransactionsQuery(month),
     );
     const isCurrentMonth = isSameMonth(month, today);
     const upcomingQuery = useQuery({

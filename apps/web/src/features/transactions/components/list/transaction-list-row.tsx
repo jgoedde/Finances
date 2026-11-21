@@ -1,3 +1,5 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { monthTransactionsQuery } from "#/features/transactions/transaction-queries.ts";
 import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
 import {
     type ListRow,
@@ -30,6 +32,18 @@ export function TransactionListRow({
     dateLabel,
 }: TransactionListRowProps) {
     const { transaction, attached, mainExpense } = row;
+    const queryClient = useQueryClient();
+    // Also those a category filter hides: they share their main expense's
+    // day, so its cached month holds them all.
+    const cachedAttached =
+        transaction.kind === "expense" && transaction.mainExpenseId === null
+            ? (queryClient
+                  .getQueryData(
+                      monthTransactionsQuery(transaction.date).queryKey,
+                  )
+                  ?.filter((it) => it.mainExpenseId === transaction.id) ?? [])
+            : [];
+    const hasAttached = attached.length > 0 || cachedAttached.length > 0;
 
     return (
         <div className={"flex flex-col"}>
@@ -37,7 +51,9 @@ export function TransactionListRow({
                 transaction={transaction}
                 highlighted={highlighted?.has(transaction.id)}
                 dateLabel={dateLabel}
-                total={attached.length > 0 ? occasionTotal(row) : undefined}
+                total={
+                    hasAttached ? occasionTotal(row, cachedAttached) : undefined
+                }
                 mainExpense={mainExpense}
             />
             {attached.length > 0 && (

@@ -1,26 +1,29 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
     TransactionForm,
     type TransactionFormSubmitData,
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
-import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
 import {
-    useDeleteTransaction,
-    useSaveTransaction,
-} from "#/features/transactions/transaction-mutations.ts";
-import { findCachedTransaction } from "#/features/transactions/pending-changes.ts";
+    ensureMonthTransactions,
+    transactionQuery,
+} from "#/features/transactions/transaction-queries.ts";
+import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
+import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
+import {
+    findCachedTransaction,
+    findTransactionFormRelation,
+} from "#/features/transactions/pending-changes.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
 import { apiErrorCode } from "#/api/api-errors.ts";
 import { m } from "#/paraglide/messages.js";
-import { nanoid } from "nanoid";
 
 export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
     staticData: { detail: true },
     component: RouteComponent,
-    loader: ({ context: { queryClient }, params }) => {
+    loader: async ({ context: { queryClient }, params }) => {
         // Offline, a transaction only seen in a list can still be edited.
         const query = transactionQuery(params.id);
         if (!queryClient.getQueryData(query.queryKey)) {
@@ -29,7 +32,14 @@ export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
                 queryClient.setQueryData(query.queryKey, cached);
             }
         }
-        return queryClient.query({ ...query, staleTime: "static" });
+        const transaction = await queryClient.query({
+            ...query,
+            staleTime: "static",
+        });
+        // Its month holds its attached expenses, which lock fields and are
+        // moved and restored along with it.
+        await ensureMonthTransactions(queryClient, transaction.date);
+        return transaction;
     },
     // After `loader`, so `loaderData` is typed.
     head: ({ loaderData }) => ({
@@ -58,7 +68,8 @@ function RouteComponent() {
     const navigate = useNavigate();
     const { data: transaction } = useSuspenseQuery(transactionQuery(id));
     const saveTransaction = useSaveTransaction();
-    const deleteTransaction = useDeleteTransaction();
+    const deleteWithUndo = useDeleteWithUndo();
+    const queryClient = useQueryClient();
 
     const onTransactionFormSubmit = (updated: TransactionFormSubmitData) => {
         saveTransaction.mutate({
@@ -85,24 +96,8 @@ function RouteComponent() {
     };
 
     const onTransactionFormDelete = () => {
-        deleteTransaction.mutate(transaction);
+        deleteWithUndo(transaction);
         void navigate({ to: "/transactions" });
-        // Deleted ids can't be reused, so restoring saves a copy.
-        const deleted =
-            transaction.kind === "income"
-                ? m.transaction_income_deleted()
-                : m.transaction_expense_deleted();
-        toast.success(`${deleted}${syncLaterHint()}`, {
-            duration: ACTION_TOAST_DURATION,
-            action: {
-                label: m.action_restore(),
-                onClick: () =>
-                    saveTransaction.mutate({
-                        ...transaction,
-                        id: nanoid(8),
-                    }),
-            },
-        });
     };
 
     return (
@@ -120,6 +115,7 @@ function RouteComponent() {
             onDelete={onTransactionFormDelete}
             onSubmit={onTransactionFormSubmit}
             title={m.transaction_edit()}
+            relation={findTransactionFormRelation(queryClient, transaction)}
         />
     );
 }

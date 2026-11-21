@@ -9,6 +9,7 @@ import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { TRANSACTION_MUTATION_KEY } from "#/features/transactions/pending-changes.ts";
 import { Toaster } from "#/components/ui/sonner.tsx";
 import { ConfirmDialog } from "#/components/confirm-dialog.tsx";
+import { MainExpensePicker } from "#/features/transactions/components/list/main-expense-picker.tsx";
 import { initPWA } from "#/pwa.ts";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -38,6 +39,7 @@ function RootComponent() {
         () =>
             router.subscribe("onBeforeNavigate", () => {
                 ConfirmDialog.end(false);
+                MainExpensePicker.end(undefined);
             }),
         [router],
     );
@@ -85,6 +87,7 @@ function RootComponent() {
             <ReactQueryDevtools initialIsOpen={false} />
             <Toaster />
             <ConfirmDialog />
+            <MainExpensePicker />
         </>
     );
 }

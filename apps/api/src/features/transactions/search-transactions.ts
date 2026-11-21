@@ -6,6 +6,7 @@ import {
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import {
+    readMissingMainExpenses,
     toLikePattern,
     toTransaction,
 } from "#/features/transactions/transactions.ts";
@@ -55,31 +56,15 @@ export const searchTransactions = factory.createHandlers(
             .execute();
         const items = rows.slice(0, limit).map(toTransaction);
         const last = items.at(-1);
-        const itemIds = new Set(items.map((item) => item.id));
-        const missingMainIds = [
-            ...new Set(
-                items.flatMap((item) =>
-                    item.mainExpenseId !== null &&
-                    !itemIds.has(item.mainExpenseId)
-                        ? [item.mainExpenseId]
-                        : [],
-                ),
-            ),
-        ];
-        const mainRows =
-            missingMainIds.length > 0
-                ? await c.var.db
-                      .selectFrom("transactions")
-                      .selectAll()
-                      .where("user_id", "=", c.var.userId)
-                      .where("id", "in", missingMainIds)
-                      .execute()
-                : [];
         const page: TransactionSearchPage = {
             items,
             nextCursor:
                 rows.length > limit && last ? `${last.date}:${last.id}` : null,
-            mainExpenses: mainRows.map(toTransaction),
+            mainExpenses: await readMissingMainExpenses(
+                c.var.db,
+                c.var.userId,
+                items,
+            ),
         };
         return c.json(page);
     },

@@ -3,6 +3,8 @@ import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { logger } from "#/log.ts";
 import {
+    moveAttachedExpenses,
+    resolveMainExpense,
     toLocationColumns,
     toTransaction,
     transactionIdParam,
@@ -50,40 +52,11 @@ export const putTransaction = factory.createHandlers(
                 return c.json({ error: "category_kind_mismatch" }, 422);
             }
 
-            const hasAttached =
-                (await trx
-                    .selectFrom("transactions")
-                    .select("id")
-                    .where("user_id", "=", userId)
-                    .where("main_expense_id", "=", id)
-                    .executeTakeFirst()) !== undefined;
-            if (hasAttached && input.kind !== "expense") {
-                return c.json({ error: "main_expense_kind" }, 422);
+            const resolved = await resolveMainExpense(trx, userId, id, input);
+            if ("error" in resolved) {
+                return c.json({ error: resolved.error }, 422);
             }
-
-            let main: { id: string; date: number } | undefined;
-            if (input.mainExpenseId !== null) {
-                if (input.kind !== "expense" || input.mainExpenseId === id) {
-                    return c.json({ error: "invalid_main_expense" }, 422);
-                }
-                const row = await trx
-                    .selectFrom("transactions")
-                    .select(["id", "date", "kind", "main_expense_id"])
-                    .where("user_id", "=", userId)
-                    .where("id", "=", input.mainExpenseId)
-                    .executeTakeFirst();
-                if (row) {
-                    // One level deep, expenses only (ADR 0008).
-                    if (
-                        row.kind !== "expense" ||
-                        row.main_expense_id !== null ||
-                        hasAttached
-                    ) {
-                        return c.json({ error: "invalid_main_expense" }, 422);
-                    }
-                    main = row;
-                }
-            }
+            const { main, hasAttached } = resolved;
 
             const values = {
                 // An attached expense is always on its main expense's day.
@@ -110,13 +83,10 @@ export const putTransaction = factory.createHandlers(
                 .returningAll()
                 .executeTakeFirstOrThrow();
             if (hasAttached) {
-                await trx
-                    .updateTable("transactions")
-                    .set({ date: row.date, updated_at: row.updated_at })
-                    .where("user_id", "=", userId)
-                    .where("main_expense_id", "=", id)
-                    .where("date", "<>", row.date)
-                    .execute();
+                await moveAttachedExpenses(trx, userId, id, {
+                    date: row.date,
+                    updatedAt: row.updated_at,
+                });
             }
             return c.json(toTransaction(row));
         });

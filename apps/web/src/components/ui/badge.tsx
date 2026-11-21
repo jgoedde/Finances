@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
 
 // `md3` and `input` follow MD3 chips (https://m3.material.io/components/chips/specs),
@@ -20,7 +21,10 @@ const badgeVariants = cva(
                     "border-outline-variant px-2 py-0.5 text-label-medium text-on-surface-variant",
                 // Filter / assist chip. Selected state: add `bg-secondary-container
                 // text-on-secondary-container border-transparent`.
-                md3: "state-layer h-8 cursor-pointer gap-2 border-outline-variant px-4 text-label-large text-on-surface-variant [&>svg]:size-[18px]",
+                md3: [
+                    outlinedDisabledClassName,
+                    "state-layer h-8 cursor-pointer gap-2 border-outline-variant px-4 text-label-large text-on-surface-variant [&>svg]:size-[18px]",
+                ],
                 // Input chip.
                 input: "h-8 gap-2 border-transparent bg-secondary-container pr-2 pl-3 text-label-large text-on-secondary-container [&>svg]:size-[18px]",
             },

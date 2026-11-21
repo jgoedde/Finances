@@ -1,6 +1,10 @@
 import * as React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import { cn } from "#/lib/cn.ts";
+import {
+    menuContentClassName,
+    menuItemClassName,
+} from "#/components/ui/menu-styles.ts";
 
 // MD3 menu (https://m3.material.io/components/menus/specs).
 
@@ -32,15 +36,9 @@ function DropdownMenuContent({
                 data-slot="dropdown-menu-content"
                 sideOffset={sideOffset}
                 className={cn(
-                    `z-50 max-h-(--radix-dropdown-menu-content-available-height)
-                    max-w-[280px] min-w-[112px]
-                    origin-(--radix-dropdown-menu-content-transform-origin)
-                    overflow-y-auto rounded-xs bg-surface-container py-2
-                    text-on-surface shadow-elevation-2
-                    data-[state=closed]:animate-out
-                    data-[state=closed]:fade-out-0
-                    data-[state=closed]:zoom-out-95 data-[state=open]:animate-in
-                    data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95`,
+                    menuContentClassName,
+                    `max-h-(--radix-dropdown-menu-content-available-height)
+                    origin-(--radix-dropdown-menu-content-transform-origin)`,
                     className,
                 )}
                 {...props}
@@ -49,12 +47,6 @@ function DropdownMenuContent({
     );
 }
 
-const itemClassName = `state-layer relative flex h-12 cursor-pointer items-center
-    gap-3 px-3 text-label-large outline-hidden select-none
-    data-[disabled]:pointer-events-none data-[disabled]:text-on-surface/38
-    [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:text-on-surface-variant
-    [&_svg:not([class*='size-'])]:size-6`;
-
 function DropdownMenuItem({
     className,
     ...props
@@ -62,7 +54,7 @@ function DropdownMenuItem({
     return (
         <DropdownMenuPrimitive.Item
             data-slot="dropdown-menu-item"
-            className={cn(itemClassName, className)}
+            className={cn(menuItemClassName, className)}
             {...props}
         />
     );
@@ -88,7 +80,7 @@ function DropdownMenuRadioItem({
     return (
         <DropdownMenuPrimitive.RadioItem
             data-slot="dropdown-menu-radio-item"
-            className={cn(itemClassName, "group/radio", className)}
+            className={cn(menuItemClassName, "group/radio", className)}
             {...props}
         >
             <span

@@ -1,5 +1,6 @@
 import { createCallable } from "react-call";
 import {
+    ALERT_DIALOG_EXIT_MS,
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -11,11 +12,6 @@ import {
 } from "#/components/ui/alert-dialog.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
-
-/**
- * Matches the exit animation of `AlertDialogContent`.
- */
-const UNMOUNTING_DELAY_MS = 200;
 
 interface ConfirmDialogProps {
     title: string;
@@ -62,7 +58,7 @@ export const ConfirmDialog = createCallable<ConfirmDialogProps, boolean>(
             </AlertDialogContent>
         </AlertDialog>
     ),
-    UNMOUNTING_DELAY_MS,
+    ALERT_DIALOG_EXIT_MS,
 );
 
 /**
