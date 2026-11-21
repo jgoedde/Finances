@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ChangeEvent, useRef, useState } from "react";
-import { Download, Shapes, ShieldCheck, Upload } from "lucide-react";
+import { Download, Shapes, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Card } from "#/components/ui/card.tsx";
@@ -66,7 +66,6 @@ function importErrorMessage(error: unknown): string {
 }
 
 function RouteComponent() {
-    const { user } = Route.useRouteContext();
     const queryClient = useQueryClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isExporting, setIsExporting] = useState(false);
@@ -213,27 +212,6 @@ function RouteComponent() {
                         </Link>
                     </Button>
                 </Card>
-
-                {user.role === "admin" && (
-                    <Card className={"gap-3 p-4"}>
-                        <h2 className="font-brand text-title-large">
-                            {m.admin_title()}
-                        </h2>
-                        <p className="text-body-medium text-on-surface-variant">
-                            {m.settings_admin_description()}
-                        </p>
-                        <Button
-                            asChild
-                            variant={"filledTonal"}
-                            className={"self-start"}
-                        >
-                            <Link to={"/admin"}>
-                                <ShieldCheck />
-                                {m.settings_admin_open()}
-                            </Link>
-                        </Button>
-                    </Card>
-                )}
 
                 <Card className={"gap-3 p-4"}>
                     <h2 className="font-brand text-title-large">

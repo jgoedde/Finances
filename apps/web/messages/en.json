@@ -427,8 +427,6 @@
     "api_error_fallback_category": "Other can't be renamed or deleted.",
 
     "admin_title": "Administration",
-    "settings_admin_description": "Manage what applies to everyone on this instance.",
-    "settings_admin_open": "Open administration",
     "admin_default_categories_title": "Default categories",
     "admin_default_categories_description": "Choose the categories every new user starts with.",
     "admin_default_categories_open": "Manage default categories",

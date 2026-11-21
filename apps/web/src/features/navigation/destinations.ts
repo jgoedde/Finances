@@ -11,29 +11,26 @@ export type DestinationId =
     "overview" | "transactions" | "fixedCosts" | "settings";
 
 /**
- * Which destination a route belongs to, by the ids of its routes.
+ * Which destination a route belongs to, by its id.
  */
 const DESTINATION_ROUTES = {
-    overview: ["/_authed/_shell/"],
+    overview: "/_authed/_shell/",
     // Also active while a transaction is created or edited.
-    transactions: ["/_authed/_shell/_transactions"],
+    transactions: "/_authed/_shell/_transactions",
     // Also active while a fixed cost is created or edited.
-    fixedCosts: ["/_authed/_shell/fixed-costs"],
-    // The administration opens from the settings.
-    settings: ["/_authed/_shell/settings", "/_authed/_shell/admin"],
+    fixedCosts: "/_authed/_shell/fixed-costs",
+    settings: "/_authed/_shell/settings",
 } as const satisfies Record<
     DestinationId,
-    readonly RouteIds<RegisteredRouter["routeTree"]>[]
+    RouteIds<RegisteredRouter["routeTree"]>
 >;
 
 export function useActiveDestination(): DestinationId | undefined {
     return useMatches({
         select: (matches) =>
             (Object.keys(DESTINATION_ROUTES) as DestinationId[]).find((id) =>
-                matches.some((match) =>
-                    (DESTINATION_ROUTES[id] as readonly string[]).includes(
-                        match.routeId,
-                    ),
+                matches.some(
+                    (match) => match.routeId === DESTINATION_ROUTES[id],
                 ),
             ),
     });

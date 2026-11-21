@@ -230,8 +230,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
-/** @typedef {{}} Settings_Admin_DescriptionInputs */
-/** @typedef {{}} Settings_Admin_OpenInputs */
 /** @typedef {{}} Settings_Categories_DescriptionInputs */
 /** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
@@ -3531,34 +3529,6 @@ export const search_show_in_month = /** @type {((inputs?: Search_Show_In_MonthIn
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.search_show_in_month(inputs)
 	return __en.search_show_in_month(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Manage what applies to everyone on this instance." |
-*
-* @param {Settings_Admin_DescriptionInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const settings_admin_description = /** @type {((inputs?: Settings_Admin_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Admin_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.settings_admin_description(inputs)
-	return __en.settings_admin_description(inputs)
-});
-/**
-* | output |
-* | --- |
-* | "Open administration" |
-*
-* @param {Settings_Admin_OpenInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const settings_admin_open = /** @type {((inputs?: Settings_Admin_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Admin_OpenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.settings_admin_open(inputs)
-	return __en.settings_admin_open(inputs)
 });
 /**
 * | output |

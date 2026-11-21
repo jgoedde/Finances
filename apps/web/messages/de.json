@@ -427,8 +427,6 @@
     "api_error_fallback_category": "Sonstiges kann weder umbenannt noch gelöscht werden.",
 
     "admin_title": "Administration",
-    "settings_admin_description": "Verwalte, was für alle auf dieser Instanz gilt.",
-    "settings_admin_open": "Administration öffnen",
     "admin_default_categories_title": "Standardkategorien",
     "admin_default_categories_description": "Lege fest, mit welchen Kategorien neue Nutzer starten.",
     "admin_default_categories_open": "Standardkategorien verwalten",

@@ -1601,20 +1601,6 @@ export const search_show_in_month: ((inputs?: Search_Show_In_MonthInputs, option
 /**
 * | output |
 * | --- |
-* | "Manage what applies to everyone on this instance." |
-*
-*/
-export const settings_admin_description: ((inputs?: Settings_Admin_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Settings_Admin_DescriptionInputs, { locale?: "en" | "de" }, {}>;
-/**
-* | output |
-* | --- |
-* | "Open administration" |
-*
-*/
-export const settings_admin_open: ((inputs?: Settings_Admin_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Settings_Admin_OpenInputs, { locale?: "en" | "de" }, {}>;
-/**
-* | output |
-* | --- |
 * | "Create categories, rename them or change their color and icon." |
 *
 */
@@ -2566,8 +2552,6 @@ export type Search_No_ResultsInputs = {};
 export type Search_OfflineInputs = {};
 export type Search_PlaceholderInputs = {};
 export type Search_Show_In_MonthInputs = {};
-export type Settings_Admin_DescriptionInputs = {};
-export type Settings_Admin_OpenInputs = {};
 export type Settings_Categories_DescriptionInputs = {};
 export type Settings_Categories_OpenInputs = {};
 export type Settings_Export_DescriptionInputs = {};

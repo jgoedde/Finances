@@ -228,8 +228,6 @@
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
-/** @typedef {{}} Settings_Admin_DescriptionInputs */
-/** @typedef {{}} Settings_Admin_OpenInputs */
 /** @typedef {{}} Settings_Categories_DescriptionInputs */
 /** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
@@ -1255,14 +1253,6 @@ export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) 
 
 export const search_show_in_month = /** @type {(inputs: Search_Show_In_MonthInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Show in month`)
-};
-
-export const settings_admin_description = /** @type {(inputs: Settings_Admin_DescriptionInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Manage what applies to everyone on this instance.`)
-};
-
-export const settings_admin_open = /** @type {(inputs: Settings_Admin_OpenInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Open administration`)
 };
 
 export const settings_categories_description = /** @type {(inputs: Settings_Categories_DescriptionInputs) => LocalizedString} */ () => {
