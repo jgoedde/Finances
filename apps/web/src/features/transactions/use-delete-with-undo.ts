@@ -3,6 +3,7 @@ import type { Transaction } from "@finances/shared";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
+import * as haptics from "#/lib/haptics.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
 import {
     findAttachedExpenses,
@@ -30,9 +31,11 @@ export function useDeleteWithUndo(): (transaction: Transaction) => void {
             queryClient,
             transaction.id,
         ).map((it) => it.id);
+        haptics.deleted();
         deleteTransaction.mutate(transaction);
 
         function undo() {
+            haptics.tick();
             const copy = { ...transaction, id: nanoid(8) };
             saveTransaction.mutate(copy);
             for (const id of attachedIds) {

@@ -12,6 +12,7 @@ import {
     CATEGORY_COLORS,
     searchCategoryIcons,
 } from "#/features/categories/category-style.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
 import { paletteFromHex, toneStyle } from "#/utils/color.ts";
@@ -81,12 +82,19 @@ export function CategoryForm({
         event.preventDefault();
         const trimmed = name.trim();
         if (!isNameLocked && trimmed === "") {
+            haptics.error();
             setNameError(m.category_name_missing());
             return;
         }
         setIsSubmitting(true);
         try {
-            setNameError(await onSubmit({ name: trimmed, color, iconName }));
+            const error = await onSubmit({ name: trimmed, color, iconName });
+            if (error === undefined) {
+                haptics.saved();
+            } else {
+                haptics.error();
+            }
+            setNameError(error);
         } finally {
             setIsSubmitting(false);
         }

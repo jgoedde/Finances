@@ -1,7 +1,7 @@
 import type { Ref } from "react";
 import { CheckIcon } from "lucide-react";
 import type { Category } from "@finances/shared";
-import { Badge } from "#/components/ui/badge.tsx";
+import { FilterChip } from "#/components/ui/badge.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
@@ -46,38 +46,36 @@ export function CategoryChips({
                     const isSelected = category.id === selectedCategoryId;
 
                     return (
-                        <Badge key={category.id} asChild variant={"md3"}>
-                            <button
-                                type={"button"}
-                                aria-pressed={isSelected}
-                                className={cn(
-                                    "pl-2",
-                                    isSelected &&
-                                        "border-transparent text-on-surface",
-                                )}
-                                style={
-                                    isSelected
-                                        ? {
-                                              backgroundColor: `color-mix(in oklab, ${category.color} ${SELECTED_TINT_SHARE}, transparent)`,
-                                          }
-                                        : undefined
-                                }
-                                onClick={() => onSelect(category.id)}
-                            >
-                                {isSelected ? (
-                                    <CheckIcon aria-hidden />
-                                ) : (
-                                    <span
-                                        aria-hidden
-                                        className={"mx-1 size-2.5 rounded-full"}
-                                        style={{
-                                            backgroundColor: category.color,
-                                        }}
-                                    />
-                                )}
-                                {getCategoryName(category.name)}
-                            </button>
-                        </Badge>
+                        <FilterChip
+                            key={category.id}
+                            selected={isSelected}
+                            className={cn(
+                                "pl-2",
+                                isSelected &&
+                                    "border-transparent text-on-surface",
+                            )}
+                            style={
+                                isSelected
+                                    ? {
+                                          backgroundColor: `color-mix(in oklab, ${category.color} ${SELECTED_TINT_SHARE}, transparent)`,
+                                      }
+                                    : undefined
+                            }
+                            onSelect={() => onSelect(category.id)}
+                        >
+                            {isSelected ? (
+                                <CheckIcon aria-hidden />
+                            ) : (
+                                <span
+                                    aria-hidden
+                                    className={"mx-1 size-2.5 rounded-full"}
+                                    style={{
+                                        backgroundColor: category.color,
+                                    }}
+                                />
+                            )}
+                            {getCategoryName(category.name)}
+                        </FilterChip>
                     );
                 })}
             </div>

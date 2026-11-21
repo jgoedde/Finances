@@ -2,6 +2,7 @@ import { type SubmitEvent, useRef, useState } from "react";
 import { useBlocker } from "@tanstack/react-router";
 import { isSameDay } from "date-fns";
 import { confirmAction } from "#/components/confirm-dialog.tsx";
+import * as haptics from "#/lib/haptics.ts";
 import { ChevronDownIcon, SplitIcon } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Input } from "#/components/ui/input.tsx";
@@ -265,6 +266,9 @@ export function TransactionForm({
         if (!selectedCategory) missing.push("category");
 
         setMissingFields(missing);
+        if (missing.length > 0) {
+            haptics.error();
+        }
         switch (missing[0]) {
             case undefined:
                 break;
@@ -291,6 +295,7 @@ export function TransactionForm({
             .map((part) => ({ part, field: findMissingInPart(part) }))
             .find(({ field }) => field !== undefined);
         if (invalid || isRemainderInvalid) {
+            haptics.error();
             setShouldShowSplitErrors(true);
             // The parts are a dynamic list, so they are found by id.
             const [first] = parts;
@@ -315,30 +320,27 @@ export function TransactionForm({
                 description: trimOrNull(part.description),
             })),
         };
-        void confirmDateMove().then(
-            (isConfirmed) => isConfirmed && onSubmit(data),
-        );
-    }
-
-    /**
-     * Moving a main expense to another day moves its attached expenses
-     * along; asks first.
-     */
-    async function confirmDateMove(): Promise<boolean> {
-        if (
-            relation?.role !== "main" ||
-            relation.attachedCount === 0 ||
-            isSameDay(date, initialValues.date)
-        ) {
-            return true;
+        // Moving a main expense to another day moves its attached expenses
+        // along, so that asks first. Without a question this submits right
+        // away, inside the gesture, so iOS still gives haptic feedback.
+        const attachedCount =
+            relation?.role === "main" ? relation.attachedCount : 0;
+        if (attachedCount === 0 || isSameDay(date, initialValues.date)) {
+            submit(data);
+            return;
         }
-        return confirmAction({
+        void confirmAction({
             title: m.transaction_move_attached_title(),
             description: m.transaction_move_attached_description({
-                count: relation.attachedCount,
+                count: attachedCount,
             }),
             confirmLabel: m.transaction_move_attached_confirm(),
-        });
+        }).then((isConfirmed) => isConfirmed && submit(data));
+    }
+
+    function submit(data: TransactionFormSubmitData) {
+        haptics.saved();
+        onSubmit(data);
     }
 
     function addPart() {

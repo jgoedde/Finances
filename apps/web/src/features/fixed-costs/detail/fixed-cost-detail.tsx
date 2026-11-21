@@ -21,6 +21,7 @@ import {
     toFixedCost,
     toLocalIsoDate,
 } from "#/features/fixed-costs/fixed-cost.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { useDeleteFixedCost } from "#/features/fixed-costs/fixed-cost-queries.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
@@ -58,6 +59,7 @@ export function FixedCostDetail({ record, categories }: FixedCostDetailProps) {
     }
 
     function remove() {
+        haptics.deleted();
         deleteFixedCost.mutate(record.id);
         toast.success(m.fixed_cost_deleted());
         void navigate({ to: "/fixed-costs" });

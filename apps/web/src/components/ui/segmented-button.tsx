@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 
 // MD3 segmented button (https://m3.material.io/components/segmented-buttons/specs).
 const segmentedButton = cva(
@@ -80,6 +81,9 @@ export function SegmentedButton({
                         disabled={disabled}
                         {...ripple}
                         onClick={(e) => {
+                            if (!isSelected) {
+                                haptics.tick();
+                            }
                             onChange(option.value);
 
                             ripple.onClick(e);

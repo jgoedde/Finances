@@ -14,7 +14,8 @@ import type { Transaction } from "@finances/shared";
 import { useCategories } from "#/features/categories/category-queries.ts";
 import { usePendingChanges } from "#/features/sync/use-sync-status.ts";
 import { cn } from "#/lib/cn.ts";
-import type { ComponentProps } from "react";
+import * as haptics from "#/lib/haptics.ts";
+import { type ComponentProps, useRef } from "react";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
@@ -137,10 +138,25 @@ export function TransactionListItem({
         }
     });
 
+    // The pointer that last pressed the row: only a long press ticks when the
+    // context menu opens, not a right click.
+    const pointerTypeRef = useRef<string>(undefined);
+
     return (
         <div className={"flex w-full items-center"}>
-            <ContextMenu>
-                <ContextMenuTrigger asChild>
+            <ContextMenu
+                onOpenChange={(open) => {
+                    if (open && pointerTypeRef.current === "touch") {
+                        haptics.tick();
+                    }
+                }}
+            >
+                <ContextMenuTrigger
+                    asChild
+                    onPointerDown={(event) => {
+                        pointerTypeRef.current = event.pointerType;
+                    }}
+                >
                     <button
                         type={"button"}
                         className={cn(

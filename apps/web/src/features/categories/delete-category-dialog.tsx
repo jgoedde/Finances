@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "#/components/ui/select.tsx";
+import * as haptics from "#/lib/haptics.ts";
 import { m } from "#/paraglide/messages.js";
 
 interface DeleteTarget {
@@ -128,7 +129,10 @@ export function DeleteCategoryDialog({
                     <AlertDialogAction
                         className={"text-error"}
                         disabled={isOffline || affectedTransactions === null}
-                        onClick={() => onConfirm(isUsed ? targetId : undefined)}
+                        onClick={() => {
+                            haptics.deleted();
+                            onConfirm(isUsed ? targetId : undefined);
+                        }}
                     >
                         {m.action_delete()}
                     </AlertDialogAction>
