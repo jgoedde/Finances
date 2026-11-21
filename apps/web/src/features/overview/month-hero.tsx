@@ -1,5 +1,6 @@
 import { formatCurrency, formatPercent } from "@finances/shared";
-import { TrendingDown, TrendingUp } from "lucide-react";
+import TrendingDown from "~icons/material-symbols/trending-down-rounded";
+import TrendingUp from "~icons/material-symbols/trending-up-rounded";
 import type { MonthOverview } from "@finances/shared";
 import { Card } from "#/components/ui/card.tsx";
 import { cn } from "#/lib/cn.ts";

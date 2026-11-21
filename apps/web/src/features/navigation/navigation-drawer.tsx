@@ -1,4 +1,5 @@
-import { Settings } from "lucide-react";
+import Settings from "~icons/material-symbols/settings-outline-rounded";
+import SettingsFilled from "~icons/material-symbols/settings-rounded";
 import { AccountMenu } from "#/features/account/account-menu.tsx";
 import { NewTransactionFAB } from "#/features/transactions/components/new-transaction-fab.tsx";
 import { DrawerItem } from "#/features/navigation/drawer-item.tsx";
@@ -17,14 +18,21 @@ export function NavigationDrawer() {
                 <NewTransactionFAB variant={"extended"} />
             </div>
             <div className={"flex min-h-0 flex-col overflow-y-auto"}>
-                {DESTINATIONS.map(({ id, icon, label }) => (
-                    <DrawerItem key={id} id={id} icon={icon} label={label()} />
+                {DESTINATIONS.map(({ id, icon, activeIcon, label }) => (
+                    <DrawerItem
+                        key={id}
+                        id={id}
+                        icon={icon}
+                        activeIcon={activeIcon}
+                        label={label()}
+                    />
                 ))}
             </div>
             <div className={"mt-auto flex flex-col"}>
                 <DrawerItem
                     id={"settings"}
                     icon={Settings}
+                    activeIcon={SettingsFilled}
                     label={m.settings_title()}
                 />
                 <div className={"flex items-center gap-1 px-1"}>

@@ -1,5 +1,5 @@
 import { type ChangeEvent, type Ref, useMemo } from "react";
-import { SparklesIcon } from "lucide-react";
+import SparklesIcon from "~icons/material-symbols/auto-awesome-outline-rounded";
 import Fuse from "fuse.js";
 import {
     type Counterparty,

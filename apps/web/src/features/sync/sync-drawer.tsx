@@ -1,6 +1,6 @@
 import { formatCurrency } from "@finances/shared";
 import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import RefreshCw from "~icons/material-symbols/sync-rounded";
 import { toast } from "sonner";
 import type { Transaction } from "@finances/shared";
 import {
@@ -11,6 +11,14 @@ import {
     DrawerTitle,
 } from "#/components/ui/drawer.tsx";
 import { Button } from "#/components/ui/button.tsx";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "#/components/ui/empty.tsx";
+import CloudDoneIcon from "~icons/material-symbols/cloud-done-outline-rounded";
 import { checkConnection } from "#/features/sync/connectivity.ts";
 import {
     type SyncFailure,
@@ -93,6 +101,22 @@ export function SyncDrawer() {
                 </DrawerHeader>
 
                 <div className="flex flex-col gap-6 overflow-y-auto px-4 pb-6">
+                    {status.failures.length === 0 &&
+                        status.pending.length === 0 && (
+                            <Empty size={"compact"}>
+                                <EmptyHeader>
+                                    <EmptyMedia>
+                                        <CloudDoneIcon />
+                                    </EmptyMedia>
+                                    <EmptyTitle>
+                                        {m.sync_empty_title()}
+                                    </EmptyTitle>
+                                    <EmptyDescription>
+                                        {m.sync_empty_hint()}
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
+                        )}
                     {status.failures.length > 0 && (
                         <section className="flex flex-col gap-2">
                             <h3 className="text-title-small text-error">

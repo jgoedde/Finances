@@ -514,10 +514,17 @@ export const category_icon: ((inputs?: Category_IconInputs, options?: { locale?:
 /**
 * | output |
 * | --- |
-* | "No matching icon." |
+* | "No matching icon" |
 *
 */
 export const category_icon_none: ((inputs?: Category_Icon_NoneInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Icon_NoneInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Try a different term." |
+*
+*/
+export const category_icon_none_hint: ((inputs?: Category_Icon_None_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Category_Icon_None_HintInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -850,10 +857,17 @@ export const fixed_cost_interval_yearly: ((inputs?: Fixed_Cost_Interval_YearlyIn
 /**
 * | output |
 * | --- |
-* | "No fixed costs yet." |
+* | "No fixed costs yet" |
 *
 */
 export const fixed_cost_list_empty: ((inputs?: Fixed_Cost_List_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Fixed_Cost_List_EmptyInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Add rent, subscriptions and insurance to see what goes out every month." |
+*
+*/
+export const fixed_cost_list_empty_hint: ((inputs?: Fixed_Cost_List_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Fixed_Cost_List_Empty_HintInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -1137,6 +1151,13 @@ export const nav_transactions: ((inputs?: Nav_TransactionsInputs, options?: { lo
 /**
 * | output |
 * | --- |
+* | "You're offline" |
+*
+*/
+export const offline_title: ((inputs?: Offline_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Offline_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Not available offline" |
 *
 */
@@ -1148,6 +1169,13 @@ export const offline_unavailable: ((inputs?: Offline_UnavailableInputs, options?
 *
 */
 export const overview_categories_empty: ((inputs?: Overview_Categories_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Overview_Categories_EmptyInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "Once you record spending, you'll see here where your money goes." |
+*
+*/
+export const overview_categories_empty_hint: ((inputs?: Overview_Categories_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Overview_Categories_Empty_HintInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -1580,6 +1608,13 @@ export const search_no_results: ((inputs?: Search_No_ResultsInputs, options?: { 
 /**
 * | output |
 * | --- |
+* | "Try a different search term or period." |
+*
+*/
+export const search_no_results_hint: ((inputs?: Search_No_Results_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Search_No_Results_HintInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Search isn't available offline." |
 *
 */
@@ -1753,6 +1788,20 @@ export const sync_action_deleted: ((inputs?: Sync_Action_DeletedInputs, options?
 *
 */
 export const sync_action_saved: ((inputs?: Sync_Action_SavedInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Sync_Action_SavedInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "All changes are saved on the server." |
+*
+*/
+export const sync_empty_hint: ((inputs?: Sync_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Sync_Empty_HintInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "No pending changes" |
+*
+*/
+export const sync_empty_title: ((inputs?: Sync_Empty_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Sync_Empty_TitleInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | countPlural | output |
 * | --- | --- |
@@ -2157,6 +2206,13 @@ export const transaction_filter_all: ((inputs?: Transaction_Filter_AllInputs, op
 /**
 * | output |
 * | --- |
+* | "Clear filter" |
+*
+*/
+export const transaction_filter_clear: ((inputs?: Transaction_Filter_ClearInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Filter_ClearInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "The income was deleted." |
 *
 */
@@ -2192,10 +2248,24 @@ export const transaction_kind_locked_main: ((inputs?: Transaction_Kind_Locked_Ma
 /**
 * | output |
 * | --- |
-* | "No transactions ({period})" |
+* | "Nothing recorded for {period} yet." |
 *
 */
 export const transaction_list_empty: ((inputs: Transaction_List_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_List_EmptyInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "No transactions" |
+*
+*/
+export const transaction_list_empty_title: ((inputs?: Transaction_List_Empty_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_List_Empty_TitleInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "No transactions in {category} for {period}." |
+*
+*/
+export const transaction_list_filtered_empty: ((inputs: Transaction_List_Filtered_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_List_Filtered_EmptyInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -2206,7 +2276,7 @@ export const transaction_list_loading: ((inputs?: Transaction_List_LoadingInputs
 /**
 * | output |
 * | --- |
-* | "Offline – this month hasn't been loaded yet" |
+* | "This month hasn't been loaded yet." |
 *
 */
 export const transaction_list_offline: ((inputs?: Transaction_List_OfflineInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_List_OfflineInputs, { locale?: "en" | "de" }, {}>;
@@ -2398,6 +2468,7 @@ export type Category_FallbackInputs = {};
 export type Category_Fallback_HintInputs = {};
 export type Category_IconInputs = {};
 export type Category_Icon_NoneInputs = {};
+export type Category_Icon_None_HintInputs = {};
 export type Category_Icon_SearchInputs = {};
 export type Category_NameInputs = {};
 export type Category_Name_MissingInputs = {};
@@ -2446,6 +2517,7 @@ export type Fixed_Cost_Interval_MonthlyInputs = {};
 export type Fixed_Cost_Interval_QuarterlyInputs = {};
 export type Fixed_Cost_Interval_YearlyInputs = {};
 export type Fixed_Cost_List_EmptyInputs = {};
+export type Fixed_Cost_List_Empty_HintInputs = {};
 export type Fixed_Cost_Monthly_TotalInputs = {};
 export type Fixed_Cost_NameInputs = {};
 export type Fixed_Cost_Name_PlaceholderInputs = {};
@@ -2486,8 +2558,10 @@ export type Month_Previous_YearInputs = {};
 export type Nav_LabelInputs = {};
 export type Nav_OverviewInputs = {};
 export type Nav_TransactionsInputs = {};
+export type Offline_TitleInputs = {};
 export type Offline_UnavailableInputs = {};
 export type Overview_Categories_EmptyInputs = {};
+export type Overview_Categories_Empty_HintInputs = {};
 export type Overview_Categories_HintInputs = {};
 export type Overview_Categories_TitleInputs = {};
 export type Overview_ExceptionalInputs = { count: NonNullable<unknown>, amount: NonNullable<unknown> };
@@ -2549,6 +2623,7 @@ export type Search_ClearInputs = {};
 export type Search_LabelInputs = {};
 export type Search_Load_MoreInputs = {};
 export type Search_No_ResultsInputs = {};
+export type Search_No_Results_HintInputs = {};
 export type Search_OfflineInputs = {};
 export type Search_PlaceholderInputs = {};
 export type Search_Show_In_MonthInputs = {};
@@ -2574,6 +2649,8 @@ export type Sign_Out_FailedInputs = {};
 export type Sign_Out_Unsynced_ChangesInputs = { count: NonNullable<unknown> };
 export type Sync_Action_DeletedInputs = {};
 export type Sync_Action_SavedInputs = {};
+export type Sync_Empty_HintInputs = {};
+export type Sync_Empty_TitleInputs = {};
 export type Sync_Indicator_RejectedInputs = { count: NonNullable<unknown> };
 export type Sync_Indicator_SyncedInputs = { count: NonNullable<unknown> };
 export type Sync_Later_HintInputs = {};
@@ -2631,12 +2708,15 @@ export type Transaction_FabInputs = {};
 export type Transaction_FilterInputs = {};
 export type Transaction_Filter_ActiveInputs = { category: NonNullable<unknown> };
 export type Transaction_Filter_AllInputs = {};
+export type Transaction_Filter_ClearInputs = {};
 export type Transaction_Income_DeletedInputs = {};
 export type Transaction_Income_SavedInputs = { name: NonNullable<unknown> };
 export type Transaction_Incomes_SavedInputs = { count: NonNullable<unknown>, name: NonNullable<unknown> };
 export type Transaction_Kind_Locked_AttachedInputs = {};
 export type Transaction_Kind_Locked_MainInputs = {};
 export type Transaction_List_EmptyInputs = { period: NonNullable<unknown> };
+export type Transaction_List_Empty_TitleInputs = {};
+export type Transaction_List_Filtered_EmptyInputs = { category: NonNullable<unknown>, period: NonNullable<unknown> };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_UpcomingInputs = {};

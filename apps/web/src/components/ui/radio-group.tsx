@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { CheckIcon } from "lucide-react";
+import CheckIcon from "~icons/material-symbols/check-rounded";
 import { cn } from "#/lib/cn.ts";
 import * as haptics from "#/lib/haptics.ts";
 

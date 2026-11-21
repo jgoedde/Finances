@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { Search, X } from "lucide-react";
+import Search from "~icons/material-symbols/search-rounded";
+import X from "~icons/material-symbols/close-rounded";
 import { Button } from "#/components/ui/button.tsx";
 import { AccountMenu } from "#/features/account/account-menu.tsx";
 import { m } from "#/paraglide/messages.js";

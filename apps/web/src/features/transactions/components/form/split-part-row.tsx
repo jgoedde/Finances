@@ -1,4 +1,4 @@
-import { XIcon } from "lucide-react";
+import XIcon from "~icons/material-symbols/close-rounded";
 import type { Category } from "@finances/shared";
 import { Button } from "#/components/ui/button.tsx";
 import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";

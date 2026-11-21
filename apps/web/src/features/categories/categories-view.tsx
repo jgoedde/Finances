@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import Plus from "~icons/material-symbols/add-rounded";
+import Trash2 from "~icons/material-symbols/delete-outline-rounded";
 import { toast } from "sonner";
 import {
     type Category,

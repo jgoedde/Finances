@@ -1,5 +1,5 @@
 import type { Ref } from "react";
-import { CheckIcon } from "lucide-react";
+import CheckIcon from "~icons/material-symbols/check-rounded";
 import type { Category } from "@finances/shared";
 import { FilterChip } from "#/components/ui/badge.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";

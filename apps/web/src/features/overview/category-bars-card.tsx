@@ -1,5 +1,13 @@
 import type { MonthOverview } from "@finances/shared";
+import DonutIcon from "~icons/material-symbols/donut-large-rounded";
 import { Card } from "#/components/ui/card.tsx";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "#/components/ui/empty.tsx";
 import { CategoryBar } from "#/features/overview/category-bar.tsx";
 import { m } from "#/paraglide/messages.js";
 
@@ -28,12 +36,17 @@ export function CategoryBarsCard({ overview }: CategoryBarsCardProps) {
                 </span>
             </div>
             {categories.length === 0 ? (
-                <p
-                    className={`px-3 py-4 text-body-medium
-                        text-on-surface-variant`}
-                >
-                    {m.overview_categories_empty()}
-                </p>
+                <Empty size={"compact"}>
+                    <EmptyHeader>
+                        <EmptyMedia>
+                            <DonutIcon />
+                        </EmptyMedia>
+                        <EmptyTitle>{m.overview_categories_empty()}</EmptyTitle>
+                        <EmptyDescription>
+                            {m.overview_categories_empty_hint()}
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
             ) : (
                 categories.map((category) => (
                     <CategoryBar

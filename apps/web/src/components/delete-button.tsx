@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import Trash from "~icons/material-symbols/delete-outline-rounded";
 import { confirmAction } from "#/components/confirm-dialog.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { m } from "#/paraglide/messages.js";

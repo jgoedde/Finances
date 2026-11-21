@@ -7,7 +7,7 @@ import {
     type PriceChangeProblem,
     withPriceChange,
 } from "@finances/shared";
-import { ChevronDownIcon } from "lucide-react";
+import ChevronDownIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import { useState } from "react";
 import { toast } from "sonner";
 import { apiErrorCode } from "#/api/api-errors.ts";

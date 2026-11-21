@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tanstackRouter from "@tanstack/router-plugin/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
+import Icons from "unplugin-icons/vite";
 import rootPackage from "../../package.json" with { type: "json" };
 
 // https://vite.dev/config/
@@ -27,6 +28,16 @@ export default defineConfig({
             emitReadme: false,
         }),
         react(),
+        // Material Symbols as React components: `~icons/material-symbols/<name>`.
+        // 24px like the MD3 icon grid; classes like `size-5` override it.
+        Icons({
+            compiler: "jsx",
+            jsx: "react",
+            iconCustomizer(_collection, _icon, props) {
+                props.width = "24";
+                props.height = "24";
+            },
+        }),
         tailwindcss(),
         VitePWA({
             registerType: "prompt",

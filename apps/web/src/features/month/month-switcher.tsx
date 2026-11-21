@@ -2,7 +2,9 @@ import { formatMonthYear, formatShortMonth } from "@finances/shared";
 import { useLocalStorage } from "@mantine/hooks";
 import { type MouseEvent, useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
+import ChevronLeft from "~icons/material-symbols/chevron-left-rounded";
+import ChevronRight from "~icons/material-symbols/chevron-right-rounded";
 import { addMonths, addYears, isAfter, setMonth, startOfMonth } from "date-fns";
 import { Button } from "#/components/ui/button.tsx";
 import {

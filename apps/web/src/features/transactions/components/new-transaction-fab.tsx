@@ -1,4 +1,4 @@
-import { Banknote } from "lucide-react";
+import Banknote from "~icons/material-symbols/payments-outline-rounded";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { useIsScrolled } from "#/hooks/use-is-scrolled.ts";
 import { useNavigate } from "@tanstack/react-router";

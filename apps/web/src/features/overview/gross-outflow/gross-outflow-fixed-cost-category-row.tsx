@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
+import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import type { GrossOutflowCategory } from "#/features/overview/gross-outflow/gross-outflow.ts";
 import { GrossOutflowRowLabel } from "#/features/overview/gross-outflow/gross-outflow-row-label.tsx";
 import { cn } from "#/lib/cn.ts";

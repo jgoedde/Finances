@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { CalendarArrowRight, ChevronDown } from "lucide-react";
+import CalendarArrowRight from "~icons/material-symbols/calendar-month-outline-rounded";
+import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import {
     type DateFilterOption,
     getDateFilterStr,
@@ -15,6 +16,15 @@ import { useShowInMonth } from "#/features/transactions/components/list/month-la
 import { useTransactionSearch } from "#/features/search/search-queries.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
+import { OfflineEmpty } from "#/components/offline-empty.tsx";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "#/components/ui/empty.tsx";
+import SearchOffIcon from "~icons/material-symbols/search-off-rounded";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
@@ -92,20 +102,20 @@ export function SearchResults() {
                 </Badge>
             </div>
             {!isOnline && !data && (
-                <p
-                    className={`my-8 text-center text-body-large
-                    text-on-surface-variant`}
-                >
-                    {m.search_offline()}
-                </p>
+                <OfflineEmpty description={m.search_offline()} />
             )}
             {isSuccess && !isPlaceholderData && transactions.length === 0 && (
-                <p
-                    className={`my-8 text-center text-title-large
-                    text-on-surface-variant`}
-                >
-                    {m.search_no_results()}
-                </p>
+                <Empty>
+                    <EmptyHeader>
+                        <EmptyMedia>
+                            <SearchOffIcon />
+                        </EmptyMedia>
+                        <EmptyTitle>{m.search_no_results()}</EmptyTitle>
+                        <EmptyDescription>
+                            {m.search_no_results_hint()}
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
             )}
             <div className={"flex flex-col pt-2"}>
                 {days.map(([day, dayTransactions]) => (
