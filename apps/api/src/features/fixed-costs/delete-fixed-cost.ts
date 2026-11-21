@@ -1,6 +1,7 @@
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { fixedCostIdParam } from "#/features/fixed-costs/fixed-costs.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const deleteFixedCost = factory.createHandlers(
     validate("param", fixedCostIdParam),
@@ -11,7 +12,7 @@ export const deleteFixedCost = factory.createHandlers(
             .where("id", "=", c.req.valid("param").id)
             .executeTakeFirst();
         if (result.numDeletedRows === 0n) {
-            return c.json({ error: "not_found" }, 404);
+            return apiError(c, "not_found", 404);
         }
         return c.body(null, 204);
     },

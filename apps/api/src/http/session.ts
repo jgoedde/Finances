@@ -1,6 +1,7 @@
 import { createMiddleware } from "hono/factory";
 import type { Auth } from "../auth/auth.ts";
 import type { DB } from "../db/database.ts";
+import { apiError } from "./api-error.ts";
 
 export interface AppEnv {
     Variables: {
@@ -34,7 +35,7 @@ export const requireUser = createMiddleware<AppEnv>(async (c, next) => {
         headers: c.req.raw.headers,
     });
     if (!result) {
-        return c.json({ error: "unauthorized" }, 401);
+        return apiError(c, "unauthorized", 401);
     }
     c.set("userId", result.user.id);
     c.set("role", result.user.role ?? null);
@@ -46,7 +47,7 @@ export const requireUser = createMiddleware<AppEnv>(async (c, next) => {
  */
 export const requireAdmin = createMiddleware<AppEnv>(async (c, next) => {
     if (c.get("role") !== "admin") {
-        return c.json({ error: "forbidden" }, 403);
+        return apiError(c, "forbidden", 403);
     }
     await next();
 });

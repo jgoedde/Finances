@@ -9,6 +9,7 @@ import {
     releaseLink,
     tokenParam,
 } from "#/features/links/links.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Public: creates the account of an invite or sets the new password of a
@@ -24,13 +25,13 @@ export const redeemLink = factory.createHandlers(
 
         const link = await findUsableLink(db, token);
         if (!link) {
-            return c.json({ error: "invalid_link" }, 410);
+            return apiError(c, "invalid_link", 410);
         }
         if (link.kind === "signup" && !input.username) {
-            return c.json({ error: "username_required" }, 400);
+            return apiError(c, "username_required", 400);
         }
         if (!(await claimLink(db, token))) {
-            return c.json({ error: "invalid_link" }, 410);
+            return apiError(c, "invalid_link", 410);
         }
 
         try {
@@ -51,7 +52,7 @@ export const redeemLink = factory.createHandlers(
             if (link.kind === "signup") {
                 // The placeholder email is derived from the username, so a
                 // duplicate username fails as a duplicate user.
-                return c.json({ error: "username_taken" }, 409);
+                return apiError(c, "username_taken", 409);
             }
             throw error;
         }

@@ -6,6 +6,7 @@ import {
     isDefaultCategoryNameTaken,
     toDefaultCategory,
 } from "#/features/default-categories/default-categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Renames, recolors or re-icons a default category. The kind is fixed, and
@@ -26,7 +27,7 @@ export const updateDefaultCategory = factory.createHandlers(
                 .where("id", "=", id)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "not_found" }, 404);
+                return apiError(c, "not_found", 404);
             }
             if (
                 patch.name !== undefined &&
@@ -37,7 +38,7 @@ export const updateDefaultCategory = factory.createHandlers(
                     id,
                 ))
             ) {
-                return c.json({ error: "category_name_taken" }, 409);
+                return apiError(c, "category_name_taken", 409);
             }
             const row = await trx
                 .updateTable("default_categories")

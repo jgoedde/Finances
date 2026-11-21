@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { booleanQuery } from "./query.ts";
 
 export const transactionKindSchema = z.enum(["expense", "income"]);
 export type TransactionKind = z.infer<typeof transactionKindSchema>;
@@ -99,13 +100,9 @@ export function canAttachTo(
     );
 }
 
-const booleanQuery = z
-    .enum(["true", "false"])
-    .transform((value) => value === "true");
-
 export const transactionListQuerySchema = z.object({
-    from: z.coerce.number().int(),
-    to: z.coerce.number().int(),
+    from: z.coerce.number<number>().int(),
+    to: z.coerce.number<number>().int(),
     categoryId: z.string().min(1).optional(),
     kind: transactionKindSchema.optional(),
     excludeExceptional: booleanQuery.optional(),
@@ -156,13 +153,6 @@ export const transactionSearchQuerySchema = z.object({
     cursor: searchCursorSchema.optional(),
     limit: z.coerce.number<number>().int().min(1).max(100).default(50),
 });
-
-/**
- * What the client sends: the cursor as a string and the limit optional.
- */
-export type TransactionSearchQuery = z.input<
-    typeof transactionSearchQuerySchema
->;
 
 /**
  * One page of search results, newest first.

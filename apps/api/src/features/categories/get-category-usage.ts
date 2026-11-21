@@ -5,6 +5,7 @@ import {
     categoryIdParam,
     countCategoryTransactions,
 } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * How many transactions deleting the category would move.
@@ -21,7 +22,7 @@ export const getCategoryUsage = factory.createHandlers(
             .where("id", "=", id)
             .executeTakeFirst();
         if (!category) {
-            return c.json({ error: "not_found" }, 404);
+            return apiError(c, "not_found", 404);
         }
         const usage: CategoryUsage = {
             transactions: await countCategoryTransactions(db, userId, id),

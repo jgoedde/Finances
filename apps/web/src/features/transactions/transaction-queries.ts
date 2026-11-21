@@ -5,8 +5,12 @@ import {
     useQuery,
 } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";
-import type { Transaction, TransactionListQuery } from "@finances/shared";
-import { apiFetch, toQueryString } from "#/api/api-client.ts";
+import {
+    toBooleanQuery,
+    type Transaction,
+    type TransactionListQuery,
+} from "@finances/shared";
+import { api, unwrap } from "#/api/api-client.ts";
 import {
     applyToList,
     resolvePendingChanges,
@@ -19,8 +23,14 @@ export function transactionsQuery(params: TransactionListQuery) {
         queryKey: ["transactions", "list", params],
         // Pending changes are merged in, so a refetch never hides them.
         queryFn: async ({ client }) => {
-            const list = await apiFetch<Transaction[]>(
-                `/transactions?${toQueryString(params)}`,
+            const { excludeExceptional, ...query } = params;
+            const list = await unwrap(
+                api.transactions.$get({
+                    query: {
+                        ...query,
+                        excludeExceptional: toBooleanQuery(excludeExceptional),
+                    },
+                }),
             );
             return applyToList(
                 list,
@@ -88,7 +98,7 @@ export function transactionQuery(id: string) {
             if (pending?.action === "save") {
                 return pending.transaction;
             }
-            return apiFetch<Transaction>(`/transactions/${id}`);
+            return unwrap(api.transactions[":id"].$get({ param: { id } }));
         },
     });
 }

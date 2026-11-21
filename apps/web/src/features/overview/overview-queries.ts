@@ -5,7 +5,7 @@ import type {
     MonthOverview,
     Pattern,
 } from "@finances/shared";
-import { apiFetch, toQueryString } from "#/api/api-client.ts";
+import { api, unwrap } from "#/api/api-client.ts";
 
 /**
  * The month (its first day) at a glance; `null` while loading.
@@ -23,9 +23,7 @@ export function useMonthOverview(month: Date): MonthOverview | null {
         useQuery({
             queryKey: ["insights", "overview", params],
             queryFn: () =>
-                apiFetch<MonthOverview>(
-                    `/insights/overview?${toQueryString(params)}`,
-                ),
+                unwrap(api.insights.overview.$get({ query: params })),
         }).data ?? null
     );
 }
@@ -41,9 +39,7 @@ export function usePatterns(month: Date): Pattern[] {
         useQuery({
             queryKey: ["insights", "patterns", params],
             queryFn: () =>
-                apiFetch<Pattern[]>(
-                    `/insights/patterns?${toQueryString(params)}`,
-                ),
+                unwrap(api.insights.patterns.$get({ query: params })),
         }).data ?? NO_PATTERNS
     );
 }

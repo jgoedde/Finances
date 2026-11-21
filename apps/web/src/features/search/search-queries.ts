@@ -3,11 +3,7 @@ import {
     keepPreviousData,
     useInfiniteQuery,
 } from "@tanstack/react-query";
-import type {
-    TransactionSearchPage,
-    TransactionSearchQuery,
-} from "@finances/shared";
-import { apiFetch, toQueryString } from "#/api/api-client.ts";
+import { api, unwrap } from "#/api/api-client.ts";
 import {
     type DateFilterOption,
     getOlderThan,
@@ -25,12 +21,14 @@ function transactionSearchQuery(params: SearchParams) {
     return infiniteQueryOptions({
         queryKey: ["transactions", "search", params],
         queryFn: ({ pageParam }) =>
-            apiFetch<TransactionSearchPage>(
-                `/transactions/search?${toQueryString<TransactionSearchQuery>({
-                    q: params.q || undefined,
-                    olderThan: getOlderThan(params.older),
-                    cursor: pageParam,
-                })}`,
+            unwrap(
+                api.transactions.search.$get({
+                    query: {
+                        q: params.q || undefined,
+                        olderThan: getOlderThan(params.older),
+                        cursor: pageParam,
+                    },
+                }),
             ),
         initialPageParam: undefined as string | undefined,
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

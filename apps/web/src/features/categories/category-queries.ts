@@ -1,5 +1,6 @@
 import {
     queryOptions,
+    skipToken,
     useMutation,
     useQuery,
     useQueryClient,
@@ -10,14 +11,14 @@ import type {
     CategoryPatch,
     CategoryUsage,
 } from "@finances/shared";
-import { apiFetch, toQueryString } from "#/api/api-client.ts";
+import { api, unwrap } from "#/api/api-client.ts";
 
 const EMPTY: never[] = [];
 
 // Not `staleTime: Infinity`: categories can change on another device.
 const categoriesQuery = queryOptions({
     queryKey: ["categories"],
-    queryFn: () => apiFetch<Category[]>("/categories"),
+    queryFn: () => unwrap(api.categories.$get()),
 });
 
 export function useCategories(): Category[] {
@@ -32,8 +33,15 @@ export function useCategoryUsage(id: string | null): CategoryUsage | null {
     return (
         useQuery({
             queryKey: ["categories", "usage", id],
-            queryFn: () => apiFetch<CategoryUsage>(`/categories/${id}/usage`),
-            enabled: id !== null,
+            queryFn:
+                id === null
+                    ? skipToken
+                    : () =>
+                          unwrap(
+                              api.categories[":id"].usage.$get({
+                                  param: { id },
+                              }),
+                          ),
             // Always the current count: it decides whether a target is asked.
             staleTime: 0,
             gcTime: 0,
@@ -48,7 +56,7 @@ export function useCreateCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (input: CategoryInput) =>
-            apiFetch<Category>("/categories", { method: "POST", body: input }),
+            unwrap(api.categories.$post({ json: input })),
         onSettled: () =>
             queryClient.invalidateQueries({ queryKey: ["categories"] }),
     });
@@ -58,10 +66,9 @@ export function useUpdateCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ id, patch }: { id: string; patch: CategoryPatch }) =>
-            apiFetch<Category>(`/categories/${id}`, {
-                method: "PATCH",
-                body: patch,
-            }),
+            unwrap(
+                api.categories[":id"].$patch({ param: { id }, json: patch }),
+            ),
         onSettled: () =>
             Promise.all([
                 queryClient.invalidateQueries({ queryKey: ["categories"] }),
@@ -75,9 +82,12 @@ export function useDeleteCategory() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ id, moveTo }: { id: string; moveTo?: string }) =>
-            apiFetch<void>(`/categories/${id}?${toQueryString({ moveTo })}`, {
-                method: "DELETE",
-            }),
+            unwrap(
+                api.categories[":id"].$delete({
+                    param: { id },
+                    query: { moveTo },
+                }),
+            ),
         // Its transactions moved to another category.
         onSettled: () =>
             Promise.all(

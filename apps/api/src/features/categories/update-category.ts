@@ -6,6 +6,7 @@ import {
     isCategoryNameTaken,
     toCategory,
 } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Renames, recolors or re-icons a category. The kind is fixed, and the
@@ -27,11 +28,11 @@ export const updateCategory = factory.createHandlers(
                 .where("id", "=", id)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "not_found" }, 404);
+                return apiError(c, "not_found", 404);
             }
             if (patch.name !== undefined) {
                 if (category.fallback === 1) {
-                    return c.json({ error: "fallback_category" }, 422);
+                    return apiError(c, "fallback_category", 422);
                 }
                 if (
                     await isCategoryNameTaken(
@@ -42,7 +43,7 @@ export const updateCategory = factory.createHandlers(
                         id,
                     )
                 ) {
-                    return c.json({ error: "category_name_taken" }, 409);
+                    return apiError(c, "category_name_taken", 409);
                 }
             }
             const row = await trx

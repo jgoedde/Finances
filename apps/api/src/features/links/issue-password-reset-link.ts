@@ -3,6 +3,7 @@ import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { logger } from "#/log.ts";
 import { createPasswordResetLink } from "#/features/links/links.ts";
+import { apiError } from "#/http/api-error.ts";
 
 /**
  * Admin-only.
@@ -17,7 +18,7 @@ export const issuePasswordResetLink = factory.createHandlers(
             c.var.userId,
         );
         if (!created) {
-            return c.json({ error: "unknown_user" }, 422);
+            return apiError(c, "unknown_user", 422);
         }
         logger.info(
             {

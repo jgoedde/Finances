@@ -6,6 +6,7 @@ import {
     isDefaultCategoryNameTaken,
     toDefaultCategory,
 } from "#/features/default-categories/default-categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const createDefaultCategory = factory.createHandlers(
     validate("json", categoryInputSchema),
@@ -14,7 +15,7 @@ export const createDefaultCategory = factory.createHandlers(
         const input = c.req.valid("json");
         return db.transaction().execute(async (trx) => {
             if (await isDefaultCategoryNameTaken(trx, input.kind, input.name)) {
-                return c.json({ error: "category_name_taken" }, 409);
+                return apiError(c, "category_name_taken", 409);
             }
             const row = await trx
                 .insertInto("default_categories")

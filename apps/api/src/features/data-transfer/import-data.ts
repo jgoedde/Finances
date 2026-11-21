@@ -1,5 +1,5 @@
 import { bodyLimit } from "hono/body-limit";
-import { dataImportSchema } from "@finances/shared";
+import { dataImportQuerySchema, dataImportSchema } from "@finances/shared";
 import { factory } from "#/http/factory.ts";
 import { validate } from "#/http/validate.ts";
 import { logger } from "#/log.ts";
@@ -10,6 +10,7 @@ import {
     PriceChangeOutOfRangeError,
     replaceData,
 } from "#/features/data-transfer/data-transfer.ts";
+import { apiError } from "#/http/api-error.ts";
 
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 
@@ -20,14 +21,15 @@ const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 export const importData = factory.createHandlers(
     bodyLimit({
         maxSize: MAX_IMPORT_BYTES,
-        onError: (c) => c.json({ error: "file_too_large" }, 413),
+        onError: (c) => apiError(c, "file_too_large", 413),
     }),
+    validate("query", dataImportQuerySchema),
     validate("json", dataImportSchema),
     async (c) => {
         const { db, userId } = c.var;
-        const replace = c.req.query("replace") === "true";
+        const { replace } = c.req.valid("query");
         if (!replace && (await hasData(db, userId))) {
-            return c.json({ error: "account_not_empty" }, 409);
+            return apiError(c, "account_not_empty", 409);
         }
 
         try {
@@ -37,21 +39,21 @@ export const importData = factory.createHandlers(
         } catch (error) {
             if (error instanceof InvalidReferenceError) {
                 logger.warn({ userId }, "Import rejected: unknown category");
-                return c.json({ error: "unknown_category" }, 422);
+                return apiError(c, "unknown_category", 422);
             }
             if (error instanceof CategoryKindMismatchError) {
                 logger.warn(
                     { userId },
                     "Import rejected: category of the other kind",
                 );
-                return c.json({ error: "category_kind_mismatch" }, 422);
+                return apiError(c, "category_kind_mismatch", 422);
             }
             if (error instanceof PriceChangeOutOfRangeError) {
                 logger.warn(
                     { userId },
                     "Import rejected: price change out of range",
                 );
-                return c.json({ error: "price_change_out_of_range" }, 422);
+                return apiError(c, "price_change_out_of_range", 422);
             }
             throw error;
         }

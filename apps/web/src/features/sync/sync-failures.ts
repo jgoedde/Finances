@@ -10,7 +10,9 @@ export interface SyncFailure {
     transaction: Transaction;
 
     /**
-     * The API's answer, if the change reached it.
+     * The API's answer, if the change reached it. A `string`, not
+     * `ApiErrorCode`: stored codes may come from another version, so
+     * `apiErrorMessage` checks them when wording.
      */
     error?: { status: number; code?: string };
 

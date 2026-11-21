@@ -5,6 +5,7 @@ import {
     categoryIdParam,
     toFixedCostCategory,
 } from "#/features/categories/categories.ts";
+import { apiError } from "#/http/api-error.ts";
 
 export const updateFixedCostCategory = factory.createHandlers(
     validate("param", categoryIdParam),
@@ -20,7 +21,7 @@ export const updateFixedCostCategory = factory.createHandlers(
             .returningAll()
             .executeTakeFirst();
         if (!row) {
-            return c.json({ error: "not_found" }, 404);
+            return apiError(c, "not_found", 404);
         }
         return c.json(toFixedCostCategory(row));
     },
