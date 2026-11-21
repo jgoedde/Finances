@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { Link } from "@tanstack/react-router";
+import * as haptics from "#/lib/haptics.ts";
 import {
     type DestinationId,
     useActiveDestination,
@@ -27,6 +28,7 @@ export function DestinationLink({
         className,
         "data-active": isActive || undefined,
         "aria-current": isActive ? ("page" as const) : undefined,
+        onClick: haptics.tick,
         ...props,
     };
     switch (id) {

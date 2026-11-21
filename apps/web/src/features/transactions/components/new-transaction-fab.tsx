@@ -3,6 +3,7 @@ import { useRipple } from "#/hooks/use-ripple.ts";
 import { useIsScrolled } from "#/hooks/use-is-scrolled.ts";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { m } from "#/paraglide/messages.js";
 
 const VARIANT_CLASS = {
@@ -44,6 +45,7 @@ export function NewTransactionFAB({ variant }: NewTransactionFABProps) {
             {...ripple}
             onClick={(e) => {
                 ripple.onClick(e);
+                haptics.tick();
 
                 setTimeout(() => {
                     void navigate({ to: "/new" });

@@ -3,6 +3,7 @@ import ArrowLeft from "~icons/material-symbols/arrow-back-rounded";
 import { useCanGoBack, useNavigate, useRouter } from "@tanstack/react-router";
 import { Button } from "#/components/ui/button.tsx";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { m } from "#/paraglide/messages.js";
 
 // Leading navigation icon of an MD3 top app bar.
@@ -21,9 +22,14 @@ export function BackArrowButton({
             variant={"ghost"}
             size={"icon"}
             aria-label={m.action_back()}
-            onClick={() =>
-                canGoBack ? router.history.back() : void navigate({ to: "/" })
-            }
+            onClick={() => {
+                haptics.tick();
+                if (canGoBack) {
+                    router.history.back();
+                } else {
+                    void navigate({ to: "/" });
+                }
+            }}
             className={cn("mx-1 text-on-surface", className)}
             {...props}
         >
