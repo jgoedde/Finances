@@ -11,6 +11,7 @@ import {
     transactionQuery,
 } from "#/features/transactions/transaction-queries.ts";
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
 import {
     findCachedTransaction,
@@ -90,7 +91,10 @@ function RouteComponent() {
             duration: ACTION_TOAST_DURATION,
             action: {
                 label: m.action_undo(),
-                onClick: () => saveTransaction.mutate(transaction),
+                onClick: () => {
+                    haptics.tick();
+                    saveTransaction.mutate(transaction);
+                },
             },
         });
     };

@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 
 // `md3` and `input` follow MD3 chips (https://m3.material.io/components/chips/specs),
 // the remaining variants are small status labels.
@@ -35,10 +36,22 @@ const badgeVariants = cva(
     },
 );
 
+/**
+ * A filter chip toggles (`aria-pressed`); a chip that opens a popup doesn't
+ * pick anything by itself.
+ */
+function isFilterChip(element: HTMLElement) {
+    return (
+        element.hasAttribute("aria-pressed") &&
+        !element.hasAttribute("aria-haspopup")
+    );
+}
+
 function Badge({
     className,
     variant,
     asChild = false,
+    onClick,
     ...props
 }: React.ComponentProps<"span"> &
     VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
@@ -49,6 +62,12 @@ function Badge({
             data-slot="badge"
             className={cn(badgeVariants({ variant }), className)}
             {...props}
+            onClick={(event: React.MouseEvent<HTMLSpanElement>) => {
+                if (variant === "md3" && isFilterChip(event.currentTarget)) {
+                    haptics.tick();
+                }
+                onClick?.(event);
+            }}
         />
     );
 }

@@ -1,11 +1,13 @@
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 
 // MD3 switch (https://m3.material.io/components/switch/specs): 52x32dp track,
 // thumb grows from 16dp (off) to 24dp (on) and 28dp while pressed.
 function Switch({
     className,
+    onCheckedChange,
     ...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
     return (
@@ -23,6 +25,10 @@ function Switch({
                 className,
             )}
             {...props}
+            onCheckedChange={(checked) => {
+                haptics.tick();
+                onCheckedChange?.(checked);
+            }}
         >
             <SwitchPrimitive.Thumb
                 data-slot="switch-thumb"

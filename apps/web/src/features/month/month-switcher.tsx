@@ -12,6 +12,7 @@ import {
 } from "#/components/ui/popover.tsx";
 import { toMonthParam, useSelectedMonth } from "#/features/month/month.ts";
 import { cn } from "#/lib/cn.ts";
+import * as haptics from "#/lib/haptics.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
 
@@ -129,6 +130,8 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
         isChevronSlideRef.current = false;
         if (target && target.getTime() !== monthTime) {
             if (!isSliding) {
+                // A chevron click is already a tap; only a swipe ticks.
+                haptics.tick();
                 setHasSwiped(true);
             }
             goTo(target);

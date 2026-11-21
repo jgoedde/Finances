@@ -12,6 +12,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { apiErrorCode } from "#/api/api-errors.ts";
 import { Button } from "#/components/ui/button.tsx";
+import * as haptics from "#/lib/haptics.ts";
 import { Calendar } from "#/components/ui/calendar.tsx";
 import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import {
@@ -108,9 +109,11 @@ export function PriceChangeSheet({
     function save() {
         const problem = findPriceChangeProblem(record, date, replacing);
         if (problem !== null) {
+            haptics.error();
             setError(PROBLEM_MESSAGES[problem]());
             return;
         }
+        haptics.saved();
         const amount = parseFloat(amountStr.replace(",", ".")) || 0;
         submit(
             withPriceChange(record.priceChanges, { date, amount }, replacing),

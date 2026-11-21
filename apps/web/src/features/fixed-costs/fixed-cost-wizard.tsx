@@ -5,6 +5,7 @@ import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";
 import { Button } from "#/components/ui/button.tsx";
+import * as haptics from "#/lib/haptics.ts";
 import { Input } from "#/components/ui/input.tsx";
 import { Calendar } from "#/components/ui/calendar.tsx";
 import {
@@ -138,7 +139,11 @@ export function FixedCostWizard({
     }, [name, categoryId, stepId]);
 
     function goNext() {
-        if (!canNext || isSaveBlocked) return;
+        if (isSaveBlocked) return;
+        if (!canNext) {
+            haptics.error();
+            return;
+        }
         if (step < STEPS.length - 1) {
             setStep((s) => s + 1);
             return;
@@ -152,8 +157,10 @@ export function FixedCostWizard({
 
     function submit() {
         if (categoryId === undefined) {
+            haptics.error();
             return;
         }
+        haptics.saved();
         onSubmit({
             name: name.trim(),
             amount: parseFloat(amountStr.replace(",", ".")) || 0,
