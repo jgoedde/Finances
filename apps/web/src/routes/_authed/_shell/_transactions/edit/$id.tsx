@@ -72,6 +72,7 @@ function RouteComponent() {
             exceptional: updated.isExceptional,
             currency: "EUR",
             location: transaction.location,
+            mainExpenseId: transaction.mainExpenseId,
         });
         void navigate({ to: "/transactions" });
         toast.success(`${m.transaction_updated()}${syncLaterHint()}`, {

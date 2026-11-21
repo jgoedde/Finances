@@ -46,6 +46,7 @@ function RouteComponent() {
             exceptional: data.isExceptional,
             // Whatever is known by now; saving never waits for it.
             location: deviceLocation,
+            mainExpenseId: null,
         } as const;
         const main = {
             id: nanoid(8),

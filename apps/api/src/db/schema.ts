@@ -51,6 +51,11 @@ export interface TransactionsTable {
     location_lat: number | null;
     location_lng: number | null;
     location_accuracy: number | null;
+
+    /**
+     * Id of the main expense this expense is attached to.
+     */
+    main_expense_id: string | null;
     updated_at: number;
 }
 

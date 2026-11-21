@@ -3,7 +3,8 @@ import { validate } from "#/http/validate.ts";
 import { transactionIdParam } from "#/features/transactions/transactions.ts";
 
 /**
- * Idempotent: deleting an unknown or already deleted id succeeds.
+ * Idempotent: deleting an unknown or already deleted id succeeds. Detaches
+ * the expenses attached to it.
  */
 export const deleteTransaction = factory.createHandlers(
     validate("param", transactionIdParam),
@@ -15,6 +16,13 @@ export const deleteTransaction = factory.createHandlers(
                 .deleteFrom("transactions")
                 .where("user_id", "=", userId)
                 .where("id", "=", id)
+                .execute();
+            // Attached expenses stay, as regular expenses.
+            await trx
+                .updateTable("transactions")
+                .set({ main_expense_id: null, updated_at: Date.now() })
+                .where("user_id", "=", userId)
+                .where("main_expense_id", "=", id)
                 .execute();
             await trx
                 .insertInto("transaction_tombstones")

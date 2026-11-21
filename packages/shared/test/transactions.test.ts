@@ -18,6 +18,7 @@ function transaction(overrides: Partial<Transaction> = {}): Transaction {
         categoryId: "1",
         exceptional: false,
         location: null,
+        mainExpenseId: null,
         ...overrides,
     };
 }

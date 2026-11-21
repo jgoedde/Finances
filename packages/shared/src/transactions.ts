@@ -53,13 +53,22 @@ export const transactionSchema = z.object({
      * `null` if not recorded.
      */
     location: transactionLocationSchema.nullable(),
+
+    /**
+     * The main expense this expense is attached to, `null` if none.
+     */
+    mainExpenseId: transactionIdSchema.nullable(),
 });
 export type Transaction = z.infer<typeof transactionSchema>;
 
 export const transactionInputSchema = transactionSchema
     .omit({ id: true })
-    // Clients older than the location (or their queued writes) don't send it.
-    .extend({ location: transactionSchema.shape.location.default(null) });
+    // Older clients (or their queued writes) don't send the location or the
+    // main expense.
+    .extend({
+        location: transactionSchema.shape.location.default(null),
+        mainExpenseId: transactionSchema.shape.mainExpenseId.default(null),
+    });
 export type TransactionInput = z.infer<typeof transactionInputSchema>;
 
 /**
@@ -148,6 +157,12 @@ export interface TransactionSearchPage {
      * `null` on the last page.
      */
     nextCursor: string | null;
+
+    /**
+     * The main expenses that attached expenses in `items` reference, unless
+     * they are in `items` themselves.
+     */
+    mainExpenses: Transaction[];
 }
 
 /**

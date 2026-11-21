@@ -56,6 +56,7 @@ function transaction(): Transaction {
         categoryId: "food",
         exceptional: false,
         location: null,
+        mainExpenseId: null,
     };
 }
 
