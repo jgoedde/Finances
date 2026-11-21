@@ -1,5 +1,4 @@
-import { FilterChip } from "#/components/ui/badge.tsx";
-import { cn } from "#/lib/cn.ts";
+import { FilterChip } from "#/components/ui/chip.tsx";
 import { m } from "#/paraglide/messages.js";
 
 /**
@@ -42,12 +41,10 @@ export function HistoryRangeChips({
                 <FilterChip
                     key={key}
                     selected={range === key}
-                    className={cn(
-                        `h-auto rounded-full border-transparent px-3 py-1
-                        text-label-medium`,
-                        range === key &&
-                            "bg-tertiary-container text-on-tertiary-container",
-                    )}
+                    className={`h-auto rounded-full border-transparent px-3 py-1
+                        text-label-medium aria-pressed:bg-tertiary-container
+                        aria-pressed:text-on-tertiary-container
+                        aria-pressed:[&_svg]:text-on-tertiary-container`}
                     onSelect={() => onChange(key as HistoryRange)}
                 >
                     {it.label()}

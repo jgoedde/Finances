@@ -1,12 +1,9 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
-import * as haptics from "#/lib/haptics.ts";
 
-// `md3` and `input` follow MD3 chips (https://m3.material.io/components/chips/specs),
-// the remaining variants are small status labels.
+// Small status labels. For MD3 chips, use `components/ui/chip.tsx`.
 const badgeVariants = cva(
     "focus-ring inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-sm border whitespace-nowrap outline-none transition-colors duration-200 ease-standard [&>svg]:pointer-events-none [&>svg]:size-3",
     {
@@ -20,14 +17,6 @@ const badgeVariants = cva(
                     "border-transparent bg-error px-2 py-0.5 text-label-medium text-on-error",
                 outline:
                     "border-outline-variant px-2 py-0.5 text-label-medium text-on-surface-variant",
-                // Filter / assist chip. Selected state: add `bg-secondary-container
-                // text-on-secondary-container border-transparent`.
-                md3: [
-                    outlinedDisabledClassName,
-                    "state-layer h-8 cursor-pointer gap-2 border-outline-variant px-4 text-label-large text-on-surface-variant [&>svg]:size-[18px]",
-                ],
-                // Input chip.
-                input: "h-8 gap-2 border-transparent bg-secondary-container pr-2 pl-3 text-label-large text-on-secondary-container [&>svg]:size-[18px]",
             },
         },
         defaultVariants: {
@@ -54,52 +43,4 @@ function Badge({
     );
 }
 
-type FilterChipProps = Omit<
-    React.ComponentProps<"button">,
-    "type" | "onClick" | "aria-pressed"
-> & {
-    selected: boolean;
-
-    /**
-     * Called when the unselected chip is tapped.
-     */
-    onSelect: () => void;
-
-    /**
-     * Called when the selected chip is tapped. Without it, tapping the
-     * selected chip does nothing (single choice).
-     */
-    onDeselect?: () => void;
-};
-
-/**
- * An MD3 filter chip (`aria-pressed`). Ticks when a tap changes the
- * selection, not when it leaves the selection as it is. Style the selected
- * state at the call site.
- */
-function FilterChip({
-    className,
-    selected,
-    onSelect,
-    onDeselect,
-    ...props
-}: FilterChipProps) {
-    return (
-        <button
-            data-slot="badge"
-            type={"button"}
-            aria-pressed={selected}
-            className={cn(badgeVariants({ variant: "md3" }), className)}
-            {...props}
-            onClick={() => {
-                const handler = selected ? onDeselect : onSelect;
-                if (handler) {
-                    haptics.tick();
-                    handler();
-                }
-            }}
-        />
-    );
-}
-
-export { Badge, FilterChip };
+export { Badge };

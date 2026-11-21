@@ -1,9 +1,8 @@
 import { useState } from "react";
 import CalendarIcon from "~icons/material-symbols/calendar-today-outline-rounded";
-import CheckIcon from "~icons/material-symbols/check-rounded";
 import { isToday, isYesterday, subDays } from "date-fns";
 import { formatShortDate } from "@finances/shared";
-import { Badge, FilterChip } from "#/components/ui/badge.tsx";
+import { FilterChip } from "#/components/ui/chip.tsx";
 import { Calendar } from "#/components/ui/calendar.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import {
@@ -11,12 +10,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "#/components/ui/popover.tsx";
-import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
-
-const SELECTED_CHIP_CLASS_NAME =
-    "border-transparent bg-secondary-container text-on-secondary-container";
 
 interface DateChipsProps {
     date: Date;
@@ -54,44 +49,30 @@ export function DateChips({
                 <FilterChip
                     disabled={disabled}
                     selected={isToday(date)}
-                    className={cn(isToday(date) && SELECTED_CHIP_CLASS_NAME)}
                     onSelect={() => onChange(new Date())}
                 >
-                    {isToday(date) && <CheckIcon aria-hidden />}
                     {m.transaction_date_today()}
                 </FilterChip>
                 <FilterChip
                     disabled={disabled}
                     selected={isYesterday(date)}
-                    className={cn(
-                        isYesterday(date) && SELECTED_CHIP_CLASS_NAME,
-                    )}
                     onSelect={() => onChange(subDays(new Date(), 1))}
                 >
-                    {isYesterday(date) && <CheckIcon aria-hidden />}
                     {m.transaction_date_yesterday()}
                 </FilterChip>
                 <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
-                        <Badge asChild variant={"md3"}>
-                            <button
-                                type={"button"}
-                                disabled={disabled}
-                                aria-pressed={isOtherDay}
-                                className={cn(
-                                    isOtherDay && SELECTED_CHIP_CLASS_NAME,
-                                )}
-                            >
-                                {isOtherDay ? (
-                                    <CheckIcon aria-hidden />
-                                ) : (
-                                    <CalendarIcon aria-hidden />
-                                )}
-                                {isOtherDay
-                                    ? formatShortDate(date, getLocale())
-                                    : m.transaction_choose_date()}
-                            </button>
-                        </Badge>
+                        {/* The trigger opens the calendar on every tap. */}
+                        <FilterChip
+                            disabled={disabled}
+                            selected={isOtherDay}
+                            icon={CalendarIcon}
+                            onSelect={() => setIsCalendarOpen(true)}
+                        >
+                            {isOtherDay
+                                ? formatShortDate(date, getLocale())
+                                : m.transaction_choose_date()}
+                        </FilterChip>
                     </PopoverTrigger>
                     <PopoverContent className={"w-auto p-0"} align={"start"}>
                         <Calendar
