@@ -267,6 +267,8 @@
 /** @typedef {{}} Transaction_AmountInputs */
 /** @typedef {{ amount: NonNullable<unknown> }} Transaction_Amount_LastInputs */
 /** @typedef {{}} Transaction_Amount_MissingInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Attached_ExpensesInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Belongs_ToInputs */
 /** @typedef {{}} Transaction_CategoryInputs */
 /** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
@@ -297,6 +299,7 @@
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_UpcomingInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Main_Expense_TotalInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
@@ -1397,6 +1400,14 @@ export const transaction_amount_missing = /** @type {(inputs: Transaction_Amount
 	return /** @type {LocalizedString} */ (`Gib einen Betrag ein.`)
 };
 
+export const transaction_attached_expenses = /** @type {(inputs: Transaction_Attached_ExpensesInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Angehängt an ${i?.counterparty}`)
+};
+
+export const transaction_belongs_to = /** @type {(inputs: Transaction_Belongs_ToInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`gehört zu ${i?.counterparty}`)
+};
+
 export const transaction_category = /** @type {(inputs: Transaction_CategoryInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Kategorie`)
 };
@@ -1515,6 +1526,10 @@ export const transaction_list_offline = /** @type {(inputs: Transaction_List_Off
 
 export const transaction_list_upcoming = /** @type {(inputs: Transaction_List_UpcomingInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Geplant`)
+};
+
+export const transaction_main_expense_total = /** @type {(inputs: Transaction_Main_Expense_TotalInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`gesamt ${i?.amount}`)
 };
 
 export const transaction_more = /** @type {(inputs: Transaction_MoreInputs) => LocalizedString} */ () => {

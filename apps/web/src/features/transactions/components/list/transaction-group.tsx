@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { isSameDay } from "date-fns";
 import { formatDayHeading, type Transaction } from "@finances/shared";
-import { TransactionListItem } from "#/features/transactions/components/list/transaction-list-item.tsx";
+import { TransactionListRow } from "#/features/transactions/components/list/transaction-list-row.tsx";
+import { toListRows } from "#/features/transactions/utils/list-rows.ts";
 import { cn } from "#/lib/cn.ts";
 import { getLocale } from "#/paraglide/runtime.js";
 
@@ -17,6 +18,12 @@ interface TransactionGroupProps {
     highlighted?: ReadonlySet<string>;
 
     /**
+     * Looks up the main expense of an attached expense whose main expense is
+     * not among `transactions`, for the "belongs to" hint.
+     */
+    findMainExpense?: (id: string) => Transaction | undefined;
+
+    /**
      * Shown at the end of the header, e.g. a button.
      */
     action?: ReactNode;
@@ -29,6 +36,7 @@ export function TransactionGroup({
     day,
     transactions,
     highlighted,
+    findMainExpense,
     action,
 }: TransactionGroupProps) {
     return (
@@ -55,11 +63,11 @@ export function TransactionGroup({
                 {action}
             </div>
             <div className={"flex flex-col gap-y-1.5 px-2"}>
-                {transactions.map((it) => (
-                    <TransactionListItem
-                        key={it.id}
-                        transaction={it}
-                        highlighted={highlighted?.has(it.id)}
+                {toListRows(transactions, findMainExpense).map((row) => (
+                    <TransactionListRow
+                        key={row.transaction.id}
+                        row={row}
+                        highlighted={highlighted}
                     />
                 ))}
             </div>

@@ -53,6 +53,11 @@ export function TransactionList() {
         : [];
 
     const days = groupByDay(transactions);
+    // Unfiltered, so an attached expense finds its main expense even when
+    // the category filter hides it.
+    const findMainExpense = (id: string) =>
+        data?.find((it) => it.id === id) ??
+        upcomingQuery.data?.find((it) => it.id === id);
 
     if (isPending) {
         // A paused query only resumes once the device is back online.
@@ -86,6 +91,7 @@ export function TransactionList() {
                     transactions={upcoming}
                     today={today}
                     highlighted={highlighted}
+                    findMainExpense={findMainExpense}
                 />
             )}
             {days.map(([day, dayTransactions]) => (
@@ -94,6 +100,7 @@ export function TransactionList() {
                     day={day}
                     transactions={dayTransactions}
                     highlighted={highlighted}
+                    findMainExpense={findMainExpense}
                 />
             ))}
         </div>
