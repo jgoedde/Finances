@@ -1,6 +1,6 @@
 import { type QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import type { Transaction, TransactionInput } from "@finances/shared";
-import { ApiError, apiFetch, isUnauthorized } from "#/api/api-client.ts";
+import type { Transaction } from "@finances/shared";
+import { api, ApiError, isUnauthorized, unwrap } from "#/api/api-client.ts";
 import { apiErrorCode } from "#/api/api-errors.ts";
 import { sessionQuery } from "#/auth/auth-client.ts";
 import { syncFailures } from "#/features/sync/sync-failures.ts";
@@ -122,10 +122,12 @@ export function registerTransactionMutations(
         ...shared,
         mutationFn: ({ id, ...input }, { meta }) =>
             run(meta, () =>
-                apiFetch(`/transactions/${id}`, {
-                    method: "PUT",
-                    body: input satisfies TransactionInput,
-                }),
+                unwrap(
+                    api.transactions[":id"].$put({
+                        param: { id },
+                        json: input,
+                    }),
+                ),
             ),
         onMutate: (transaction) =>
             applyToCache(queryClient, { action: "save", transaction }),
@@ -136,7 +138,7 @@ export function registerTransactionMutations(
         ...shared,
         mutationFn: ({ id }, { meta }) =>
             run(meta, () =>
-                apiFetch(`/transactions/${id}`, { method: "DELETE" }),
+                unwrap(api.transactions[":id"].$delete({ param: { id } })),
             ),
         onMutate: (transaction) =>
             applyToCache(queryClient, { action: "delete", transaction }),

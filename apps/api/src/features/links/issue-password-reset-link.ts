@@ -17,7 +17,7 @@ export const issuePasswordResetLink = factory.createHandlers(
             c.var.userId,
         );
         if (!created) {
-            return c.json({ error: "unknown_user" }, 422);
+            return c.json({ error: "unknown_user" as const }, 422);
         }
         logger.info(
             {

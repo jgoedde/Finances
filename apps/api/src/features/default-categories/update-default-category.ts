@@ -26,7 +26,7 @@ export const updateDefaultCategory = factory.createHandlers(
                 .where("id", "=", id)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "not_found" }, 404);
+                return c.json({ error: "not_found" as const }, 404);
             }
             if (
                 patch.name !== undefined &&
@@ -37,7 +37,7 @@ export const updateDefaultCategory = factory.createHandlers(
                     id,
                 ))
             ) {
-                return c.json({ error: "category_name_taken" }, 409);
+                return c.json({ error: "category_name_taken" as const }, 409);
             }
             const row = await trx
                 .updateTable("default_categories")

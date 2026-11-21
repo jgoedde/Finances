@@ -24,13 +24,13 @@ export const redeemLink = factory.createHandlers(
 
         const link = await findUsableLink(db, token);
         if (!link) {
-            return c.json({ error: "invalid_link" }, 410);
+            return c.json({ error: "invalid_link" as const }, 410);
         }
         if (link.kind === "signup" && !input.username) {
-            return c.json({ error: "username_required" }, 400);
+            return c.json({ error: "username_required" as const }, 400);
         }
         if (!(await claimLink(db, token))) {
-            return c.json({ error: "invalid_link" }, 410);
+            return c.json({ error: "invalid_link" as const }, 410);
         }
 
         try {
@@ -51,7 +51,7 @@ export const redeemLink = factory.createHandlers(
             if (link.kind === "signup") {
                 // The placeholder email is derived from the username, so a
                 // duplicate username fails as a duplicate user.
-                return c.json({ error: "username_taken" }, 409);
+                return c.json({ error: "username_taken" as const }, 409);
             }
             throw error;
         }

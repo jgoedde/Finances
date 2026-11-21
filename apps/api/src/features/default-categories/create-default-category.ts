@@ -14,7 +14,7 @@ export const createDefaultCategory = factory.createHandlers(
         const input = c.req.valid("json");
         return db.transaction().execute(async (trx) => {
             if (await isDefaultCategoryNameTaken(trx, input.kind, input.name)) {
-                return c.json({ error: "category_name_taken" }, 409);
+                return c.json({ error: "category_name_taken" as const }, 409);
             }
             const row = await trx
                 .insertInto("default_categories")

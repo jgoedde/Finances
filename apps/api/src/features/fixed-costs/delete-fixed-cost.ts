@@ -11,7 +11,7 @@ export const deleteFixedCost = factory.createHandlers(
             .where("id", "=", c.req.valid("param").id)
             .executeTakeFirst();
         if (result.numDeletedRows === 0n) {
-            return c.json({ error: "not_found" }, 404);
+            return c.json({ error: "not_found" as const }, 404);
         }
         return c.body(null, 204);
     },

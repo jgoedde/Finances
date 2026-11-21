@@ -46,10 +46,13 @@ export const putTransaction = factory.createHandlers(
                 .where("id", "=", input.categoryId)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "unknown_category" }, 422);
+                return c.json({ error: "unknown_category" as const }, 422);
             }
             if (category.kind !== input.kind) {
-                return c.json({ error: "category_kind_mismatch" }, 422);
+                return c.json(
+                    { error: "category_kind_mismatch" as const },
+                    422,
+                );
             }
 
             const resolved = await resolveMainExpense(trx, userId, id, input);

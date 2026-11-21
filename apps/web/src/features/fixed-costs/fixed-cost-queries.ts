@@ -18,7 +18,7 @@ import {
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { apiFetch } from "#/api/api-client.ts";
+import { api, unwrap } from "#/api/api-client.ts";
 import {
     type FixedCostCategoryGroup,
     toCategoryGroups,
@@ -30,7 +30,7 @@ const EMPTY: never[] = [];
 
 export const fixedCostCategoriesQuery = queryOptions({
     queryKey: ["fixed-cost-categories"],
-    queryFn: () => apiFetch<FixedCostCategory[]>("/fixed-cost-categories"),
+    queryFn: () => unwrap(api["fixed-cost-categories"].$get()),
     staleTime: Infinity,
 });
 
@@ -40,7 +40,7 @@ function useFixedCostCategories(): FixedCostCategory[] {
 
 const fixedCostsQuery = queryOptions({
     queryKey: ["fixed-costs", "list"],
-    queryFn: () => apiFetch<FixedCostRecord[]>("/fixed-costs"),
+    queryFn: () => unwrap(api["fixed-costs"].$get()),
 });
 
 export function useFixedCostCategoryGroups(): FixedCostCategoryGroup[] {
@@ -77,7 +77,8 @@ export function useFixedCostHistory(): {
 export function fixedCostQuery(id: string) {
     return queryOptions({
         queryKey: ["fixed-costs", "detail", id],
-        queryFn: () => apiFetch<FixedCostRecord>(`/fixed-costs/${id}`),
+        queryFn: () =>
+            unwrap(api["fixed-costs"][":id"].$get({ param: { id } })),
     });
 }
 
@@ -172,10 +173,7 @@ export function useCreateFixedCost() {
     const optimistic = useOptimisticFixedCosts(m.fixed_cost_save_failed);
     return useMutation({
         mutationFn: (input: FixedCostInput) =>
-            apiFetch<FixedCostRecord>("/fixed-costs", {
-                method: "POST",
-                body: input,
-            }),
+            unwrap(api["fixed-costs"].$post({ json: input })),
         // The server assigns the id; a temporary one stands in until then.
         onMutate: (input) =>
             optimistic.apply((list) =>
@@ -199,10 +197,12 @@ export function useUpdateFixedCost(isShownInline?: (error: Error) => boolean) {
     );
     return useMutation({
         mutationFn: ({ id, patch }: { id: string; patch: FixedCostPatch }) =>
-            apiFetch<FixedCostRecord>(`/fixed-costs/${id}`, {
-                method: "PATCH",
-                body: patch,
-            }),
+            unwrap(
+                api["fixed-costs"][":id"].$patch({
+                    param: { id },
+                    json: patch,
+                }),
+            ),
         onMutate: ({ id, patch }) => optimistic.applyToDetail(id, patch),
         onError: (error, _variables, context) =>
             optimistic.rollback(error, context),
@@ -214,7 +214,7 @@ export function useDeleteFixedCost() {
     const optimistic = useOptimisticFixedCosts(m.fixed_cost_delete_failed);
     return useMutation({
         mutationFn: (id: string) =>
-            apiFetch<undefined>(`/fixed-costs/${id}`, { method: "DELETE" }),
+            unwrap(api["fixed-costs"][":id"].$delete({ param: { id } })),
         onMutate: (id) =>
             optimistic.apply((list) =>
                 list.filter((record) => record.id !== id),
@@ -238,10 +238,12 @@ export function useUpdateFixedCostCategory() {
             id: string;
             update: UpdateFixedCostCategory;
         }) =>
-            apiFetch<FixedCostCategory>(`/fixed-cost-categories/${id}`, {
-                method: "PATCH",
-                body: update,
-            }),
+            unwrap(
+                api["fixed-cost-categories"][":id"].$patch({
+                    param: { id },
+                    json: update,
+                }),
+            ),
         onMutate: async ({ id, update }) => {
             await queryClient.cancelQueries({ queryKey });
             const previous = queryClient.getQueryData(queryKey);

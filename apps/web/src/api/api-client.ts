@@ -1,3 +1,6 @@
+import type { AppType } from "@finances/api";
+import { type ClientResponse, hc } from "hono/client";
+import type { SuccessStatusCode } from "hono/utils/http-status";
 import { reportNetworkFailure } from "#/features/sync/connectivity.ts";
 
 export class ApiError extends Error {
@@ -17,55 +20,51 @@ export function isUnauthorized(error: unknown): boolean {
 }
 
 /**
- * Calls the API (same origin, session cookie). Throws {@link ApiError} for
- * non-2xx responses; resolves to undefined for empty responses.
+ * Same origin with the session cookie; reports requests that never reach the
+ * server.
  */
-export async function apiFetch<T>(
-    path: string,
-    init: Omit<RequestInit, "body"> & { body?: unknown } = {},
-): Promise<T> {
-    const headers = new Headers(init.headers);
-    let body: BodyInit | undefined;
-    if (init.body !== undefined) {
-        headers.set("content-type", "application/json");
-        body = JSON.stringify(init.body);
-    }
-
-    let response: Response;
+async function sameOriginFetch(
+    input: RequestInfo | URL,
+    init?: RequestInit,
+): Promise<Response> {
     try {
-        response = await fetch(`/api${path}`, {
-            ...init,
-            headers,
-            body,
-            credentials: "same-origin",
-        });
+        return await fetch(input, { ...init, credentials: "same-origin" });
     } catch (error) {
-        // The request never reached the server.
         reportNetworkFailure();
         throw error;
     }
-
-    const text = await response.text();
-    const data: unknown = text ? JSON.parse(text) : undefined;
-    if (!response.ok) {
-        throw new ApiError(response.status, data);
-    }
-    return data as T;
 }
 
 /**
- * Builds a query string, skipping undefined values.
+ * The typed API client: paths, params, query, bodies and responses come from
+ * the API's router (`AppType`). Pass its responses to {@link unwrap}.
  */
-export function toQueryString<
-    T extends { [K in keyof T]: string | number | boolean | undefined },
->(params: T): string {
-    const search = new URLSearchParams();
-    for (const [key, value] of Object.entries<
-        string | number | boolean | undefined
-    >(params)) {
-        if (value !== undefined) {
-            search.set(key, String(value));
-        }
+export const api = hc<AppType>("/", { fetch: sameOriginFetch }).api;
+
+/**
+ * The body of the response's success statuses; undefined for 204.
+ */
+type SuccessBody<R> =
+    R extends ClientResponse<infer T, infer S>
+        ? S extends SuccessStatusCode
+            ? S extends 204
+                ? undefined
+                : T
+            : never
+        : never;
+
+/**
+ * Throws {@link ApiError} for non-2xx responses; resolves to undefined for
+ * empty responses and to the JSON body otherwise.
+ */
+export async function unwrap<R extends ClientResponse<unknown>>(
+    response: R | Promise<R>,
+): Promise<SuccessBody<R>> {
+    const resolved = await response;
+    const text = await resolved.text();
+    const data: unknown = text ? JSON.parse(text) : undefined;
+    if (!resolved.ok) {
+        throw new ApiError(resolved.status, data);
     }
-    return search.toString();
+    return data as SuccessBody<R>;
 }

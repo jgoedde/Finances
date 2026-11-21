@@ -16,7 +16,7 @@ export const createCategory = factory.createHandlers(
             if (
                 await isCategoryNameTaken(trx, userId, input.kind, input.name)
             ) {
-                return c.json({ error: "category_name_taken" }, 409);
+                return c.json({ error: "category_name_taken" as const }, 409);
             }
             const row = await trx
                 .insertInto("categories")

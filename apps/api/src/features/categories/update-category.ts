@@ -27,11 +27,11 @@ export const updateCategory = factory.createHandlers(
                 .where("id", "=", id)
                 .executeTakeFirst();
             if (!category) {
-                return c.json({ error: "not_found" }, 404);
+                return c.json({ error: "not_found" as const }, 404);
             }
             if (patch.name !== undefined) {
                 if (category.fallback === 1) {
-                    return c.json({ error: "fallback_category" }, 422);
+                    return c.json({ error: "fallback_category" as const }, 422);
                 }
                 if (
                     await isCategoryNameTaken(
@@ -42,7 +42,10 @@ export const updateCategory = factory.createHandlers(
                         id,
                     )
                 ) {
-                    return c.json({ error: "category_name_taken" }, 409);
+                    return c.json(
+                        { error: "category_name_taken" as const },
+                        409,
+                    );
                 }
             }
             const row = await trx

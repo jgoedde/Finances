@@ -15,7 +15,7 @@ export const deleteDefaultCategory = factory.createHandlers(
             .where("id", "=", id)
             .executeTakeFirst();
         if (result.numDeletedRows === 0n) {
-            return c.json({ error: "not_found" }, 404);
+            return c.json({ error: "not_found" as const }, 404);
         }
         return c.body(null, 204);
     },

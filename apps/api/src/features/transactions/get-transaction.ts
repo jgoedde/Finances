@@ -15,7 +15,7 @@ export const getTransaction = factory.createHandlers(
             .where("id", "=", c.req.valid("param").id)
             .executeTakeFirst();
         if (!row) {
-            return c.json({ error: "not_found" }, 404);
+            return c.json({ error: "not_found" as const }, 404);
         }
         return c.json(toTransaction(row));
     },

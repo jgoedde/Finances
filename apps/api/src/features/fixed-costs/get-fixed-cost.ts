@@ -14,7 +14,7 @@ export const getFixedCost = factory.createHandlers(
             c.req.valid("param").id,
         );
         if (!fixedCost) {
-            return c.json({ error: "not_found" }, 404);
+            return c.json({ error: "not_found" as const }, 404);
         }
         return c.json(fixedCost);
     },

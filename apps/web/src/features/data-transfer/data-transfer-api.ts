@@ -1,27 +1,23 @@
 import type { ImportResult } from "@finances/shared";
-import { ApiError, apiFetch } from "#/api/api-client.ts";
+import type { InferRequestType } from "hono/client";
+import { api, unwrap } from "#/api/api-client.ts";
 
-async function throwIfFailed(response: Response): Promise<void> {
-    if (!response.ok) {
-        const text = await response.text();
-        throw new ApiError(response.status, text ? JSON.parse(text) : null);
-    }
-}
+type ImportRequest = InferRequestType<typeof api.data.import.$post>;
 
 /**
  * Downloads all of the user's data as a JSON file.
  */
 export async function downloadExport(): Promise<void> {
-    const response = await fetch("/api/data/export", {
-        credentials: "same-origin",
-    });
-    await throwIfFailed(response);
+    const response = await api.data.export.$get();
+    const data = await unwrap(response);
 
     const fileName =
         /filename="([^"]+)"/.exec(
             response.headers.get("content-disposition") ?? "",
         )?.[1] ?? "finances.json";
-    const url = URL.createObjectURL(await response.blob());
+    const url = URL.createObjectURL(
+        new Blob([JSON.stringify(data)], { type: "application/json" }),
+    );
     const a = document.createElement("a");
     a.href = url;
     a.download = fileName;
@@ -55,9 +51,11 @@ export async function importFile(
     } catch {
         throw new UnreadableFileError();
     }
-    const query = replace ? "?replace=true" : "";
-    return apiFetch<ImportResult>(`/data/import${query}`, {
-        method: "POST",
-        body: data,
-    });
+    return unwrap(
+        api.data.import.$post({
+            query: { replace: replace ? "true" : undefined },
+            // Unchecked: the API validates the file.
+            json: data as ImportRequest["json"],
+        }),
+    );
 }

@@ -21,7 +21,7 @@ export const getCategoryUsage = factory.createHandlers(
             .where("id", "=", id)
             .executeTakeFirst();
         if (!category) {
-            return c.json({ error: "not_found" }, 404);
+            return c.json({ error: "not_found" as const }, 404);
         }
         const usage: CategoryUsage = {
             transactions: await countCategoryTransactions(db, userId, id),

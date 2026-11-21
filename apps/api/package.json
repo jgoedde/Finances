@@ -5,6 +5,9 @@
     "imports": {
         "#/*": "./src/*"
     },
+    "exports": {
+        ".": "./src/app.ts"
+    },
     "scripts": {
         "dev": "node --watch --env-file-if-exists=.env src/main.ts",
         "build": "tsc -b",

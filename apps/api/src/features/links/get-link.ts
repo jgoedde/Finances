@@ -11,7 +11,7 @@ export const getLink = factory.createHandlers(
     async (c) => {
         const link = await findUsableLink(c.var.db, c.req.valid("param").token);
         if (!link) {
-            return c.json({ error: "invalid_link" }, 410);
+            return c.json({ error: "invalid_link" as const }, 410);
         }
         const info: LinkInfo = {
             kind: link.kind === "signup" ? "invite" : "password-reset",

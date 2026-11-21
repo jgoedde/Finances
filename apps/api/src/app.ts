@@ -14,6 +14,11 @@ import { adminLinkRoutes, linkRoutes } from "./features/links/routes.ts";
 import { transactionRoutes } from "./features/transactions/routes.ts";
 import { type AppEnv, requireAdmin, requireUser } from "./http/session.ts";
 
+/**
+ * The API under `/api`. The routers the web client calls are mounted in one
+ * chained expression so {@link AppType} keeps their routes: a `.route(...)`
+ * or `.get(...)` outside the chain is invisible to the client.
+ */
 export function createApp(db: DB, auth: Auth) {
     const app = new Hono<AppEnv>().basePath("/api");
 
@@ -33,27 +38,33 @@ export function createApp(db: DB, auth: Auth) {
         await next();
     });
 
+    // Not part of `AppType`: the web uses the better-auth client.
     app.get("/health", (c) => c.json({ ok: true }));
     app.on(["GET", "POST"], "/auth/*", (c) => auth.handler(c.req.raw));
-    app.route("/links", linkRoutes);
 
-    const protectedRoutes = {
-        "/transactions": transactionRoutes,
-        "/categories": categoryRoutes,
-        "/fixed-cost-categories": fixedCostCategoryRoutes,
-        "/fixed-costs": fixedCostRoutes,
-        "/insights": insightRoutes,
-        "/data": dataTransferRoutes,
-    };
-    for (const [path, routes] of Object.entries(protectedRoutes)) {
-        app.use(path, requireUser);
-        app.use(`${path}/*`, requireUser);
-        app.route(path, routes);
-    }
-
-    app.use("/admin/*", requireUser, requireAdmin);
-    app.route("/admin", adminLinkRoutes);
-    app.route("/admin/default-categories", defaultCategoryRoutes);
-
-    return app;
+    return (
+        app
+            .route("/links", linkRoutes)
+            // `/path/*` also matches `/path`.
+            .use("/transactions/*", requireUser)
+            .route("/transactions", transactionRoutes)
+            .use("/categories/*", requireUser)
+            .route("/categories", categoryRoutes)
+            .use("/fixed-cost-categories/*", requireUser)
+            .route("/fixed-cost-categories", fixedCostCategoryRoutes)
+            .use("/fixed-costs/*", requireUser)
+            .route("/fixed-costs", fixedCostRoutes)
+            .use("/insights/*", requireUser)
+            .route("/insights", insightRoutes)
+            .use("/data/*", requireUser)
+            .route("/data", dataTransferRoutes)
+            .use("/admin/*", requireUser, requireAdmin)
+            .route("/admin", adminLinkRoutes)
+            .route("/admin/default-categories", defaultCategoryRoutes)
+    );
 }
+
+/**
+ * The type of the API's router, for the web's typed client (`hc<AppType>`).
+ */
+export type AppType = ReturnType<typeof createApp>;

@@ -16,10 +16,10 @@ export const createFixedCost = factory.createHandlers(
         const { db, userId } = c.var;
         const input = c.req.valid("json");
         if (!(await categoryExists(db, userId, input.categoryId))) {
-            return c.json({ error: "unknown_category" }, 422);
+            return c.json({ error: "unknown_category" as const }, 422);
         }
         if (!arePriceChangesInRange(input)) {
-            return c.json({ error: "price_change_out_of_range" }, 422);
+            return c.json({ error: "price_change_out_of_range" as const }, 422);
         }
         const id = nanoid(8);
         const fixedCost = await db.transaction().execute(async (trx) => {

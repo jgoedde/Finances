@@ -3,8 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type SubmitEvent, useState } from "react";
 import Check from "~icons/material-symbols/check-rounded";
 import { toast } from "sonner";
-import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
-import { apiFetch } from "#/api/api-client.ts";
+import type { RedeemLinkInput } from "@finances/shared";
+import { api, unwrap } from "#/api/api-client.ts";
 import { apiErrorCode, apiErrorMessage } from "#/api/api-errors.ts";
 import { authClient, completeSignIn } from "#/auth/auth-client.ts";
 import { AuthCard } from "#/features/auth/auth-card.tsx";
@@ -27,7 +27,7 @@ function RouteComponent() {
 
     const link = useQuery({
         queryKey: ["links", token],
-        queryFn: () => apiFetch<LinkInfo>(`/links/${token}`),
+        queryFn: () => unwrap(api.links[":token"].$get({ param: { token } })),
         retry: false,
         staleTime: Infinity,
     });
@@ -68,10 +68,12 @@ function RouteComponent() {
             const body: RedeemLinkInput = isSignup
                 ? { username, password }
                 : { password };
-            await apiFetch(`/links/${token}/redeem`, {
-                method: "POST",
-                body,
-            });
+            await unwrap(
+                api.links[":token"].redeem.$post({
+                    param: { token },
+                    json: body,
+                }),
+            );
         } catch (e) {
             setIsSubmitting(false);
             const code = apiErrorCode(e);

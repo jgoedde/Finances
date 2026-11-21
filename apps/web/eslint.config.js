@@ -22,6 +22,20 @@ export default defineConfig(base, {
         ...reactHooks.configs.recommended.rules,
         ...reactX.configs["recommended-typescript"].rules,
         ...reactDom.configs.recommended.rules,
+        // Only the router type crosses from the API (`AppType`), never its
+        // runtime code.
+        "@typescript-eslint/no-restricted-imports": [
+            "error",
+            {
+                paths: [
+                    {
+                        name: "@finances/api",
+                        message: "Import only types from the API.",
+                        allowTypeImports: true,
+                    },
+                ],
+            },
+        ],
         // TanStack Router navigates by throwing `redirect(...)`.
         "@typescript-eslint/only-throw-error": [
             "error",

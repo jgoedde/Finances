@@ -2,12 +2,11 @@ import { onlineManager } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
     counterpartyKey,
-    type FixedCostSuggestion,
     type FixedCostSuggestionQuery,
     type Transaction,
 } from "@finances/shared";
 import { toast } from "sonner";
-import { apiFetch, toQueryString } from "#/api/api-client.ts";
+import { api, unwrap } from "#/api/api-client.ts";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { m } from "#/paraglide/messages.js";
 
@@ -70,8 +69,8 @@ export function useOfferFixedCostSuggestion(): (expense: Transaction) => void {
             date: expense.date,
             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         };
-        const suggestion = await apiFetch<FixedCostSuggestion | null>(
-            `/insights/fixed-cost-suggestion?${toQueryString(query)}`,
+        const suggestion = await unwrap(
+            api.insights["fixed-cost-suggestion"].$get({ query }),
         );
         if (!suggestion) {
             return;
