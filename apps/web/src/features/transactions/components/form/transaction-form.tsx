@@ -31,7 +31,7 @@ import { Badge } from "#/components/ui/badge.tsx";
 import { useCategories } from "#/features/categories/category-queries.ts";
 import { Label } from "#/components/ui/label.tsx";
 import { Checkbox } from "#/components/ui/checkbox.tsx";
-import { Field, FieldLabel } from "#/components/ui/field.tsx";
+import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Button } from "#/components/ui/button.tsx";
@@ -97,7 +97,7 @@ interface InitialFormValues {
  * expense has its main expense's date and stays an expense; a main expense
  * with attached expenses stays an expense, and moving it moves them along.
  */
-export type TransactionFormLink =
+export type TransactionFormRelation =
     | {
           role: "attached";
 
@@ -123,7 +123,7 @@ interface TransactionFormProps {
      * Offer splitting the total across categories (new transactions only).
      */
     canSplit?: boolean;
-    link?: TransactionFormLink;
+    relation?: TransactionFormRelation;
 }
 
 /**
@@ -136,7 +136,7 @@ export function TransactionForm({
     onSubmit,
     title,
     canSplit = false,
-    link,
+    relation,
 }: TransactionFormProps) {
     const categories = useCategories();
 
@@ -222,13 +222,13 @@ export function TransactionForm({
         (category) => category.id === categoryId,
     );
 
-    const kindLockHint = getKindLockHint(link);
+    const kindLockHint = getKindLockHint(relation);
     const dateLockHint =
-        link?.role === "attached"
-            ? link.mainExpenseCounterparty === undefined
+        relation?.role === "attached"
+            ? relation.mainExpenseCounterparty === undefined
                 ? m.transaction_date_from_unknown_main_expense()
                 : m.transaction_date_from_main_expense({
-                      counterparty: link.mainExpenseCounterparty,
+                      counterparty: relation.mainExpenseCounterparty,
                   })
             : undefined;
 
@@ -326,8 +326,8 @@ export function TransactionForm({
      */
     async function confirmDateMove(): Promise<boolean> {
         if (
-            link?.role !== "main" ||
-            link.attachedCount === 0 ||
+            relation?.role !== "main" ||
+            relation.attachedCount === 0 ||
             isSameDay(date, initialValues.date)
         ) {
             return true;
@@ -335,7 +335,7 @@ export function TransactionForm({
         return confirmAction({
             title: m.transaction_move_attached_title(),
             description: m.transaction_move_attached_description({
-                count: link.attachedCount,
+                count: relation.attachedCount,
             }),
             confirmLabel: m.transaction_move_attached_confirm(),
         });
@@ -451,13 +451,7 @@ export function TransactionForm({
                         }}
                     />
                     {kindLockHint !== undefined && (
-                        <p
-                            className={
-                                "px-4 text-body-small text-on-surface-variant"
-                            }
-                        >
-                            {kindLockHint}
-                        </p>
+                        <FieldDescription>{kindLockHint}</FieldDescription>
                     )}
                 </div>
 
@@ -731,20 +725,20 @@ export function TransactionForm({
 }
 
 function getKindLockHint(
-    link: TransactionFormLink | undefined,
+    relation: TransactionFormRelation | undefined,
 ): string | undefined {
-    switch (link?.role) {
+    switch (relation?.role) {
         case undefined:
             return undefined;
         case "attached":
             return m.transaction_kind_locked_attached();
         case "main":
-            return link.attachedCount > 0
+            return relation.attachedCount > 0
                 ? m.transaction_kind_locked_main()
                 : undefined;
         default:
             throw new Error(
-                `unreachable error - type ${String(link satisfies never)}`,
+                `unreachable error - type ${String(relation satisfies never)}`,
             );
     }
 }

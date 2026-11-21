@@ -1,10 +1,12 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { isSameDay } from "date-fns";
 import {
+    canAttachTo,
     matchesListQuery,
     type Transaction,
     type TransactionListQuery,
 } from "@finances/shared";
+import type { TransactionFormRelation } from "#/features/transactions/components/form/transaction-form.tsx";
 
 /**
  * A transaction change not yet accepted by the server.
@@ -186,8 +188,33 @@ export function findAttachedExpenses(
 }
 
 /**
- * The cached expenses of `transaction`'s day it can be attached to: neither
- * attached themselves nor `transaction` or its current main expense.
+ * How the transaction is tied to others, from the cached lists (they also
+ * hold what the current view filters out). Complete once the month of its
+ * date is cached (`ensureMonthTransactions`).
+ */
+export function findTransactionFormRelation(
+    queryClient: QueryClient,
+    transaction: Transaction,
+): TransactionFormRelation | undefined {
+    if (transaction.mainExpenseId !== null) {
+        return {
+            role: "attached",
+            mainExpenseCounterparty: findCachedTransaction(
+                queryClient,
+                transaction.mainExpenseId,
+            )?.counterparty,
+        };
+    }
+    const attachedCount = findAttachedExpenses(
+        queryClient,
+        transaction.id,
+    ).length;
+    return attachedCount > 0 ? { role: "main", attachedCount } : undefined;
+}
+
+/**
+ * The cached expenses of `transaction`'s day it can be attached to, other
+ * than its current main expense.
  */
 export function findMainExpenseCandidates(
     queryClient: QueryClient,
@@ -196,9 +223,7 @@ export function findMainExpenseCandidates(
     return cachedTransactions(queryClient)
         .filter(
             (it) =>
-                it.kind === "expense" &&
-                it.mainExpenseId === null &&
-                it.id !== transaction.id &&
+                canAttachTo(transaction, it) &&
                 it.id !== transaction.mainExpenseId &&
                 isSameDay(it.date, transaction.date),
         )

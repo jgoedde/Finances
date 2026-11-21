@@ -1,10 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import type { Transaction } from "@finances/shared";
-import type { QueryClient } from "@tanstack/react-query";
 import {
     TransactionForm,
-    type TransactionFormLink,
     type TransactionFormSubmitData,
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
@@ -13,8 +10,8 @@ import { transactionQuery } from "#/features/transactions/transaction-queries.ts
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
 import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
 import {
-    findAttachedExpenses,
     findCachedTransaction,
+    findTransactionFormRelation,
 } from "#/features/transactions/pending-changes.ts";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
 import { apiErrorCode } from "#/api/api-errors.ts";
@@ -108,31 +105,7 @@ function RouteComponent() {
             onDelete={onTransactionFormDelete}
             onSubmit={onTransactionFormSubmit}
             title={m.transaction_edit()}
-            link={findLink(queryClient, transaction)}
+            relation={findTransactionFormRelation(queryClient, transaction)}
         />
     );
-}
-
-/**
- * How the transaction is tied to others, from the cached lists (they also
- * hold what the current view filters out).
- */
-function findLink(
-    queryClient: QueryClient,
-    transaction: Transaction,
-): TransactionFormLink | undefined {
-    if (transaction.mainExpenseId !== null) {
-        return {
-            role: "attached",
-            mainExpenseCounterparty: findCachedTransaction(
-                queryClient,
-                transaction.mainExpenseId,
-            )?.counterparty,
-        };
-    }
-    const attachedCount = findAttachedExpenses(
-        queryClient,
-        transaction.id,
-    ).length;
-    return attachedCount > 0 ? { role: "main", attachedCount } : undefined;
 }
