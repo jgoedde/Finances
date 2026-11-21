@@ -80,9 +80,7 @@ const dataExportV2Schema = dataExportV3Schema.extend({
 });
 
 /**
- * Like the migration `0006-category-kinds`: every category becomes an
- * expense category, both fallback categories are added and all incomes move
- * onto the income fallback category.
+ * No expense is attached to another one.
  */
 function fromV6(data: DataExportV6): DataExport {
     return {
@@ -95,6 +93,11 @@ function fromV6(data: DataExportV6): DataExport {
     };
 }
 
+/**
+ * Like the migration `0006-category-kinds`: every category becomes an
+ * expense category, both fallback categories are added and all incomes move
+ * onto the income fallback category.
+ */
 function fromV5(data: DataExportV5): DataExportV6 {
     return {
         ...data,
