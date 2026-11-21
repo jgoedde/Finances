@@ -3,7 +3,7 @@ import type { Transaction, TransactionListQuery } from "@finances/shared";
 import { apiFetch, toQueryString } from "#/api/api-client.ts";
 import {
     applyToList,
-    getPendingChanges,
+    resolvePendingChanges,
 } from "#/features/transactions/pending-changes.ts";
 
 const EMPTY: never[] = [];
@@ -12,14 +12,16 @@ export function transactionsQuery(params: TransactionListQuery) {
     return queryOptions({
         queryKey: ["transactions", "list", params],
         // Pending changes are merged in, so a refetch never hides them.
-        queryFn: async ({ client }) =>
-            applyToList(
-                await apiFetch<Transaction[]>(
-                    `/transactions?${toQueryString(params)}`,
-                ),
+        queryFn: async ({ client }) => {
+            const list = await apiFetch<Transaction[]>(
+                `/transactions?${toQueryString(params)}`,
+            );
+            return applyToList(
+                list,
                 params,
-                getPendingChanges(client),
-            ),
+                resolvePendingChanges(client, list),
+            );
+        },
     });
 }
 
@@ -47,7 +49,7 @@ export function transactionQuery(id: string) {
     return queryOptions({
         queryKey: ["transactions", "detail", id],
         queryFn: async ({ client }) => {
-            const pending = getPendingChanges(client)
+            const pending = resolvePendingChanges(client)
                 .reverse()
                 .find((change) => change.transaction.id === id);
             if (pending?.action === "save") {

@@ -269,6 +269,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_AmountInputs */
 /** @typedef {{ amount: NonNullable<unknown> }} Transaction_Amount_LastInputs */
 /** @typedef {{}} Transaction_Amount_MissingInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Attached_ExpensesInputs */
+/** @typedef {{ counterparty: NonNullable<unknown> }} Transaction_Belongs_ToInputs */
 /** @typedef {{}} Transaction_CategoryInputs */
 /** @typedef {{}} Transaction_Category_MissingInputs */
 /** @typedef {{}} Transaction_Choose_DateInputs */
@@ -299,6 +301,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_UpcomingInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Transaction_Main_Expense_TotalInputs */
 /** @typedef {{}} Transaction_MoreInputs */
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
@@ -4059,6 +4062,34 @@ export const transaction_amount_missing = /** @type {((inputs?: Transaction_Amou
 /**
 * | output |
 * | --- |
+* | "Attached to {counterparty}" |
+*
+* @param {Transaction_Attached_ExpensesInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_attached_expenses = /** @type {((inputs: Transaction_Attached_ExpensesInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Attached_ExpensesInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_attached_expenses(inputs)
+	return __en.transaction_attached_expenses(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "belongs to {counterparty}" |
+*
+* @param {Transaction_Belongs_ToInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_belongs_to = /** @type {((inputs: Transaction_Belongs_ToInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Belongs_ToInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_belongs_to(inputs)
+	return __en.transaction_belongs_to(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Category" |
 *
 * @param {Transaction_CategoryInputs} inputs
@@ -4475,6 +4506,20 @@ export const transaction_list_upcoming = /** @type {((inputs?: Transaction_List_
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_list_upcoming(inputs)
 	return __en.transaction_list_upcoming(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "total {amount}" |
+*
+* @param {Transaction_Main_Expense_TotalInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_main_expense_total = /** @type {((inputs: Transaction_Main_Expense_TotalInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Main_Expense_TotalInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_main_expense_total(inputs)
+	return __en.transaction_main_expense_total(inputs)
 });
 /**
 * | output |

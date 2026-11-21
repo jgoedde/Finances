@@ -40,6 +40,10 @@ export function SearchResults() {
         isFetchingNextPage,
     } = useTransactionSearch({ q: q.trim(), older: dateFilterOption });
     const transactions = data?.pages.flatMap((page) => page.items) ?? [];
+    const mainExpenses = data?.pages.flatMap((page) => page.mainExpenses) ?? [];
+    // Also a later page's result: the day may continue there.
+    const findMainExpense = (id: string) =>
+        [...transactions, ...mainExpenses].find((it) => it.id === id);
     // Across pages, so a day grows when the next page continues it.
     const days = groupByDay(transactions);
     const showInMonth = useShowInMonth();
@@ -109,6 +113,7 @@ export function SearchResults() {
                         key={day.getTime()}
                         day={day}
                         transactions={dayTransactions}
+                        findMainExpense={findMainExpense}
                         action={
                             <Button
                                 variant={"ghost"}

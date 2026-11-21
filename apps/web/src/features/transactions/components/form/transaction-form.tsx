@@ -57,7 +57,8 @@ export interface TransactionFormSubmitData {
 
     /**
      * Split off the total; each becomes its own transaction with the same
-     * counterparty, date, kind and exceptional flag. Empty without a split.
+     * counterparty, date, kind and exceptional flag (an expense's parts are
+     * attached to the remainder). Empty without a split.
      */
     parts: TransactionFormPart[];
 }

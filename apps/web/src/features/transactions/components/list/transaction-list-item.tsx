@@ -1,6 +1,11 @@
 import { formatCurrency } from "@finances/shared";
 import { DynamicIcon } from "lucide-react/dynamic";
-import { ChevronRight, CloudUpload, MessageCircleQuestion } from "lucide-react";
+import {
+    ChevronRight,
+    CloudUpload,
+    CornerDownRight,
+    MessageCircleQuestion,
+} from "lucide-react";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { paletteFromHex, toneStyle } from "#/utils/color.ts";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -28,12 +33,31 @@ interface TransactionListItemProps {
      * Fades from highlighted, e.g. where "Show in month" landed.
      */
     highlighted?: boolean;
+
+    /**
+     * A main expense's occasion total, shown small below its own amount.
+     */
+    total?: number;
+
+    /**
+     * The main expense of an attached expense shown on its own, for the
+     * "belongs to" hint.
+     */
+    mainExpense?: Transaction;
+
+    /**
+     * The smaller row of an attached expense below its main expense.
+     */
+    compact?: boolean;
 }
 
 export function TransactionListItem({
     transaction,
     dateLabel,
     highlighted = false,
+    total,
+    mainExpense,
+    compact = false,
 }: TransactionListItemProps) {
     const rippleHandlers = useRipple();
 
@@ -58,6 +82,20 @@ export function TransactionListItem({
         return m.transaction_no_description();
     }
 
+    // A compact row leads with what the part was (the counterparty is often
+    // the main expense's) and names its counterparty and category below.
+    const headline = compact
+        ? (transaction.description ?? transaction.counterparty)
+        : transaction.counterparty;
+    const supportingText = compact
+        ? [
+              transaction.description != null && transaction.counterparty,
+              category && getCategoryName(category.name),
+          ]
+              .filter(Boolean)
+              .join(" · ")
+        : getSupportingText();
+
     const navigate = useNavigate();
     // Open in the detail pane beside the list.
     const isSelected =
@@ -76,9 +114,9 @@ export function TransactionListItem({
         <button
             type={"button"}
             className={cn(
-                `ripple-container state-layer flex min-h-14 w-full
-                cursor-pointer flex-row items-center gap-x-4 rounded-md px-2
-                py-2 text-left focus-ring`,
+                `ripple-container state-layer flex w-full cursor-pointer
+                flex-row items-center rounded-md px-2 text-left focus-ring`,
+                compact ? "min-h-10 gap-x-3 py-1" : "min-h-14 gap-x-4 py-2",
                 isSelected && "bg-secondary-container",
                 highlighted &&
                     `animate-highlight-fade
@@ -93,8 +131,11 @@ export function TransactionListItem({
             }}
         >
             <div
-                className={`flex size-10 shrink-0 items-center justify-center
-                    rounded-full bg-(--tone) text-(--on-tone) tone`}
+                className={cn(
+                    `flex shrink-0 items-center justify-center rounded-full
+                    bg-(--tone) text-(--on-tone) tone`,
+                    compact ? "size-7" : "size-10",
+                )}
                 style={toneStyle(paletteFromHex(category?.color ?? "#2f2"))}
             >
                 {category != null ? (
@@ -104,35 +145,56 @@ export function TransactionListItem({
                                 typeof DynamicIcon
                             >["name"]
                         }
-                        className={"size-6"}
+                        className={compact ? "size-4" : "size-6"}
                     />
                 ) : (
-                    <MessageCircleQuestion className={"size-6"} />
+                    <MessageCircleQuestion
+                        className={compact ? "size-4" : "size-6"}
+                    />
                 )}
             </div>
             <div className={"flex min-w-0 flex-1 flex-col"}>
                 <div
-                    className={`inline-flex items-center gap-x-1 text-body-large
-                        text-on-surface`}
+                    className={cn(
+                        "inline-flex items-center gap-x-1 text-on-surface",
+                        compact ? "text-body-medium" : "text-body-large",
+                    )}
                 >
-                    {transaction.counterparty}
-                    <ChevronRight
-                        className={"size-4 shrink-0 text-on-surface-variant"}
-                    />
+                    {headline}
+                    {!compact && (
+                        <ChevronRight
+                            className={
+                                "size-4 shrink-0 text-on-surface-variant"
+                            }
+                        />
+                    )}
                 </div>
                 <div
-                    className={`line-clamp-2 text-body-medium break-all
-                        text-on-surface-variant`}
+                    className={cn(
+                        "line-clamp-2 break-all text-on-surface-variant",
+                        compact ? "text-body-small" : "text-body-medium",
+                    )}
                 >
                     {dateLabel === undefined
-                        ? getSupportingText()
-                        : `${dateLabel} · ${getSupportingText()}`}
+                        ? supportingText
+                        : `${dateLabel} · ${supportingText}`}
                 </div>
+                {mainExpense && (
+                    <div
+                        className={`inline-flex items-center gap-x-1
+                        text-body-small text-on-surface-variant`}
+                    >
+                        <CornerDownRight className={"size-3.5 shrink-0"} />
+                        {m.transaction_belongs_to({
+                            counterparty: mainExpense.counterparty,
+                        })}
+                    </div>
+                )}
             </div>
             <div
                 className={cn(
-                    `flex shrink-0 items-center gap-x-2 text-label-large
-                    text-on-surface`,
+                    "flex shrink-0 items-center gap-x-2 text-on-surface",
+                    compact ? "text-label-medium" : "text-label-large",
                     transaction.kind === "income" && "text-income",
                 )}
             >
@@ -143,13 +205,23 @@ export function TransactionListItem({
                         className={"size-4 text-on-surface-variant"}
                     />
                 )}
-                {transaction.kind === "income" ? (
+                <div className={"flex flex-col items-end"}>
                     <div>
-                        +{formatCurrency(transaction.amount, getLocale())}
+                        {transaction.kind === "income" && "+"}
+                        {formatCurrency(transaction.amount, getLocale())}
                     </div>
-                ) : (
-                    <div>{formatCurrency(transaction.amount, getLocale())}</div>
-                )}
+                    {total !== undefined && (
+                        <div
+                            className={
+                                "text-label-small text-on-surface-variant"
+                            }
+                        >
+                            {m.transaction_main_expense_total({
+                                amount: formatCurrency(total, getLocale()),
+                            })}
+                        </div>
+                    )}
+                </div>
             </div>
         </button>
     );

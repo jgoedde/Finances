@@ -1877,6 +1877,20 @@ export const transaction_amount_missing: ((inputs?: Transaction_Amount_MissingIn
 /**
 * | output |
 * | --- |
+* | "Attached to {counterparty}" |
+*
+*/
+export const transaction_attached_expenses: ((inputs: Transaction_Attached_ExpensesInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Attached_ExpensesInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "belongs to {counterparty}" |
+*
+*/
+export const transaction_belongs_to: ((inputs: Transaction_Belongs_ToInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Belongs_ToInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Category" |
 *
 */
@@ -2084,6 +2098,13 @@ export const transaction_list_offline: ((inputs?: Transaction_List_OfflineInputs
 *
 */
 export const transaction_list_upcoming: ((inputs?: Transaction_List_UpcomingInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_List_UpcomingInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "total {amount}" |
+*
+*/
+export const transaction_main_expense_total: ((inputs: Transaction_Main_Expense_TotalInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Main_Expense_TotalInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -2429,6 +2450,8 @@ export type Sync_TitleInputs = {};
 export type Transaction_AmountInputs = {};
 export type Transaction_Amount_LastInputs = { amount: NonNullable<unknown> };
 export type Transaction_Amount_MissingInputs = {};
+export type Transaction_Attached_ExpensesInputs = { counterparty: NonNullable<unknown> };
+export type Transaction_Belongs_ToInputs = { counterparty: NonNullable<unknown> };
 export type Transaction_CategoryInputs = {};
 export type Transaction_Category_MissingInputs = {};
 export type Transaction_Choose_DateInputs = {};
@@ -2459,6 +2482,7 @@ export type Transaction_List_EmptyInputs = { period: NonNullable<unknown> };
 export type Transaction_List_LoadingInputs = {};
 export type Transaction_List_OfflineInputs = {};
 export type Transaction_List_UpcomingInputs = {};
+export type Transaction_Main_Expense_TotalInputs = { amount: NonNullable<unknown> };
 export type Transaction_MoreInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};

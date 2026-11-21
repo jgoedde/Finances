@@ -37,7 +37,10 @@ function RouteComponent() {
 
     const onTransactionFormSubmit = (data: TransactionFormSubmitData) => {
         // Saved locally right away; sent now or once back online. A split
-        // becomes unlinked transactions sharing counterparty, date and kind.
+        // shares counterparty, date and kind; a split expense's parts are
+        // attached to the remainder, the main expense, while a split income
+        // becomes unlinked incomes. The queue runs in order, so the main
+        // expense reaches the server before its parts.
         const common = {
             date: data.date.getTime(),
             kind: data.kind,
@@ -57,7 +60,12 @@ function RouteComponent() {
         };
         saveTransaction.mutate(main);
         for (const part of data.parts) {
-            saveTransaction.mutate({ id: nanoid(8), ...common, ...part });
+            saveTransaction.mutate({
+                id: nanoid(8),
+                ...common,
+                ...part,
+                mainExpenseId: data.kind === "expense" ? main.id : null,
+            });
         }
 
         void navigate({ to: "/transactions" });

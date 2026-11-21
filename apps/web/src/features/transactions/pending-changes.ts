@@ -20,7 +20,7 @@ export const TRANSACTION_MUTATION_KEY = ["transactions"] as const;
  * transactions have a `name` instead of a `counterparty`, are left out:
  * merged into the lists, they would break whatever reads the counterparty.
  */
-export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
+function getPendingChanges(queryClient: QueryClient): PendingChange[] {
     return queryClient
         .getMutationCache()
         .findAll({ mutationKey: TRANSACTION_MUTATION_KEY, status: "pending" })
@@ -34,6 +34,78 @@ export function getPendingChanges(queryClient: QueryClient): PendingChange[] {
                 change.action === "delete" ||
                 "counterparty" in change.transaction,
         );
+}
+
+/**
+ * The pending changes with what the server will also change when it gets
+ * them: an attached expense takes its main expense's date, a main expense's
+ * date moves its attached expenses along, and deleting a main expense
+ * detaches its attached expenses. `fresh` holds transactions just fetched,
+ * which are newer than the cached ones.
+ */
+export function resolvePendingChanges(
+    queryClient: QueryClient,
+    fresh: Transaction[] = [],
+): PendingChange[] {
+    return withServerRules(getPendingChanges(queryClient), [
+        ...cachedTransactions(queryClient),
+        ...fresh,
+    ]);
+}
+
+/**
+ * `changes` plus the changes the server derives from them, given the
+ * transactions `known` before them.
+ */
+function withServerRules(
+    changes: PendingChange[],
+    known: Transaction[],
+): PendingChange[] {
+    const byId = new Map(known.map((it) => [it.id, it]));
+    const result: PendingChange[] = [];
+
+    function save(transaction: Transaction) {
+        byId.set(transaction.id, transaction);
+        result.push({ action: "save", transaction });
+    }
+
+    function attachedTo(id: string) {
+        return [...byId.values()].filter((it) => it.mainExpenseId === id);
+    }
+
+    for (const change of changes) {
+        const { id, mainExpenseId } = change.transaction;
+        switch (change.action) {
+            case "delete":
+                byId.delete(id);
+                result.push(change);
+                for (const it of attachedTo(id)) {
+                    save({ ...it, mainExpenseId: null });
+                }
+                break;
+            case "save": {
+                const main =
+                    mainExpenseId === null
+                        ? undefined
+                        : byId.get(mainExpenseId);
+                const saved = main
+                    ? { ...change.transaction, date: main.date }
+                    : change.transaction;
+                save(saved);
+                for (const it of attachedTo(id)) {
+                    if (it.date !== saved.date) {
+                        save({ ...it, date: saved.date });
+                    }
+                }
+                break;
+            }
+            default:
+                throw new Error(
+                    `unreachable error - type ${String(change.action satisfies never)}`,
+                );
+        }
+    }
+    return result;
 }
 
 /**
@@ -55,29 +127,48 @@ export function applyToList(
 }
 
 /**
- * Applies a change to every cached transaction list and detail.
+ * Applies a change, with what the server derives from it, to every cached
+ * transaction list and detail.
  */
 export function applyToCache(
     queryClient: QueryClient,
     change: PendingChange,
 ): void {
+    const changes = withServerRules([change], cachedTransactions(queryClient));
     for (const [queryKey] of queryClient.getQueriesData<Transaction[]>({
         queryKey: ["transactions", "list"],
     })) {
         const params = queryKey[2] as TransactionListQuery;
         queryClient.setQueryData<Transaction[]>(queryKey, (list) =>
-            list ? applyToList(list, params, [change]) : list,
+            list ? applyToList(list, params, changes) : list,
         );
     }
 
     // A deleted transaction's detail is left alone: removing it could make
     // the still-open edit page refetch it right before navigating away.
-    if (change.action === "save") {
-        queryClient.setQueryData(
-            ["transactions", "detail", change.transaction.id],
-            change.transaction,
-        );
+    for (const { action, transaction } of changes) {
+        if (action === "save") {
+            queryClient.setQueryData(
+                ["transactions", "detail", transaction.id],
+                transaction,
+            );
+        }
     }
+}
+
+/**
+ * Every transaction in the cached lists, once.
+ */
+function cachedTransactions(queryClient: QueryClient): Transaction[] {
+    const byId = new Map<string, Transaction>();
+    for (const [, list] of queryClient.getQueriesData<Transaction[]>({
+        queryKey: ["transactions", "list"],
+    })) {
+        for (const it of list ?? []) {
+            byId.set(it.id, it);
+        }
+    }
+    return [...byId.values()];
 }
 
 /**
