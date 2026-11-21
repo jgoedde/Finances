@@ -40,6 +40,14 @@ _Avoid_: Expense (for the general case), entry, booking
 A transaction where money is spent.
 _Avoid_: Cost, spending
 
+**Main expense**:
+An expense that other expenses of the same occasion are attached to, such as a restaurant bill with its tip or an online order with its shipping. It is a regular expense in every respect; deleting it leaves its attached expenses as regular expenses.
+_Avoid_: Group, parent, main transaction, split
+
+**Attached expense**:
+An expense that belongs to the occasion of a main expense, such as a tip or a shipping fee. Always on the same day as its main expense. Has its own amount, category and counterparty and counts in insights like any other expense. Attached to at most one main expense, and nothing can be attached to it.
+_Avoid_: Child, sub-transaction, part, split
+
 **Income**:
 A transaction where money is received in day-to-day life, such as a refund or a friend paying back. A refund doesn't lower what any expense category spent. Regular earnings such as a salary are not meant to be recorded.
 _Avoid_: Revenue, earning
