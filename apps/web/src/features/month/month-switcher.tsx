@@ -1,70 +1,25 @@
-import { formatMonthYear, formatShortMonth } from "@finances/shared";
-import { useLocalStorage } from "@mantine/hooks";
-import { type MouseEvent, useLayoutEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
-import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
-import ChevronLeft from "~icons/material-symbols/chevron-left-rounded";
-import ChevronRight from "~icons/material-symbols/chevron-right-rounded";
-import { addMonths, addYears, isAfter, setMonth, startOfMonth } from "date-fns";
-import { Button } from "#/components/ui/button.tsx";
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { addMonths } from "date-fns";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "#/components/ui/popover.tsx";
 import { toMonthParam, useSelectedMonth } from "#/features/month/month.ts";
+import { isFuture } from "#/features/month/month-switcher-utils.ts";
+import { useMonthSwipe } from "#/features/month/use-month-swipe.ts";
+import { MonthTitle } from "#/features/month/month-title.tsx";
+import { MonthChevron } from "#/features/month/month-chevron.tsx";
+import { MonthPicker } from "#/features/month/month-picker.tsx";
 import { cn } from "#/lib/cn.ts";
-import * as haptics from "#/lib/haptics.ts";
 import { m } from "#/paraglide/messages.js";
-import { getLocale } from "#/paraglide/runtime.js";
-
-function isFuture(month: Date) {
-    return isAfter(month, startOfMonth(new Date()));
-}
-
-// Set after the first swipe; until then the title peeks to hint at swiping.
-const SWIPED_KEY = "finances-month-swiped";
-
-/**
- * The title's label and dropdown arrow, shared by the picker trigger and the
- * other months it swipes to.
- */
-function titleContent(month: Date) {
-    return (
-        <>
-            <span className={"truncate"}>
-                {formatMonthYear(month, getLocale())}
-            </span>
-            <ChevronDown
-                className={"size-5 shrink-0 text-on-surface-variant"}
-            />
-        </>
-    );
-}
 
 interface MonthSwitcherProps {
     /**
      * The destination showing the switcher.
      */
     to: "/" | "/transactions";
-}
-
-// The selected month's slide; the previous month always comes before it.
-const SELECTED_INDEX = 1;
-
-/**
- * Whether a click should open the link the browser's way (new tab, window…)
- * instead of sliding to the month. `Link` checks the same, but only after our
- * `onClick` has run.
- */
-function isModifiedClick(event: MouseEvent) {
-    return (
-        event.button !== 0 ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.shiftKey ||
-        event.altKey
-    );
 }
 
 /**
@@ -82,12 +37,6 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [pickerYear, setPickerYear] = useState(month);
 
-    const trackRef = useRef<HTMLDivElement>(null);
-    const [hasSwiped, setHasSwiped] = useLocalStorage({
-        key: SWIPED_KEY,
-        defaultValue: false,
-    });
-
     const navigate = useNavigate();
 
     const previous = addMonths(month, -1);
@@ -100,84 +49,22 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
     // The peek plays once per mount, so slides added later don't replay it.
     const [hasPeeked, setHasPeeked] = useState(false);
 
-    // Set while a chevron slides the title, so it doesn't count as a swipe.
-    const isChevronSlideRef = useRef(false);
-
-    // Re-centre on the selected month after every change (swipe, chevrons,
-    // picker, history) and on mount, before paint.
-    const monthTime = month.getTime();
-    useLayoutEffect(() => {
-        const track = trackRef.current;
-        if (track) {
-            track.scrollTo({
-                left: SELECTED_INDEX * track.clientWidth,
-                behavior: "instant",
-            });
-        }
-    }, [monthTime]);
-
-    function goTo(target: Date) {
-        void navigate({ to, search: { month: toMonthParam(target) } });
-    }
-
-    // Swiping, or a chevron's slide, goes to the month once its slide has
-    // snapped into place.
-    function onScrollEnd() {
-        const track = trackRef.current;
-        if (!track) {
-            return;
-        }
-        const target = slides[Math.round(track.scrollLeft / track.clientWidth)];
-        const isSliding = isChevronSlideRef.current;
-        isChevronSlideRef.current = false;
-        if (target && target.getTime() !== monthTime) {
-            if (!isSliding) {
-                // A chevron click is already a tap; only a swipe ticks.
-                haptics.tick();
-                setHasSwiped(true);
-            }
-            goTo(target);
-        }
-    }
-
-    // A chevron slides the title to the neighbour; `onScrollEnd` then goes
-    // there. Without `scrollend` support it goes there right away.
-    function onChevronClick(event: MouseEvent, target: Date) {
-        const track = trackRef.current;
-        if (!track || isModifiedClick(event)) {
-            return;
-        }
-        event.preventDefault();
-        if (!("onscrollend" in window)) {
-            goTo(target);
-            return;
-        }
-        isChevronSlideRef.current = true;
-        track.scrollTo({
-            left: slides.indexOf(target) * track.clientWidth,
-            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-                ? "instant"
-                : "smooth",
-        });
-    }
+    const { trackRef, hasSwiped, onScrollEnd, onChevronClick } = useMonthSwipe({
+        month,
+        slides,
+        goTo: (target) => {
+            void navigate({ to, search: { month: toMonthParam(target) } });
+        },
+    });
 
     return (
         <div className={"flex min-w-0 items-center"}>
-            <Button
-                variant={"ghost"}
-                size={"icon"}
-                className={"pointer-coarse:hidden"}
-                aria-label={m.month_previous()}
-                asChild
-            >
-                <Link
-                    to={to}
-                    search={{ month: toMonthParam(previous) }}
-                    onClick={(event) => onChevronClick(event, previous)}
-                >
-                    <ChevronLeft />
-                </Link>
-            </Button>
+            <MonthChevron
+                direction={"previous"}
+                to={to}
+                target={previous}
+                onClick={onChevronClick}
+            />
 
             <Popover
                 open={isPickerOpen}
@@ -214,7 +101,7 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                                         focus-ring`}
                                     aria-label={m.month_choose()}
                                 >
-                                    {titleContent(month)}
+                                    <MonthTitle month={month} />
                                 </PopoverTrigger>
                             ) : (
                                 <div
@@ -224,118 +111,30 @@ export function MonthSwitcher({ to }: MonthSwitcherProps) {
                                         text-on-surface`}
                                     aria-hidden
                                 >
-                                    {titleContent(slide)}
+                                    <MonthTitle month={slide} />
                                 </div>
                             )}
                         </div>
                     ))}
                 </div>
                 <PopoverContent className={"p-3"}>
-                    <div className={"mb-2 flex items-center justify-between"}>
-                        <Button
-                            variant={"ghost"}
-                            size={"icon"}
-                            aria-label={m.month_previous_year()}
-                            onClick={() =>
-                                setPickerYear((year) => addYears(year, -1))
-                            }
-                        >
-                            <ChevronLeft />
-                        </Button>
-                        <span className={"text-title-medium text-on-surface"}>
-                            {pickerYear.getFullYear()}
-                        </span>
-                        <Button
-                            variant={"ghost"}
-                            size={"icon"}
-                            aria-label={m.month_next_year()}
-                            disabled={isFuture(
-                                startOfMonth(
-                                    setMonth(addYears(pickerYear, 1), 0),
-                                ),
-                            )}
-                            onClick={() =>
-                                setPickerYear((year) => addYears(year, 1))
-                            }
-                        >
-                            <ChevronRight />
-                        </Button>
-                    </div>
-                    <div className={"grid grid-cols-3 gap-1"}>
-                        {Array.from({ length: 12 }, (_, index) => {
-                            const option = startOfMonth(
-                                setMonth(pickerYear, index),
-                            );
-                            const label = formatShortMonth(option, getLocale());
-                            const isSelected =
-                                option.getTime() === month.getTime();
-                            const className = cn(
-                                `flex h-10 items-center justify-center
-                                rounded-full text-label-large`,
-                                isSelected
-                                    ? "bg-primary text-on-primary"
-                                    : "text-on-surface",
-                            );
-
-                            if (isFuture(option)) {
-                                return (
-                                    <span
-                                        key={index}
-                                        className={cn(
-                                            className,
-                                            "text-on-surface/38",
-                                        )}
-                                    >
-                                        {label}
-                                    </span>
-                                );
-                            }
-                            return (
-                                <Link
-                                    key={index}
-                                    to={to}
-                                    search={{ month: toMonthParam(option) }}
-                                    className={cn(
-                                        className,
-                                        "state-layer focus-ring",
-                                    )}
-                                    onClick={() => setIsPickerOpen(false)}
-                                >
-                                    {label}
-                                </Link>
-                            );
-                        })}
-                    </div>
+                    <MonthPicker
+                        month={month}
+                        to={to}
+                        year={pickerYear}
+                        onYearChange={setPickerYear}
+                        onPick={() => setIsPickerOpen(false)}
+                    />
                 </PopoverContent>
             </Popover>
 
-            {!hasNext ? (
-                <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    className={"pointer-coarse:hidden"}
-                    aria-label={m.month_next()}
-                    disabled
-                >
-                    <ChevronRight />
-                </Button>
-            ) : (
-                <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    className={"pointer-coarse:hidden"}
-                    aria-label={m.month_next()}
-                    asChild
-                >
-                    <Link
-                        to={to}
-                        search={{ month: toMonthParam(next) }}
-                        onClick={(event) => onChevronClick(event, next)}
-                    >
-                        <ChevronRight />
-                    </Link>
-                </Button>
-            )}
+            <MonthChevron
+                direction={"next"}
+                to={to}
+                target={next}
+                disabled={!hasNext}
+                onClick={onChevronClick}
+            />
         </div>
     );
 }

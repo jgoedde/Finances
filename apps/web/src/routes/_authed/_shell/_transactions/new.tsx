@@ -1,8 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-    TransactionForm,
-    type TransactionFormSubmitData,
-} from "#/features/transactions/components/form/transaction-form.tsx";
+import { TransactionForm } from "#/features/transactions/components/form/transaction-form.tsx";
+import type { TransactionFormSubmitData } from "#/features/transactions/components/form/transaction-form-model.ts";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { toast } from "sonner";

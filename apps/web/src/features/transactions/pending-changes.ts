@@ -6,7 +6,7 @@ import {
     type Transaction,
     type TransactionListQuery,
 } from "@finances/shared";
-import type { TransactionFormRelation } from "#/features/transactions/components/form/transaction-form.tsx";
+import type { TransactionFormRelation } from "#/features/transactions/components/form/transaction-form-model.ts";
 
 /**
  * A transaction change not yet accepted by the server.

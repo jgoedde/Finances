@@ -1,9 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import {
-    TransactionForm,
-    type TransactionFormSubmitData,
-} from "#/features/transactions/components/form/transaction-form.tsx";
+import { TransactionForm } from "#/features/transactions/components/form/transaction-form.tsx";
+import type { TransactionFormSubmitData } from "#/features/transactions/components/form/transaction-form-model.ts";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import {
