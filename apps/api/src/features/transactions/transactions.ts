@@ -25,6 +25,7 @@ export function toTransaction(row: TransactionsTable): Transaction {
                       accuracy: row.location_accuracy,
                   }
                 : null,
+        mainExpenseId: row.main_expense_id,
     };
 }
 

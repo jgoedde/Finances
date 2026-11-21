@@ -12,7 +12,8 @@ import {
 
 /**
  * Newest first, paginated by a `(date, id)` cursor. LIKE folds case for
- * ASCII only, so umlauts match case-sensitively.
+ * ASCII only, so umlauts match case-sensitively. Also returns the main
+ * expenses of attached results, so the client can name them.
  */
 export const searchTransactions = factory.createHandlers(
     validate("query", transactionSearchQuerySchema),
@@ -54,10 +55,31 @@ export const searchTransactions = factory.createHandlers(
             .execute();
         const items = rows.slice(0, limit).map(toTransaction);
         const last = items.at(-1);
+        const itemIds = new Set(items.map((item) => item.id));
+        const missingMainIds = [
+            ...new Set(
+                items.flatMap((item) =>
+                    item.mainExpenseId !== null &&
+                    !itemIds.has(item.mainExpenseId)
+                        ? [item.mainExpenseId]
+                        : [],
+                ),
+            ),
+        ];
+        const mainRows =
+            missingMainIds.length > 0
+                ? await c.var.db
+                      .selectFrom("transactions")
+                      .selectAll()
+                      .where("user_id", "=", c.var.userId)
+                      .where("id", "in", missingMainIds)
+                      .execute()
+                : [];
         const page: TransactionSearchPage = {
             items,
             nextCursor:
                 rows.length > limit && last ? `${last.date}:${last.id}` : null,
+            mainExpenses: mainRows.map(toTransaction),
         };
         return c.json(page);
     },

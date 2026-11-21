@@ -10,7 +10,9 @@ import {
 
 /**
  * Create or replace (last write wins). Idempotent, so offline clients can
- * replay it. Writes to a deleted id are ignored.
+ * replay it. Writes to a deleted id are ignored. Attached expenses take
+ * their main expense's date, and a main expense's date moves its attached
+ * expenses along (ADR 0008).
  */
 export const putTransaction = factory.createHandlers(
     validate("param", transactionIdParam),
@@ -48,8 +50,44 @@ export const putTransaction = factory.createHandlers(
                 return c.json({ error: "category_kind_mismatch" }, 422);
             }
 
+            const hasAttached =
+                (await trx
+                    .selectFrom("transactions")
+                    .select("id")
+                    .where("user_id", "=", userId)
+                    .where("main_expense_id", "=", id)
+                    .executeTakeFirst()) !== undefined;
+            if (hasAttached && input.kind !== "expense") {
+                return c.json({ error: "main_expense_kind" }, 422);
+            }
+
+            let main: { id: string; date: number } | undefined;
+            if (input.mainExpenseId !== null) {
+                if (input.kind !== "expense" || input.mainExpenseId === id) {
+                    return c.json({ error: "invalid_main_expense" }, 422);
+                }
+                const row = await trx
+                    .selectFrom("transactions")
+                    .select(["id", "date", "kind", "main_expense_id"])
+                    .where("user_id", "=", userId)
+                    .where("id", "=", input.mainExpenseId)
+                    .executeTakeFirst();
+                if (row) {
+                    // One level deep, expenses only (ADR 0008).
+                    if (
+                        row.kind !== "expense" ||
+                        row.main_expense_id !== null ||
+                        hasAttached
+                    ) {
+                        return c.json({ error: "invalid_main_expense" }, 422);
+                    }
+                    main = row;
+                }
+            }
+
             const values = {
-                date: input.date,
+                // An attached expense is always on its main expense's day.
+                date: main?.date ?? input.date,
                 counterparty: input.counterparty,
                 description: input.description,
                 kind: input.kind,
@@ -58,6 +96,8 @@ export const putTransaction = factory.createHandlers(
                 category_id: input.categoryId,
                 exceptional: input.exceptional ? 1 : 0,
                 ...toLocationColumns(input.location),
+                // A deleted or unknown main expense leaves a regular expense.
+                main_expense_id: main?.id ?? null,
                 updated_at: Date.now(),
             } as const;
 
@@ -69,6 +109,15 @@ export const putTransaction = factory.createHandlers(
                 )
                 .returningAll()
                 .executeTakeFirstOrThrow();
+            if (hasAttached) {
+                await trx
+                    .updateTable("transactions")
+                    .set({ date: row.date, updated_at: row.updated_at })
+                    .where("user_id", "=", userId)
+                    .where("main_expense_id", "=", id)
+                    .where("date", "<>", row.date)
+                    .execute();
+            }
             return c.json(toTransaction(row));
         });
     },

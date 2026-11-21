@@ -254,10 +254,24 @@ export const api_error_invalid_link: ((inputs?: Api_Error_Invalid_LinkInputs, op
 /**
 * | output |
 * | --- |
+* | "This expense can't be attached to the chosen expense." |
+*
+*/
+export const api_error_invalid_main_expense: ((inputs?: Api_Error_Invalid_Main_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Invalid_Main_ExpenseInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "The data is invalid." |
 *
 */
 export const api_error_invalid_request: ((inputs?: Api_Error_Invalid_RequestInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Invalid_RequestInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
+* | "An expense with attached expenses can't become an income." |
+*
+*/
+export const api_error_main_expense_kind: ((inputs?: Api_Error_Main_Expense_KindInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Api_Error_Main_Expense_KindInputs, { locale?: "en" | "de" }, {}>;
 /**
 * | output |
 * | --- |
@@ -2184,7 +2198,9 @@ export type Api_Error_Fallback_CategoryInputs = {};
 export type Api_Error_File_Too_LargeInputs = {};
 export type Api_Error_ForbiddenInputs = {};
 export type Api_Error_Invalid_LinkInputs = {};
+export type Api_Error_Invalid_Main_ExpenseInputs = {};
 export type Api_Error_Invalid_RequestInputs = {};
+export type Api_Error_Main_Expense_KindInputs = {};
 export type Api_Error_Not_FoundInputs = {};
 export type Api_Error_Price_Change_Out_Of_RangeInputs = {};
 export type Api_Error_UnauthorizedInputs = {};

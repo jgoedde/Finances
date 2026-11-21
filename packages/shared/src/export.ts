@@ -8,6 +8,13 @@ import {
 import { transactionKindSchema, transactionSchema } from "./transactions.ts";
 
 /**
+ * Exports made before attached expenses have no `mainExpenseId`.
+ */
+const exportedTransactionSchema = transactionSchema.extend({
+    mainExpenseId: transactionSchema.shape.mainExpenseId.default(null),
+});
+
+/**
  * A user's complete data, as downloaded by the export. Bump `version` on
  * breaking changes and keep importing old ones (see `dataImportSchema`).
  */
@@ -18,7 +25,7 @@ const dataExportSchema = z.object({
     categories: z.array(categorySchema),
     fixedCostCategories: z.array(fixedCostCategorySchema),
     fixedCosts: z.array(fixedCostSchema),
-    transactions: z.array(transactionSchema),
+    transactions: z.array(exportedTransactionSchema),
 });
 export type DataExport = z.infer<typeof dataExportSchema>;
 
@@ -65,7 +72,7 @@ type DataExportV3 = z.infer<typeof dataExportV3Schema>;
  */
 const dataExportV2Schema = dataExportV3Schema.extend({
     version: z.literal(2),
-    transactions: z.array(transactionSchema.omit({ location: true })),
+    transactions: z.array(exportedTransactionSchema.omit({ location: true })),
 });
 
 /**

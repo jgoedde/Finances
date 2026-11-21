@@ -36,7 +36,9 @@
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
+/** @typedef {{}} Api_Error_Invalid_Main_ExpenseInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
+/** @typedef {{}} Api_Error_Main_Expense_KindInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
 /** @typedef {{}} Api_Error_Price_Change_Out_Of_RangeInputs */
 /** @typedef {{}} Api_Error_UnauthorizedInputs */
@@ -453,8 +455,16 @@ export const api_error_invalid_link = /** @type {(inputs: Api_Error_Invalid_Link
 	return /** @type {LocalizedString} */ (`This link is invalid, has expired or has already been used.`)
 };
 
+export const api_error_invalid_main_expense = /** @type {(inputs: Api_Error_Invalid_Main_ExpenseInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`This expense can't be attached to the chosen expense.`)
+};
+
 export const api_error_invalid_request = /** @type {(inputs: Api_Error_Invalid_RequestInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`The data is invalid.`)
+};
+
+export const api_error_main_expense_kind = /** @type {(inputs: Api_Error_Main_Expense_KindInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`An expense with attached expenses can't become an income.`)
 };
 
 export const api_error_not_found = /** @type {(inputs: Api_Error_Not_FoundInputs) => LocalizedString} */ () => {

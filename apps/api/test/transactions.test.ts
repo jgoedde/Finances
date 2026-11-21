@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import type { Transaction, TransactionSearchPage } from "@finances/shared";
+import {
+    FALLBACK_CATEGORIES,
+    type Transaction,
+    type TransactionSearchPage,
+} from "@finances/shared";
 import {
     type Client,
     createTestApp,
@@ -100,6 +104,120 @@ describe("transactions", () => {
         expect(negative.status).toBe(400);
     });
 
+    describe("attached expenses", () => {
+        async function put(
+            id: string,
+            overrides: Record<string, unknown> = {},
+            client: Client = alice,
+        ) {
+            return client(`/api/transactions/${id}`, {
+                method: "PUT",
+                body: transactionBody({ date: 1000, ...overrides }),
+            });
+        }
+
+        function get(id: string) {
+            return json<Transaction>(alice(`/api/transactions/${id}`));
+        }
+
+        it("attaches an expense to a main expense", async () => {
+            await put("main");
+            expect((await put("tip", { mainExpenseId: "main" })).status).toBe(
+                200,
+            );
+
+            expect((await get("tip")).mainExpenseId).toBe("main");
+            expect((await get("main")).mainExpenseId).toBeNull();
+            expect(
+                Object.fromEntries(
+                    (await list(alice)).map((t) => [t.id, t.mainExpenseId]),
+                ),
+            ).toEqual({ main: null, tip: "main" });
+        });
+        it("stores a reference to a missing or deleted main expense as none", async () => {
+            await put("main");
+            await alice("/api/transactions/main", { method: "DELETE" });
+
+            expect((await put("tip", { mainExpenseId: "main" })).status).toBe(
+                200,
+            );
+            expect(
+                (await put("shipping", { mainExpenseId: "unknown" })).status,
+            ).toBe(200);
+
+            expect((await get("tip")).mainExpenseId).toBeNull();
+            expect((await get("shipping")).mainExpenseId).toBeNull();
+        });
+
+        it("can't attach to another user's expense", async () => {
+            await put("bobs", {}, bob);
+
+            await put("tip", { mainExpenseId: "bobs" });
+
+            expect((await get("tip")).mainExpenseId).toBeNull();
+        });
+        it("rejects references the model forbids", async () => {
+            await put("main");
+            await put("tip", { mainExpenseId: "main" });
+            await put("other");
+            await put("salary", {
+                kind: "income",
+                categoryId: FALLBACK_CATEGORIES.income.id,
+            });
+
+            const rejected = {
+                income: await put("refund", {
+                    kind: "income",
+                    categoryId: FALLBACK_CATEGORIES.income.id,
+                    mainExpenseId: "main",
+                }),
+                self: await put("main", { mainExpenseId: "main" }),
+                toAttached: await put("other", { mainExpenseId: "tip" }),
+                toIncome: await put("other", { mainExpenseId: "salary" }),
+                mainWithAttached: await put("main", { mainExpenseId: "other" }),
+            };
+            for (const response of Object.values(rejected)) {
+                expect(response.status).toBe(422);
+                expect(await response.json()).toEqual({
+                    error: "invalid_main_expense",
+                });
+            }
+        });
+
+        it("rejects turning a main expense with attached expenses into an income", async () => {
+            await put("main");
+            await put("tip", { mainExpenseId: "main" });
+
+            const response = await put("main", {
+                kind: "income",
+                categoryId: FALLBACK_CATEGORIES.income.id,
+            });
+
+            expect(response.status).toBe(422);
+            expect(await response.json()).toEqual({
+                error: "main_expense_kind",
+            });
+            expect((await get("main")).kind).toBe("expense");
+        });
+        it("keeps attached expenses on their main expense's date", async () => {
+            await put("main", { date: 1000 });
+            await put("tip", { date: 5000, mainExpenseId: "main" });
+            expect((await get("tip")).date).toBe(1000);
+
+            await put("main", { date: 2000 });
+            expect((await get("tip")).date).toBe(2000);
+        });
+
+        it("detaches attached expenses when their main expense is deleted", async () => {
+            await put("main");
+            await put("tip", { mainExpenseId: "main" });
+
+            await alice("/api/transactions/main", { method: "DELETE" });
+
+            expect((await get("tip")).mainExpenseId).toBeNull();
+        });
+    });
+
     describe("search", () => {
         function search(query: string, client: Client = alice) {
             return json<TransactionSearchPage>(
@@ -150,6 +268,35 @@ describe("transactions", () => {
 
             const page = await search(`q=${encodeURIComponent("0%")}`);
             expect(page.items.map((t) => t.id)).toEqual(["percent"]);
+        });
+
+        it("returns the main expenses of attached results that aren't results themselves", async () => {
+            await put("restaurant", { counterparty: "Pizzeria" });
+            await put("tip", {
+                counterparty: "Trinkgeld",
+                mainExpenseId: "restaurant",
+            });
+            await put("shop", { counterparty: "Shop" });
+            await put("shipping", {
+                counterparty: "Versand Shop",
+                mainExpenseId: "shop",
+            });
+
+            const tips = await search(`q=${encodeURIComponent("Trinkgeld")}`);
+            expect(tips.items.map((t) => t.id)).toEqual(["tip"]);
+            expect(tips.mainExpenses).toEqual([
+                expect.objectContaining({
+                    id: "restaurant",
+                    counterparty: "Pizzeria",
+                }),
+            ]);
+
+            const shop = await search(`q=${encodeURIComponent("Shop")}`);
+            expect(shop.items.map((t) => t.id).sort()).toEqual([
+                "shipping",
+                "shop",
+            ]);
+            expect(shop.mainExpenses).toEqual([]);
         });
 
         it("filters by olderThan and by user", async () => {

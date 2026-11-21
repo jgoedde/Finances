@@ -14,10 +14,22 @@ import type { DB } from "#/db/database.ts";
 import { createTestApp, json, transactionBody } from "./test-app.ts";
 
 /**
+ * Back to the schema before `0008-transaction-main-expense`.
+ */
+async function undoMainExpense(db: DB) {
+    await sql`drop index transactions_main_expense`.execute(db);
+    await sql`alter table transactions drop column main_expense_id`.execute(db);
+    await sql`delete from kysely_migration where name = '0008-transaction-main-expense'`.execute(
+        db,
+    );
+}
+
+/**
  * Back to the schema before `0006-category-kinds`: no fallback categories,
  * and incomes in expense categories (`incomeCategoryId`).
  */
 async function undoCategoryKinds(db: DB, incomeCategoryId = "1") {
+    await undoMainExpense(db);
     // `0007-category-styles-repeat` only dropped indexes of the rebuilt table.
     await sql`delete from kysely_migration where name = '0007-category-styles-repeat'`.execute(
         db,

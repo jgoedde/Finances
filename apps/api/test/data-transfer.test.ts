@@ -280,7 +280,9 @@ describe("data transfer", () => {
 
         const reexported = await json<DataExport>(alice("/api/data/export"));
         expect(reexported.version).toBe(6);
-        expect(reexported.transactions).toEqual([{ ...transaction, id: "t1" }]);
+        expect(reexported.transactions).toEqual([
+            { ...transaction, id: "t1", mainExpenseId: null },
+        ]);
     });
 
     it("rejects price changes outside a fixed cost's start and end date", async () => {

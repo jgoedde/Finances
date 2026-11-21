@@ -38,7 +38,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Api_Error_File_Too_LargeInputs */
 /** @typedef {{}} Api_Error_ForbiddenInputs */
 /** @typedef {{}} Api_Error_Invalid_LinkInputs */
+/** @typedef {{}} Api_Error_Invalid_Main_ExpenseInputs */
 /** @typedef {{}} Api_Error_Invalid_RequestInputs */
+/** @typedef {{}} Api_Error_Main_Expense_KindInputs */
 /** @typedef {{}} Api_Error_Not_FoundInputs */
 /** @typedef {{}} Api_Error_Price_Change_Out_Of_RangeInputs */
 /** @typedef {{}} Api_Error_UnauthorizedInputs */
@@ -817,6 +819,20 @@ export const api_error_invalid_link = /** @type {((inputs?: Api_Error_Invalid_Li
 /**
 * | output |
 * | --- |
+* | "This expense can't be attached to the chosen expense." |
+*
+* @param {Api_Error_Invalid_Main_ExpenseInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_invalid_main_expense = /** @type {((inputs?: Api_Error_Invalid_Main_ExpenseInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Invalid_Main_ExpenseInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_invalid_main_expense(inputs)
+	return __en.api_error_invalid_main_expense(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "The data is invalid." |
 *
 * @param {Api_Error_Invalid_RequestInputs} inputs
@@ -827,6 +843,20 @@ export const api_error_invalid_request = /** @type {((inputs?: Api_Error_Invalid
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.api_error_invalid_request(inputs)
 	return __en.api_error_invalid_request(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "An expense with attached expenses can't become an income." |
+*
+* @param {Api_Error_Main_Expense_KindInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const api_error_main_expense_kind = /** @type {((inputs?: Api_Error_Main_Expense_KindInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Api_Error_Main_Expense_KindInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.api_error_main_expense_kind(inputs)
+	return __en.api_error_main_expense_kind(inputs)
 });
 /**
 * | output |
