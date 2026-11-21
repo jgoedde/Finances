@@ -1,4 +1,4 @@
-import type { DataExport, ImportResult } from "@finances/shared";
+import type { DataExport, ImportResult, Transaction } from "@finances/shared";
 import type { DB } from "#/db/database.ts";
 import {
     arePriceChangesInRange,
@@ -42,7 +42,7 @@ export async function readExport(db: DB, userId: string): Promise<DataExport> {
 
     return {
         format: "finances-export",
-        version: 6,
+        version: 7,
         exportedAt: new Date().toISOString(),
         categories: categories.map(toCategory),
         fixedCostCategories: fixedCostCategories.map((c) => ({
@@ -75,6 +75,32 @@ export async function hasData(db: DB, userId: string): Promise<boolean> {
             .executeTakeFirst(),
     ]);
     return transaction !== undefined || fixedCost !== undefined;
+}
+
+/**
+ * The import's transactions with their main expense references checked like
+ * `PUT /api/transactions/:id` does, except that an invalid reference becomes
+ * `null` instead of failing the import: the main expense must be another
+ * expense of the import that isn't attached itself, and only expenses can be
+ * attached. An attached expense takes its main expense's date.
+ */
+function withValidMainExpenses(transactions: Transaction[]): Transaction[] {
+    const byId = new Map(transactions.map((t) => [t.id, t]));
+    return transactions.map((transaction) => {
+        if (transaction.mainExpenseId === null) {
+            return transaction;
+        }
+        const main = byId.get(transaction.mainExpenseId);
+        const isValid =
+            transaction.kind === "expense" &&
+            main !== undefined &&
+            main.id !== transaction.id &&
+            main.kind === "expense" &&
+            main.mainExpenseId === null;
+        return isValid
+            ? { ...transaction, date: main.date }
+            : { ...transaction, mainExpenseId: null };
+    });
 }
 
 export class InvalidReferenceError extends Error {}
@@ -199,7 +225,7 @@ export async function replaceData(
                     .values(chunk)
                     .execute(),
         );
-        await insertChunked(data.transactions, (chunk) =>
+        await insertChunked(withValidMainExpenses(data.transactions), (chunk) =>
             trx
                 .insertInto("transactions")
                 .values(
@@ -215,6 +241,7 @@ export async function replaceData(
                         category_id: t.categoryId,
                         exceptional: t.exceptional ? 1 : 0,
                         ...toLocationColumns(t.location),
+                        main_expense_id: t.mainExpenseId,
                         updated_at: now,
                     })),
                 )
