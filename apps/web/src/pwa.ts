@@ -5,7 +5,6 @@ type UpdateHandlers = {
     onOfflineReady: () => void;
 };
 
-// TODO: Add logger interface to allow for custom logging, e.g. to a toast notification system
 export function initPWA(handlers: UpdateHandlers) {
     return registerSW({
         immediate: true,
