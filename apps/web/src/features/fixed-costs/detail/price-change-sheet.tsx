@@ -1,19 +1,14 @@
 import {
     findPriceChangeProblem,
     type FixedCost as FixedCostRecord,
-    formatLongDate,
     getAmountOn,
     type PriceChange,
-    type PriceChangeProblem,
     withPriceChange,
 } from "@finances/shared";
-import ChevronDownIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import { useState } from "react";
 import { toast } from "sonner";
-import { apiErrorCode } from "#/api/api-errors.ts";
 import { Button } from "#/components/ui/button.tsx";
 import * as haptics from "#/lib/haptics.ts";
-import { Calendar } from "#/components/ui/calendar.tsx";
 import { CurrencyInputWrapper } from "#/components/ui/currency-input-wrapper.tsx";
 import {
     Drawer,
@@ -23,31 +18,19 @@ import {
 } from "#/components/ui/drawer.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "#/components/ui/popover.tsx";
-import {
     fromIsoDate,
     toLocalIsoDate,
 } from "#/features/fixed-costs/fixed-cost.ts";
 import { useUpdateFixedCost } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import { dateTriggerClassName } from "#/features/fixed-costs/fixed-cost-wizard.tsx";
+import { DatePickerButton } from "#/features/fixed-costs/date-picker-button.tsx";
+import {
+    isOutOfRange,
+    PROBLEM_MESSAGES,
+} from "#/features/fixed-costs/detail/price-change-errors.ts";
 import { useIsOnline } from "#/features/sync/connectivity.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
-
-const PROBLEM_MESSAGES = {
-    duplicate_date: m.price_change_duplicate_date,
-    before_start: m.price_change_before_start,
-    after_end: m.price_change_after_end,
-} as const satisfies Record<PriceChangeProblem, () => string>;
-
-// Shown inline instead of the mutation's toast.
-function isOutOfRange(error: Error): boolean {
-    return apiErrorCode(error) === "price_change_out_of_range";
-}
 
 interface PriceChangeSheetProps {
     record: FixedCostRecord;
@@ -159,38 +142,16 @@ export function PriceChangeSheet({
                         <FieldLabel htmlFor={"price-change-date"}>
                             {m.price_change_date()}
                         </FieldLabel>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    id={"price-change-date"}
-                                    variant={"ghost"}
-                                    shape={"square"}
-                                    className={dateTriggerClassName}
-                                >
-                                    {formatLongDate(
-                                        fromIsoDate(date),
-                                        getLocale(),
-                                    )}
-                                    <ChevronDownIcon />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                className={"w-auto p-0"}
-                                align={"start"}
-                            >
-                                <Calendar
-                                    mode={"single"}
-                                    selected={fromIsoDate(date)}
-                                    defaultMonth={fromIsoDate(date)}
-                                    onSelect={(day) => {
-                                        if (day) {
-                                            setDate(toLocalIsoDate(day));
-                                            setError(undefined);
-                                        }
-                                    }}
-                                />
-                            </PopoverContent>
-                        </Popover>
+                        <DatePickerButton
+                            id={"price-change-date"}
+                            value={fromIsoDate(date)}
+                            onSelect={(day) => {
+                                if (day) {
+                                    setDate(toLocalIsoDate(day));
+                                    setError(undefined);
+                                }
+                            }}
+                        />
                         {error && (
                             <FieldDescription
                                 role={"alert"}

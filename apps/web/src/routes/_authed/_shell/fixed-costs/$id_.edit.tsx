@@ -21,10 +21,8 @@ import {
     loadFixedCost,
     redirectToFixedCosts,
 } from "#/features/fixed-costs/fixed-cost-route.ts";
-import {
-    FixedCostWizard,
-    type FixedCostWizardValues,
-} from "#/features/fixed-costs/fixed-cost-wizard.tsx";
+import { FixedCostWizard } from "#/features/fixed-costs/wizard/fixed-cost-wizard.tsx";
+import type { FixedCostWizardValues } from "#/features/fixed-costs/wizard/fixed-cost-wizard-model.ts";
 import { m } from "#/paraglide/messages.js";
 
 export const Route = createFileRoute("/_authed/_shell/fixed-costs/$id_/edit")({

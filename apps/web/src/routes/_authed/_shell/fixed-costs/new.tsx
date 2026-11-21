@@ -7,10 +7,8 @@ import {
     fixedCostCategoriesQuery,
     useCreateFixedCost,
 } from "#/features/fixed-costs/fixed-cost-queries.ts";
-import {
-    FixedCostWizard,
-    type FixedCostWizardValues,
-} from "#/features/fixed-costs/fixed-cost-wizard.tsx";
+import { FixedCostWizard } from "#/features/fixed-costs/wizard/fixed-cost-wizard.tsx";
+import type { FixedCostWizardValues } from "#/features/fixed-costs/wizard/fixed-cost-wizard-model.ts";
 import { fromIsoDate } from "#/features/fixed-costs/fixed-cost.ts";
 import { acceptFixedCostSuggestion } from "#/features/fixed-costs/fixed-cost-suggestion.ts";
 import { m } from "#/paraglide/messages.js";

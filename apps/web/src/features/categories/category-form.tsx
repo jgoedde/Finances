@@ -1,29 +1,12 @@
 import { type SubmitEvent, useId, useState } from "react";
-import { DynamicIcon, type IconName } from "lucide-react/dynamic";
-import ImageSearchIcon from "~icons/material-symbols/image-search-rounded";
 import { Button } from "#/components/ui/button.tsx";
-import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from "#/components/ui/empty.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
-import {
-    RadioGroup,
-    RadioGroupIconItem,
-    RadioGroupSwatch,
-} from "#/components/ui/radio-group.tsx";
-import {
-    CATEGORY_COLORS,
-    searchCategoryIcons,
-} from "#/features/categories/category-style.ts";
+import { CategoryColorField } from "#/features/categories/category-color-field.tsx";
+import { CategoryIconField } from "#/features/categories/category-icon-field.tsx";
 import * as haptics from "#/lib/haptics.ts";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";
 import { m } from "#/paraglide/messages.js";
-import { paletteFromHex, toneStyle } from "#/utils/color.ts";
 
 export interface CategoryFormValues {
     name: string;
@@ -71,20 +54,8 @@ export function CategoryForm({
     const [name, setName] = useState(initialValues.name);
     const [color, setColor] = useState(initialValues.color);
     const [iconName, setIconName] = useState(initialValues.iconName);
-    const [iconSearch, setIconSearch] = useState("");
     const [nameError, setNameError] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const colors = CATEGORY_COLORS.includes(initialValues.color)
-        ? CATEGORY_COLORS
-        : [initialValues.color, ...CATEGORY_COLORS];
-    const icons = searchCategoryIcons(iconSearch).map((icon) => icon.name);
-    if (
-        iconSearch.trim() === "" &&
-        !icons.includes(initialValues.iconName as IconName)
-    ) {
-        icons.unshift(initialValues.iconName as IconName);
-    }
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -143,68 +114,19 @@ export function CategoryForm({
                 )}
             </Field>
 
-            <Field>
-                <FieldLabel id={`${id}-color`}>{m.category_color()}</FieldLabel>
-                <RadioGroup
-                    aria-labelledby={`${id}-color`}
-                    value={color}
-                    onValueChange={setColor}
-                    className={"grid-cols-[repeat(auto-fill,2.5rem)] gap-2"}
-                >
-                    {colors.map((swatch, index) => (
-                        <RadioGroupSwatch
-                            key={swatch}
-                            value={swatch}
-                            aria-label={m.category_color_option({
-                                number: index + 1,
-                            })}
-                            style={toneStyle(paletteFromHex(swatch))}
-                        />
-                    ))}
-                </RadioGroup>
-            </Field>
+            <CategoryColorField
+                id={`${id}-color`}
+                value={color}
+                onChange={setColor}
+                initialColor={initialValues.color}
+            />
 
-            <Field>
-                <FieldLabel id={`${id}-icon`}>{m.category_icon()}</FieldLabel>
-                <Input
-                    type={"search"}
-                    aria-label={m.category_icon_search()}
-                    placeholder={m.category_icon_search()}
-                    value={iconSearch}
-                    autoComplete={"off"}
-                    onChange={(event) => setIconSearch(event.target.value)}
-                />
-                {icons.length > 0 ? (
-                    <RadioGroup
-                        aria-labelledby={`${id}-icon`}
-                        value={iconName}
-                        onValueChange={setIconName}
-                        className={"grid-cols-[repeat(auto-fill,3rem)] gap-1"}
-                    >
-                        {icons.map((icon) => (
-                            <RadioGroupIconItem
-                                key={icon}
-                                value={icon}
-                                aria-label={icon}
-                            >
-                                <DynamicIcon name={icon} />
-                            </RadioGroupIconItem>
-                        ))}
-                    </RadioGroup>
-                ) : (
-                    <Empty size={"compact"}>
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <ImageSearchIcon />
-                            </EmptyMedia>
-                            <EmptyTitle>{m.category_icon_none()}</EmptyTitle>
-                            <EmptyDescription>
-                                {m.category_icon_none_hint()}
-                            </EmptyDescription>
-                        </EmptyHeader>
-                    </Empty>
-                )}
-            </Field>
+            <CategoryIconField
+                id={`${id}-icon`}
+                value={iconName}
+                onChange={setIconName}
+                initialIconName={initialValues.iconName}
+            />
 
             <div className={"flex justify-end gap-2"}>
                 <Button type={"button"} variant={"text"} onClick={onCancel}>
