@@ -10,16 +10,18 @@ Personal expense tracker (PWA) built with React 19, TypeScript, Vite, TanStack R
 
 Node version is pinned in `.nvmrc`. The repo is an npm workspaces monorepo: the client lives in `apps/web` (`@finances/web`), the API in `apps/api` (`@finances/api`) and shared zod schemas in `packages/shared`. Run the commands below from the repo root; root scripts delegate to the workspaces. Formatting (Prettier) and knip are configured once at the root.
 
-- `npm run dev`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
+- `npm run dev:web`: start the Vite dev server; it proxies `/api` to the API on port 3000 (`npm run dev:web -- --host` exposes it on the LAN for testing on a phone; add that origin to `TRUSTED_ORIGINS`)
 - `npm run build`: type-check (`tsc -b`) and build for production. This is the only type check. Also this compiles Paraglide source files. Don't invoke any Paraglide CLI commands to regenerate files after message changes.
 - `npm run lint`: ESLint in every workspace, in parallel (`concurrently`), with `--max-warnings 0`. The root `eslint.config.js` holds the shared defaults (`@eslint/js` + typescript-eslint recommended, ignores); each workspace's `eslint.config.js` extends it (web: React plugins and browser globals; api/shared: Node globals). Known violations are suppressed in `apps/web/eslint-suppressions.json`: don't add to it; after fixing one, run `npx eslint . --prune-suppressions` in that workspace.
 - `npm run format` / `npm run format:check`: Prettier with `--cache` (4-space indent, no plugins)
 - `npm run knip:check`: detect unused files and exports
-- `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev`.
+- `npm run dev:api`: start the API with `node --watch` (copy `apps/api/.env.example` to `apps/api/.env` first). Run it alongside `npm run dev:web`.
 - `npm run cli -w @finances/api -- invite`: operator CLI (commander, `src/cli/`; one file per command in `src/cli/commands/`): `invite`, `reset-password <username>`, `users`, `backup` (snapshot to stdout), `restore [--force]` (from stdin). In Docker: `finances invite`. The CLI logs to stderr (`cli/log-to-stderr.ts` must stay its first import) so stdout only carries command output.
 - `npm test`: Vitest in every workspace. Web tests use React Testing Library in jsdom; `apps/web/test/setup.ts` forces the German locale. The API test app (`test/test-app.ts`) stores passwords in plain text instead of scrypt to keep tests fast.
 
-CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check`, `lint` and `test`. Run all five before considering a change done.
+- Per-workspace variants (`<pkg>` is `web`, `api` or `shared`): `build:<pkg>`, `lint:<pkg>`, `format:<pkg>`, `format:check:<pkg>`, `test:<pkg>`, and `check:<pkg>` (format check, lint, build and test of that workspace in a row).
+
+CI (`.github/workflows/ci.yml`) runs `knip:check`, `build`, `format:check`, `lint` and `test` across all workspaces. Locally, only check the workspaces a change touches: run `check:<pkg>` for each of them (`web` and `api` too when `packages/shared` changes, since both import it), plus `knip:check`, before considering a change done. Don't run the repo-wide `lint`/`test`/`build`/`format:check` for a change confined to one workspace.
 
 Releases: pushing a `vX.Y.Z` tag builds the Docker image (Node running the API, which also serves the built client from `STATIC_DIR`; see `Dockerfile`), pushes it to `ghcr.io/jgoedde/finances`, and creates a GitHub release. Bump the version in the root `package.json` first (workspace packages carry no version); it is injected as `__APP_VERSION__`.
 
@@ -50,6 +52,8 @@ Data conventions: a transaction is an expense or an income (`kind`), and `amount
     - Interaction: add `state-layer` (hover/focus/press overlay in the content color) and `focus-ring` to interactive elements. Text roles like `outline` are for borders only; use `on-surface-variant` for secondary text.
 - `cn()` registers the custom text/shadow/font/ease tokens with tailwind-merge. Add new theme tokens there too, or tailwind-merge may drop them as conflicting classes.
 - Use the primitives for MD3 components (`Button` variants `filled`/`filledTonal`/`elevated`/`outline`/`text`/`ghost`, `Card` variants, `Badge variant="md3"` as a chip, `SegmentedButton`, `TopAppBar`) rather than hand-styling.
+- Icons: Material Symbols Rounded via `unplugin-icons` (`import AddIcon from "~icons/material-symbols/add-rounded"`, 24px by default; outlined `-outline-rounded` variants unless MD3 asks for filled, e.g. active navigation destinations). Type icon props as `IconComponent` (`src/lib/icon.ts`). Category icons are the exception: users store Lucide icon names, so `CategoryAvatar` and the category form still render them with `lucide-react/dynamic`.
+- Empty states: use `Empty` from `components/ui/empty.tsx` (icon in `EmptyMedia`, title, description, optional actions in `EmptyContent`; `size="compact"` inside cards and sheets), and `OfflineEmpty` for content that can't load offline. Never a bare "nothing here" paragraph.
 - `src/utils/color.ts` uses `@material/material-color-utilities` to derive tonal container colors from category colors.
 - PWA: `vite-plugin-pwa` uses `registerType: "prompt"`. The update toast is wired in `routes/__root.tsx` via `src/pwa.ts`.
 
@@ -71,7 +75,7 @@ Server-authoritative design; see `docs/adr/` and `GLOSSARY.md`.
 - TS runs in strict mode with `noUncheckedIndexedAccess`, so indexed access returns `T | undefined`.
 - Every `switch` is exhaustive: end it with ``default: throw new Error(`unreachable error - type ${String(value satisfies never)}`)``, so a new union member fails to compile (`String()` because lint rejects `never` in a template literal).
 - Separate a JSDoc block from the code above it with one empty line (not needed directly after an opening `{`).
-- Knip is strict (`includeEntryExports`; it only ignores the generated `src/paraglide/` and the message-format plugin, which only `project.inlang` references): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.
+- Knip is strict (`includeEntryExports`; it only ignores the generated `src/paraglide/`, the message-format plugin, which only `project.inlang` references, and `@svgr/plugin-jsx`, which unplugin-icons loads by name): every export must be imported somewhere, including from `packages/shared` and the shadcn components in `components/ui/`. Only export what's used, and delete unused components instead of ignoring them.
 
 ## Agent skills
 

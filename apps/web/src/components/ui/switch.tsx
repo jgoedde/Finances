@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
-import { CheckIcon } from "lucide-react";
+import CheckIcon from "~icons/material-symbols/check-rounded";
 import { cn } from "#/lib/cn.ts";
 import * as haptics from "#/lib/haptics.ts";
 
@@ -76,7 +76,6 @@ function Switch({
                 >
                     <CheckIcon
                         aria-hidden
-                        strokeWidth={3}
                         className={`size-4 opacity-0 transition-opacity
                             duration-200 ease-standard
                             group-data-[state=checked]/switch:opacity-100`}

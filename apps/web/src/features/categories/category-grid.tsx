@@ -1,4 +1,5 @@
-import { Lock, Plus } from "lucide-react";
+import Lock from "~icons/material-symbols/lock-outline-rounded";
+import Plus from "~icons/material-symbols/add-rounded";
 import type { Category } from "@finances/shared";
 import { CategoryAvatar } from "#/features/categories/category-avatar.tsx";
 import { OfflineHint } from "#/features/sync/offline-hint.tsx";

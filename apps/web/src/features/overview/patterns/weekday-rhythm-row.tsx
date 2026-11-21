@@ -1,4 +1,4 @@
-import { CalendarDays } from "lucide-react";
+import CalendarDays from "~icons/material-symbols/view-week-outline-rounded";
 import { formatPercent, formatWeekday, type Pattern } from "@finances/shared";
 import { PatternRowLayout } from "#/features/overview/patterns/pattern-row-layout.tsx";
 import { m } from "#/paraglide/messages.js";

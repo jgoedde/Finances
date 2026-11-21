@@ -2,7 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { type SubmitEvent, useState } from "react";
 import { z } from "zod";
-import { LogIn } from "lucide-react";
+import LogIn from "~icons/material-symbols/login-rounded";
 import {
     authClient,
     completeSignIn,

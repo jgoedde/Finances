@@ -7,7 +7,8 @@ import {
     type PriceChange,
 } from "@finances/shared";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import PencilIcon from "~icons/material-symbols/edit-outline-rounded";
+import PlusIcon from "~icons/material-symbols/add-rounded";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DeleteButton } from "#/components/delete-button.tsx";

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { CalendarIcon, CheckIcon } from "lucide-react";
+import CalendarIcon from "~icons/material-symbols/calendar-today-outline-rounded";
+import CheckIcon from "~icons/material-symbols/check-rounded";
 import { isToday, isYesterday, subDays } from "date-fns";
 import { formatShortDate } from "@finances/shared";
 import { Badge, FilterChip } from "#/components/ui/badge.tsx";

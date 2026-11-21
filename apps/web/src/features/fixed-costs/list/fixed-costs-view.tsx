@@ -1,4 +1,12 @@
+import EventRepeatIcon from "~icons/material-symbols/event-repeat-outline-rounded";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "#/components/ui/empty.tsx";
 import { AccountMenu } from "#/features/account/account-menu.tsx";
 import { FixedCostShareBar } from "#/features/fixed-costs/breakdown/fixed-cost-share-bar.tsx";
 import { FixedCostTreemap } from "#/features/fixed-costs/breakdown/fixed-cost-treemap.tsx";
@@ -42,12 +50,17 @@ export function FixedCostsView() {
                         ))}
                 </div>
                 {groups.length === 0 ? (
-                    <p
-                        className={`my-8 text-center text-body-medium
-                            text-on-surface-variant`}
-                    >
-                        {m.fixed_cost_list_empty()}
-                    </p>
+                    <Empty>
+                        <EmptyHeader>
+                            <EmptyMedia>
+                                <EventRepeatIcon />
+                            </EmptyMedia>
+                            <EmptyTitle>{m.fixed_cost_list_empty()}</EmptyTitle>
+                            <EmptyDescription>
+                                {m.fixed_cost_list_empty_hint()}
+                            </EmptyDescription>
+                        </EmptyHeader>
+                    </Empty>
                 ) : (
                     groups.map((group) => (
                         <FixedCostCategorySection

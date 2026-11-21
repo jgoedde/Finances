@@ -1,4 +1,4 @@
-import { Repeat2 } from "lucide-react";
+import Repeat2 from "~icons/material-symbols/repeat-rounded";
 import { formatCurrency, type Pattern } from "@finances/shared";
 import { PatternRowLayout } from "#/features/overview/patterns/pattern-row-layout.tsx";
 import { m } from "#/paraglide/messages.js";

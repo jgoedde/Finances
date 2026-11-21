@@ -1,6 +1,6 @@
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 import type { CSSProperties } from "react";
-import { X } from "lucide-react";
+import X from "~icons/material-symbols/close-rounded";
 import { m } from "#/paraglide/messages.js";
 
 /** Duration for toasts with an action, so there is time to tap it. */

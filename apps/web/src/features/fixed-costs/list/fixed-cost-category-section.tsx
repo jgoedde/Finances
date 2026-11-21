@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { formatCurrency, formatPercent } from "@finances/shared";
-import { ChevronDown } from "lucide-react";
+import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import type { FixedCostCategoryGroup } from "#/features/fixed-costs/fixed-cost.ts";
 import { FixedCostCategoryColorPicker } from "#/features/fixed-costs/list/fixed-cost-category-color-picker.tsx";
 import { FixedCostListItem } from "#/features/fixed-costs/list/fixed-cost-list-item.tsx";

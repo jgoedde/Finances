@@ -3,7 +3,10 @@ import { useBlocker } from "@tanstack/react-router";
 import { isSameDay } from "date-fns";
 import { confirmAction } from "#/components/confirm-dialog.tsx";
 import * as haptics from "#/lib/haptics.ts";
-import { ChevronDownIcon, SplitIcon } from "lucide-react";
+import ChevronDownIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
+import SplitIcon from "~icons/material-symbols/call-split-rounded";
+import IncomeIcon from "~icons/material-symbols/savings-outline-rounded";
+import ExpenseIcon from "~icons/material-symbols/shopping-cart-outline-rounded";
 import { nanoid } from "nanoid";
 import { Input } from "#/components/ui/input.tsx";
 import { DeleteButton } from "#/components/delete-button.tsx";
@@ -439,12 +442,12 @@ export function TransactionForm({
                             {
                                 label: getTransactionKindLabel("income"),
                                 value: "income",
-                                icon: "banknote-arrow-up",
+                                icon: IncomeIcon,
                             },
                             {
                                 label: getTransactionKindLabel("expense"),
                                 value: "expense",
-                                icon: "banknote-arrow-down",
+                                icon: ExpenseIcon,
                             },
                         ]}
                         value={transactionType}

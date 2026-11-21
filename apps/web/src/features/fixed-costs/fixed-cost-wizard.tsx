@@ -1,6 +1,6 @@
 import { formatLongDate } from "@finances/shared";
 import { type KeyboardEvent, useMemo, useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
+import ChevronDownIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import type { FixedCostCategory, FixedCostInterval } from "@finances/shared";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { SegmentedButton } from "#/components/ui/segmented-button.tsx";

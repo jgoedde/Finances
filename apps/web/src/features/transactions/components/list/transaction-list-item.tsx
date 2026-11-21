@@ -1,12 +1,10 @@
 import { formatCurrency } from "@finances/shared";
 import { DynamicIcon } from "lucide-react/dynamic";
-import {
-    ChevronRight,
-    CloudUpload,
-    CornerDownRight,
-    EllipsisVertical,
-    MessageCircleQuestion,
-} from "lucide-react";
+import ChevronRight from "~icons/material-symbols/chevron-right-rounded";
+import CloudUpload from "~icons/material-symbols/cloud-upload-outline-rounded";
+import CornerDownRight from "~icons/material-symbols/subdirectory-arrow-right-rounded";
+import EllipsisVertical from "~icons/material-symbols/more-vert-rounded";
+import MessageCircleQuestion from "~icons/material-symbols/help-outline-rounded";
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { paletteFromHex, toneStyle } from "#/utils/color.ts";
 import { useNavigate, useParams } from "@tanstack/react-router";

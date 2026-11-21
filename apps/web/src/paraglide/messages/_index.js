@@ -76,6 +76,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Category_Fallback_HintInputs */
 /** @typedef {{}} Category_IconInputs */
 /** @typedef {{}} Category_Icon_NoneInputs */
+/** @typedef {{}} Category_Icon_None_HintInputs */
 /** @typedef {{}} Category_Icon_SearchInputs */
 /** @typedef {{}} Category_NameInputs */
 /** @typedef {{}} Category_Name_MissingInputs */
@@ -124,6 +125,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_YearlyInputs */
 /** @typedef {{}} Fixed_Cost_List_EmptyInputs */
+/** @typedef {{}} Fixed_Cost_List_Empty_HintInputs */
 /** @typedef {{}} Fixed_Cost_Monthly_TotalInputs */
 /** @typedef {{}} Fixed_Cost_NameInputs */
 /** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
@@ -164,8 +166,10 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Nav_LabelInputs */
 /** @typedef {{}} Nav_OverviewInputs */
 /** @typedef {{}} Nav_TransactionsInputs */
+/** @typedef {{}} Offline_TitleInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
 /** @typedef {{}} Overview_Categories_EmptyInputs */
+/** @typedef {{}} Overview_Categories_Empty_HintInputs */
 /** @typedef {{}} Overview_Categories_HintInputs */
 /** @typedef {{}} Overview_Categories_TitleInputs */
 /** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
@@ -227,6 +231,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_LabelInputs */
 /** @typedef {{}} Search_Load_MoreInputs */
 /** @typedef {{}} Search_No_ResultsInputs */
+/** @typedef {{}} Search_No_Results_HintInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
@@ -252,6 +257,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{ count: NonNullable<unknown> }} Sign_Out_Unsynced_ChangesInputs */
 /** @typedef {{}} Sync_Action_DeletedInputs */
 /** @typedef {{}} Sync_Action_SavedInputs */
+/** @typedef {{}} Sync_Empty_HintInputs */
+/** @typedef {{}} Sync_Empty_TitleInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_RejectedInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_SyncedInputs */
 /** @typedef {{}} Sync_Later_HintInputs */
@@ -309,12 +316,15 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_FilterInputs */
 /** @typedef {{ category: NonNullable<unknown> }} Transaction_Filter_ActiveInputs */
 /** @typedef {{}} Transaction_Filter_AllInputs */
+/** @typedef {{}} Transaction_Filter_ClearInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{}} Transaction_Kind_Locked_AttachedInputs */
 /** @typedef {{}} Transaction_Kind_Locked_MainInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_Empty_TitleInputs */
+/** @typedef {{ category: NonNullable<unknown>, period: NonNullable<unknown> }} Transaction_List_Filtered_EmptyInputs */
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_UpcomingInputs */
@@ -1361,7 +1371,7 @@ export const category_icon = /** @type {((inputs?: Category_IconInputs, options?
 /**
 * | output |
 * | --- |
-* | "No matching icon." |
+* | "No matching icon" |
 *
 * @param {Category_Icon_NoneInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -1371,6 +1381,20 @@ export const category_icon_none = /** @type {((inputs?: Category_Icon_NoneInputs
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.category_icon_none(inputs)
 	return __en.category_icon_none(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Try a different term." |
+*
+* @param {Category_Icon_None_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const category_icon_none_hint = /** @type {((inputs?: Category_Icon_None_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Category_Icon_None_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.category_icon_none_hint(inputs)
+	return __en.category_icon_none_hint(inputs)
 });
 /**
 * | output |
@@ -2033,7 +2057,7 @@ export const fixed_cost_interval_yearly = /** @type {((inputs?: Fixed_Cost_Inter
 /**
 * | output |
 * | --- |
-* | "No fixed costs yet." |
+* | "No fixed costs yet" |
 *
 * @param {Fixed_Cost_List_EmptyInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -2043,6 +2067,20 @@ export const fixed_cost_list_empty = /** @type {((inputs?: Fixed_Cost_List_Empty
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.fixed_cost_list_empty(inputs)
 	return __en.fixed_cost_list_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Add rent, subscriptions and insurance to see what goes out every month." |
+*
+* @param {Fixed_Cost_List_Empty_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const fixed_cost_list_empty_hint = /** @type {((inputs?: Fixed_Cost_List_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Fixed_Cost_List_Empty_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.fixed_cost_list_empty_hint(inputs)
+	return __en.fixed_cost_list_empty_hint(inputs)
 });
 /**
 * | output |
@@ -2607,6 +2645,20 @@ export const nav_transactions = /** @type {((inputs?: Nav_TransactionsInputs, op
 /**
 * | output |
 * | --- |
+* | "You're offline" |
+*
+* @param {Offline_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const offline_title = /** @type {((inputs?: Offline_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Offline_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.offline_title(inputs)
+	return __en.offline_title(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Not available offline" |
 *
 * @param {Offline_UnavailableInputs} inputs
@@ -2631,6 +2683,20 @@ export const overview_categories_empty = /** @type {((inputs?: Overview_Categori
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.overview_categories_empty(inputs)
 	return __en.overview_categories_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Once you record spending, you'll see here where your money goes." |
+*
+* @param {Overview_Categories_Empty_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const overview_categories_empty_hint = /** @type {((inputs?: Overview_Categories_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Overview_Categories_Empty_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.overview_categories_empty_hint(inputs)
+	return __en.overview_categories_empty_hint(inputs)
 });
 /**
 * | output |
@@ -3491,6 +3557,20 @@ export const search_no_results = /** @type {((inputs?: Search_No_ResultsInputs, 
 /**
 * | output |
 * | --- |
+* | "Try a different search term or period." |
+*
+* @param {Search_No_Results_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const search_no_results_hint = /** @type {((inputs?: Search_No_Results_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_No_Results_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.search_no_results_hint(inputs)
+	return __en.search_no_results_hint(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "Search isn't available offline." |
 *
 * @param {Search_OfflineInputs} inputs
@@ -3838,6 +3918,34 @@ export const sync_action_saved = /** @type {((inputs?: Sync_Action_SavedInputs, 
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.sync_action_saved(inputs)
 	return __en.sync_action_saved(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "All changes are saved on the server." |
+*
+* @param {Sync_Empty_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_empty_hint = /** @type {((inputs?: Sync_Empty_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Sync_Empty_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.sync_empty_hint(inputs)
+	return __en.sync_empty_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No pending changes" |
+*
+* @param {Sync_Empty_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const sync_empty_title = /** @type {((inputs?: Sync_Empty_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Sync_Empty_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.sync_empty_title(inputs)
+	return __en.sync_empty_title(inputs)
 });
 /**
 * | countPlural | output |
@@ -4642,6 +4750,20 @@ export const transaction_filter_all = /** @type {((inputs?: Transaction_Filter_A
 /**
 * | output |
 * | --- |
+* | "Clear filter" |
+*
+* @param {Transaction_Filter_ClearInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_filter_clear = /** @type {((inputs?: Transaction_Filter_ClearInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Filter_ClearInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_filter_clear(inputs)
+	return __en.transaction_filter_clear(inputs)
+});
+/**
+* | output |
+* | --- |
 * | "The income was deleted." |
 *
 * @param {Transaction_Income_DeletedInputs} inputs
@@ -4712,7 +4834,7 @@ export const transaction_kind_locked_main = /** @type {((inputs?: Transaction_Ki
 /**
 * | output |
 * | --- |
-* | "No transactions ({period})" |
+* | "Nothing recorded for {period} yet." |
 *
 * @param {Transaction_List_EmptyInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -4722,6 +4844,34 @@ export const transaction_list_empty = /** @type {((inputs: Transaction_List_Empt
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_list_empty(inputs)
 	return __en.transaction_list_empty(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No transactions" |
+*
+* @param {Transaction_List_Empty_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_empty_title = /** @type {((inputs?: Transaction_List_Empty_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_Empty_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_empty_title(inputs)
+	return __en.transaction_list_empty_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No transactions in {category} for {period}." |
+*
+* @param {Transaction_List_Filtered_EmptyInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_list_filtered_empty = /** @type {((inputs: Transaction_List_Filtered_EmptyInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_List_Filtered_EmptyInputs, { locale?: "en" | "de" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_list_filtered_empty(inputs)
+	return __en.transaction_list_filtered_empty(inputs)
 });
 /**
 * | output |
@@ -4740,7 +4890,7 @@ export const transaction_list_loading = /** @type {((inputs?: Transaction_List_L
 /**
 * | output |
 * | --- |
-* | "Offline – this month hasn't been loaded yet" |
+* | "This month hasn't been loaded yet." |
 *
 * @param {Transaction_List_OfflineInputs} inputs
 * @param {{ locale?: "en" | "de" }} options

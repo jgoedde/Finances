@@ -1,4 +1,5 @@
-import { TrendingDown, TrendingUp } from "lucide-react";
+import TrendingDown from "~icons/material-symbols/trending-down-rounded";
+import TrendingUp from "~icons/material-symbols/trending-up-rounded";
 import { formatPercent, type Pattern } from "@finances/shared";
 import { PatternRowLayout } from "#/features/overview/patterns/pattern-row-layout.tsx";
 import { m } from "#/paraglide/messages.js";

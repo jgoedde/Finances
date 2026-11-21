@@ -3,8 +3,13 @@ import {
     type RouteIds,
     useMatches,
 } from "@tanstack/react-router";
-import { ChartPie, ReceiptText, Repeat } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import ChartPie from "~icons/material-symbols/pie-chart-outline-rounded";
+import ChartPieFilled from "~icons/material-symbols/pie-chart-rounded";
+import ReceiptText from "~icons/material-symbols/receipt-long-outline-rounded";
+import ReceiptTextFilled from "~icons/material-symbols/receipt-long-rounded";
+import Repeat from "~icons/material-symbols/event-repeat-outline-rounded";
+import RepeatFilled from "~icons/material-symbols/event-repeat-rounded";
+import type { IconComponent } from "#/lib/icon.ts";
 import { m } from "#/paraglide/messages.js";
 
 export type DestinationId =
@@ -38,7 +43,12 @@ export function useActiveDestination(): DestinationId | undefined {
 
 interface Destination {
     id: Exclude<DestinationId, "settings">;
-    icon: LucideIcon;
+    icon: IconComponent;
+
+    /**
+     * Filled variant, shown while the destination is active.
+     */
+    activeIcon: IconComponent;
     label: () => string;
 }
 
@@ -46,7 +56,22 @@ interface Destination {
  * The top-level destinations; settings sit apart at the bottom.
  */
 export const DESTINATIONS: Destination[] = [
-    { id: "overview", icon: ChartPie, label: m.nav_overview },
-    { id: "transactions", icon: ReceiptText, label: m.nav_transactions },
-    { id: "fixedCosts", icon: Repeat, label: m.fixed_costs_title },
+    {
+        id: "overview",
+        icon: ChartPie,
+        activeIcon: ChartPieFilled,
+        label: m.nav_overview,
+    },
+    {
+        id: "transactions",
+        icon: ReceiptText,
+        activeIcon: ReceiptTextFilled,
+        label: m.nav_transactions,
+    },
+    {
+        id: "fixedCosts",
+        icon: Repeat,
+        activeIcon: RepeatFilled,
+        label: m.fixed_costs_title,
+    },
 ];

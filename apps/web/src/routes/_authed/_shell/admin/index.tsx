@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Shapes } from "lucide-react";
+import Shapes from "~icons/material-symbols/category-outline-rounded";
 import { Button } from "#/components/ui/button.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";

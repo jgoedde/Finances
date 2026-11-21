@@ -1,9 +1,7 @@
 import * as React from "react";
-import {
-    ChevronDownIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-} from "lucide-react";
+import ChevronDownIcon from "~icons/material-symbols/keyboard-arrow-down-rounded";
+import ChevronLeftIcon from "~icons/material-symbols/chevron-left-rounded";
+import ChevronRightIcon from "~icons/material-symbols/chevron-right-rounded";
 import {
     type DayButton,
     DayPicker,

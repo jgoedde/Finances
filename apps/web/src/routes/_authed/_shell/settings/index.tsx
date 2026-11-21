@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ChangeEvent, useRef, useState } from "react";
-import { Download, Shapes, Upload } from "lucide-react";
+import Download from "~icons/material-symbols/download-rounded";
+import Shapes from "~icons/material-symbols/category-outline-rounded";
+import Upload from "~icons/material-symbols/upload-rounded";
 import { toast } from "sonner";
 import { TopAppBar } from "#/components/ui/top-app-bar.tsx";
 import { Card } from "#/components/ui/card.tsx";

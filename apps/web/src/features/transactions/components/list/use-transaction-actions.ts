@@ -1,7 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { Transaction } from "@finances/shared";
-import type { LucideIcon } from "lucide-react";
-import { Link, Trash, Unlink } from "lucide-react";
+import type { IconComponent } from "#/lib/icon.ts";
+import Link from "~icons/material-symbols/link-rounded";
+import Trash from "~icons/material-symbols/delete-outline-rounded";
+import Unlink from "~icons/material-symbols/link-off-rounded";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
@@ -17,7 +19,7 @@ import { m } from "#/paraglide/messages.js";
 
 export interface TransactionAction {
     label: string;
-    icon: LucideIcon;
+    icon: IconComponent;
     onSelect: VoidFunction;
 }
 

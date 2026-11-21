@@ -74,6 +74,7 @@
 /** @typedef {{}} Category_Fallback_HintInputs */
 /** @typedef {{}} Category_IconInputs */
 /** @typedef {{}} Category_Icon_NoneInputs */
+/** @typedef {{}} Category_Icon_None_HintInputs */
 /** @typedef {{}} Category_Icon_SearchInputs */
 /** @typedef {{}} Category_NameInputs */
 /** @typedef {{}} Category_Name_MissingInputs */
@@ -122,6 +123,7 @@
 /** @typedef {{}} Fixed_Cost_Interval_QuarterlyInputs */
 /** @typedef {{}} Fixed_Cost_Interval_YearlyInputs */
 /** @typedef {{}} Fixed_Cost_List_EmptyInputs */
+/** @typedef {{}} Fixed_Cost_List_Empty_HintInputs */
 /** @typedef {{}} Fixed_Cost_Monthly_TotalInputs */
 /** @typedef {{}} Fixed_Cost_NameInputs */
 /** @typedef {{}} Fixed_Cost_Name_PlaceholderInputs */
@@ -162,8 +164,10 @@
 /** @typedef {{}} Nav_LabelInputs */
 /** @typedef {{}} Nav_OverviewInputs */
 /** @typedef {{}} Nav_TransactionsInputs */
+/** @typedef {{}} Offline_TitleInputs */
 /** @typedef {{}} Offline_UnavailableInputs */
 /** @typedef {{}} Overview_Categories_EmptyInputs */
+/** @typedef {{}} Overview_Categories_Empty_HintInputs */
 /** @typedef {{}} Overview_Categories_HintInputs */
 /** @typedef {{}} Overview_Categories_TitleInputs */
 /** @typedef {{ count: NonNullable<unknown>, amount: NonNullable<unknown> }} Overview_ExceptionalInputs */
@@ -225,6 +229,7 @@
 /** @typedef {{}} Search_LabelInputs */
 /** @typedef {{}} Search_Load_MoreInputs */
 /** @typedef {{}} Search_No_ResultsInputs */
+/** @typedef {{}} Search_No_Results_HintInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
@@ -250,6 +255,8 @@
 /** @typedef {{ count: NonNullable<unknown> }} Sign_Out_Unsynced_ChangesInputs */
 /** @typedef {{}} Sync_Action_DeletedInputs */
 /** @typedef {{}} Sync_Action_SavedInputs */
+/** @typedef {{}} Sync_Empty_HintInputs */
+/** @typedef {{}} Sync_Empty_TitleInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_RejectedInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Sync_Indicator_SyncedInputs */
 /** @typedef {{}} Sync_Later_HintInputs */
@@ -307,12 +314,15 @@
 /** @typedef {{}} Transaction_FilterInputs */
 /** @typedef {{ category: NonNullable<unknown> }} Transaction_Filter_ActiveInputs */
 /** @typedef {{}} Transaction_Filter_AllInputs */
+/** @typedef {{}} Transaction_Filter_ClearInputs */
 /** @typedef {{}} Transaction_Income_DeletedInputs */
 /** @typedef {{ name: NonNullable<unknown> }} Transaction_Income_SavedInputs */
 /** @typedef {{ count: NonNullable<unknown>, name: NonNullable<unknown> }} Transaction_Incomes_SavedInputs */
 /** @typedef {{}} Transaction_Kind_Locked_AttachedInputs */
 /** @typedef {{}} Transaction_Kind_Locked_MainInputs */
 /** @typedef {{ period: NonNullable<unknown> }} Transaction_List_EmptyInputs */
+/** @typedef {{}} Transaction_List_Empty_TitleInputs */
+/** @typedef {{ category: NonNullable<unknown>, period: NonNullable<unknown> }} Transaction_List_Filtered_EmptyInputs */
 /** @typedef {{}} Transaction_List_LoadingInputs */
 /** @typedef {{}} Transaction_List_OfflineInputs */
 /** @typedef {{}} Transaction_List_UpcomingInputs */
@@ -630,7 +640,11 @@ export const category_icon = /** @type {(inputs: Category_IconInputs) => Localiz
 };
 
 export const category_icon_none = /** @type {(inputs: Category_Icon_NoneInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Kein passendes Icon.`)
+	return /** @type {LocalizedString} */ (`Kein passendes Icon`)
+};
+
+export const category_icon_none_hint = /** @type {(inputs: Category_Icon_None_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Versuch es mit einem anderen Begriff.`)
 };
 
 export const category_icon_search = /** @type {(inputs: Category_Icon_SearchInputs) => LocalizedString} */ () => {
@@ -822,7 +836,11 @@ export const fixed_cost_interval_yearly = /** @type {(inputs: Fixed_Cost_Interva
 };
 
 export const fixed_cost_list_empty = /** @type {(inputs: Fixed_Cost_List_EmptyInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Noch keine Fixkosten.`)
+	return /** @type {LocalizedString} */ (`Noch keine Fixkosten`)
+};
+
+export const fixed_cost_list_empty_hint = /** @type {(inputs: Fixed_Cost_List_Empty_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Erfasse Miete, Abos und Versicherungen, um zu sehen, was jeden Monat fest weggeht.`)
 };
 
 export const fixed_cost_monthly_total = /** @type {(inputs: Fixed_Cost_Monthly_TotalInputs) => LocalizedString} */ () => {
@@ -985,12 +1003,20 @@ export const nav_transactions = /** @type {(inputs: Nav_TransactionsInputs) => L
 	return /** @type {LocalizedString} */ (`Geldbewegungen`)
 };
 
+export const offline_title = /** @type {(inputs: Offline_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Du bist offline`)
+};
+
 export const offline_unavailable = /** @type {(inputs: Offline_UnavailableInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Offline nicht verfügbar`)
 };
 
 export const overview_categories_empty = /** @type {(inputs: Overview_Categories_EmptyInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Keine Ausgaben in diesem Monat`)
+};
+
+export const overview_categories_empty_hint = /** @type {(inputs: Overview_Categories_Empty_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Sobald du Ausgaben erfasst, siehst du hier, wohin dein Geld fließt.`)
 };
 
 export const overview_categories_hint = /** @type {(inputs: Overview_Categories_HintInputs) => LocalizedString} */ () => {
@@ -1243,6 +1269,10 @@ export const search_no_results = /** @type {(inputs: Search_No_ResultsInputs) =>
 	return /** @type {LocalizedString} */ (`Keine Ergebnisse`)
 };
 
+export const search_no_results_hint = /** @type {(inputs: Search_No_Results_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Probier einen anderen Suchbegriff oder Zeitraum.`)
+};
+
 export const search_offline = /** @type {(inputs: Search_OfflineInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Die Suche ist offline nicht verfügbar.`)
 };
@@ -1344,6 +1374,14 @@ export const sync_action_deleted = /** @type {(inputs: Sync_Action_DeletedInputs
 
 export const sync_action_saved = /** @type {(inputs: Sync_Action_SavedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Gespeichert`)
+};
+
+export const sync_empty_hint = /** @type {(inputs: Sync_Empty_HintInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Alle Änderungen sind auf dem Server gespeichert.`)
+};
+
+export const sync_empty_title = /** @type {(inputs: Sync_Empty_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Keine offenen Änderungen`)
 };
 
 export const sync_indicator_rejected = /** @type {(inputs: Sync_Indicator_RejectedInputs) => LocalizedString} */ (i) => {
@@ -1580,6 +1618,10 @@ export const transaction_filter_all = /** @type {(inputs: Transaction_Filter_All
 	return /** @type {LocalizedString} */ (`Alle Kategorien`)
 };
 
+export const transaction_filter_clear = /** @type {(inputs: Transaction_Filter_ClearInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Filter entfernen`)
+};
+
 export const transaction_income_deleted = /** @type {(inputs: Transaction_Income_DeletedInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Die Einnahme wurde gelöscht.`)
 };
@@ -1601,7 +1643,15 @@ export const transaction_kind_locked_main = /** @type {(inputs: Transaction_Kind
 };
 
 export const transaction_list_empty = /** @type {(inputs: Transaction_List_EmptyInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`Keine Geldbewegungen für ${i?.period}`)
+	return /** @type {LocalizedString} */ (`Für ${i?.period} ist noch nichts erfasst.`)
+};
+
+export const transaction_list_empty_title = /** @type {(inputs: Transaction_List_Empty_TitleInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Keine Geldbewegungen`)
+};
+
+export const transaction_list_filtered_empty = /** @type {(inputs: Transaction_List_Filtered_EmptyInputs) => LocalizedString} */ (i) => {
+	return /** @type {LocalizedString} */ (`Keine Geldbewegungen in ${i?.category} für ${i?.period}.`)
 };
 
 export const transaction_list_loading = /** @type {(inputs: Transaction_List_LoadingInputs) => LocalizedString} */ () => {
@@ -1609,7 +1659,7 @@ export const transaction_list_loading = /** @type {(inputs: Transaction_List_Loa
 };
 
 export const transaction_list_offline = /** @type {(inputs: Transaction_List_OfflineInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Offline – dieser Monat wurde noch nicht geladen`)
+	return /** @type {LocalizedString} */ (`Dieser Monat wurde noch nicht geladen.`)
 };
 
 export const transaction_list_upcoming = /** @type {(inputs: Transaction_List_UpcomingInputs) => LocalizedString} */ () => {

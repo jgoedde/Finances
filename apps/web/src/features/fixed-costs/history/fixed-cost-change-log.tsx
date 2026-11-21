@@ -4,7 +4,7 @@ import {
     formatCurrency,
     formatMonthYear,
 } from "@finances/shared";
-import { ChevronDown } from "lucide-react";
+import ChevronDown from "~icons/material-symbols/keyboard-arrow-down-rounded";
 import {
     Table,
     TableBody,

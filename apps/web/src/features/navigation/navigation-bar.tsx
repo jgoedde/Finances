@@ -1,6 +1,7 @@
 import { DestinationLink } from "#/features/navigation/destination-link.tsx";
 import { ActiveIndicator } from "#/features/navigation/active-indicator.tsx";
 import { DESTINATIONS } from "#/features/navigation/destinations.ts";
+import { DestinationIcon } from "#/features/navigation/destination-icon.tsx";
 import { m } from "#/paraglide/messages.js";
 
 // https://m3.material.io/components/navigation-bar/specs
@@ -11,7 +12,7 @@ export function NavigationBar() {
             className={`fixed inset-x-0 bottom-0 z-20 flex bg-surface-container
                 pb-[env(safe-area-inset-bottom)] medium:hidden`}
         >
-            {DESTINATIONS.map(({ id, icon: Icon, label }) => (
+            {DESTINATIONS.map(({ id, icon, activeIcon, label }) => (
                 <DestinationLink
                     key={id}
                     id={id}
@@ -21,7 +22,7 @@ export function NavigationBar() {
                     data-active:text-on-surface`}
                 >
                     <ActiveIndicator className={"w-16"}>
-                        <Icon />
+                        <DestinationIcon icon={icon} activeIcon={activeIcon} />
                     </ActiveIndicator>
                     <span className={"max-w-full truncate px-1"}>
                         {label()}

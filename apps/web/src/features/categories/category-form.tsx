@@ -1,6 +1,14 @@
 import { type SubmitEvent, useId, useState } from "react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import ImageSearchIcon from "~icons/material-symbols/image-search-rounded";
 import { Button } from "#/components/ui/button.tsx";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "#/components/ui/empty.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import { Input } from "#/components/ui/input.tsx";
 import {
@@ -184,13 +192,17 @@ export function CategoryForm({
                         ))}
                     </RadioGroup>
                 ) : (
-                    <p
-                        className={
-                            "px-4 text-body-medium text-on-surface-variant"
-                        }
-                    >
-                        {m.category_icon_none()}
-                    </p>
+                    <Empty size={"compact"}>
+                        <EmptyHeader>
+                            <EmptyMedia>
+                                <ImageSearchIcon />
+                            </EmptyMedia>
+                            <EmptyTitle>{m.category_icon_none()}</EmptyTitle>
+                            <EmptyDescription>
+                                {m.category_icon_none_hint()}
+                            </EmptyDescription>
+                        </EmptyHeader>
+                    </Empty>
                 )}
             </Field>
 

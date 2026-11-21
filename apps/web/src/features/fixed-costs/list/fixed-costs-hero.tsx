@@ -1,6 +1,6 @@
 import { formatCurrency, formatMonthYear } from "@finances/shared";
 import { Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import Plus from "~icons/material-symbols/add-rounded";
 import { Button } from "#/components/ui/button.tsx";
 import { Card } from "#/components/ui/card.tsx";
 import { useFixedCostHistory } from "#/features/fixed-costs/fixed-cost-queries.ts";

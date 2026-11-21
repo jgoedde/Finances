@@ -1,4 +1,4 @@
-import { formatMonthYear, type Transaction } from "@finances/shared";
+import type { Transaction } from "@finances/shared";
 import { addDays, isSameMonth, startOfDay } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
@@ -11,8 +11,9 @@ import { TransactionGroup } from "#/features/transactions/components/list/transa
 import { UpcomingTransactions } from "#/features/transactions/components/list/upcoming-transactions.tsx";
 import { useMonthLanding } from "#/features/transactions/components/list/month-landing.ts";
 import { TransactionListSkeleton } from "#/features/transactions/components/list/transaction-list-skeleton.tsx";
+import { TransactionListEmpty } from "#/features/transactions/components/list/transaction-list-empty.tsx";
+import { OfflineEmpty } from "#/components/offline-empty.tsx";
 import { m } from "#/paraglide/messages.js";
-import { getLocale } from "#/paraglide/runtime.js";
 import { groupByDay } from "#/features/transactions/utils/transaction-utils.ts";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
@@ -62,27 +63,13 @@ export function TransactionList() {
     if (isPending) {
         // A paused query only resumes once the device is back online.
         return fetchStatus === "paused" ? (
-            <p
-                className={`my-8 text-center text-body-medium
-                    text-on-surface-variant`}
-            >
-                {m.transaction_list_offline()}
-            </p>
+            <OfflineEmpty description={m.transaction_list_offline()} />
         ) : (
             <TransactionListSkeleton />
         );
     }
     if (transactions.length === 0 && upcoming.length === 0) {
-        return (
-            <p
-                className={`my-8 text-center text-body-medium
-                    text-on-surface-variant`}
-            >
-                {m.transaction_list_empty({
-                    period: formatMonthYear(month, getLocale()),
-                })}
-            </p>
-        );
+        return <TransactionListEmpty month={month} category={category} />;
     }
     return (
         <div className={"flex flex-col"}>

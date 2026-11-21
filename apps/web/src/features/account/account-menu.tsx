@@ -1,14 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-    CircleAlert,
-    CloudCheck,
-    CloudOff,
-    LogOut,
-    RefreshCw,
-    Settings,
-    ShieldCheck,
-} from "lucide-react";
+import CircleAlert from "~icons/material-symbols/error-outline-rounded";
+import CloudCheck from "~icons/material-symbols/cloud-done-outline-rounded";
+import CloudOff from "~icons/material-symbols/cloud-off-outline-rounded";
+import LogOut from "~icons/material-symbols/logout-rounded";
+import RefreshCw from "~icons/material-symbols/sync-rounded";
+import Settings from "~icons/material-symbols/settings-outline-rounded";
+import ShieldCheck from "~icons/material-symbols/admin-panel-settings-outline-rounded";
 import {
     DropdownMenu,
     DropdownMenuContent,

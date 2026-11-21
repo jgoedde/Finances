@@ -1,9 +1,10 @@
 import { useRipple } from "#/hooks/use-ripple.ts";
 import { cva } from "class-variance-authority";
-import type { ComponentProps, ReactNode } from "react";
-import { DynamicIcon } from "lucide-react/dynamic";
+import type { ReactNode } from "react";
+import CheckIcon from "~icons/material-symbols/check-rounded";
 import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
+import type { IconComponent } from "#/lib/icon.ts";
 import * as haptics from "#/lib/haptics.ts";
 
 // MD3 segmented button (https://m3.material.io/components/segmented-buttons/specs).
@@ -34,7 +35,7 @@ const segmentedButton = cva(
 interface SegmentedButtonOption {
     label: ReactNode;
     value: string;
-    icon?: ComponentProps<typeof DynamicIcon>["name"];
+    icon?: IconComponent;
 }
 
 function getPosition(index: number, count: number) {
@@ -62,7 +63,7 @@ export function SegmentedButton({
         <div role={"group"} className={cn("flex", className)}>
             {options.map((option, idx) => {
                 const isSelected = value === option.value;
-                const icon = isSelected ? "check" : option.icon;
+                const Icon = isSelected ? CheckIcon : option.icon;
 
                 return (
                     <button
@@ -89,12 +90,7 @@ export function SegmentedButton({
                             ripple.onClick(e);
                         }}
                     >
-                        {icon && (
-                            <DynamicIcon
-                                className={"size-[18px] shrink-0"}
-                                name={icon}
-                            />
-                        )}
+                        {Icon && <Icon className={"size-[18px] shrink-0"} />}
                         <span>{option.label}</span>
                     </button>
                 );

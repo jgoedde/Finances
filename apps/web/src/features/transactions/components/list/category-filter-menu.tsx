@@ -1,6 +1,6 @@
 import { formatCurrency } from "@finances/shared";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
-import { Filter } from "lucide-react";
+import Filter from "~icons/material-symbols/filter-list-rounded";
 import { Button } from "#/components/ui/button.tsx";
 import {
     DropdownMenu,

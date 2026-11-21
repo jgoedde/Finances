@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type SubmitEvent, useState } from "react";
-import { Check } from "lucide-react";
+import Check from "~icons/material-symbols/check-rounded";
 import { toast } from "sonner";
 import type { LinkInfo, RedeemLinkInput } from "@finances/shared";
 import { apiFetch } from "#/api/api-client.ts";
