@@ -424,5 +424,14 @@
     "category_delete_failed": "{name} couldn't be deleted. Please try again.",
     "api_error_category_name_taken": "A category with this name already exists.",
     "api_error_category_in_use": "The category has transactions. Choose where they move.",
-    "api_error_fallback_category": "Other can't be renamed or deleted."
+    "api_error_fallback_category": "Other can't be renamed or deleted.",
+
+    "admin_title": "Administration",
+    "settings_admin_description": "Manage what applies to everyone on this instance.",
+    "settings_admin_open": "Open administration",
+    "admin_default_categories_title": "Default categories",
+    "admin_default_categories_description": "Choose the categories every new user starts with.",
+    "admin_default_categories_open": "Manage default categories",
+    "admin_default_categories_hint": "New users get a copy of these categories. Changes don't affect existing users.",
+    "admin_default_category_delete_description": "New users won't get this category anymore. Existing users keep theirs."
 }

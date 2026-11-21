@@ -6,6 +6,7 @@ import {
     categoryRoutes,
     fixedCostCategoryRoutes,
 } from "./features/categories/routes.ts";
+import { defaultCategoryRoutes } from "./features/default-categories/routes.ts";
 import { dataTransferRoutes } from "./features/data-transfer/routes.ts";
 import { fixedCostRoutes } from "./features/fixed-costs/routes.ts";
 import { insightRoutes } from "./features/insights/routes.ts";
@@ -52,6 +53,7 @@ export function createApp(db: DB, auth: Auth) {
 
     app.use("/admin/*", requireUser, requireAdmin);
     app.route("/admin", adminLinkRoutes);
+    app.route("/admin/default-categories", defaultCategoryRoutes);
 
     return app;
 }

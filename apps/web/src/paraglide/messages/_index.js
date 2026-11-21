@@ -26,6 +26,12 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Action_Sign_OutInputs */
 /** @typedef {{}} Action_UndoInputs */
 /** @typedef {{}} Action_UpdateInputs */
+/** @typedef {{}} Admin_Default_Categories_DescriptionInputs */
+/** @typedef {{}} Admin_Default_Categories_HintInputs */
+/** @typedef {{}} Admin_Default_Categories_OpenInputs */
+/** @typedef {{}} Admin_Default_Categories_TitleInputs */
+/** @typedef {{}} Admin_Default_Category_Delete_DescriptionInputs */
+/** @typedef {{}} Admin_TitleInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Amount_Sparkline_SinceInputs */
 /** @typedef {{}} Amount_Sparkline_Since_StartInputs */
 /** @typedef {{}} Amount_Sparkline_UpcomingInputs */
@@ -224,6 +230,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
 /** @typedef {{}} Search_Show_In_MonthInputs */
+/** @typedef {{}} Settings_Admin_DescriptionInputs */
+/** @typedef {{}} Settings_Admin_OpenInputs */
 /** @typedef {{}} Settings_Categories_DescriptionInputs */
 /** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
@@ -664,6 +672,90 @@ export const action_update = /** @type {((inputs?: Action_UpdateInputs, options?
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.action_update(inputs)
 	return __en.action_update(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Choose the categories every new user starts with." |
+*
+* @param {Admin_Default_Categories_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_default_categories_description = /** @type {((inputs?: Admin_Default_Categories_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_Default_Categories_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_default_categories_description(inputs)
+	return __en.admin_default_categories_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "New users get a copy of these categories. Changes don't affect existing users." |
+*
+* @param {Admin_Default_Categories_HintInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_default_categories_hint = /** @type {((inputs?: Admin_Default_Categories_HintInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_Default_Categories_HintInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_default_categories_hint(inputs)
+	return __en.admin_default_categories_hint(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Manage default categories" |
+*
+* @param {Admin_Default_Categories_OpenInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_default_categories_open = /** @type {((inputs?: Admin_Default_Categories_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_Default_Categories_OpenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_default_categories_open(inputs)
+	return __en.admin_default_categories_open(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Default categories" |
+*
+* @param {Admin_Default_Categories_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_default_categories_title = /** @type {((inputs?: Admin_Default_Categories_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_Default_Categories_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_default_categories_title(inputs)
+	return __en.admin_default_categories_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "New users won't get this category anymore. Existing users keep theirs." |
+*
+* @param {Admin_Default_Category_Delete_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_default_category_delete_description = /** @type {((inputs?: Admin_Default_Category_Delete_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_Default_Category_Delete_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_default_category_delete_description(inputs)
+	return __en.admin_default_category_delete_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Administration" |
+*
+* @param {Admin_TitleInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const admin_title = /** @type {((inputs?: Admin_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Admin_TitleInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.admin_title(inputs)
+	return __en.admin_title(inputs)
 });
 /**
 * | output |
@@ -3439,6 +3531,34 @@ export const search_show_in_month = /** @type {((inputs?: Search_Show_In_MonthIn
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.search_show_in_month(inputs)
 	return __en.search_show_in_month(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Manage what applies to everyone on this instance." |
+*
+* @param {Settings_Admin_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_admin_description = /** @type {((inputs?: Settings_Admin_DescriptionInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Admin_DescriptionInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_admin_description(inputs)
+	return __en.settings_admin_description(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Open administration" |
+*
+* @param {Settings_Admin_OpenInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const settings_admin_open = /** @type {((inputs?: Settings_Admin_OpenInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Settings_Admin_OpenInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.settings_admin_open(inputs)
+	return __en.settings_admin_open(inputs)
 });
 /**
 * | output |

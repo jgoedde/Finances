@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { sql } from "kysely";
 import {
     type Category,
+    type DefaultCategory,
     FALLBACK_CATEGORIES,
     type FixedCost,
     type FixedCostCategory,
@@ -14,9 +15,20 @@ import type { DB } from "#/db/database.ts";
 import { createTestApp, json, transactionBody } from "./test-app.ts";
 
 /**
+ * Back to the schema before `0009-default-categories`.
+ */
+async function undoDefaultCategories(db: DB) {
+    await sql`drop table default_categories`.execute(db);
+    await sql`delete from kysely_migration where name = '0009-default-categories'`.execute(
+        db,
+    );
+}
+
+/**
  * Back to the schema before `0008-transaction-main-expense`.
  */
 async function undoMainExpense(db: DB) {
+    await undoDefaultCategories(db);
     await sql`drop index transactions_main_expense`.execute(db);
     await sql`alter table transactions drop column main_expense_id`.execute(db);
     await sql`delete from kysely_migration where name = '0008-transaction-main-expense'`.execute(
@@ -172,6 +184,37 @@ describe("migrations", () => {
             initialAmount: 500,
             priceChanges: [],
         });
+        await after.db.destroy();
+    });
+
+    it("fills the default categories with the categories new users got before", async () => {
+        const filename = join(dir, "finances.db");
+        const before = await createTestApp({ filename });
+        await before.signUp("admin", "admin");
+        await undoDefaultCategories(before.db);
+        await before.db.destroy();
+
+        const after = await createTestApp({ filename });
+        const admin = await after.login("admin");
+        const defaults = await json<DefaultCategory[]>(
+            admin("/api/admin/default-categories"),
+        );
+        expect(
+            defaults
+                .map((d) => [d.id, d.kind, d.name, d.color, d.iconName])
+                .sort((a, b) => Number(a[0]) - Number(b[0])),
+        ).toEqual([
+            ["1", "expense", "Auswärts essen", "#00202e", "utensils"],
+            ["2", "expense", "Einkäufe", "#2c4875", "shopping-basket"],
+            ["3", "expense", "Geschenke", "#8a508f", "gift"],
+            ["4", "expense", "Gesundheit", "#bc5090", "heart"],
+            ["5", "expense", "Kleidung", "#ff8531", "shirt"],
+            ["6", "expense", "Freizeit", "#ffa600", "joystick"],
+            ["7", "expense", "Urlaub", "#80d353", "plane"],
+            ["8", "expense", "Büro/Arbeit", "#609f3f", "lamp-desk"],
+            ["9", "expense", "Snacks", "#D8DC6A", "popcorn"],
+            ["10", "expense", "Wohnung", "#ff6361", "sofa"],
+        ]);
         await after.db.destroy();
     });
 

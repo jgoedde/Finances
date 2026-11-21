@@ -11,6 +11,7 @@ import { up as fixedCostCategoryHue } from "./migrations/0005-fixed-cost-categor
 import { up as categoryKinds } from "./migrations/0006-category-kinds.ts";
 import { up as categoryStylesRepeat } from "./migrations/0007-category-styles-repeat.ts";
 import { up as transactionMainExpense } from "./migrations/0008-transaction-main-expense.ts";
+import { up as defaultCategories } from "./migrations/0009-default-categories.ts";
 
 // Append new migrations here. Never edit or reorder applied ones.
 const migrations: Record<string, Migration> = {
@@ -22,6 +23,7 @@ const migrations: Record<string, Migration> = {
     "0006-category-kinds": { up: categoryKinds },
     "0007-category-styles-repeat": { up: categoryStylesRepeat },
     "0008-transaction-main-expense": { up: transactionMainExpense },
+    "0009-default-categories": { up: defaultCategories },
 };
 
 /**

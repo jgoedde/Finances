@@ -93,3 +93,12 @@ export interface CategoryUsage {
      */
     transactions: number;
 }
+
+/**
+ * A category an admin maintains for the instance; every new user starts with
+ * a copy of each (ADR 0007). Never a fallback category.
+ */
+export const defaultCategorySchema = categoryInputSchema.extend({
+    id: z.string(),
+});
+export type DefaultCategory = z.infer<typeof defaultCategorySchema>;
