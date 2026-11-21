@@ -1,9 +1,7 @@
 import type { Ref } from "react";
-import CheckIcon from "~icons/material-symbols/check-rounded";
 import type { Category } from "@finances/shared";
-import { FilterChip } from "#/components/ui/badge.tsx";
+import { FilterChip } from "#/components/ui/chip.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
-import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 import { getCategoryName } from "#/features/transactions/utils/transaction-utils.ts";
 
@@ -49,11 +47,9 @@ export function CategoryChips({
                         <FilterChip
                             key={category.id}
                             selected={isSelected}
-                            className={cn(
-                                "pl-2",
-                                isSelected &&
-                                    "border-transparent text-on-surface",
-                            )}
+                            className={
+                                "pl-2 aria-pressed:text-on-surface aria-pressed:[&_svg]:text-on-surface"
+                            }
                             style={
                                 isSelected
                                     ? {
@@ -63,9 +59,7 @@ export function CategoryChips({
                             }
                             onSelect={() => onSelect(category.id)}
                         >
-                            {isSelected ? (
-                                <CheckIcon aria-hidden />
-                            ) : (
+                            {!isSelected && (
                                 <span
                                     aria-hidden
                                     className={"mx-1 size-2.5 rounded-full"}

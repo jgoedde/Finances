@@ -8,10 +8,9 @@ import {
     type TransactionKind,
 } from "@finances/shared";
 import { Input } from "#/components/ui/input.tsx";
-import { Badge } from "#/components/ui/badge.tsx";
 import { Button } from "#/components/ui/button.tsx";
+import { SuggestionChip } from "#/components/ui/chip.tsx";
 import { Field, FieldLabel } from "#/components/ui/field.tsx";
-import { useRipple } from "#/hooks/use-ripple.ts";
 import { m } from "#/paraglide/messages.js";
 
 const now = new Date();
@@ -119,8 +118,6 @@ export function CounterpartyHints({
             .slice(0, SUGGESTION_COUNT);
     }, [value, counterparties, fuse, match]);
 
-    const ripple = useRipple();
-
     return (
         <>
             {error !== undefined && (
@@ -152,43 +149,29 @@ export function CounterpartyHints({
                 (shouldShowSuggestions && suggestions.length > 0)) && (
                 <div className={"flex flex-wrap gap-2"}>
                     {match !== undefined && (
-                        <Badge asChild variant={"md3"}>
-                            <button
-                                type={"button"}
-                                aria-label={m.transaction_counterparty_use({
-                                    name: match.name,
-                                })}
-                                className={`border-transparent
-                                bg-secondary-container
-                                text-on-secondary-container`}
-                                onClick={onAcceptMatch}
-                            >
-                                <SparklesIcon aria-hidden />
-                                {`${match.name}?`}
-                            </button>
-                        </Badge>
+                        <SuggestionChip
+                            aria-label={m.transaction_counterparty_use({
+                                name: match.name,
+                            })}
+                            icon={SparklesIcon}
+                            className={`border-transparent
+                            bg-secondary-container text-on-secondary-container
+                            [&_svg]:text-on-secondary-container`}
+                            onClick={onAcceptMatch}
+                        >
+                            {`${match.name}?`}
+                        </SuggestionChip>
                     )}
                     {shouldShowSuggestions &&
                         suggestions.map((suggestion) => (
-                            <button
+                            <SuggestionChip
                                 key={suggestion.name}
                                 tabIndex={-1}
                                 aria-hidden="true"
-                                className={`ripple-container state-layer h-8
-                                cursor-pointer rounded-sm border
-                                border-outline-variant px-4 text-label-large
-                                text-on-surface-variant`}
-                                data-ripple-color={"bg-on-surface/50"}
-                                {...ripple}
-                                type={"button"}
-                                onClick={(event) => {
-                                    ripple.onClick(event);
-
-                                    onPick(suggestion.name);
-                                }}
+                                onClick={() => onPick(suggestion.name)}
                             >
                                 {suggestion.name}
-                            </button>
+                            </SuggestionChip>
                         ))}
                 </div>
             )}

@@ -8,7 +8,7 @@ import {
 } from "#/features/search/filters/date/date-filter.ts";
 import { Drawer, DrawerContent } from "#/components/ui/drawer.tsx";
 import { DateFilterDrawerContent } from "#/features/search/filters/date/date-filter-drawer-content.tsx";
-import { Badge } from "#/components/ui/badge.tsx";
+import { FilterChip } from "#/components/ui/chip.tsx";
 import { Button } from "#/components/ui/button.tsx";
 import { groupByDay } from "#/features/transactions/utils/transaction-utils.ts";
 import { TransactionGroup } from "#/features/transactions/components/list/transaction-group.tsx";
@@ -25,7 +25,6 @@ import {
     EmptyTitle,
 } from "#/components/ui/empty.tsx";
 import SearchOffIcon from "~icons/material-symbols/search-off-rounded";
-import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
 const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
@@ -83,23 +82,17 @@ export function SearchResults() {
                 >
                     {m.search_all_months()}
                 </span>
-                <Badge
-                    asChild
-                    variant={"md3"}
-                    className={cn(
-                        dateFilterOption !== "any" &&
-                            `border-transparent bg-secondary-container
-                            text-on-secondary-container`,
-                    )}
-                    onClick={() => setIsDrawerOpen(true)}
+                {/* Opens the period drawer, whether a period is set or not. */}
+                <FilterChip
+                    selected={dateFilterOption !== "any"}
+                    trailingIcon={ChevronDown}
+                    onSelect={() => setIsDrawerOpen(true)}
+                    onDeselect={() => setIsDrawerOpen(true)}
                 >
-                    <button type={"button"}>
-                        {dateFilterOption === "any"
-                            ? m.period()
-                            : getDateFilterStr(dateFilterOption)}
-                        <ChevronDown />
-                    </button>
-                </Badge>
+                    {dateFilterOption === "any"
+                        ? m.period()
+                        : getDateFilterStr(dateFilterOption)}
+                </FilterChip>
             </div>
             {!isOnline && !data && (
                 <OfflineEmpty description={m.search_offline()} />
