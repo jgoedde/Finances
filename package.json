@@ -33,7 +33,8 @@
         "check:web": "npm run format:check:web && npm run lint:web && npm run build:web && npm run test:web",
         "check:api": "npm run format:check:api && npm run lint:api && npm run build:api && npm run test:api",
         "check:shared": "npm run format:check:shared && npm run lint:shared && npm run build:shared && npm run test:shared",
-        "knip:check": "knip"
+        "knip:check": "knip",
+        "mock-data": "node docs/screenshots/generate-mock-data.mjs"
     },
     "overrides": {
         "react-is": "^19.0.0-rc-69d4b800-20241021"
