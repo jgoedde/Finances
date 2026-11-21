@@ -39,6 +39,12 @@ function AlertDialogOverlay({
     );
 }
 
+/**
+ * Matches the exit animation of `AlertDialogContent` (`duration-200`), e.g.
+ * to unmount a dialog only once it is gone.
+ */
+const ALERT_DIALOG_EXIT_MS = 200;
+
 function AlertDialogContent({
     className,
     onOverlayClick,
@@ -153,6 +159,7 @@ function AlertDialogCancel({
 }
 
 export {
+    ALERT_DIALOG_EXIT_MS,
     AlertDialog,
     AlertDialogContent,
     AlertDialogHeader,

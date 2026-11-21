@@ -2,11 +2,15 @@ import { useRipple } from "#/hooks/use-ripple.ts";
 import { cva } from "class-variance-authority";
 import type { ComponentProps, ReactNode } from "react";
 import { DynamicIcon } from "lucide-react/dynamic";
+import { outlinedDisabledClassName } from "#/components/ui/disabled-styles.ts";
 import { cn } from "#/lib/cn.ts";
 
 // MD3 segmented button (https://m3.material.io/components/segmented-buttons/specs).
 const segmentedButton = cva(
-    "ripple-container state-layer focus-ring flex h-10 min-w-12 flex-1 cursor-pointer items-center justify-center gap-x-2 border border-outline px-3 text-label-large outline-none transition-colors duration-200 ease-standard disabled:pointer-events-none disabled:border-on-surface/12 disabled:text-on-surface/38",
+    [
+        outlinedDisabledClassName,
+        "ripple-container state-layer focus-ring flex h-10 min-w-12 flex-1 cursor-pointer items-center justify-center gap-x-2 border border-outline px-3 text-label-large outline-none transition-colors duration-200 ease-standard",
+    ],
     {
         variants: {
             selected: {

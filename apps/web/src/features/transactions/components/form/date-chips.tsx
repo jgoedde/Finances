@@ -4,7 +4,7 @@ import { isToday, isYesterday, subDays } from "date-fns";
 import { formatShortDate } from "@finances/shared";
 import { Badge } from "#/components/ui/badge.tsx";
 import { Calendar } from "#/components/ui/calendar.tsx";
-import { Field, FieldLabel } from "#/components/ui/field.tsx";
+import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import {
     Popover,
     PopoverContent,
@@ -120,11 +120,7 @@ export function DateChips({
                     </PopoverContent>
                 </Popover>
             </div>
-            {hint !== undefined && (
-                <p className={"px-4 text-body-small text-on-surface-variant"}>
-                    {hint}
-                </p>
-            )}
+            {hint !== undefined && <FieldDescription>{hint}</FieldDescription>}
         </Field>
     );
 }

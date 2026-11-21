@@ -1,6 +1,7 @@
 import { createCallable } from "react-call";
 import { formatCurrency, type Transaction } from "@finances/shared";
 import {
+    ALERT_DIALOG_EXIT_MS,
     AlertDialog,
     AlertDialogCancel,
     AlertDialogContent,
@@ -11,11 +12,6 @@ import {
 } from "#/components/ui/alert-dialog.tsx";
 import { m } from "#/paraglide/messages.js";
 import { getLocale } from "#/paraglide/runtime.js";
-
-/**
- * Matches the exit animation of `AlertDialogContent`.
- */
-const UNMOUNTING_DELAY_MS = 200;
 
 interface MainExpensePickerProps {
     /**
@@ -110,7 +106,7 @@ export const MainExpensePicker = createCallable<
             </AlertDialogContent>
         </AlertDialog>
     ),
-    UNMOUNTING_DELAY_MS,
+    ALERT_DIALOG_EXIT_MS,
 );
 
 /**
