@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CalendarIcon, CheckIcon } from "lucide-react";
 import { isToday, isYesterday, subDays } from "date-fns";
 import { formatShortDate } from "@finances/shared";
-import { Badge } from "#/components/ui/badge.tsx";
+import { Badge, FilterChip } from "#/components/ui/badge.tsx";
 import { Calendar } from "#/components/ui/calendar.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/components/ui/field.tsx";
 import {
@@ -49,38 +49,27 @@ export function DateChips({
                 aria-labelledby={"date-label"}
                 className={"flex flex-wrap gap-2"}
             >
-                <Badge asChild variant={"md3"}>
-                    <button
-                        type={"button"}
-                        disabled={disabled}
-                        aria-pressed={isToday(date)}
-                        className={cn(
-                            isToday(date) && SELECTED_CHIP_CLASS_NAME,
-                        )}
-                        // Keeps the time of a date that already is today.
-                        onClick={() => !isToday(date) && onChange(new Date())}
-                    >
-                        {isToday(date) && <CheckIcon aria-hidden />}
-                        {m.transaction_date_today()}
-                    </button>
-                </Badge>
-                <Badge asChild variant={"md3"}>
-                    <button
-                        type={"button"}
-                        disabled={disabled}
-                        aria-pressed={isYesterday(date)}
-                        className={cn(
-                            isYesterday(date) && SELECTED_CHIP_CLASS_NAME,
-                        )}
-                        onClick={() =>
-                            !isYesterday(date) &&
-                            onChange(subDays(new Date(), 1))
-                        }
-                    >
-                        {isYesterday(date) && <CheckIcon aria-hidden />}
-                        {m.transaction_date_yesterday()}
-                    </button>
-                </Badge>
+                {/* Tapping a selected chip keeps the date and its time. */}
+                <FilterChip
+                    disabled={disabled}
+                    selected={isToday(date)}
+                    className={cn(isToday(date) && SELECTED_CHIP_CLASS_NAME)}
+                    onSelect={() => onChange(new Date())}
+                >
+                    {isToday(date) && <CheckIcon aria-hidden />}
+                    {m.transaction_date_today()}
+                </FilterChip>
+                <FilterChip
+                    disabled={disabled}
+                    selected={isYesterday(date)}
+                    className={cn(
+                        isYesterday(date) && SELECTED_CHIP_CLASS_NAME,
+                    )}
+                    onSelect={() => onChange(subDays(new Date(), 1))}
+                >
+                    {isYesterday(date) && <CheckIcon aria-hidden />}
+                    {m.transaction_date_yesterday()}
+                </FilterChip>
                 <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                         <Badge asChild variant={"md3"}>

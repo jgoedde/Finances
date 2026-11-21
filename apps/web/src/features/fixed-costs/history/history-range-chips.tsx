@@ -1,3 +1,4 @@
+import { FilterChip } from "#/components/ui/badge.tsx";
 import { cn } from "#/lib/cn.ts";
 import { m } from "#/paraglide/messages.js";
 
@@ -38,21 +39,19 @@ export function HistoryRangeChips({
         >
             <span className={"grow"}>{firstMonthLabel}</span>
             {Object.entries(HISTORY_RANGES).map(([key, it]) => (
-                <button
+                <FilterChip
                     key={key}
-                    type={"button"}
-                    aria-pressed={range === key}
+                    selected={range === key}
                     className={cn(
-                        `state-layer rounded-full px-3 py-1 text-label-medium
-                        focus-ring`,
-                        range === key
-                            ? "bg-tertiary-container text-on-tertiary-container"
-                            : "text-on-surface-variant",
+                        `h-auto rounded-full border-transparent px-3 py-1
+                        text-label-medium`,
+                        range === key &&
+                            "bg-tertiary-container text-on-tertiary-container",
                     )}
-                    onClick={() => onChange(key as HistoryRange)}
+                    onSelect={() => onChange(key as HistoryRange)}
                 >
                     {it.label()}
-                </button>
+                </FilterChip>
             ))}
         </div>
     );

@@ -36,22 +36,10 @@ const badgeVariants = cva(
     },
 );
 
-/**
- * A filter chip toggles (`aria-pressed`); a chip that opens a popup doesn't
- * pick anything by itself.
- */
-function isFilterChip(element: HTMLElement) {
-    return (
-        element.hasAttribute("aria-pressed") &&
-        !element.hasAttribute("aria-haspopup")
-    );
-}
-
 function Badge({
     className,
     variant,
     asChild = false,
-    onClick,
     ...props
 }: React.ComponentProps<"span"> &
     VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
@@ -62,14 +50,56 @@ function Badge({
             data-slot="badge"
             className={cn(badgeVariants({ variant }), className)}
             {...props}
-            onClick={(event: React.MouseEvent<HTMLSpanElement>) => {
-                if (variant === "md3" && isFilterChip(event.currentTarget)) {
+        />
+    );
+}
+
+type FilterChipProps = Omit<
+    React.ComponentProps<"button">,
+    "type" | "onClick" | "aria-pressed"
+> & {
+    selected: boolean;
+
+    /**
+     * Called when the unselected chip is tapped.
+     */
+    onSelect: () => void;
+
+    /**
+     * Called when the selected chip is tapped. Without it, tapping the
+     * selected chip does nothing (single choice).
+     */
+    onDeselect?: () => void;
+};
+
+/**
+ * An MD3 filter chip (`aria-pressed`). Ticks when a tap changes the
+ * selection, not when it leaves the selection as it is. Style the selected
+ * state at the call site.
+ */
+function FilterChip({
+    className,
+    selected,
+    onSelect,
+    onDeselect,
+    ...props
+}: FilterChipProps) {
+    return (
+        <button
+            data-slot="badge"
+            type={"button"}
+            aria-pressed={selected}
+            className={cn(badgeVariants({ variant: "md3" }), className)}
+            {...props}
+            onClick={() => {
+                const handler = selected ? onDeselect : onSelect;
+                if (handler) {
                     haptics.tick();
+                    handler();
                 }
-                onClick?.(event);
             }}
         />
     );
 }
 
-export { Badge };
+export { Badge, FilterChip };
