@@ -22,6 +22,8 @@ import {
     type TransactionAction,
     useTransactionActions,
 } from "#/features/transactions/components/list/use-transaction-actions.ts";
+import { useQuery } from "@tanstack/react-query";
+import { monthTransactionsQuery } from "#/features/transactions/transaction-queries.ts";
 import { Button } from "#/components/ui/button.tsx";
 import {
     ContextMenu,
@@ -100,8 +102,8 @@ export function TransactionListItem({
         return m.transaction_no_description();
     }
 
-    // A compact row leads with what the part was (the counterparty is often
-    // the main expense's) and names its counterparty and category below.
+    // A compact row leads with what the attached expense was for (the
+    // counterparty is often the main expense's) and names its counterparty and category below.
     const headline = compact
         ? (transaction.description ?? transaction.counterparty)
         : transaction.counterparty;
@@ -274,7 +276,11 @@ export function TransactionListItem({
                     </button>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
-                    <MenuItems getActions={getActions} Item={ContextMenuItem} />
+                    <MenuItems
+                        date={transaction.date}
+                        getActions={getActions}
+                        Item={ContextMenuItem}
+                    />
                 </ContextMenuContent>
             </ContextMenu>
             <DropdownMenu>
@@ -297,6 +303,7 @@ export function TransactionListItem({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align={"end"}>
                     <MenuItems
+                        date={transaction.date}
                         getActions={getActions}
                         Item={DropdownMenuItem}
                     />
@@ -308,16 +315,20 @@ export function TransactionListItem({
 
 /**
  * The menu's items; only rendered while it is open, so the actions are only
- * worked out then.
+ * worked out then, once the month of `date` is loaded (e.g. for a search
+ * result).
  */
 function MenuItems({
+    date,
     getActions,
     Item,
 }: {
-    getActions: () => TransactionAction[];
+    date: number;
+    getActions: (isMonthLoaded: boolean) => TransactionAction[];
     Item: typeof ContextMenuItem | typeof DropdownMenuItem;
 }) {
-    return getActions().map(({ label, icon: Icon, onSelect }) => (
+    const { isSuccess } = useQuery(monthTransactionsQuery(date));
+    return getActions(isSuccess).map(({ label, icon: Icon, onSelect }) => (
         <Item key={label} onSelect={onSelect}>
             <Icon />
             {label}

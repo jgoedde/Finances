@@ -24,12 +24,14 @@ export interface TransactionAction {
  * What a list row's menu offers: attaching an expense to another one of its
  * day (not for incomes or expenses with attached expenses), detaching an
  * attached expense and deleting without asking. Worked out on demand, from
- * the cache. `onDeleted` runs right after deleting.
+ * the cache; attaching needs the month of the transaction's date, which
+ * holds its attached expenses and the candidates. `onDeleted` runs right
+ * after deleting.
  */
 export function useTransactionActions(
     transaction: Transaction,
     onDeleted: VoidFunction,
-): () => TransactionAction[] {
+): (isMonthLoaded: boolean) => TransactionAction[] {
     const queryClient = useQueryClient();
     const saveTransaction = useSaveTransaction();
     const deleteWithUndo = useDeleteWithUndo();
@@ -57,9 +59,10 @@ export function useTransactionActions(
         }
     }
 
-    return () => {
+    return (isMonthLoaded) => {
         // Counted from the cache: the view may filter attached expenses out.
         const canAttach =
+            isMonthLoaded &&
             transaction.kind === "expense" &&
             findAttachedExpenses(queryClient, transaction.id).length === 0;
 

@@ -1,4 +1,10 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+    onlineManager,
+    type QueryClient,
+    queryOptions,
+    useQuery,
+} from "@tanstack/react-query";
+import { endOfMonth, startOfMonth } from "date-fns";
 import type { Transaction, TransactionListQuery } from "@finances/shared";
 import { apiFetch, toQueryString } from "#/api/api-client.ts";
 import {
@@ -23,6 +29,33 @@ export function transactionsQuery(params: TransactionListQuery) {
             );
         },
     });
+}
+
+/**
+ * The whole month containing `date`, as the list shows it. Attached expenses
+ * are always on their main expense's day, so it holds all of a transaction's
+ * attached expenses and the expenses it can be attached to.
+ */
+export function monthTransactionsQuery(date: number | Date) {
+    return transactionsQuery({
+        from: startOfMonth(date).getTime(),
+        to: endOfMonth(date).getTime(),
+    });
+}
+
+/**
+ * Loads the month containing `date` unless it is cached. Offline, or if
+ * loading fails, it doesn't wait: whatever is cached has to do.
+ */
+export async function ensureMonthTransactions(
+    queryClient: QueryClient,
+    date: number,
+): Promise<void> {
+    if (onlineManager.isOnline()) {
+        await queryClient
+            .query({ ...monthTransactionsQuery(date), staleTime: "static" })
+            .catch(() => undefined);
+    }
 }
 
 export function useTransactions({

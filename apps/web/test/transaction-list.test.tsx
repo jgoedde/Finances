@@ -76,22 +76,30 @@ const tip = expense("tip", {
 const bakery = expense("bakery", { amount: 3.2, date: day + 60 * 1000 });
 
 /**
- * Renders the app at `url` with the October list (and search results)
- * already in the cache; requests never answer.
+ * Renders the app at `url` with the October list (unless `null`) and search
+ * results already in the cache. Requests `api` answers (by path, without the
+ * query) get that JSON; the others never answer.
  */
 async function renderApp(
     url: string,
     {
         transactions = [],
         search,
+        api = {},
     }: {
-        transactions?: Transaction[];
+        transactions?: Transaction[] | null;
         search?: { q: string; page: TransactionSearchPage };
+        api?: Record<string, unknown>;
     },
 ) {
     vi.stubGlobal(
         "fetch",
-        vi.fn(() => new Promise(() => undefined)),
+        vi.fn((input: string) => {
+            const path = new URL(input, "http://localhost").pathname;
+            return path in api
+                ? Promise.resolve(new Response(JSON.stringify(api[path])))
+                : new Promise(() => undefined);
+        }),
     );
     const queryClient = createQueryClient(() => undefined);
     registerTransactionMutations(queryClient, {
@@ -102,14 +110,16 @@ async function renderApp(
         username: "julian",
     }));
     queryClient.setQueryData(["categories"], categories);
-    queryClient.setQueryData(
-        [
-            "transactions",
-            "list",
-            { from: october.getTime(), to: endOfMonth(october).getTime() },
-        ],
-        transactions,
-    );
+    if (transactions) {
+        queryClient.setQueryData(
+            [
+                "transactions",
+                "list",
+                { from: october.getTime(), to: endOfMonth(october).getTime() },
+            ],
+            transactions,
+        );
+    }
     if (search) {
         queryClient.setQueryData(
             ["transactions", "search", { q: search.q, older: "any" }],
@@ -226,6 +236,24 @@ describe("transaction list", () => {
             within(main).queryByRole("button", { name: /^Trattoria Luigi/ }),
         ).toBeNull();
         expect(within(main).queryByRole("group")).toBeNull();
+    });
+
+    it("counts the whole occasion in the total when the category filter hides attached expenses", async () => {
+        const water = expense("water", {
+            counterparty: "Wasser",
+            amount: 3,
+            mainExpenseId: "meal",
+        });
+        const { main } = await renderApp(
+            "/transactions?month=2026-10&category=restaurant",
+            {
+                transactions: [bakery, meal, tip, water],
+            },
+        );
+
+        expect(await row(main, "Trattoria Luigi")).toHaveTextContent(
+            "gesamt 20,50 €",
+        );
     });
 });
 
@@ -354,6 +382,27 @@ describe("transaction form", () => {
         expect(form).toHaveTextContent(
             "An dieser Ausgabe hängen andere Ausgaben, daher bleibt sie eine Ausgabe.",
         );
+    });
+
+    it("locks the kind of a main expense opened by a link to an uncached month", async () => {
+        await renderApp("/edit/meal", {
+            transactions: null,
+            api: {
+                "/api/transactions/meal": meal,
+                "/api/transactions": [bakery, meal, tip],
+            },
+        });
+        const save = await screen.findByRole(
+            "button",
+            { name: "Speichern" },
+            { timeout: 5000 },
+        );
+
+        expect(
+            within(save.closest("form")!).getByRole("button", {
+                name: "Einnahme",
+            }),
+        ).toBeDisabled();
     });
 
     it("leaves a regular expense unlocked", async () => {

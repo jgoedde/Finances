@@ -6,7 +6,10 @@ import {
 } from "#/features/transactions/components/form/transaction-form.tsx";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
-import { transactionQuery } from "#/features/transactions/transaction-queries.ts";
+import {
+    ensureMonthTransactions,
+    transactionQuery,
+} from "#/features/transactions/transaction-queries.ts";
 import { useSaveTransaction } from "#/features/transactions/transaction-mutations.ts";
 import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
 import {
@@ -20,7 +23,7 @@ import { m } from "#/paraglide/messages.js";
 export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
     staticData: { detail: true },
     component: RouteComponent,
-    loader: ({ context: { queryClient }, params }) => {
+    loader: async ({ context: { queryClient }, params }) => {
         // Offline, a transaction only seen in a list can still be edited.
         const query = transactionQuery(params.id);
         if (!queryClient.getQueryData(query.queryKey)) {
@@ -29,7 +32,14 @@ export const Route = createFileRoute("/_authed/_shell/_transactions/edit/$id")({
                 queryClient.setQueryData(query.queryKey, cached);
             }
         }
-        return queryClient.query({ ...query, staleTime: "static" });
+        const transaction = await queryClient.query({
+            ...query,
+            staleTime: "static",
+        });
+        // Its month holds its attached expenses, which lock fields and are
+        // moved and restored along with it.
+        await ensureMonthTransactions(queryClient, transaction.date);
+        return transaction;
     },
     // After `loader`, so `loaderData` is typed.
     head: ({ loaderData }) => ({
