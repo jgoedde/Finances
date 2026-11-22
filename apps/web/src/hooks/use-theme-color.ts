@@ -9,9 +9,12 @@ type SurfaceRole = "surface" | "surface-container";
  * to the static `theme-color` metas in `index.html` once unmounted.
  */
 export function useThemeColor(role: SurfaceRole) {
-    // The ThemeProvider switches the scheme class in a layout effect, which
-    // runs before this effect, so the CSS variable below is already current.
-    const scheme = useColorScheme();
+    // Read synchronously like in the ThemeProvider, so both see the same scheme
+    // in every commit; the provider switches the class in a layout effect,
+    // which runs before this effect, so the CSS variable below is current.
+    const scheme = useColorScheme(undefined, {
+        getInitialValueInEffect: false,
+    });
 
     useEffect(() => {
         const color = getComputedStyle(document.documentElement)

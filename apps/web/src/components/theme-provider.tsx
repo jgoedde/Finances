@@ -6,7 +6,9 @@ type Props = {
 };
 
 export function ThemeProvider({ children }: Props) {
-    const theme = useColorScheme();
+    const theme = useColorScheme(undefined, {
+        getInitialValueInEffect: false,
+    });
 
     // A layout effect, so effects that read the scheme's CSS variables
     // (useThemeColor) see the new class.
