@@ -6,22 +6,32 @@ function cacheControl(path: string): string {
     if (path.includes("/assets/")) {
         return "public, max-age=31536000, immutable";
     }
-    if (/\.(?:png|ico|jpg|svg|webmanifest)$/.test(path)) {
+    if (/\.(?:png|ico|jpg|svg|webp)$/.test(path)) {
         return "public, max-age=86400";
     }
-    // index.html, sw.js, registerSW.js, workbox-*.js: always revalidate.
+    // index.html, site.webmanifest, sw.js, registerSW.js, workbox-*.js:
+    // always revalidate.
     return "no-cache";
 }
 
 /**
  * Serves the built client, falling back to index.html for SPA routes.
+ * Cache headers are set before serving, because `serveStatic` builds the
+ * response before calling `onFound`, so headers set there are lost.
  */
 export function staticRoutes(root: string) {
-    const onFound = (
-        path: string,
-        c: { header: (k: string, v: string) => void },
-    ) => c.header("Cache-Control", cacheControl(path));
     return new Hono()
-        .use("*", serveStatic({ root, onFound }))
-        .get("*", serveStatic({ root, path: "index.html", onFound }));
+        .use("*", async (c, next) => {
+            c.header("Cache-Control", cacheControl(c.req.path));
+            await next();
+        })
+        .use("*", serveStatic({ root }))
+        .get(
+            "*",
+            async (c, next) => {
+                c.header("Cache-Control", "no-cache");
+                await next();
+            },
+            serveStatic({ root, path: "index.html" }),
+        );
 }
