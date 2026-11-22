@@ -1,20 +1,74 @@
 {
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "id": "/",
+    "start_url": "/",
+    "scope": "/",
+    "lang": "en",
+    "dir": "ltr",
     "name": "Finances",
     "short_name": "Finances",
-    "description": "Behalte deine persönlichen Finanzen im Blick.",
+    "description": "Keep track of your personal finances.",
+    "description_localized": {
+        "de": "Behalte deine persönlichen Finanzen im Blick."
+    },
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "/android-chrome-512x512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/maskable-icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ],
-    "theme_color": "#004BAC",
-    "background_color": "#EEEDF4",
+    "screenshots": [
+        {
+            "src": "/screenshots/01a-overview.webp",
+            "sizes": "590x1278",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Monthly overview with spending by category"
+        },
+        {
+            "src": "/screenshots/03a-transactions.webp",
+            "sizes": "590x1278",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Transactions of the month"
+        },
+        {
+            "src": "/screenshots/02a-entry.webp",
+            "sizes": "590x1278",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Tracking a new expense"
+        },
+        {
+            "src": "/screenshots/04a-fixed-costs.webp",
+            "sizes": "590x1278",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Fixed costs by category"
+        },
+        {
+            "src": "/screenshots/01a-overview-desktop.webp",
+            "sizes": "1367x915",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Monthly overview in a desktop window"
+        }
+    ],
+    "theme_color": "#FAF8FF",
+    "background_color": "#FAF8FF",
     "display": "standalone"
 }

@@ -51,6 +51,8 @@ export default defineConfig({
                 globPatterns: [
                     "**/*.{js,css,html,ico,png,svg,webp,woff2,json}",
                 ],
+                // Only the browser's install dialog shows these.
+                globIgnores: ["screenshots/**"],
                 cleanupOutdatedCaches: true,
                 clientsClaim: true,
                 navigateFallback: "/index.html",

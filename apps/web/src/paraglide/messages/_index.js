@@ -1062,7 +1062,7 @@ export const api_error_username_taken = /** @type {((inputs?: Api_Error_Username
 /**
 * | output |
 * | --- |
-* | "Expense Tracker" |
+* | "Finances" |
 *
 * @param {App_NameInputs} inputs
 * @param {{ locale?: "en" | "de" }} options
@@ -3011,7 +3011,7 @@ export const overview_vs_typical = /** @type {((inputs: Overview_Vs_TypicalInput
 /**
 * | output |
 * | --- |
-* | "{page} · Expense Tracker" |
+* | "{page} · Finances" |
 *
 * @param {Page_TitleInputs} inputs
 * @param {{ locale?: "en" | "de" }} options

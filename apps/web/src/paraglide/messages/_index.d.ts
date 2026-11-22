@@ -359,7 +359,7 @@ export const api_error_username_taken: ((inputs?: Api_Error_Username_TakenInputs
 /**
 * | output |
 * | --- |
-* | "Expense Tracker" |
+* | "Finances" |
 *
 */
 export const app_name: ((inputs?: App_NameInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<App_NameInputs, { locale?: "en" | "de" }, {}>;
@@ -1335,7 +1335,7 @@ export const overview_vs_typical: ((inputs: Overview_Vs_TypicalInputs, options?:
 /**
 * | output |
 * | --- |
-* | "{page} · Expense Tracker" |
+* | "{page} · Finances" |
 *
 */
 export const page_title: ((inputs: Page_TitleInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Page_TitleInputs, { locale?: "en" | "de" }, {}>;

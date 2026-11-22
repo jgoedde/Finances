@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useWindowScroll } from "@mantine/hooks";
 import { BackArrowButton } from "#/components/ui/back-arrow-button.tsx";
+import { useThemeColor } from "#/hooks/use-theme-color.ts";
 import { cn } from "#/lib/cn.ts";
 
 interface Props {
@@ -21,11 +22,13 @@ interface Props {
 /**
  * MD3 small top app bar (https://m3.material.io/components/top-app-bar/specs)
  * with an optional back navigation icon. Switches from surface to surface-container
- * once content scrolls beneath it.
+ * once content scrolls beneath it, and the browser's theme color with it.
  */
 export function TopAppBar({ title, back = true, actions, className }: Props) {
     const [scroll] = useWindowScroll();
     const isScrolled = scroll.y > 0;
+    // The status bar continues the app bar's container color.
+    useThemeColor(isScrolled ? "surface-container" : "surface");
 
     return (
         <header
