@@ -234,7 +234,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Search_No_Results_HintInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
-/** @typedef {{}} Search_Show_In_MonthInputs */
 /** @typedef {{}} Settings_Categories_DescriptionInputs */
 /** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
@@ -336,6 +335,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
+/** @typedef {{}} Transaction_Show_In_MonthInputs */
 /** @typedef {{}} Transaction_SplitInputs */
 /** @typedef {{}} Transaction_Split_DescriptionInputs */
 /** @typedef {{ category: NonNullable<unknown>, amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
@@ -3599,20 +3599,6 @@ export const search_placeholder = /** @type {((inputs?: Search_PlaceholderInputs
 /**
 * | output |
 * | --- |
-* | "Show in month" |
-*
-* @param {Search_Show_In_MonthInputs} inputs
-* @param {{ locale?: "en" | "de" }} options
-* @returns {LocalizedString}
-*/
-export const search_show_in_month = /** @type {((inputs?: Search_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Search_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "de") return __de.search_show_in_month(inputs)
-	return __en.search_show_in_month(inputs)
-});
-/**
-* | output |
-* | --- |
 * | "Create categories, rename them or change their color and icon." |
 *
 * @param {Settings_Categories_DescriptionInputs} inputs
@@ -5027,6 +5013,20 @@ export const transaction_not_found = /** @type {((inputs?: Transaction_Not_Found
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "de") return __de.transaction_not_found(inputs)
 	return __en.transaction_not_found(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Show in month" |
+*
+* @param {Transaction_Show_In_MonthInputs} inputs
+* @param {{ locale?: "en" | "de" }} options
+* @returns {LocalizedString}
+*/
+export const transaction_show_in_month = /** @type {((inputs?: Transaction_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Transaction_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "de") return __de.transaction_show_in_month(inputs)
+	return __en.transaction_show_in_month(inputs)
 });
 /**
 * | output |
