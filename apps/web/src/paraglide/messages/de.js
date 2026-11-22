@@ -549,7 +549,7 @@ export const api_error_username_taken = /** @type {(inputs: Api_Error_Username_T
 };
 
 export const app_name = /** @type {(inputs: App_NameInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Ausgabentracker`)
+	return /** @type {LocalizedString} */ (`Finances`)
 };
 
 export const auth_password = /** @type {(inputs: Auth_PasswordInputs) => LocalizedString} */ () => {
@@ -1114,7 +1114,7 @@ export const overview_vs_typical = /** @type {(inputs: Overview_Vs_TypicalInputs
 };
 
 export const page_title = /** @type {(inputs: Page_TitleInputs) => LocalizedString} */ (i) => {
-	return /** @type {LocalizedString} */ (`${i?.page} · Ausgabentracker`)
+	return /** @type {LocalizedString} */ (`${i?.page} · Finances`)
 };
 
 export const pattern_drift = /** @type {(inputs: Pattern_DriftInputs) => LocalizedString} */ (i) => {
