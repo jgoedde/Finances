@@ -96,9 +96,9 @@ export function CategoryFilterMenu() {
                                 {getCategoryName(category.name)}
                             </span>
                             <span
-                                className={
-                                    "text-label-medium text-on-surface-variant"
-                                }
+                                className={`text-label-medium
+                                text-on-surface-variant
+                                group-data-[state=checked]/radio:text-on-tertiary-container`}
                             >
                                 {formatCurrency(total, getLocale())}
                             </span>

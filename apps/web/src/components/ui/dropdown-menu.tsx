@@ -4,9 +4,10 @@ import { cn } from "#/lib/cn.ts";
 import {
     menuContentClassName,
     menuItemClassName,
+    menuItemSelectedClassName,
 } from "#/components/ui/menu-styles.ts";
 
-// MD3 menu (https://m3.material.io/components/menus/specs).
+// MD3 Expressive vertical menu (https://m3.material.io/components/menus/specs).
 
 function DropdownMenu({
     ...props
@@ -71,7 +72,8 @@ function DropdownMenuRadioGroup({
     );
 }
 
-// Leading MD3 radio button, like `RadioGroupItem`.
+// Leading MD3 radio button, like `RadioGroupItem`; the checked item gets the
+// selected container.
 function DropdownMenuRadioItem({
     className,
     children,
@@ -80,7 +82,12 @@ function DropdownMenuRadioItem({
     return (
         <DropdownMenuPrimitive.RadioItem
             data-slot="dropdown-menu-radio-item"
-            className={cn(menuItemClassName, "group/radio", className)}
+            className={cn(
+                menuItemClassName,
+                menuItemSelectedClassName,
+                "group/radio",
+                className,
+            )}
             {...props}
         >
             <span
@@ -88,11 +95,13 @@ function DropdownMenuRadioItem({
                 className={`flex size-5 shrink-0 items-center justify-center
                     rounded-full border-2 border-on-surface-variant
                     transition-colors duration-150 ease-standard
-                    group-data-[state=checked]/radio:border-primary`}
+                    group-data-[state=checked]/radio:border-on-tertiary-container`}
             >
                 <DropdownMenuPrimitive.ItemIndicator>
                     <span
-                        className={"block size-2.5 rounded-full bg-primary"}
+                        className={
+                            "block size-2.5 rounded-full bg-on-tertiary-container"
+                        }
                     />
                 </DropdownMenuPrimitive.ItemIndicator>
             </span>
@@ -109,7 +118,7 @@ function DropdownMenuLabel({
         <DropdownMenuPrimitive.Label
             data-slot="dropdown-menu-label"
             className={cn(
-                "px-3 py-2 text-label-medium text-on-surface-variant",
+                "px-4 py-2 text-label-medium text-on-surface-variant",
                 className,
             )}
             {...props}
@@ -124,7 +133,7 @@ function DropdownMenuSeparator({
     return (
         <DropdownMenuPrimitive.Separator
             data-slot="dropdown-menu-separator"
-            className={cn("my-2 h-px bg-outline-variant", className)}
+            className={cn("my-1.5 h-px shrink-0 bg-outline-variant", className)}
             {...props}
         />
     );
