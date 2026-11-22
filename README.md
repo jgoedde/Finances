@@ -90,6 +90,9 @@ Rent, insurance, subscriptions: monthly, quarterly or yearly, with a start and a
 them over the months, shows their history and a breakdown by kind, and keeps every price change, including announced
 ones that are still ahead. Fixed costs can be paused without losing them.
 
+When the same expense comes back at a fixed amount every month, quarter or year, the app offers to turn it into a
+fixed cost, prefilled from the next expected charge on.
+
 <p>
     <img src="docs/screenshots/04a-fixed-costs.png" width="260" alt="Fixed costs with history chart and treemap" />
     <img src="docs/screenshots/04b-fixed-cost-list.png" width="260" alt="Fixed costs grouped by kind" />
