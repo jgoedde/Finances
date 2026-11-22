@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useLayoutEffect } from "react";
 import { useColorScheme } from "@mantine/hooks";
 
 type Props = {
@@ -8,7 +8,9 @@ type Props = {
 export function ThemeProvider({ children }: Props) {
     const theme = useColorScheme();
 
-    useEffect(() => {
+    // A layout effect, so effects that read the scheme's CSS variables
+    // (useThemeColor) see the new class.
+    useLayoutEffect(() => {
         const root = window.document.documentElement;
 
         root.classList.remove("light", "dark");
