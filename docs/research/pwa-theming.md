@@ -9,12 +9,20 @@ Die "klassische blaue" Farbe ist `theme_color: "#004BAC"` in `apps/web/public/si
 1. **`theme_color` auf MD3 `surface` setzen** (`apps/web/public/site.webmanifest:17`): `"#FAF8FF"` (light `surface`). Dann geht die Statusleiste (Android) bzw. die Titelleiste (Desktop) nahtlos in die `TopAppBar` über, die im Ruhezustand `bg-surface` ist (`apps/web/src/components/ui/top-app-bar.tsx:35`). Das entspricht der MD3-/Android-Vorgabe: Container der Top App Bar = `colorSurface`, beim Scrollen `colorSurfaceContainer`, und bei Edge-to-Edge zeigt die Statusleiste die Farbe der App Bar ([material-components-android TopAppBar.md](https://github.com/material-components/material-components-android/blob/master/docs/components/TopAppBar.md)).
 2. **`background_color` auf `"#FAF8FF"`** (light `surface`/`background`) statt `#EEEDF4` (das ist `surfaceContainer`, `site.webmanifest:18`). Der Body der App ist `bg-surface` (`apps/web/index.html:28`), also sieht der Splash-Screen dann wie die erste gerenderte Seite aus.
 3. **`<meta name="theme-color">` mit Light/Dark-Varianten in `apps/web/index.html`** ergänzen. Das Manifest kennt keine Dark-Mode-Farben (siehe unten), die Meta-Tags schon, und sie überschreiben das Manifest:
-   ```html
-   <meta name="theme-color" content="#FAF8FF" media="(prefers-color-scheme: light)" />
-   <meta name="theme-color" content="#121318" media="(prefers-color-scheme: dark)" />
-   <meta name="color-scheme" content="light dark" />
-   ```
-   Dark-Werte: `surface` `#121318`, `surfaceContainer` `#1E1F25` (`material-theme.json` → `schemes.dark`).
+    ```html
+    <meta
+        name="theme-color"
+        content="#FAF8FF"
+        media="(prefers-color-scheme: light)"
+    />
+    <meta
+        name="theme-color"
+        content="#121318"
+        media="(prefers-color-scheme: dark)"
+    />
+    <meta name="color-scheme" content="light dark" />
+    ```
+    Dark-Werte: `surface` `#121318`, `surfaceContainer` `#1E1F25` (`material-theme.json` → `schemes.dark`).
 4. **Namen vereinheitlichen.** Das Manifest heißt `"Finances"` (`site.webmanifest:2-3`), der Dokumenttitel aber `"Ausgabentracker"` / `"Expense Tracker"` (`apps/web/messages/de.json:3`, `en.json:3`, gesetzt in `apps/web/src/routes/__root.tsx:25`). In `index.html` fehlen `<title>` und `apple-mobile-web-app-title`. iOS nimmt für das Home-Screen-Icon standardmäßig den `<title>` (laut Apples archivierter Doku, siehe unten). Bitte einen Namen festlegen (siehe offene Fragen) und ihn in `name`, `short_name` (≤ 12 Zeichen), einem statischen `<title>` und `<meta name="apple-mobile-web-app-title">` verwenden.
 5. **Manifest vervollständigen:** `id: "/"`, `start_url: "/"`, `scope: "/"`, `lang: "de"`, `dir: "ltr"`. Ohne `id` dient `start_url` als Identität, und eine spätere Änderung an `start_url` kann die installierte App "verwaisen".
 6. **Icons überarbeiten:** Die aktuellen Icons zeigen ein türkises Dollarzeichen auf transparentem Kreis (`apps/web/public/android-chrome-512x512.png`), während die App in EUR rechnet und MD3-Blau nutzt. Für Android sollte es ein eigenes `purpose: "maskable"`-Icon geben (vollflächig, Motiv im 40-%-Radius-Kreis), sonst setzt Android das `any`-Icon auf einen weißen Hintergrund. Optional `purpose: "monochrome"` für Themed Icons (Wirkung in Chrome nicht bestätigt, schadet aber nicht). Das `apple-touch-icon.png` sollte nicht transparent sein.
@@ -44,13 +52,13 @@ Die offenen Fragen unten sind geklärt; Umsetzung in [#482](https://github.com/j
 
 - `apps/web/vite.config.ts:42-60`: `VitePWA({ registerType: "prompt", manifest: false, ... })`. Kommentar Zeile 44: `// Manifest is shipped separately.` `vite-plugin-pwa` erzeugt also kein Manifest und injiziert keine Icons oder `theme-color`. `includeAssets` (Zeile 45-49) nennt nur Favicons und `apple-touch-icon.png`; die Android-Icons und das Manifest werden über `globPatterns` (Zeile 51-53, `png`, `json`) precached. Die Endung `.webmanifest` fehlt in `globPatterns` (für das Manifest selbst irrelevant, weil der Browser es ohnehin vom Netz lädt; nur zur Info).
 - Tatsächliches Manifest: `apps/web/public/site.webmanifest` (verlinkt in `apps/web/index.html:26`):
-  - `name: "Finances"` (Zeile 2), `short_name: "Finances"` (Zeile 3)
-  - `description: "Behalte deine persönlichen Finanzen im Blick."` (Zeile 4, nur Deutsch)
-  - `icons` (Zeile 5-16): `android-chrome-192x192.png`, `android-chrome-512x512.png`, ohne `purpose` (also `any`)
-  - `theme_color: "#004BAC"` (Zeile 17) = `seed` bzw. `coreColors.primary` in `material-theme.json`, **keine** Schema-Rolle
-  - `background_color: "#EEEDF4"` (Zeile 18) = light `surfaceContainer`
-  - `display: "standalone"` (Zeile 19)
-  - **Fehlt:** `id`, `start_url`, `scope`, `lang`, `dir`, `orientation`, `categories`, `screenshots`, `shortcuts`, `display_override`, `launch_handler`
+    - `name: "Finances"` (Zeile 2), `short_name: "Finances"` (Zeile 3)
+    - `description: "Behalte deine persönlichen Finanzen im Blick."` (Zeile 4, nur Deutsch)
+    - `icons` (Zeile 5-16): `android-chrome-192x192.png`, `android-chrome-512x512.png`, ohne `purpose` (also `any`)
+    - `theme_color: "#004BAC"` (Zeile 17) = `seed` bzw. `coreColors.primary` in `material-theme.json`, **keine** Schema-Rolle
+    - `background_color: "#EEEDF4"` (Zeile 18) = light `surfaceContainer`
+    - `display: "standalone"` (Zeile 19)
+    - **Fehlt:** `id`, `start_url`, `scope`, `lang`, `dir`, `orientation`, `categories`, `screenshots`, `shortcuts`, `display_override`, `launch_handler`
 - Ausgeliefert vom API-Server mit `Cache-Control: public, max-age=86400` (`apps/api/src/http/static.ts:9-10`). Änderungen am Manifest erreichen Clients also bis zu einen Tag später.
 - Das Manifest stammt laut Git-Historie unverändert aus `b49c431` (2025-05-19, "add favicon and web app manifest"); es sieht wie die Ausgabe eines Favicon-Generators aus und wurde nie an das spätere MD3-Theme angepasst.
 
@@ -64,12 +72,12 @@ Die offenen Fragen unten sind geklärt; Umsetzung in [#482](https://github.com/j
 
 ### Icons (`apps/web/public/`)
 
-| Datei | Größe | Befund |
-|---|---|---|
-| `android-chrome-192x192.png` | 192×192 RGBA | türkiser Kreis (`rgb(21,183,171)`) mit weißem `$`, Ecken transparent |
-| `android-chrome-512x512.png` | 512×512 RGBA | dito |
-| `apple-touch-icon.png` | 180×180 RGBA | dito, **transparente Ecken** |
-| `favicon-16x16.png`, `favicon-32x32.png`, `favicon.ico` | | dito |
+| Datei                                                   | Größe        | Befund                                                               |
+| ------------------------------------------------------- | ------------ | -------------------------------------------------------------------- |
+| `android-chrome-192x192.png`                            | 192×192 RGBA | türkiser Kreis (`rgb(21,183,171)`) mit weißem `$`, Ecken transparent |
+| `android-chrome-512x512.png`                            | 512×512 RGBA | dito                                                                 |
+| `apple-touch-icon.png`                                  | 180×180 RGBA | dito, **transparente Ecken**                                         |
+| `favicon-16x16.png`, `favicon-32x32.png`, `favicon.ico` |              | dito                                                                 |
 
 Keine maskable-, keine monochrome-Variante, kein SVG-Quellbild. Farbe und Motiv (Dollar statt Euro) passen nicht zum MD3-Schema (Primary `#465D91`).
 
@@ -77,15 +85,15 @@ Keine maskable-, keine monochrome-Variante, kein SVG-Quellbild. Farbe und Motiv 
 
 - `apps/web/public/material-theme.json`: `seed: "#004BAC"`; relevante Rollen:
 
-| Rolle | light | dark |
-|---|---|---|
+| Rolle                    | light     | dark      |
+| ------------------------ | --------- | --------- |
 | `surface` / `background` | `#FAF8FF` | `#121318` |
-| `surfaceContainerLow` | `#F4F3FA` | `#1A1B20` |
-| `surfaceContainer` | `#EEEDF4` | `#1E1F25` |
-| `surfaceContainerHigh` | `#E8E7EF` | `#282A2F` |
-| `primary` | `#465D91` | `#AFC6FF` |
-| `primaryContainer` | `#D9E2FF` | `#2D4578` |
-| `onSurface` | `#1A1B20` | `#E2E2E9` |
+| `surfaceContainerLow`    | `#F4F3FA` | `#1A1B20` |
+| `surfaceContainer`       | `#EEEDF4` | `#1E1F25` |
+| `surfaceContainerHigh`   | `#E8E7EF` | `#282A2F` |
+| `primary`                | `#465D91` | `#AFC6FF` |
+| `primaryContainer`       | `#D9E2FF` | `#2D4578` |
+| `onSurface`              | `#1A1B20` | `#E2E2E9` |
 
 - `apps/web/src/globals.css:21, 38, 40, 55` (light `primary`, `background`, `surface`, `surface-container` in `:root`) und `:66-101` (`.dark`-Block mit denselben Rollen: `:84` background, `:86` surface, `:99` surface-container). Werte identisch mit `material-theme.json` (lowercase).
 - `apps/web/src/globals.css:12`: `@custom-variant dark (&:where(.dark, .dark *));`
@@ -104,6 +112,7 @@ Keine maskable-, keine monochrome-Variante, kein SVG-Quellbild. Farbe und Motiv 
 ### Woher kommt "Web-App"?
 
 Im Repo gibt es den String nicht (`git log -S'Web-App'`, grep in `messages/`, `index.html`). Vermutungen, **nicht verifiziert**:
+
 - iOS: Beim "Zum Home-Bildschirm" schlägt Safari einen Namen vor (laut Apples alter Doku den `<title>`, siehe unten); `index.html` hat statisch keinen `<title>`. Ob iOS 26 den Manifest-`name` bevorzugt, konnte ich in keiner Primärquelle finden.
 - Android/Desktop: Ein vor längerer Zeit installierter WebAPK behält Name/Icon, bis Chrome ein Update anwendet; Namens- und Icon-Änderungen gelten seit Chrome 144 als sicherheitsrelevant und brauchen eine Bestätigung durch den Nutzer (siehe unten).
 - Empfehlung: Auf dem betroffenen Gerät prüfen, wo genau "Web-App" erscheint (Home-Screen-Beschriftung, Task-Switcher, Installationsdialog), und ggf. neu installieren.
@@ -127,11 +136,11 @@ Im Repo gibt es den String nicht (`git log -S'Web-App'`, grep in `messages/`, `i
 - Support (BCD `manifests/webapp/localized_members.json`, geprüft 2026-11-22): **Chrome 148 Desktop**; Chrome Android **nein**; Safari/iOS nein; Firefox nein. Auf dem Handy bringt es heute also nichts, schadet aber nicht (Fallback auf `name`).
 - Wichtig: Die Sprache wird nach der **Browser-Sprache** gewählt, nicht nach der In-App-Einstellung `finances-locale`. ([Chrome Blog](https://developer.chrome.com/blog/manifest-localization))
 - Beispiel:
-  ```json
-  "lang": "de",
-  "name": "Ausgabentracker",
-  "name_localized": { "en": "Expense Tracker" }
-  ```
+    ```json
+    "lang": "de",
+    "name": "Ausgabentracker",
+    "name_localized": { "en": "Expense Tracker" }
+    ```
 
 ### `theme_color` und `<meta name="theme-color">`
 
@@ -141,8 +150,8 @@ Im Repo gibt es den String nicht (`git log -S'Web-App'`, grep in `messages/`, `i
 - **`media`-Attribut:** Erlaubt für `theme-color` (z. B. `(prefers-color-scheme: dark)`); Elemente mit nicht passendem `media` werden übersprungen; der `media`-Wert muss unter den `theme-color`-Metas eindeutig sein. ([WHATWG HTML §meta theme-color](https://html.spec.whatwg.org/multipage/semantics.html#meta-theme-color), [MDN meta theme-color](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/theme-color))
 - **Dynamische Updates:** Der Browser muss die Theme-Farbe neu bestimmen, wenn ein `theme-color`-Meta eingefügt/entfernt wird, sich `name`/`content`/`media` ändert oder sich das Ergebnis der Media Query ändert. ([WHATWG HTML](https://html.spec.whatwg.org/multipage/semantics.html#meta-theme-color)) Damit ist eine Synchronisierung per JS (z. B. beim Scrollen) spec-konform. Ob jeder Browser im installierten Modus die Statusleiste live nachzieht, habe ich nicht in einer Primärquelle belegt gefunden; bitte auf Gerät testen.
 - Support (BCD, geprüft 2026-11-22):
-  - Meta `theme-color`: Chrome Android 92 (voll; davor in nativem Dark Mode nur für installierte PWAs), Chrome Desktop 73 **nur für installierte PWAs**, Safari/iOS 15 (**ab Safari 26 nur noch für installierte Web-Apps**), Samsung Internet 6.2, Firefox nein. Ein eigenes `media`-Subfeature führen die BCD nicht.
-  - Manifest `theme_color`: Chrome 46, Safari 17 (macOS), iOS 15, Firefox nein.
+    - Meta `theme-color`: Chrome Android 92 (voll; davor in nativem Dark Mode nur für installierte PWAs), Chrome Desktop 73 **nur für installierte PWAs**, Safari/iOS 15 (**ab Safari 26 nur noch für installierte Web-Apps**), Samsung Internet 6.2, Firefox nein. Ein eigenes `media`-Subfeature führen die BCD nicht.
+    - Manifest `theme_color`: Chrome 46, Safari 17 (macOS), iOS 15, Firefox nein.
 - **Dark Mode im Manifest:** Der Vorschlag `user_preferences` (`color_scheme_dark`, später `color_scheme: { dark: … }`, dann media-query-basiert) lief als Origin Trial in Chrome Desktop (M99-M104, v2 M109-M114) und wurde **nicht ausgeliefert**; Google ließ ihn "mangels Interesse" auslaufen. ([WICG Explainer](https://github.com/WICG/manifest-incubations/blob/gh-pages/user-preferences-explainer.md), [TAG Review #696](https://github.com/w3ctag/design-reviews/issues/696), [blink-dev: Intent to Experiment v2](https://groups.google.com/a/chromium.org/g/blink-dev/c/1uKxZUFUQsU)) Stand 2026-11-22: keine Dark-Mode-Farben im Manifest; der Weg ist `<meta name="theme-color" media=…>`.
 - Der Explainer nennt selbst als offene Frage, wie Apps mit eigener In-App-Theme-Einstellung das mitteilen sollen. ([WICG Explainer](https://github.com/WICG/manifest-incubations/blob/gh-pages/user-preferences-explainer.md)) Für diese App aktuell egal, weil sie dem System folgt (`theme-provider.tsx:9`); falls später ein In-App-Schalter kommt, müssen die Meta-Tags per JS ersetzt werden (ein Tag ohne `media` mit der aktiven Farbe).
 
@@ -210,10 +219,30 @@ Namen sind Platzhalter, bis die offene Frage geklärt ist.
     "description": "Behalte deine persönlichen Finanzen im Blick.",
     "description_localized": { "en": "Keep track of your personal finances." },
     "icons": [
-        { "src": "/pwa-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-        { "src": "/pwa-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-        { "src": "/maskable-icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-        { "src": "/monochrome-icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "monochrome" }
+        {
+            "src": "/pwa-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/pwa-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/maskable-icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/monochrome-icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "monochrome"
+        }
     ],
     "theme_color": "#FAF8FF",
     "background_color": "#FAF8FF",
@@ -227,10 +256,21 @@ Die `en`-Beschreibung ist ein Übersetzungsvorschlag. Ob der `$schema`-URL die `
 
 ```html
 <title>Ausgabentracker</title>
-<meta name="description" content="Behalte deine persönlichen Finanzen im Blick." />
+<meta
+    name="description"
+    content="Behalte deine persönlichen Finanzen im Blick."
+/>
 <meta name="color-scheme" content="light dark" />
-<meta name="theme-color" content="#FAF8FF" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#121318" media="(prefers-color-scheme: dark)" />
+<meta
+    name="theme-color"
+    content="#FAF8FF"
+    media="(prefers-color-scheme: light)"
+/>
+<meta
+    name="theme-color"
+    content="#121318"
+    media="(prefers-color-scheme: dark)"
+/>
 <meta name="apple-mobile-web-app-title" content="Ausgaben" />
 ```
 
