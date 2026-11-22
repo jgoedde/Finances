@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { isSameDay } from "date-fns";
 import { formatDayHeading, type Transaction } from "@finances/shared";
 import { TransactionListRow } from "#/features/transactions/components/list/transaction-list-row.tsx";
@@ -22,11 +21,6 @@ interface TransactionGroupProps {
      * not among `transactions`, for the "belongs to" hint.
      */
     findMainExpense?: (id: string) => Transaction | undefined;
-
-    /**
-     * Shown at the end of the header, e.g. a button.
-     */
-    action?: ReactNode;
 }
 
 /**
@@ -37,7 +31,6 @@ export function TransactionGroup({
     transactions,
     highlighted,
     findMainExpense,
-    action,
 }: TransactionGroupProps) {
     return (
         <section
@@ -46,21 +39,15 @@ export function TransactionGroup({
             data-landing-anchor={day.getTime()}
         >
             {/* Sticks below the search bar (4.5rem). */}
-            <div
-                className={cn(
-                    "sticky top-18 z-[5] flex items-center bg-surface",
-                    action ? "py-0.5 pr-2 pl-4" : "px-4 py-2",
-                )}
-            >
+            <div className={"sticky top-18 z-[5] bg-surface px-4 py-2"}>
                 <h2
                     className={cn(
-                        "grow text-title-small text-on-surface-variant",
+                        "text-title-small text-on-surface-variant",
                         isSameDay(day, today) && "text-primary",
                     )}
                 >
                     {formatDayHeading(day, today, getLocale())}
                 </h2>
-                {action}
             </div>
             <div className={"flex flex-col gap-y-1.5 px-2"}>
                 {toListRows(transactions, findMainExpense).map((row) => (

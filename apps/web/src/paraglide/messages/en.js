@@ -232,7 +232,6 @@
 /** @typedef {{}} Search_No_Results_HintInputs */
 /** @typedef {{}} Search_OfflineInputs */
 /** @typedef {{}} Search_PlaceholderInputs */
-/** @typedef {{}} Search_Show_In_MonthInputs */
 /** @typedef {{}} Settings_Categories_DescriptionInputs */
 /** @typedef {{}} Settings_Categories_OpenInputs */
 /** @typedef {{}} Settings_Export_DescriptionInputs */
@@ -334,6 +333,7 @@
 /** @typedef {{}} Transaction_NewInputs */
 /** @typedef {{}} Transaction_No_DescriptionInputs */
 /** @typedef {{}} Transaction_Not_FoundInputs */
+/** @typedef {{}} Transaction_Show_In_MonthInputs */
 /** @typedef {{}} Transaction_SplitInputs */
 /** @typedef {{}} Transaction_Split_DescriptionInputs */
 /** @typedef {{ category: NonNullable<unknown>, amount: NonNullable<unknown> }} Transaction_Split_RemainderInputs */
@@ -1281,10 +1281,6 @@ export const search_placeholder = /** @type {(inputs: Search_PlaceholderInputs) 
 	return /** @type {LocalizedString} */ (`Search transactions`)
 };
 
-export const search_show_in_month = /** @type {(inputs: Search_Show_In_MonthInputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Show in month`)
-};
-
 export const settings_categories_description = /** @type {(inputs: Settings_Categories_DescriptionInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Create categories, rename them or change their color and icon.`)
 };
@@ -1699,6 +1695,10 @@ export const transaction_no_description = /** @type {(inputs: Transaction_No_Des
 
 export const transaction_not_found = /** @type {(inputs: Transaction_Not_FoundInputs) => LocalizedString} */ () => {
 	return /** @type {LocalizedString} */ (`Transaction not found.`)
+};
+
+export const transaction_show_in_month = /** @type {(inputs: Transaction_Show_In_MonthInputs) => LocalizedString} */ () => {
+	return /** @type {LocalizedString} */ (`Show in month`)
 };
 
 export const transaction_split = /** @type {(inputs: Transaction_SplitInputs) => LocalizedString} */ () => {

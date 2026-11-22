@@ -177,7 +177,6 @@
     "search_offline": "Die Suche ist offline nicht verfügbar.",
     "search_no_results": "Keine Ergebnisse",
     "search_no_results_hint": "Probier einen anderen Suchbegriff oder Zeitraum.",
-    "search_show_in_month": "Im Monat anzeigen",
     "search_load_more": "Mehr laden",
 
     "kind_expense": "Ausgabe",
@@ -224,6 +223,7 @@
     "transaction_attached_expenses": "Angehängt an {counterparty}",
     "transaction_belongs_to": "gehört zu {counterparty}",
     "transaction_actions": "Weitere Aktionen",
+    "transaction_show_in_month": "Im Monat anzeigen",
     "transaction_attach_to": "Anhängen an …",
     "transaction_attach_title": "Anhängen an",
     "transaction_attach_description": "Ausgaben vom selben Tag, die selbst nicht angehängt sind",

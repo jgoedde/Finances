@@ -1629,13 +1629,6 @@ export const search_placeholder: ((inputs?: Search_PlaceholderInputs, options?: 
 /**
 * | output |
 * | --- |
-* | "Show in month" |
-*
-*/
-export const search_show_in_month: ((inputs?: Search_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Search_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>;
-/**
-* | output |
-* | --- |
 * | "Create categories, rename them or change their color and icon." |
 *
 */
@@ -2347,6 +2340,13 @@ export const transaction_not_found: ((inputs?: Transaction_Not_FoundInputs, opti
 /**
 * | output |
 * | --- |
+* | "Show in month" |
+*
+*/
+export const transaction_show_in_month: ((inputs?: Transaction_Show_In_MonthInputs, options?: { locale?: "en" | "de" }) => LocalizedString) & __ParaglideMessageMetadata<Transaction_Show_In_MonthInputs, { locale?: "en" | "de" }, {}>;
+/**
+* | output |
+* | --- |
 * | "Split" |
 *
 */
@@ -2626,7 +2626,6 @@ export type Search_No_ResultsInputs = {};
 export type Search_No_Results_HintInputs = {};
 export type Search_OfflineInputs = {};
 export type Search_PlaceholderInputs = {};
-export type Search_Show_In_MonthInputs = {};
 export type Settings_Categories_DescriptionInputs = {};
 export type Settings_Categories_OpenInputs = {};
 export type Settings_Export_DescriptionInputs = {};
@@ -2728,6 +2727,7 @@ export type Transaction_Move_Attached_TitleInputs = {};
 export type Transaction_NewInputs = {};
 export type Transaction_No_DescriptionInputs = {};
 export type Transaction_Not_FoundInputs = {};
+export type Transaction_Show_In_MonthInputs = {};
 export type Transaction_SplitInputs = {};
 export type Transaction_Split_DescriptionInputs = {};
 export type Transaction_Split_RemainderInputs = { category: NonNullable<unknown>, amount: NonNullable<unknown> };

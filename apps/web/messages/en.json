@@ -177,7 +177,6 @@
     "search_offline": "Search isn't available offline.",
     "search_no_results": "No results",
     "search_no_results_hint": "Try a different search term or period.",
-    "search_show_in_month": "Show in month",
     "search_load_more": "Load more",
 
     "kind_expense": "Expense",
@@ -224,6 +223,7 @@
     "transaction_attached_expenses": "Attached to {counterparty}",
     "transaction_belongs_to": "belongs to {counterparty}",
     "transaction_actions": "More actions",
+    "transaction_show_in_month": "Show in month",
     "transaction_attach_to": "Attach to…",
     "transaction_attach_title": "Attach to",
     "transaction_attach_description": "Expenses of the same day that aren't attached themselves",

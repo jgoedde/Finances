@@ -1,12 +1,15 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { getRouteApi } from "@tanstack/react-router";
 import type { Transaction } from "@finances/shared";
 import type { IconComponent } from "#/lib/icon.ts";
+import CalendarMonth from "~icons/material-symbols/calendar-month-outline-rounded";
 import Link from "~icons/material-symbols/link-rounded";
 import Trash from "~icons/material-symbols/delete-outline-rounded";
 import Unlink from "~icons/material-symbols/link-off-rounded";
 import { toast } from "sonner";
 import { ACTION_TOAST_DURATION } from "#/components/ui/sonner.tsx";
 import { syncLaterHint } from "#/features/sync/connectivity.ts";
+import { useShowInMonth } from "#/features/transactions/components/list/month-landing.ts";
 import { chooseMainExpense } from "#/features/transactions/components/list/main-expense-picker.tsx";
 import {
     findAttachedExpenses,
@@ -17,6 +20,8 @@ import * as haptics from "#/lib/haptics.ts";
 import { useDeleteWithUndo } from "#/features/transactions/use-delete-with-undo.ts";
 import { m } from "#/paraglide/messages.js";
 
+const transactionsRoute = getRouteApi("/_authed/_shell/_transactions");
+
 export interface TransactionAction {
     label: string;
     icon: IconComponent;
@@ -24,7 +29,8 @@ export interface TransactionAction {
 }
 
 /**
- * What a list row's menu offers: attaching an expense to another one of its
+ * What a list row's menu offers: showing it in its unfiltered month while a
+ * search or category filter is active, attaching an expense to another one of its
  * day (not for incomes or expenses with attached expenses), detaching an
  * attached expense and deleting without asking. Worked out on demand, from
  * the cache; attaching needs the month of the transaction's date, which
@@ -38,6 +44,9 @@ export function useTransactionActions(
     const queryClient = useQueryClient();
     const saveTransaction = useSaveTransaction();
     const deleteWithUndo = useDeleteWithUndo();
+    const showInMonth = useShowInMonth();
+    const { q, category } = transactionsRoute.useSearch();
+    const isFiltered = Boolean(q?.trim()) || category !== undefined;
 
     function saveWithUndo(changed: Transaction, message: string) {
         saveTransaction.mutate(changed);
@@ -73,6 +82,12 @@ export function useTransactionActions(
             findAttachedExpenses(queryClient, transaction.id).length === 0;
 
         return [
+            isFiltered && {
+                label: m.transaction_show_in_month(),
+                icon: CalendarMonth,
+                onSelect: () =>
+                    showInMonth(new Date(transaction.date), [transaction.id]),
+            },
             canAttach && {
                 label: m.transaction_attach_to(),
                 icon: Link,
