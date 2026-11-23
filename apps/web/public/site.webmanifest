@@ -68,7 +68,7 @@
             "label": "Monthly overview in a desktop window"
         }
     ],
-    "theme_color": "#EEEDF4",
+    "theme_color": "#FAF8FF",
     "background_color": "#FAF8FF",
     "display": "standalone"
 }
