@@ -17,11 +17,11 @@
     },
     "dependencies": {
         "@finances/shared": "*",
-        "@hono/node-server": "^2.1.9",
-        "better-auth": "~1.7.25",
+        "@hono/node-server": "^2.1.11",
+        "better-auth": "~1.7.27",
         "better-sqlite3": "^13.2.0",
         "commander": "^15.1.0",
-        "hono": "^4.13.19",
+        "hono": "^4.13.21",
         "kysely": "^0.29.9",
         "lodash": "^4.18.1",
         "nanoid": "^6.0.2",
@@ -32,9 +32,9 @@
         "@types/better-sqlite3": "^9.6.0",
         "@types/lodash": "^4.17.27",
         "@types/node": "^26.6.6",
-        "@vitest/coverage-v8": "^5.1.0",
+        "@vitest/coverage-v8": "^5.1.1",
         "pino-pretty": "^13.2.0",
         "typescript": "~6.0.3",
-        "vitest": "^5.1.0"
+        "vitest": "^5.1.1"
     }
 }
